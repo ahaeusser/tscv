@@ -4,7 +4,7 @@
 #' @importFrom tidyr fill pivot_longer pivot_wider drop_na gather spread
 #' @importFrom tibble add_column
 #' @importFrom readr read_csv2
-#' @importFrom lubridate year month
+#' @importFrom lubridate year month hours
 #' @importFrom rlang is_empty
 #' @importFrom future plan
 #' @importFrom magrittr "%>%"
