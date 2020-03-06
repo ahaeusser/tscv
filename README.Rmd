@@ -18,17 +18,11 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of tscv is to ...
+The package tscv provides a collection of functions and utilities for time series cross validation and tidy time series forecasting based on the tidyverts (tsibble, fable and fabletools).
 
 ## Installation
 
-You can install the released version of tscv from [CRAN](https://CRAN.R-project.org) with:
-
-``` r
-install.packages("tscv")
-```
-
-And the development version from [GitHub](https://github.com/) with:
+You can install the development version from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
@@ -38,23 +32,42 @@ devtools::install_github("ahaeusser/tscv")
 
 This is a basic example which shows you how to solve a common problem:
 
-```{r example}
+```{r packages, message=FALSE}
+# Load relevant packages
 library(tscv)
-## basic example code
+library(tidyverse)
+library(tsibble)
+library(fable)
 ```
 
-What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so:
+The dataset `elec_price` is a hourly "tsibble" with day-ahead electricity spot prices from the ENTSO-E Transparency Platform. The dataset contains time series data from 2019-01-01 00:00:00 to 2019-12-31 23:00:00 for five bidding zones within europe. We can use the function `clean_data` to prepare the dataset for further usage:
 
-```{r cars}
-summary(cars)
+```{r clean data}
+data <- elec_price %>% 
+  clean_data()
+
+data
+
+plot_ts(data)
 ```
 
-You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date.
+To prepare the dataset for time series cross-validation, we can use the function `split_data`:
 
-You can also embed plots, for example:
+```{r split data}
+mode <- "slide"
+n_init <- 2400
+n_step <- 24
+n_ahead <- 24
 
-```{r pressure, echo = FALSE}
-plot(pressure)
+data <- data %>%
+  split_data(
+    mode = mode,
+    n_init = n_init,
+    n_step = n_step,
+    n_ahead = n_ahead
+    )
+
+data
 ```
 
-In that case, don't forget to commit and push the resulting figure files, so they display on GitHub!
+
