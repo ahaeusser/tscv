@@ -26,12 +26,12 @@ plot_forecast <- function(data,
                           slice,
                           model,
                           include = 24,
-                          title = "Actual values and forecast",
+                          title = NULL,
                           subtitle = NULL,
                           xlab = "Date",
                           ylab = NULL,
                           caption = NULL,
-                          line_width = 1,
+                          line_width = 1.5,
                           point_size = 2,
                           point_alpha = 0,
                           base_size = 11) {
@@ -108,8 +108,7 @@ plot_forecast <- function(data,
     size = point_size,
     alpha = point_alpha)
 
-  # Scale date axis
-  # p <- p + scale_x_date(date_labels = "%Y \n %b")
+  # Coloring
   p <- p + scale_color_viridis_d()
 
   # Adjust annotations and theme

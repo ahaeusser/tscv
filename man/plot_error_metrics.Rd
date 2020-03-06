@@ -13,7 +13,7 @@ plot_error_metrics(
   title = "Evaluation of forecast accuracy",
   ylab = NULL,
   caption = NULL,
-  line_width = 0.8,
+  line_width = 1.5,
   point_size = 3,
   point_shape = 19,
   point_alpha = 1,
