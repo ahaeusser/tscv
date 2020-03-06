@@ -1,0 +1,25 @@
+Package: tscv
+Title: Functions and utilities for time series cross validation and tidy time series forecasting.
+Version: 0.1.0
+Description: Provides a collection of functions and utilities for time series cross validation and tidy time series forecasting based on the tidyverts (tsibble, fable and fabletools).
+Author: Alexander Häußer <alexander-haeusser@gmx.de>
+Maintainer: Alexander Häußer <alexander-haeusser@gmx.de>
+License: GPL-3
+Depends:
+    R (>= 3.6.2)
+Imports:
+    rlang,
+    dplyr,
+    ggplot2,
+    tidyr,
+    tibble,
+    lubridate,
+    purrr,
+    furrr,
+    future,
+    tsibble,
+    fable,
+    fabletools
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.0.2
