@@ -30,7 +30,6 @@ split_data <- function(data,
 
   # Extend data for out-of-sample forecasts
   # (measurement variables are set to NA)
-
   data <- data %>%
     update_tsibble(
       index = date_time,
@@ -38,6 +37,12 @@ split_data <- function(data,
     append_row(n = n_ahead) %>%
     mutate(type = "actual") %>%
     mutate(model = NA_character_)
+
+  # Get start date for the first forecast
+  start_date <- data %>%
+    filter(row_number() == (n_init + 1)) %>%
+    pull(date_time) %>%
+    as.character()
 
   # Prepare training data .....................................................
 
@@ -68,19 +73,6 @@ split_data <- function(data,
     mutate(horizon = NA_integer_)
 
   # Prepare test data .........................................................
-
-  # Get start date for the first forecast
-  # (The last training observation of slice 2 has the same
-  # date as the first test observation of slice 1)
-  start_date <- data_train %>%
-    filter(slice == 1) %>%
-    group_by(variable) %>%
-    filter(row_number() == n()) %>%
-    pull(date_time)
-
-  # Workaround for hourly data
-  start_date <- start_date + hours(1)
-  start_date <- as.character(start_date)
 
   # Roll up tsibble
   data_test <- data %>%
