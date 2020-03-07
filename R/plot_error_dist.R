@@ -1,4 +1,3 @@
-
 #' @title Plot the forecast errors along the forecast horizon.
 #'
 #' @description Plot the forecast errors along the forecast horizon (and corresponding Box-Whisker Plots) for a specific target variable and forecasting methods.

@@ -1,7 +1,6 @@
-
-#' plot_pacf
+#' @title Plot the sample partial autocorrelation function (PACF).
 #'
-#' Bar chart of the sample partial autocorrelation function (PACF) of a time series.
+#' @description Bar chart of the sample partial autocorrelation function (PACF) of a time series.
 #'
 #' @param data A tsibble containing the columns time, variable and value.
 #' @param lag_max Integer value defining the maximum number of lags.
@@ -20,7 +19,6 @@
 #' @param legend_position Character value defining the position of the legend ("top", "bottom", "right", "left").
 #'
 #' @return p An object of class ggplot.
-#'
 #' @export
 
 plot_pacf <- function(data,

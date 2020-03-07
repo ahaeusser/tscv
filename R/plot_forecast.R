@@ -1,4 +1,3 @@
-
 #' @title Plot the actual and fitted values and forecasts
 #'
 #' @description Plot the actual and fitted values and forecasts for specific target variable(s), slice(s) and forecasting method(s).

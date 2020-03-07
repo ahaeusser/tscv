@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_acf.R
 \name{plot_acf}
 \alias{plot_acf}
-\title{plot_acf}
+\title{Plot the sample autocorrelation function (ACF).}
 \usage{
 plot_acf(
   data,

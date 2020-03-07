@@ -1,7 +1,6 @@
-
-#' plot_acf
+#' @title Plot the sample autocorrelation function (ACF).
 #'
-#' Bar chart of the sample autocorrelation function (ACF) of a time series.
+#' @description Bar chart of the sample autocorrelation function (ACF) of a time series.
 #'
 #' @param data A tsibble containing the columns time, variable and value.
 #' @param lag_max Integer value defining the maximum number of lags.

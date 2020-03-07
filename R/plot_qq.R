@@ -1,7 +1,6 @@
-
-#' plot_qq
+#' @title Quantile-Quantile plot (normal)
 #'
-#' Quantile-Quantile plot (normal)
+#' @description Quantile-Quantile plot (normal) of one or more time series.
 #'
 #' @param data A tsibble containing the columns time, variable and value.
 #' @param title Title of the plot (default select.target)
@@ -18,7 +17,6 @@
 #' @param line.color Character value defining the line color (45-degree line)
 #'
 #' @return p An object of class ggplot
-#'
 #' @export
 
 plot_qq <- function(data,

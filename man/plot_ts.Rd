@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_ts.R
 \name{plot_ts}
 \alias{plot_ts}
-\title{plot_ts}
+\title{Plot time series as line chart.}
 \usage{
 plot_ts(
   data,
@@ -25,7 +25,7 @@ plot_ts(
 )
 }
 \arguments{
-\item{data}{A tibble containing the columns time, variable and value.}
+\item{data}{A tsibble containing the columns time, variable and value.}
 
 \item{smooth_method}{Character value defining the smoothing method ("loess", "lm" or NULL).}
 
@@ -61,5 +61,5 @@ plot_ts(
 p An object of class ggplot.
 }
 \description{
-Line chart of a time series incl. smooth curve (linear or loess).
+Line chart of one or more time series incl. smooth curve (linear or loess).
 }

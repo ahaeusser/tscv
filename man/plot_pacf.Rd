@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_pacf.R
 \name{plot_pacf}
 \alias{plot_pacf}
-\title{plot_pacf}
+\title{Plot the sample partial autocorrelation function (PACF).}
 \usage{
 plot_pacf(
   data,

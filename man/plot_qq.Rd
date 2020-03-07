@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_qq.R
 \name{plot_qq}
 \alias{plot_qq}
-\title{plot_qq}
+\title{Quantile-Quantile plot (normal)}
 \usage{
 plot_qq(
   data,
@@ -52,5 +52,5 @@ plot_qq(
 p An object of class ggplot
 }
 \description{
-Quantile-Quantile plot (normal)
+Quantile-Quantile plot (normal) of one or more time series.
 }

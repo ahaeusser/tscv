@@ -1,9 +1,8 @@
-
-#' plot_ts
+#' @title Plot time series as line chart.
 #'
-#' Line chart of a time series incl. smooth curve (linear or loess).
+#' @description Line chart of one or more time series incl. smooth curve (linear or loess).
 #'
-#' @param data A tibble containing the columns time, variable and value.
+#' @param data A tsibble containing the columns time, variable and value.
 #' @param smooth_method Character value defining the smoothing method ("loess", "lm" or NULL).
 #' @param smooth_se Logical value. If TRUE, confidence interval is displayed around smooth.
 #' @param title Title of the plot.
@@ -21,7 +20,6 @@
 #' @param smooth_alpha Numeric value defining the transparency of confidence band.
 #'
 #' @return p An object of class ggplot.
-#'
 #' @export
 
 plot_ts <- function(data,
