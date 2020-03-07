@@ -18,7 +18,8 @@ plot_qq(
   point_alpha = 0.5,
   line_width = 0.25,
   line_type = "solid",
-  line_color = "grey35"
+  line_color = "grey35",
+  base_size = 11
 )
 }
 \arguments{
@@ -34,19 +35,21 @@ plot_qq(
 
 \item{caption}{Caption of the plot}
 
-\item{point.size}{Numeric value defining the point size}
+\item{point_size}{Numeric value defining the point size}
 
-\item{point.shape}{Integer value defining the point shape}
+\item{point_shape}{Integer value defining the point shape}
 
-\item{point.color}{Character value defining the point color}
+\item{point_color}{Character value defining the point color}
 
-\item{point.alpha}{Numeric value defining the transperency of points}
+\item{point_alpha}{Numeric value defining the transperency of points}
 
-\item{line.width}{Numeric value defining the line width (45-degree line)}
+\item{line_width}{Numeric value defining the line width (45-degree line)}
 
-\item{line.type}{Integer value defining the line type (45-degree line)}
+\item{line_type}{Integer value defining the line type (45-degree line)}
 
-\item{line.color}{Character value defining the line color (45-degree line)}
+\item{line_color}{Character value defining the line color (45-degree line)}
+
+\item{base_size}{Integer value. Base font size}
 }
 \value{
 p An object of class ggplot

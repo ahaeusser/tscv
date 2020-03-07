@@ -8,13 +8,14 @@
 #' @param xlab Label for the x-axis
 #' @param ylab Label for the y-axis
 #' @param caption Caption of the plot
-#' @param point.size Numeric value defining the point size
-#' @param point.shape Integer value defining the point shape
-#' @param point.color Character value defining the point color
-#' @param point.alpha Numeric value defining the transperency of points
-#' @param line.width Numeric value defining the line width (45-degree line)
-#' @param line.type Integer value defining the line type (45-degree line)
-#' @param line.color Character value defining the line color (45-degree line)
+#' @param point_size Numeric value defining the point size
+#' @param point_shape Integer value defining the point shape
+#' @param point_color Character value defining the point color
+#' @param point_alpha Numeric value defining the transperency of points
+#' @param line_width Numeric value defining the line width (45-degree line)
+#' @param line_type Integer value defining the line type (45-degree line)
+#' @param line_color Character value defining the line color (45-degree line)
+#' @param base_size Integer value. Base font size
 #'
 #' @return p An object of class ggplot
 #' @export
@@ -32,7 +33,8 @@ plot_qq <- function(data,
                     point_alpha = 0.5,
                     line_width = 0.25,
                     line_type = "solid",
-                    line_color = "grey35") {
+                    line_color = "grey35",
+                    base_size = 11) {
 
   # Create ggplot
   p <- ggplot2::ggplot(
@@ -66,6 +68,6 @@ plot_qq <- function(data,
   p <- p + ggplot2::labs(y = ylab)
   p <- p + ggplot2::labs(caption = caption)
   # Adjust theme
-  p <- p + theme_tscv(10)
+  p <- p + theme_tscv(base_size = base_size)
   return(p)
 }
