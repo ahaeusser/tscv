@@ -36,18 +36,25 @@ library(tscv)
 library(tidyverse)
 library(tsibble)
 library(fable)
+library(feasts)
+Sys.setlocale("LC_TIME", "C")
 ```
 
 The dataset `elec_price` is a hourly 'tsibble' with day-ahead electricity spot prices from the ENTSO-E Transparency Platform. The dataset contains time series data from 2019-01-01 00:00:00 to 2019-12-31 23:00:00 for five bidding zones in europe. We can use the function `clean_data` to prepare the dataset for further usage. The function checks whether the input data are a valid tsibble or not (regular spaced in time and ordered). Furthermore, implicit missing values are turned into explicit missing values (existing missing values are left untouched). If the data are provided in wide format, they are gathered into long format. For convenience, the index variable is renamed to `date_time`, the key variable is renamed to  `variable` and the measurement variable is renamed to `value`.
 
 ```{r clean data}
 data <- elec_price %>%
-  filter(variable == "Day-ahead Price (DE)") %>%
   clean_data()
 
 data
+ 
+sub_data <- data %>%
+  filter(variable == "Day-ahead Price (DE)")
 
-plot_ts(data)
+sub_data %>% plot_ts()
+sub_data %>% plot_season()
+sub_data %>% plot_corr()
+
 ```
 
 To prepare the dataset for time series cross-validation, we can use the function `split_data`. This function splits the data into training and testing (i.e. partitioning into time slices) for time series cross-validation. The user can choose between `stretch` and `slide`. The first is an expanding window approach, while the latter is a fixed window approach. The user can define the window sizes for training and testing via `n_init` and `n_ahead`, as well as the step size for increments via `n_step`.
@@ -66,11 +73,8 @@ data <- data %>%
     n_step = n_step,
     n_ahead = n_ahead)
 
-# Fur illutrative purpose, we only use the first five time slices ...
-data <- data %>%
+data <- data %>% 
   filter(slice %in% c(1:5))
-
-data
 ```
 
 
@@ -80,7 +84,7 @@ models <- data %>%
   filter(sample == "train") %>%
   model(
     sNaive = SNAIVE(value),
-    ARIMA = ARIMA(value ~ fourier(period = c(24, 168), K = c(6, 6)) + PDQ(0,0,0)))
+    STLF = decomposition_model(STL(value ~ trend(window = 7), robust = TRUE), NAIVE(season_adjust)))
 
 fcsts <- models %>%
   forecast_model(n_ahead = n_ahead)
@@ -99,19 +103,20 @@ data
 
 
 ```{r plot_forecast}
-variable <- c("Day-ahead Price (DE)")
-model <- c("sNaive", "ARIMA")
-slice <- c(1)
+variable <- c("Day-ahead Price (DE)", "Day-ahead Price (NO1)")
+model <- c("sNaive", "STLF", "TSLM")
+slice <- c(1, 2)
 
 plot_forecast(
   data = data,
   variable = variable,
   model = model,
   slice = slice,
-  title = "Day-ahead Price (DE)",
-  subtitle = "Forecast from 2019-04-11 00:00 to 2019-04-11 23:00",
+  title = "Day-ahead electricity spot price",
+  subtitle = "Actual versus forecast",
   caption = "Data: ENTSO-E Transparency Platform",
-  ylab = "[Euro/MWh]")
+  ylab = "[Euro/MWh]",
+  include = 168)
 ```
 
 
@@ -137,13 +142,12 @@ metrics <- errors %>%
 
 metrics
 
-metric <- c("MAE", "MAPE")
 
 plot_error_metrics(
   data = metrics,
   variable = variable,
   model = model,
-  metric = metric)
+  metric = c("MAE", "MAPE"))
 ```
 
 
