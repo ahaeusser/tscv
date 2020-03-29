@@ -4,12 +4,14 @@
 \name{elec_price}
 \alias{elec_price}
 \title{Hourly Day-ahead Electricity Spot Prices}
-\format{A time series object of class \code{tsibble} with 43.800 rows and 3 variables:
+\format{
+A time series object of class \code{tsibble} with 43.800 rows and 3 variables:
    \itemize{
       \item{date_time: Date and time (index variable)}
       \item{variable: Variable name (key variable)}
       \item{value: Day-ahead spot price in Euro (measurement variable)}
-      }}
+      }
+}
 \source{
 \href{https://transparency.entsoe.eu/transmission-domain/r2/dayAheadPrices/show}{ENTSO-E Transparency Platform}
 }
