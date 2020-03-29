@@ -12,20 +12,22 @@
 #' @param line_type Numeric value defining the line type (time series).
 #' @param line_color Character value defining the line color (time series).
 #' @param line_alpha Numeric value defining the transparency of the line.
+#' @param base_size Integer value. Base font size.
 #'
 #' @return p An object of class ggplot.
 #' @export
 
 plot_season <- function(data,
-                        title = NULL,
-                        subtitle = NULL,
+                        title = "Seasonal plot",
+                        subtitle = "Median and quantiles",
                         xlab = "Hour",
                         ylab = NULL,
                         caption = NULL,
                         line_width = 0.75,
                         line_type = "solid",
                         line_color = "#31688EFF",
-                        line_alpha = 1) {
+                        line_alpha = 1,
+                        base_size = 10) {
 
   # Prepare data
   data <- data %>%
@@ -93,6 +95,6 @@ plot_season <- function(data,
   p <- p + ggplot2::labs(y = ylab)
   p <- p + ggplot2::labs(caption = caption)
 
-  p <- p + theme_tscv()
+  p <- p + theme_tscv(base_size = base_size)
   return(p)
 }

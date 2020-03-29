@@ -6,15 +6,16 @@
 \usage{
 plot_season(
   data,
-  title = NULL,
-  subtitle = NULL,
+  title = "Seasonal plot",
+  subtitle = "Median and quantiles",
   xlab = "Hour",
   ylab = NULL,
   caption = NULL,
   line_width = 0.75,
   line_type = "solid",
   line_color = "#31688EFF",
-  line_alpha = 1
+  line_alpha = 1,
+  base_size = 10
 )
 }
 \arguments{
@@ -37,6 +38,8 @@ plot_season(
 \item{line_color}{Character value defining the line color (time series).}
 
 \item{line_alpha}{Numeric value defining the transparency of the line.}
+
+\item{base_size}{Integer value. Base font size.}
 }
 \value{
 p An object of class ggplot.

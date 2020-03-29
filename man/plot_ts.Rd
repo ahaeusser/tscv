@@ -21,7 +21,8 @@ plot_ts(
   line_color = "#31688EFF",
   line_alpha = 1,
   smooth_fill = "#FDE725FF",
-  smooth_alpha = 0.25
+  smooth_alpha = 0.25,
+  base_size = 10
 )
 }
 \arguments{
@@ -56,6 +57,8 @@ plot_ts(
 \item{smooth_fill}{Character value defining the fill color of confidence band.}
 
 \item{smooth_alpha}{Numeric value defining the transparency of confidence band.}
+
+\item{base_size}{Integer value. Base font size.}
 }
 \value{
 p An object of class ggplot.

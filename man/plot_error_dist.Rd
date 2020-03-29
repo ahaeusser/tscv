@@ -6,12 +6,12 @@
 \usage{
 plot_error_dist(
   data,
-  variable,
-  model,
+  variable = NULL,
+  model = NULL,
   add_points = TRUE,
   jitter = TRUE,
-  title = variable,
-  subtitle = "Distribution of forecast errors by method",
+  title = "Evaluation of forecast accuracy",
+  subtitle = "Distribution of forecast errors by horizon",
   xlab = "Forecast horizon (n-step)",
   ylab = "Forecast error",
   caption = NULL,

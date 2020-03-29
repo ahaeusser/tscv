@@ -18,6 +18,7 @@
 #' @param smooth_color Character value defining the line color (smooth curve).
 #' @param smooth_fill Character value defining the fill color of confidence band.
 #' @param smooth_alpha Numeric value defining the transparency of confidence band.
+#' @param base_size Integer value. Base font size.
 #'
 #' @return p An object of class ggplot.
 #' @export
@@ -38,43 +39,48 @@ plot_ts <- function(data,
                     line_color = "#31688EFF",
                     line_alpha = 1,
                     smooth_fill = "#FDE725FF",
-                    smooth_alpha = 0.25) {
+                    smooth_alpha = 0.25,
+                    base_size = 10) {
 
   # Create ggplot
-  p <- ggplot2::ggplot(data = data,
-                       ggplot2::aes(x = date_time,
-                                    y = value))
-  # Create points
-  p <- p + ggplot2::geom_line(color = line_color,
-                              size = line_width,
-                              linetype = line_type,
-                              alpha = line_alpha)
+  p <- ggplot(
+    data = data,
+    aes(x = date_time,
+        y = value))
+
+  # Create lines
+  p <- p + geom_line(
+    color = line_color,
+    size = line_width,
+    linetype = line_type,
+    alpha = line_alpha)
 
   # Create smooth
   if (!is.null(smooth_method)) {
-    p <- p + ggplot2::geom_smooth(method = smooth_method,
-                                  se = smooth_se,
-                                  color = smooth_color,
-                                  fill = smooth_fill,
-                                  size = smooth_width,
-                                  linetype = smooth_type,
-                                  alpha = smooth_alpha)
+    p <- p + geom_smooth(
+      method = smooth_method,
+      se = smooth_se,
+      color = smooth_color,
+      fill = smooth_fill,
+      size = smooth_width,
+      linetype = smooth_type,
+      alpha = smooth_alpha)
   }
 
   # Create grid
-  p <- p + ggplot2::facet_wrap(~variable, scales = "free")
+  p <- p + facet_wrap(~variable, scales = "free")
 
   # Axis scaling
-  p <- p + ggplot2::scale_y_continuous()
+  p <- p + scale_y_continuous()
   # Adjust annotations
-  p <- p + ggplot2::labs(title = title)
-  p <- p + ggplot2::labs(subtitle = subtitle)
-  p <- p + ggplot2::labs(x = xlab)
-  p <- p + ggplot2::labs(y = ylab)
-  p <- p + ggplot2::labs(caption = caption)
+  p <- p + labs(title = title)
+  p <- p + labs(subtitle = subtitle)
+  p <- p + labs(x = xlab)
+  p <- p + labs(y = ylab)
+  p <- p + labs(caption = caption)
   # Adjust theme
-  p <- p + theme_tscv(10)
-  p <- p + ggplot2::theme(legend.position = "none")
+  p <- p + theme_tscv(base_size = base_size)
+  p <- p + theme(legend.position = "none")
   return(p)
 
 }

@@ -2,13 +2,13 @@
 % Please edit documentation in R/plot_forecast.R
 \name{plot_forecast}
 \alias{plot_forecast}
-\title{Plot the actual and fitted values and forecasts}
+\title{Plot the actual and fitted values and forecasts.}
 \usage{
 plot_forecast(
   data,
-  variable,
-  slice,
-  model,
+  variable = NULL,
+  slice = NULL,
+  model = NULL,
   include = 24,
   title = NULL,
   subtitle = NULL,
@@ -22,36 +22,36 @@ plot_forecast(
 )
 }
 \arguments{
-\item{data}{A tsibble according to the adice data model}
+\item{data}{A tsibble according to the adice data model.}
 
-\item{variable}{Character value defining the target variable}
+\item{variable}{Character vector defining the variable(s).}
 
-\item{slice}{Character value defining the time slice of the rolling forecast}
+\item{slice}{Integer vector. The time slice of the rolling forecast.}
 
-\item{model}{Character vector defining the forecasting methods}
+\item{model}{Character vector. The forecasting methods.}
 
-\item{include}{Integer value, the number of actual values (training) to be included}
+\item{include}{Integer value. The number of actual values (training) to be included.}
 
-\item{title}{Title of the plot (default select.target)}
+\item{title}{Title of the plot.}
 
-\item{xlab}{Label for the x-axis}
+\item{subtitle}{Subtitle of the plot.}
 
-\item{ylab}{Label for the y-axis}
+\item{xlab}{Label for the x-axis.}
 
-\item{caption}{Caption of the plot}
+\item{ylab}{Label for the y-axis.}
 
-\item{line_width}{Numeric value defining the line width}
+\item{caption}{Caption of the plot.}
 
-\item{point_size}{Numeric value defining the point size}
+\item{line_width}{Numeric value defining the line width.}
 
-\item{point_alpha}{Transparency of the points (default 1, no transparency)}
+\item{point_size}{Numeric value defining the point size.}
 
-\item{base_size}{Integer value. Base font size}
+\item{point_alpha}{Numeric value. The transparency of the points.}
 
-\item{add_fitted}{Logical value if fitted values are plotted (TRUE) or not (default FALSE)}
+\item{base_size}{Integer value. Base font size.}
 }
 \value{
-p An object of class ggplot
+p An object of class ggplot.
 }
 \description{
 Plot the actual and fitted values and forecasts for specific target variable(s), slice(s) and forecasting method(s).

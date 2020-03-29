@@ -23,12 +23,12 @@
 #' @export
 
 plot_error_dist <- function(data,
-                            variable,
-                            model,
+                            variable = NULL,
+                            model = NULL,
                             add_points = TRUE,
                             jitter = TRUE,
-                            title = variable,
-                            subtitle = "Distribution of forecast errors by method",
+                            title = "Evaluation of forecast accuracy",
+                            subtitle = "Distribution of forecast errors by horizon",
                             xlab = "Forecast horizon (n-step)",
                             ylab = "Forecast error",
                             caption = NULL,
@@ -40,24 +40,35 @@ plot_error_dist <- function(data,
                             base_size = 11) {
 
   # Check arguments
-  select_variable <- variable
-  select_model <- model
+  if (is.null(variable)) {
+    select_variable <- data %>%
+      pull(variable) %>%
+      unique()
+  } else {
+    select_variable <- variable
+  }
+
+  if (is.null(model)) {
+    select_model <- data %>%
+      pull(model) %>%
+      unique()
+  } else {
+    select_model <- model
+  }
 
   # Prepare data ................................................................
 
   # Filter by variable and slice
   data_plot <- data %>%
-    filter(variable == select_variable) %>%
+    filter(variable %in% select_variable) %>%
     filter(model %in% select_model) %>%
     filter(type == "error")
 
   # Visualize forecast errors and distributions .................................
-  # Initialize plot
-
   p <- ggplot(
     data_plot,
     aes(
-      x = factor(horizon),
+      x = horizon,
       y = value,
       fill = model,
       group = horizon,
@@ -97,11 +108,11 @@ plot_error_dist <- function(data,
 
   # Scale axis and aesthetics
   p <- p + scale_y_continuous()
-  p <- p + scale_color_viridis_d()
-  p <- p + scale_fill_viridis_d()
 
-  # Create grid
-  p <- p + facet_wrap(~model)
+  p <- p + facet_grid(
+    vars(variable),
+    vars(model),
+    scales = "free")
 
   # Adjust annotations
   p <- p + labs(title = title)

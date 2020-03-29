@@ -1,29 +1,29 @@
-#' @title Plot the actual and fitted values and forecasts
+#' @title Plot the actual and fitted values and forecasts.
 #'
 #' @description Plot the actual and fitted values and forecasts for specific target variable(s), slice(s) and forecasting method(s).
 #'
-#' @param data A tsibble according to the adice data model
-#' @param variable Character value defining the target variable
-#' @param slice Character value defining the time slice of the rolling forecast
-#' @param model Character vector defining the forecasting methods
-#' @param add_fitted Logical value if fitted values are plotted (TRUE) or not (default FALSE)
-#' @param include Integer value, the number of actual values (training) to be included
-#' @param title Title of the plot (default select.target)
-#' @param xlab Label for the x-axis
-#' @param ylab Label for the y-axis
-#' @param caption Caption of the plot
-#' @param line_width Numeric value defining the line width
-#' @param point_size Numeric value defining the point size
-#' @param point_alpha Transparency of the points (default 1, no transparency)
-#' @param base_size Integer value. Base font size
+#' @param data A tsibble according to the adice data model.
+#' @param variable Character vector defining the variable(s).
+#' @param slice Integer vector. The time slice of the rolling forecast.
+#' @param model Character vector. The forecasting methods.
+#' @param include Integer value. The number of actual values (training) to be included.
+#' @param title Title of the plot.
+#' @param subtitle Subtitle of the plot.
+#' @param xlab Label for the x-axis.
+#' @param ylab Label for the y-axis.
+#' @param caption Caption of the plot.
+#' @param line_width Numeric value defining the line width.
+#' @param point_size Numeric value defining the point size.
+#' @param point_alpha Numeric value. The transparency of the points.
+#' @param base_size Integer value. Base font size.
 #'
-#' @return p An object of class ggplot
+#' @return p An object of class ggplot.
 #' @export
 
 plot_forecast <- function(data,
-                          variable,
-                          slice,
-                          model,
+                          variable = NULL,
+                          slice = NULL,
+                          model = NULL,
                           include = 24,
                           title = NULL,
                           subtitle = NULL,
@@ -36,9 +36,28 @@ plot_forecast <- function(data,
                           base_size = 11) {
 
   # Check arguments
-  select_variable <- variable
-  select_slice <- slice
-  select_model <- model
+  if (is.null(variable)) {
+    select_variable <- data %>%
+      pull(variable) %>%
+      unique()
+  } else {
+    select_variable <- variable
+  }
+
+  if (is.null(model)) {
+    select_model <- data %>%
+      filter(type == "fcst") %>%
+      pull(model) %>%
+      unique()
+  } else {
+    select_model <- model
+  }
+
+  if (is.null(slice)) {
+    select_slice <- 1
+  } else {
+    select_slice <- slice
+  }
 
   # Prepare data ..............................................................
 
@@ -106,9 +125,6 @@ plot_forecast <- function(data,
     na.rm = TRUE,
     size = point_size,
     alpha = point_alpha)
-
-  # Coloring
-  p <- p + scale_color_viridis_d()
 
   # Adjust annotations and theme
   p <- p + labs(title = title)

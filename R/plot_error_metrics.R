@@ -35,10 +35,32 @@ plot_error_metrics <- function(data,
                                point_shape = 19,
                                point_alpha = 1,
                                base_size = 11) {
+
   # Check arguments
-  select_variable <- variable
-  select_model <- model
-  select_metric <- metric
+  if (is.null(variable)) {
+    select_variable <- data %>%
+      pull(variable) %>%
+      unique()
+  } else {
+    select_variable <- variable
+  }
+
+  if (is.null(model)) {
+    select_model <- data %>%
+      pull(model) %>%
+      unique()
+  } else {
+    select_model <- model
+  }
+
+  if (is.null(metric)) {
+    select_metric <- data %>%
+      pull(metric) %>%
+      unique()
+  } else {
+    select_metric <- metric
+  }
+
   select_dim <- dim
 
   if (length(select_dim) > 1) {
@@ -82,8 +104,6 @@ plot_error_metrics <- function(data,
 
   # Scale axis and aesthetics
   p <- p + scale_y_continuous()
-  #p <- p + scale_x_discrete()
-  p <- p + scale_color_viridis_d()
 
   # Create faceting
   p <- p + facet_wrap(
