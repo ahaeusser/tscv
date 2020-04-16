@@ -30,7 +30,7 @@ devtools::install_github("ahaeusser/tscv")
 ```
 ## Example
 
-```{r packages, message=FALSE}
+```{r packages, message=FALSE, warning=FALSE}
 # Load relevant packages
 library(tscv)
 library(tidyverse)

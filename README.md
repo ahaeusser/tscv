@@ -28,16 +28,9 @@ devtools::install_github("ahaeusser/tscv")
 # Load relevant packages
 library(tscv)
 library(tidyverse)
-#> Warning: package 'ggplot2' was built under R version 3.6.3
-#> Warning: package 'tidyr' was built under R version 3.6.3
-#> Warning: package 'dplyr' was built under R version 3.6.3
-#> Warning: package 'forcats' was built under R version 3.6.3
 library(tsibble)
-#> Warning: package 'tsibble' was built under R version 3.6.3
 library(fable)
-#> Warning: package 'fable' was built under R version 3.6.3
 library(feasts)
-#> Warning: package 'feasts' was built under R version 3.6.3
 Sys.setlocale("LC_TIME", "C")
 #> [1] "C"
 ```
