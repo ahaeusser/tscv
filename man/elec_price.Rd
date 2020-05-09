@@ -5,7 +5,7 @@
 \alias{elec_price}
 \title{Hourly Day-ahead Electricity Spot Prices}
 \format{
-A time series object of class \code{tsibble} with 43.800 rows and 3 variables:
+A time series object of class \code{tsibble} with 43.800 rows and 3 columns:
    \itemize{
       \item{date_time: Date and time (index variable)}
       \item{variable: Variable name (key variable)}
