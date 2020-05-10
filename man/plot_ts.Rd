@@ -22,15 +22,16 @@ plot_ts(
   line_alpha = 1,
   smooth_fill = "#FDE725FF",
   smooth_alpha = 0.25,
-  base_size = 10
+  theme_ggplot2 = theme_gray(),
+  theme_config = list()
 )
 }
 \arguments{
 \item{data}{A tsibble containing the columns time, variable and value.}
 
-\item{smooth_method}{Character value defining the smoothing method ("loess", "lm" or NULL).}
+\item{smooth_method}{Character value. The smoothing method (\code{"loess"}, \code{"lm"} or \code{NULL}).}
 
-\item{smooth_se}{Logical value. If TRUE, confidence interval is displayed around smooth.}
+\item{smooth_se}{Logical value. If \code{TRUE}, confidence interval is displayed around smooth.}
 
 \item{title}{Title of the plot.}
 
@@ -58,11 +59,13 @@ plot_ts(
 
 \item{smooth_alpha}{Numeric value defining the transparency of confidence band.}
 
-\item{base_size}{Integer value. Base font size.}
+\item{theme_ggplot2}{A complete ggplot2 theme.}
+
+\item{theme_config}{A list with further arguments passed to \code{ggplot2::theme()}.}
 }
 \value{
 p An object of class ggplot.
 }
 \description{
-Line chart of one or more time series incl. smooth curve (linear or loess).
+Plot one or more time series incl. smooth curve (linear or loess) as line chart.
 }
