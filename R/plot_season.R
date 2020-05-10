@@ -1,3 +1,4 @@
+
 #' @title Seasonal plot of a time series.
 #'
 #' @description Seasonal plot of one or more time series.
