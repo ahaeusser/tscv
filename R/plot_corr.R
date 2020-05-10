@@ -12,14 +12,16 @@
 #' @param ylab Label for the y-axis.
 #' @param caption Caption of the plot.
 #' @param bar_width Numeric value. The width of the bars.
-#' @param bar_color Character value. The color of the (significant) bars.
+#' @param bar_color Character value. The color of the significant bars.
+#' @param bar_color2 Character value. The color of the non-significant bars.
 #' @param bar_alpha Numeric value. The transparency of the bars.
 #' @param line_width Numeric value. Line width of the confidence line.
 #' @param line_type Character value. Line type of the confidence line.
 #' @param line_color Character value. Line color of the confidence line.
 #' @param legend Logical value. If \code{TRUE}, a legend is plotted.
 #' @param legend_position Character value. The legend position ("top, "bottom", "right", "left").
-#' @param base_size Integer value. Base font size.
+#' @param theme_ggplot2 A complete ggplot2 theme.
+#' @param theme_config A list with further arguments passed to \code{ggplot2::theme()}.
 #'
 #' @return p An object of class ggplot.
 #' @export
@@ -35,13 +37,15 @@ plot_corr <- function(data,
                       caption = NULL,
                       bar_width = 1,
                       bar_color = "#31688EFF",
+                      bar_color2 = "#D55E00",
                       bar_alpha = 0.6,
                       line_width = 0.25,
                       line_type = "solid",
                       line_color = "grey35",
                       legend = TRUE,
                       legend_position = "bottom",
-                      base_size = 10) {
+                      theme_ggplot2 = theme_gray(),
+                      theme_config = list()) {
 
   # Calculate confidence interval
   n_obs <- data %>%
@@ -73,7 +77,7 @@ plot_corr <- function(data,
            -variable)
 
   # Prepare data for plotting
-  corr <- bind_rows(acf, pacf) %>%
+  data <- bind_rows(acf, pacf) %>%
     group_by(variable, type) %>%
     mutate(lag = row_number()) %>%
     mutate(sign = ifelse(abs(value) > abs(ci_line), TRUE, FALSE)) %>%
@@ -81,19 +85,18 @@ plot_corr <- function(data,
 
   # Create ggplot
   p <- ggplot(
-    data = corr,
+    data = data,
     aes(
       x = lag,
       y = value,
       fill = sign))
 
   # Bars for autocorrelation
-  p <- p + ggplot2::geom_bar(
+  p <- p + geom_bar(
     stat = "identity",
     position = "identity",
     alpha = bar_alpha,
-    width = bar_width,
-    color = "white")
+    width = bar_width)
 
   # Faceting by .variable and .slice
   p <- p + facet_grid(
@@ -102,36 +105,38 @@ plot_corr <- function(data,
     scales = "free")
 
   # Color bars depending on significance
-  if (all(corr$sign == FALSE)) {
-    p <- p + scale_fill_manual(values = c("grey35"))
-  } else if (all(corr$sign == TRUE)) {
+  if (all(data$sign == FALSE)) {
+    p <- p + scale_fill_manual(values = c(bar_color2))
+  } else if (all(data$sign == TRUE)) {
     p <- p + scale_fill_manual(values = c(bar_color))
   } else {
-    p <- p + scale_fill_manual(values = c("grey35",bar_color))
+    p <- p + scale_fill_manual(values = c(bar_color2, bar_color))
   }
 
   # Lower confidence interval
-  p <- p + ggplot2::geom_hline(
+  p <- p + geom_hline(
     yintercept = -ci_line,
     color = line_color,
     size = line_width,
     linetype = line_type)
 
   # Upper confidence interval
-  p <- p + ggplot2::geom_hline(
+  p <- p + geom_hline(
     yintercept = ci_line,
     color = line_color,
     size = line_width,
     linetype = line_type)
 
   # Adjust annotations
-  p <- p + ggplot2::labs(title = title)
-  p <- p + ggplot2::labs(subtitle = subtitle)
-  p <- p + ggplot2::labs(x = xlab)
-  p <- p + ggplot2::labs(y = ylab)
-  p <- p + ggplot2::labs(caption = caption)
-  # Adjust theme
-  p <- p + theme_tscv(base_size = base_size)
+  p <- p + labs(title = title)
+  p <- p + labs(subtitle = subtitle)
+  p <- p + labs(x = xlab)
+  p <- p + labs(y = ylab)
+  p <- p + labs(caption = caption)
+
+  # Adjust ggplot2 theme
+  p <- p + eval(theme_ggplot2)
+  p <- p + do.call(theme, theme_config)
 
   # Adjust legend
   if (legend == FALSE) {
@@ -139,5 +144,6 @@ plot_corr <- function(data,
   } else {
     p <- p + ggplot2::theme(legend.position = legend_position)
   }
+
   return(p)
 }

@@ -16,13 +16,15 @@ plot_corr(
   caption = NULL,
   bar_width = 1,
   bar_color = "#31688EFF",
+  bar_color2 = "#D55E00",
   bar_alpha = 0.6,
   line_width = 0.25,
   line_type = "solid",
   line_color = "grey35",
   legend = TRUE,
   legend_position = "bottom",
-  base_size = 10
+  theme_ggplot2 = theme_gray(),
+  theme_config = list()
 )
 }
 \arguments{
@@ -46,7 +48,9 @@ plot_corr(
 
 \item{bar_width}{Numeric value. The width of the bars.}
 
-\item{bar_color}{Character value. The color of the (significant) bars.}
+\item{bar_color}{Character value. The color of the significant bars.}
+
+\item{bar_color2}{Character value. The color of the non-significant bars.}
 
 \item{bar_alpha}{Numeric value. The transparency of the bars.}
 
@@ -60,7 +64,9 @@ plot_corr(
 
 \item{legend_position}{Character value. The legend position ("top, "bottom", "right", "left").}
 
-\item{base_size}{Integer value. Base font size.}
+\item{theme_ggplot2}{A complete ggplot2 theme.}
+
+\item{theme_config}{A list with further arguments passed to \code{ggplot2::theme()}.}
 }
 \value{
 p An object of class ggplot.
