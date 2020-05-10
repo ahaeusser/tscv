@@ -1,4 +1,5 @@
-#' @title Quantile-Quantile plot (normal)
+
+#' @title Quantile-Quantile plot (normal).
 #'
 #' @description Quantile-Quantile plot (normal) of one or more time series.
 #'
@@ -15,7 +16,8 @@
 #' @param line_width Numeric value defining the line width (45-degree line)
 #' @param line_type Integer value defining the line type (45-degree line)
 #' @param line_color Character value defining the line color (45-degree line)
-#' @param base_size Integer value. Base font size
+#' @param theme_ggplot2 A complete ggplot2 theme.
+#' @param theme_config A list with further arguments passed to \code{ggplot2::theme()}.
 #'
 #' @return p An object of class ggplot
 #' @export
@@ -34,15 +36,19 @@ plot_qq <- function(data,
                     line_width = 0.25,
                     line_type = "solid",
                     line_color = "grey35",
-                    base_size = 11) {
+                    theme_ggplot2 = theme_gray(),
+                    theme_config = list()) {
+
+  variable <- key_vars(data)
+  value <- measured_vars(data)
 
   # Create ggplot
-  p <- ggplot2::ggplot(
-    data,
-    ggplot2::aes(sample = value))
+  p <- ggplot(
+    data = data,
+    aes(sample = !!sym(value)))
 
   # Create points
-  p <- p + ggplot2::stat_qq(
+  p <- p + stat_qq(
     color = point_color,
     fill = point_fill,
     alpha = point_alpha,
@@ -50,24 +56,30 @@ plot_qq <- function(data,
     shape = point_shape)
 
   # Create 45-degree line
-  p <- p + ggplot2::stat_qq_line(
+  p <- p + stat_qq_line(
     color = line_color,
     size = line_width,
     linetype = line_type)
 
   # Create grid
-  p <- p + ggplot2::facet_wrap(~variable, scales = "free")
+  p <- p + facet_wrap(
+    vars(!!sym(variable)),
+    scales = "free")
 
   # Axis scaling
-  p <- p + ggplot2::scale_x_continuous()
-  p <- p + ggplot2::scale_y_continuous()
+  p <- p + scale_x_continuous()
+  p <- p + scale_y_continuous()
+
   # Adjust annotations
-  p <- p + ggplot2::labs(title = title)
-  p <- p + ggplot2::labs(subtitle = subtitle)
-  p <- p + ggplot2::labs(x = xlab)
-  p <- p + ggplot2::labs(y = ylab)
-  p <- p + ggplot2::labs(caption = caption)
-  # Adjust theme
-  p <- p + theme_tscv(base_size = base_size)
+  p <- p + labs(title = title)
+  p <- p + labs(subtitle = subtitle)
+  p <- p + labs(x = xlab)
+  p <- p + labs(y = ylab)
+  p <- p + labs(caption = caption)
+
+  # Adjust ggplot2 theme
+  p <- p + eval(theme_ggplot2)
+  p <- p + do.call(theme, theme_config)
+
   return(p)
 }

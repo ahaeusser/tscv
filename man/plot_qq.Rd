@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_qq.R
 \name{plot_qq}
 \alias{plot_qq}
-\title{Quantile-Quantile plot (normal)}
+\title{Quantile-Quantile plot (normal).}
 \usage{
 plot_qq(
   data,
@@ -19,7 +19,8 @@ plot_qq(
   line_width = 0.25,
   line_type = "solid",
   line_color = "grey35",
-  base_size = 11
+  theme_ggplot2 = theme_gray(),
+  theme_config = list()
 )
 }
 \arguments{
@@ -49,7 +50,9 @@ plot_qq(
 
 \item{line_color}{Character value defining the line color (45-degree line)}
 
-\item{base_size}{Integer value. Base font size}
+\item{theme_ggplot2}{A complete ggplot2 theme.}
+
+\item{theme_config}{A list with further arguments passed to \code{ggplot2::theme()}.}
 }
 \value{
 p An object of class ggplot
