@@ -1,8 +1,9 @@
+
 #' @title Plot autocorrelation and partial autocorrelation function.
 #'
 #' @description This function plots the sample autocorrelation and partial autocorrelation function.
 #'
-#' @param data A tsibble containing the columns time, variable and value.
+#' @param data A valid tsibble in long format with one measurement variable.
 #' @param lag_max Integer value. Maximum number of lags.
 #' @param demean Logical value. If \code{TRUE}, the time series is demeaned.
 #' @param level Numeric value. The confidence level to check significance.
@@ -18,9 +19,7 @@
 #' @param line_width Numeric value. Line width of the confidence line.
 #' @param line_type Character value. Line type of the confidence line.
 #' @param line_color Character value. Line color of the confidence line.
-#' @param legend Logical value. If \code{TRUE}, a legend is plotted.
-#' @param legend_position Character value. The legend position ("top, "bottom", "right", "left").
-#' @param theme_ggplot2 A complete ggplot2 theme.
+#' @param theme_set A complete ggplot2 theme.
 #' @param theme_config A list with further arguments passed to \code{ggplot2::theme()}.
 #'
 #' @return p An object of class ggplot.
@@ -42,45 +41,54 @@ plot_corr <- function(data,
                       line_width = 0.25,
                       line_type = "solid",
                       line_color = "grey35",
-                      legend = TRUE,
-                      legend_position = "bottom",
-                      theme_ggplot2 = theme_gray(),
+                      theme_set = theme_gray(),
                       theme_config = list()) {
 
-  # Calculate confidence interval
-  n_obs <- data %>%
-    spread(
-      key = "variable",
-      value = "value") %>%
-    nrow()
+  date_time <- index_var(data)
+  variable <- key_vars(data)
+  value <- measured_vars(data)
 
-  ci_line <- qnorm((1 - level) / 2) / sqrt(n_obs)
+  # Calculate confidence limits
+  sign_tbl <- data %>%
+    as_tibble() %>%
+    select(-!!sym(date_time)) %>%
+    group_by(!!!syms(variable)) %>%
+    summarise(n_obs = n()) %>%
+    ungroup() %>%
+    mutate(conf = qnorm((1 - level) / 2) / sqrt(n_obs))
 
   # Estimate sample autocorrelation function
   acf <- data %>%
-    ACF(value, lag_max = lag_max, demean = demean) %>%
+    ACF(!!sym(value), lag_max = lag_max, demean = demean) %>%
     as_tibble() %>%
     rename(ACF = acf) %>%
-    select(variable, ACF) %>%
-    gather(key = "type",
-           value = "value",
-           -variable)
+    select(!!!syms(variable), ACF) %>%
+    gather(
+      key = "type",
+      value = "value",
+      -c(!!!syms(variable)))
 
-  # Estimate sample partial autocorrelation function
+  # Estimate sample autocorrelation function
   pacf <- data %>%
-    PACF(value, lag_max = lag_max) %>%
+    PACF(!!sym(value), lag_max = lag_max) %>%
     as_tibble() %>%
     rename(PACF = pacf) %>%
-    select(variable, PACF) %>%
-    gather(key = "type",
-           value = "value",
-           -variable)
+    select(!!!syms(variable), PACF) %>%
+    gather(
+      key = "type",
+      value = "value",
+      -c(!!!syms(variable)))
+
+  data <- bind_rows(acf, pacf)
 
   # Prepare data for plotting
-  data <- bind_rows(acf, pacf) %>%
-    group_by(variable, type) %>%
+  data <- left_join(
+    data,
+    sign_tbl,
+    by = variable) %>%
+    group_by(!!!syms(variable)) %>%
     mutate(lag = row_number()) %>%
-    mutate(sign = ifelse(abs(value) > abs(ci_line), TRUE, FALSE)) %>%
+    mutate(sign = ifelse(abs(value) > abs(conf), TRUE, FALSE)) %>%
     ungroup()
 
   # Create ggplot
@@ -100,7 +108,7 @@ plot_corr <- function(data,
 
   # Faceting by .variable and .slice
   p <- p + facet_grid(
-    vars(variable),
+    vars(!!!syms(variable)),
     vars(type),
     scales = "free")
 
@@ -113,19 +121,19 @@ plot_corr <- function(data,
     p <- p + scale_fill_manual(values = c(bar_color2, bar_color))
   }
 
-  # Lower confidence interval
-  p <- p + geom_hline(
-    yintercept = -ci_line,
-    color = line_color,
-    size = line_width,
-    linetype = line_type)
-
-  # Upper confidence interval
-  p <- p + geom_hline(
-    yintercept = ci_line,
-    color = line_color,
-    size = line_width,
-    linetype = line_type)
+  # # Lower confidence interval
+  # p <- p + geom_hline(
+  #   yintercept = -ci_line,
+  #   color = line_color,
+  #   size = line_width,
+  #   linetype = line_type)
+  #
+  # # Upper confidence interval
+  # p <- p + geom_hline(
+  #   yintercept = ci_line,
+  #   color = line_color,
+  #   size = line_width,
+  #   linetype = line_type)
 
   # Adjust annotations
   p <- p + labs(title = title)
@@ -135,15 +143,8 @@ plot_corr <- function(data,
   p <- p + labs(caption = caption)
 
   # Adjust ggplot2 theme
-  p <- p + eval(theme_ggplot2)
+  p <- p + eval(theme_set)
   p <- p + do.call(theme, theme_config)
-
-  # Adjust legend
-  if (legend == FALSE) {
-    p <- p + ggplot2::theme(legend.position = "none")
-  } else {
-    p <- p + ggplot2::theme(legend.position = legend_position)
-  }
 
   return(p)
 }

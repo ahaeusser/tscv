@@ -3,7 +3,7 @@
 #'
 #' @description Plot the density of one or more time series via Kernel Density Estimator.
 #'
-#' @param data A tsibble containing the columns time, variable and value.
+#' @param data A valid tsibble in long format with one measurement variable.
 #' @param title Title of the plot.
 #' @param subtitle Subtitle of the plot.
 #' @param xlab Label for the x-axis.
@@ -14,7 +14,7 @@
 #' @param line_color Character value defining the line color of the kernel density estimator.
 #' @param line_fill Character value defining the fill color for the area under the kernel density estimator.
 #' @param line_alpha Numeric value defining the transparency of the area under the kernel density estimator.
-#' @param theme_ggplot2 A complete ggplot2 theme.
+#' @param theme_set A complete ggplot2 theme.
 #' @param theme_config A list with further arguments passed to \code{ggplot2::theme()}.
 #'
 #' @return p An object of class ggplot.
@@ -31,7 +31,7 @@ plot_density <- function(data,
                          line_color = "#31688EFF",
                          line_fill = "#31688EFF",
                          line_alpha = 0.5,
-                         theme_ggplot2 = theme_gray(),
+                         theme_set = theme_gray(),
                          theme_config = list()) {
 
   variable <- key_vars(data)
@@ -53,7 +53,7 @@ plot_density <- function(data,
 
   # Create grid
   p <- p + facet_wrap(
-    vars(!!sym(variable)),
+    vars(!!!syms(variable)),
     scales = "free")
 
   # Axis scaling
@@ -67,9 +67,8 @@ plot_density <- function(data,
   p <- p + labs(caption = caption)
 
   # Adjust ggplot2 theme
-  p <- p + eval(theme_ggplot2)
+  p <- p + eval(theme_set)
   p <- p + do.call(theme, theme_config)
 
   return(p)
-
 }

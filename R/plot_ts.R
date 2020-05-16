@@ -3,7 +3,7 @@
 #'
 #' @description Plot one or more time series incl. smooth curve (linear or loess) as line chart.
 #'
-#' @param data A tsibble containing the columns time, variable and value.
+#' @param data A valid tsibble in long format with one measurement variable.
 #' @param smooth_method Character value. The smoothing method (\code{"loess"}, \code{"lm"} or \code{NULL}).
 #' @param smooth_se Logical value. If \code{TRUE}, confidence interval is displayed around smooth.
 #' @param title Title of the plot.
@@ -19,7 +19,7 @@
 #' @param smooth_color Character value defining the line color (smooth curve).
 #' @param smooth_fill Character value defining the fill color of confidence band.
 #' @param smooth_alpha Numeric value defining the transparency of confidence band.
-#' @param theme_ggplot2 A complete ggplot2 theme.
+#' @param theme_set A complete ggplot2 theme.
 #' @param theme_config A list with further arguments passed to \code{ggplot2::theme()}.
 #'
 #' @return p An object of class ggplot.
@@ -30,22 +30,22 @@ plot_ts <- function(data,
                     smooth_se = FALSE,
                     title = NULL,
                     subtitle = NULL,
-                    xlab = "Time",
+                    xlab = NULL,
                     ylab = NULL,
                     caption = NULL,
                     smooth_width = 0.5,
                     smooth_type = "solid",
-                    smooth_color = "#FDE725FF",
+                    smooth_color = "#D55E00",
                     line_width = 0.75,
                     line_type = "solid",
                     line_color = "#31688EFF",
                     line_alpha = 1,
-                    smooth_fill = "#FDE725FF",
+                    smooth_fill = "#D55E00",
                     smooth_alpha = 0.25,
-                    theme_ggplot2 = theme_gray(),
+                    theme_set = theme_gray(),
                     theme_config = list()) {
 
-  date_time <- index(data)
+  date_time <- index_var(data)
   variable <- key_vars(data)
   value <- measured_vars(data)
 
@@ -53,7 +53,7 @@ plot_ts <- function(data,
   p <- ggplot(
     data = data,
     aes(
-      x = !!date_time,
+      x = !!sym(date_time),
       y = !!sym(value)))
 
   # Create lines
@@ -77,7 +77,7 @@ plot_ts <- function(data,
 
   # Create grid
   p <- p + facet_wrap(
-    vars(!!sym(variable)),
+    vars(!!!syms(variable)),
     scales = "free")
 
   # Axis scaling
@@ -86,13 +86,13 @@ plot_ts <- function(data,
   # Adjust annotations
   p <- p + labs(title = title)
   p <- p + labs(subtitle = subtitle)
-  p <- p + labs(x = xlab)
+  p <- p + labs(x = if_else(is_empty(xlab), date_time, xlab))
   p <- p + labs(y = ylab)
   p <- p + labs(caption = caption)
 
   # Adjust ggplot2 theme
-  p <- p + eval(theme_ggplot2)
+  p <- p + eval(theme_set)
   p <- p + do.call(theme, theme_config)
-  return(p)
 
+  return(p)
 }

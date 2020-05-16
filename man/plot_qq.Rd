@@ -11,20 +11,20 @@ plot_qq(
   xlab = "Theoretical quantile",
   ylab = "Sample quantile",
   caption = NULL,
-  point_size = 4,
+  point_size = 2,
   point_shape = 16,
   point_color = "#31688EFF",
   point_fill = "#31688EFF",
-  point_alpha = 0.5,
+  point_alpha = 0.25,
   line_width = 0.25,
   line_type = "solid",
   line_color = "grey35",
-  theme_ggplot2 = theme_gray(),
+  theme_set = theme_gray(),
   theme_config = list()
 )
 }
 \arguments{
-\item{data}{A tsibble containing the columns time, variable and value.}
+\item{data}{A valid tsibble in long format with one measurement variable.}
 
 \item{title}{Title of the plot (default select.target)}
 
@@ -50,7 +50,7 @@ plot_qq(
 
 \item{line_color}{Character value defining the line color (45-degree line)}
 
-\item{theme_ggplot2}{A complete ggplot2 theme.}
+\item{theme_set}{A complete ggplot2 theme.}
 
 \item{theme_config}{A list with further arguments passed to \code{ggplot2::theme()}.}
 }

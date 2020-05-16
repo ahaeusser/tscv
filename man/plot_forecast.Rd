@@ -6,29 +6,27 @@
 \usage{
 plot_forecast(
   data,
-  variable = NULL,
   slice = NULL,
   model = NULL,
   include = 24,
   title = NULL,
   subtitle = NULL,
-  xlab = "Date",
+  xlab = NULL,
   ylab = NULL,
   caption = NULL,
   line_width = 1.5,
   point_size = 2,
   point_alpha = 0,
-  base_size = 11
+  theme_set = theme_gray(),
+  theme_config = list()
 )
 }
 \arguments{
-\item{data}{A tsibble according to the adice data model.}
+\item{data}{A tsibble containing the data and the forecasts.}
 
-\item{variable}{Character vector defining the variable(s).}
+\item{slice}{Integer vector. The time slice(s) of the time series cross-validation.}
 
-\item{slice}{Integer vector. The time slice of the rolling forecast.}
-
-\item{model}{Character vector. The forecasting methods.}
+\item{model}{Character vector. The forecasting model(s).}
 
 \item{include}{Integer value. The number of actual values (training) to be included.}
 
@@ -48,7 +46,9 @@ plot_forecast(
 
 \item{point_alpha}{Numeric value. The transparency of the points.}
 
-\item{base_size}{Integer value. Base font size.}
+\item{theme_set}{A complete ggplot2 theme.}
+
+\item{theme_config}{A list with further arguments passed to \code{ggplot2::theme()}.}
 }
 \value{
 p An object of class ggplot.

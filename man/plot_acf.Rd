@@ -21,14 +21,12 @@ plot_acf(
   line_width = 0.25,
   line_type = "solid",
   line_color = "grey35",
-  legend = TRUE,
-  legend_position = "bottom",
-  theme_ggplot2 = theme_gray(),
+  theme_set = theme_gray(),
   theme_config = list()
 )
 }
 \arguments{
-\item{data}{A tsibble containing the columns time, variable and value.}
+\item{data}{A valid tsibble in long format with one measurement variable.}
 
 \item{lag_max}{Integer value. Maximum number of lags.}
 
@@ -60,11 +58,7 @@ plot_acf(
 
 \item{line_color}{Character value. Line color of the confidence line.}
 
-\item{legend}{Logical value. If \code{TRUE}, a legend is plotted.}
-
-\item{legend_position}{Character value. The legend position ("top, "bottom", "right", "left").}
-
-\item{theme_ggplot2}{A complete ggplot2 theme.}
+\item{theme_set}{A complete ggplot2 theme.}
 
 \item{theme_config}{A list with further arguments passed to \code{ggplot2::theme()}.}
 }

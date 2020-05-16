@@ -16,12 +16,12 @@ plot_density(
   line_color = "#31688EFF",
   line_fill = "#31688EFF",
   line_alpha = 0.5,
-  theme_ggplot2 = theme_gray(),
+  theme_set = theme_gray(),
   theme_config = list()
 )
 }
 \arguments{
-\item{data}{A tsibble containing the columns time, variable and value.}
+\item{data}{A valid tsibble in long format with one measurement variable.}
 
 \item{title}{Title of the plot.}
 
@@ -43,7 +43,7 @@ plot_density(
 
 \item{line_alpha}{Numeric value defining the transparency of the area under the kernel density estimator.}
 
-\item{theme_ggplot2}{A complete ggplot2 theme.}
+\item{theme_set}{A complete ggplot2 theme.}
 
 \item{theme_config}{A list with further arguments passed to \code{ggplot2::theme()}.}
 }
