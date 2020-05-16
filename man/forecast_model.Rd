@@ -7,12 +7,12 @@
 forecast_model(models, n_ahead)
 }
 \arguments{
-\item{models}{A model object of class \code{mdl_df} ("mable"). The result of a call to \code{model_univariate(...)}.}
+\item{models}{A model object of class \code{mdl_df} ("mable"). The result of a call to \code{fabletools::model(...)}.}
 
 \item{n_ahead}{Integer value. The forecast horizon (n-step-ahead).}
 }
 \value{
-A forecast object of class \code{fbl_ts} ("fable") containing the forecasts for all target variables, slices and the defined models.
+A forecast object of class \code{fbl_ts} ("fable") containing the forecasts for all variables, slices and models.
 }
 \description{
 This function takes a model object of class \code{mdl_df} and produces forecasts for a given
