@@ -9,6 +9,7 @@
 #' @importFrom future plan
 #' @importFrom magrittr "%>%"
 #' @importFrom feasts ACF PACF
+#' @importFrom skimr skim
 #' @import ggplot2
 #' @import tsibble
 #' @import fable
