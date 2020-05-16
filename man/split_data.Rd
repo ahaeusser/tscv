@@ -7,7 +7,7 @@
 split_data(data, mode = "stretch", n_init, n_step, n_ahead)
 }
 \arguments{
-\item{data}{A tsibble in long format with standard columns (date_time, variable and value) provided by the function \code{clean_data(...)}.}
+\item{data}{A valid tsibble, either in long format provided by the function \code{clean_data(...)}.}
 
 \item{mode}{Character value. Define the setup of the training window for time series cross validation. \code{stretch} is equivalent to an expanding window approach and \code{slide} is a fixed window approach.}
 
@@ -20,10 +20,11 @@ split_data(data, mode = "stretch", n_init, n_step, n_ahead)
 \value{
 data A tsibble with the same format like the input data, but with additional columns:
    \itemize{
-      \item{\code{slice}: Integer value. The number of the time slice (training and testing).}
       \item{\code{sample}: Character value. Indicating whether the partition is training or testing.}
+      \item{\code{slice}: Integer value. The number of the time slice (training and testing).}
       \item{\code{horizon}: Integer value. The forecast horizon (i.e. the size of the testing window. NA for training.}
-      \item{\code{id}: Integer value. The number of the observations within training and testing.}
+      \item{\code{type}: Character value. Indicating actual values, forecasts etc.}
+      \item{\code{model}: Character value. The forecasting model.}
       }
 }
 \description{
