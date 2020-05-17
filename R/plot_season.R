@@ -13,22 +13,28 @@
 #' @param line_type Numeric value defining the line type (time series).
 #' @param line_color Character value defining the line color (time series).
 #' @param line_alpha Numeric value defining the transparency of the line.
-#' @param base_size Integer value. Base font size.
+#' @param theme_set A complete ggplot2 theme.
+#' @param theme_config A list with further arguments passed to \code{ggplot2::theme()}.
 #'
 #' @return p An object of class ggplot.
 #' @export
 
 plot_season <- function(data,
-                        title = "Seasonal plot",
-                        subtitle = "Median and quantiles",
-                        xlab = "Hour",
+                        title = NULL,
+                        subtitle = NULL,
+                        xlab = NULL,
                         ylab = NULL,
                         caption = NULL,
                         line_width = 0.75,
                         line_type = "solid",
                         line_color = "#31688EFF",
                         line_alpha = 1,
-                        base_size = 10) {
+                        theme_set = theme_gray(),
+                        theme_config = list()) {
+
+  date_time <- index_var(data)
+  variable <- key_vars(data)
+  value <- measured_vars(data)
 
   # Prepare data
   data <- data %>%
@@ -92,10 +98,13 @@ plot_season <- function(data,
   # Adjust annotations
   p <- p + ggplot2::labs(title = title)
   p <- p + ggplot2::labs(subtitle = subtitle)
-  p <- p + ggplot2::labs(x = xlab)
-  p <- p + ggplot2::labs(y = ylab)
+  p <- p + labs(x = if_else(is_empty(xlab), "Hour", xlab))
+  p <- p + labs(y = if_else(is_empty(ylab), value, ylab))
   p <- p + ggplot2::labs(caption = caption)
 
-  p <- p + theme_tscv(base_size = base_size)
+  # Adjust ggplot2 theme
+  p <- p + eval(theme_set)
+  p <- p + do.call(theme, theme_config)
+
   return(p)
 }
