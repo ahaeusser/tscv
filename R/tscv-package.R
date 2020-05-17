@@ -9,7 +9,7 @@
 #' @importFrom future plan
 #' @importFrom magrittr "%>%"
 #' @importFrom feasts ACF PACF
-#' @importFrom skimr skim
+#' @importFrom skimr skim skim_with
 #' @import ggplot2
 #' @import tsibble
 #' @import fable
