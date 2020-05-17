@@ -87,7 +87,7 @@ plot_ts <- function(data,
   p <- p + labs(title = title)
   p <- p + labs(subtitle = subtitle)
   p <- p + labs(x = if_else(is_empty(xlab), date_time, xlab))
-  p <- p + labs(y = ylab)
+  p <- p + labs(y = if_else(is_empty(ylab), value, xlab))
   p <- p + labs(caption = caption)
 
   # Adjust ggplot2 theme

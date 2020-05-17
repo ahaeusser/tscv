@@ -29,9 +29,9 @@ plot_corr <- function(data,
                       lag_max = 48,
                       demean = TRUE,
                       level = 0.9,
-                      title = "Correlation analysis",
-                      subtitle = "Sample autocorrelation (ACF) and partial autocorrelation (PACF)",
-                      xlab = "Lag k",
+                      title = NULL,
+                      subtitle = NULL,
+                      xlab = NULL,
                       ylab = NULL,
                       caption = NULL,
                       bar_width = 1,
@@ -138,7 +138,7 @@ plot_corr <- function(data,
   # Adjust annotations
   p <- p + labs(title = title)
   p <- p + labs(subtitle = subtitle)
-  p <- p + labs(x = xlab)
+  p <- p + labs(x = if_else(is_empty(xlab), "Lag k", xlab))
   p <- p + labs(y = ylab)
   p <- p + labs(caption = caption)
 

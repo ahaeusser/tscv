@@ -9,7 +9,8 @@
 #' @param xlab Label for the x-axis.
 #' @param ylab Label for the y-axis.
 #' @param caption Caption of the plot.
-#' @param bar_color Character value defining the color of the histrogram bars.
+#' @param bar_line_color Character value defining the outline color of the histrogram bars.
+#' @param bar_fill_color Character value defining the color of the histrogram bars.
 #' @param bar_alpha Numeric value defining the transparency of the histogram bars.
 #' @param theme_set A complete ggplot2 theme.
 #' @param theme_config A list with further arguments passed to \code{ggplot2::theme()}.
@@ -23,7 +24,8 @@ plot_histogram <- function(data,
                            xlab = NULL,
                            ylab = NULL,
                            caption = NULL,
-                           bar_color = "#31688EFF",
+                           bar_line_color = "#31688EFF",
+                           bar_fill_color = "#31688EFF",
                            bar_alpha = 0.5,
                            theme_set = theme_gray(),
                            theme_config = list()) {
@@ -38,9 +40,10 @@ plot_histogram <- function(data,
 
   # Histogram
   p <- p + geom_histogram(
-    aes(y = ..density..),
+    aes(y = ..count..),
     na.rm = TRUE,
-    fill = bar_color,
+    # color = bar_line_color,
+    fill = bar_fill_color,
     alpha = bar_alpha,
     binwidth = function(x) 2 * IQR(x) / (length(x)^(1/3)))
 
@@ -55,8 +58,8 @@ plot_histogram <- function(data,
   # Adjust annotations
   p <- p + labs(title = title)
   p <- p + labs(subtitle = subtitle)
-  p <- p + labs(x = xlab)
-  p <- p + labs(y = ylab)
+  p <- p + labs(x = if_else(is_empty(xlab), value, xlab))
+  p <- p + labs(y = if_else(is_empty(ylab), "Count", ylab))
   p <- p + labs(caption = caption)
 
   # Adjust ggplot2 theme

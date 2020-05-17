@@ -24,7 +24,7 @@ plot_density <- function(data,
                          title = NULL,
                          subtitle = NULL,
                          xlab = NULL,
-                         ylab = "Density",
+                         ylab = NULL,
                          caption = NULL,
                          line_width = 0.1,
                          line_type = "solid",
@@ -45,8 +45,8 @@ plot_density <- function(data,
   # Kernel density estimate
   p <- p + geom_density(
     aes(colour = "Kernel"),
-    linetype = line_type,
-    size = line_width,
+    # linetype = line_type,
+    # size = line_width,
     fill = line_fill,
     alpha = line_alpha,
     color = line_color)
@@ -62,8 +62,8 @@ plot_density <- function(data,
   # Adjust annotations
   p <- p + labs(title = title)
   p <- p + labs(subtitle = subtitle)
-  p <- p + labs(x = xlab)
-  p <- p + labs(y = ylab)
+  p <- p + labs(x = if_else(is_empty(xlab), value, xlab))
+  p <- p + labs(y = if_else(is_empty(ylab), "Density", ylab))
   p <- p + labs(caption = caption)
 
   # Adjust ggplot2 theme

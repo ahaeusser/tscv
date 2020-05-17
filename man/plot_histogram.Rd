@@ -11,7 +11,8 @@ plot_histogram(
   xlab = NULL,
   ylab = NULL,
   caption = NULL,
-  bar_color = "#31688EFF",
+  bar_line_color = "#31688EFF",
+  bar_fill_color = "#31688EFF",
   bar_alpha = 0.5,
   theme_set = theme_gray(),
   theme_config = list()
@@ -30,7 +31,9 @@ plot_histogram(
 
 \item{caption}{Caption of the plot.}
 
-\item{bar_color}{Character value defining the color of the histrogram bars.}
+\item{bar_line_color}{Character value defining the outline color of the histrogram bars.}
+
+\item{bar_fill_color}{Character value defining the color of the histrogram bars.}
 
 \item{bar_alpha}{Numeric value defining the transparency of the histogram bars.}
 

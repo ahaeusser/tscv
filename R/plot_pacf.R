@@ -27,9 +27,9 @@
 plot_pacf <- function(data,
                       lag_max = 25,
                       level = 0.9,
-                      title = "Correlation analysis",
-                      subtitle = "Sample partial autocorrelation (PACF)",
-                      xlab = "Lag k",
+                      title = NULL,
+                      subtitle = NULL,
+                      xlab = NULL,
                       ylab = NULL,
                       caption = NULL,
                       bar_width = 1,
@@ -122,8 +122,8 @@ plot_pacf <- function(data,
   # Adjust annotations
   p <- p + labs(title = title)
   p <- p + labs(subtitle = subtitle)
-  p <- p + labs(x = xlab)
-  p <- p + labs(y = ylab)
+  p <- p + labs(x = if_else(is_empty(xlab), "Lag k", xlab))
+  p <- p + labs(y = if_else(is_empty(ylab), "PACF", ylab))
   p <- p + labs(caption = caption)
 
   # Adjust ggplot2 theme

@@ -9,7 +9,7 @@ plot_density(
   title = NULL,
   subtitle = NULL,
   xlab = NULL,
-  ylab = "Density",
+  ylab = NULL,
   caption = NULL,
   line_width = 0.1,
   line_type = "solid",
