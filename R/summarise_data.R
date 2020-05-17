@@ -37,7 +37,10 @@ summarise_data <- function(data) {
     select(-!!sym(date_time)) %>%
     group_by(!!!syms(variable))
 
-  summary_tbl <- skim(data = data) %>%
+  skim_adj <- skim_with(
+    numeric = sfl(n_obs = length))
+
+  summary_tbl <- skim_adj(data = data) %>%
     as_tibble() %>%
     select(-c(skim_type, skim_variable)) %>%
     rename(
@@ -48,7 +51,23 @@ summarise_data <- function(data) {
       p50 = numeric.p50,
       p75 = numeric.p75,
       p100 = numeric.p100,
-      hist = numeric.hist)
+      hist = numeric.hist,
+      n_obs = numeric.n_obs)
+
+  summary_tbl <- summary_tbl %>%
+    select(
+      c(!!!syms(variable)),
+      n_obs,
+      n_missing,
+      complete_rate,
+      mean,
+      sd,
+      p0,
+      p25,
+      p50,
+      p75,
+      p100,
+      hist)
 
   return(summary_tbl)
 }
