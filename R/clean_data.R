@@ -7,11 +7,13 @@
 #'    long format.
 #'
 #' @param data A valid tsibble, either in long or in wide format.
+#' @param fill_missing Logical value. If \code{TRUE}, implicit missing values are turned into explicit missing values.
 #'
 #' @return data A valid tsibble in long format with one measurement variable.
 #' @export
 
-clean_data <- function(data) {
+clean_data <- function(data,
+                       fill_missing = TRUE) {
 
   # Check input data
   if (is_tsibble(data) == FALSE) {
@@ -27,8 +29,10 @@ clean_data <- function(data) {
   }
 
   # Turn implicit missing values into explicit missing values
-  data <- data %>%
-    fill_gaps(.full = TRUE)
+  if (fill_missing == TRUE) {
+    data <- data %>%
+      fill_gaps(.full = TRUE)
+  }
 
   # Check whether the data are in wide format and,
   # if necessary, gather to long format

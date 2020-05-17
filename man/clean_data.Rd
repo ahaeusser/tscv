@@ -4,10 +4,12 @@
 \alias{clean_data}
 \title{Check, convert and shape the input data.}
 \usage{
-clean_data(data)
+clean_data(data, fill_missing = TRUE)
 }
 \arguments{
 \item{data}{A valid tsibble, either in long or in wide format.}
+
+\item{fill_missing}{Logical value. If \code{TRUE}, implicit missing values are turned into explicit missing values.}
 }
 \value{
 data A valid tsibble in long format with one measurement variable.
