@@ -22,6 +22,7 @@ data A tsibble with the same format like the input data, but with additional col
    \itemize{
       \item{\code{sample}: Character value. Indicating whether the partition is training or testing.}
       \item{\code{slice}: Integer value. The number of the time slice (training and testing).}
+      \item{\code{id}: Integer value. The row number corresponding to the observations.}
       \item{\code{horizon}: Integer value. The forecast horizon (i.e. the size of the testing window. NA for training.}
       \item{\code{type}: Character value. Indicating actual values, forecasts etc.}
       \item{\code{model}: Character value. The forecasting model.}

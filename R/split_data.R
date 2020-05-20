@@ -17,6 +17,7 @@
 #'    \itemize{
 #'       \item{\code{sample}: Character value. Indicating whether the partition is training or testing.}
 #'       \item{\code{slice}: Integer value. The number of the time slice (training and testing).}
+#'       \item{\code{id}: Integer value. The row number corresponding to the observations.}
 #'       \item{\code{horizon}: Integer value. The forecast horizon (i.e. the size of the testing window. NA for training.}
 #'       \item{\code{type}: Character value. Indicating actual values, forecasts etc.}
 #'       \item{\code{model}: Character value. The forecasting model.}
@@ -99,6 +100,18 @@ split_data <- function(data,
   # Concatenate train and test data row-wise
   data <- rbind(data_train, data_test)
 
+  # Add id columns
+  id <- data %>%
+    as_tibble() %>%
+    select(!!sym(date_time)) %>%
+    unique() %>%
+    mutate(id = row_number())
+
+  data <- left_join(
+    x = data,
+    y = id,
+    by = date_time)
+
   # Adjust key variables
   data <- data %>%
     select(
@@ -106,6 +119,7 @@ split_data <- function(data,
       !!!syms(variable),
       sample,
       slice,
+      id,
       horizon,
       type,
       model,
