@@ -38,7 +38,13 @@ summarise_split <- function(data) {
 
   summary_tbl <- summary_tbl %>%
     mutate(dates = paste0("[", start_date, "/", end_date, "]")) %>%
-    mutate(index = paste0("[", start_index, "/", end_index, "]")) %>%
+    mutate(
+      index = paste0(
+        "[",
+        formatC(start_index, width = nchar(max(c(start_index, end_index))), flag = "0"),
+        "/",
+        formatC(end_index, width = nchar(max(c(start_index, end_index))), flag = "0"),
+        "]")) %>%
     select(-c(start_date, start_index, end_date, end_index)) %>%
     pivot_wider(
       names_from = sample,
