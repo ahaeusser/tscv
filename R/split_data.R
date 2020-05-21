@@ -46,9 +46,7 @@ split_data <- function(data,
     update_tsibble(
       index = !!sym(date_time),
       key = c(!!!syms(variable))) %>%
-    append_row(n = n_ahead) %>%
-    mutate(type = "actual") %>%
-    mutate(model = NA_character_)
+    append_row(n = n_ahead)
 
   # Start date of first forecast (test slice one)
   start_test <- data %>%
@@ -117,12 +115,10 @@ split_data <- function(data,
     select(
       !!sym(date_time),
       !!!syms(variable),
-      sample,
       slice,
+      sample,
       id,
       horizon,
-      type,
-      model,
       !!sym(value))
 
   return(data)
