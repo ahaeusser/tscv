@@ -10,7 +10,7 @@ summarise_data(data)
 \item{data}{A valid tsibble in long format with one measurement variable.}
 }
 \value{
-summary_tbl A tibble containing the summary statistics.
+data_tbl A tibble containing the summary statistics.
 }
 \description{
 This function calculates several summary statistics for time series data.

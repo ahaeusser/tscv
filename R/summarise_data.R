@@ -19,7 +19,7 @@
 #'
 #' @param data A valid tsibble in long format with one measurement variable.
 #'
-#' @return summary_tbl A tibble containing the summary statistics.
+#' @return data_tbl A tibble containing the summary statistics.
 #' @export
 
 summarise_data <- function(data) {
@@ -40,7 +40,7 @@ summarise_data <- function(data) {
   skim_adj <- skim_with(
     numeric = sfl(n_obs = length))
 
-  summary_tbl <- skim_adj(data = data) %>%
+  data_tbl <- skim_adj(data = data) %>%
     as_tibble() %>%
     select(-c(skim_type, skim_variable)) %>%
     rename(
@@ -54,7 +54,7 @@ summarise_data <- function(data) {
       hist = numeric.hist,
       n_obs = numeric.n_obs)
 
-  summary_tbl <- summary_tbl %>%
+  data_tbl <- data_tbl %>%
     select(
       c(!!!syms(variable)),
       n_obs,
@@ -69,5 +69,5 @@ summarise_data <- function(data) {
       p100,
       hist)
 
-  return(summary_tbl)
+  return(data_tbl)
 }
