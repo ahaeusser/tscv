@@ -12,22 +12,33 @@
 bind_data <- function(data,
                       fcsts) {
 
-  variable <- key_vars(data)
-
-  data <- data %>%
-    update_tsibble(
-      key = c(
-        !!!syms(variable),
-        model,
-        type))
+  date_time <- index_var(fcsts)
+  variable <- key_vars(fcsts)
 
   fcsts <- fcsts %>%
-    update_tsibble(
-      key = c(
-        !!!syms(variable),
-        model,
-        type))
+    as_tibble() %>%
+    group_by(!!!syms(variable)) %>%
+    mutate(horizon = row_number()) %>%
+    mutate(sample = "test") %>%
+    mutate(type = "fcst") %>%
+    ungroup() %>%
+    rename(model = .model) %>%
+    select(-.distribution)
+
+  data <- data %>%
+    as_tibble() %>%
+    mutate(model = NA_character_) %>%
+    mutate(type = "actual") %>%
+    select(-id)
 
   data <- rbind(data, fcsts)
+
+  variable[variable == ".model"] <- "model"
+
+  data <- data %>%
+    as_tsibble(
+      index = !!sym(date_time),
+      key = c(!!!syms(variable), type))
+
   return(data)
 }
