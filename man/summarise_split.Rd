@@ -23,7 +23,7 @@ summarise_split(data)
 One of the keys must be \code{slice}.}
 }
 \value{
-summary_tbl A tibble containing the summarised values.
+split_tbl A tibble containing the summarised values.
 }
 \description{
 Summary table of the splitting into training and testing.

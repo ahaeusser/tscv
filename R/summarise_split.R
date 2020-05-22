@@ -16,39 +16,39 @@
 #' @param data A valid tsibble in long format with one measurment variable and multiple keys.
 #'    One of the keys must be \code{slice}.
 #'
-#' @return summary_tbl A tibble containing the summarised values.
+#' @return split_tbl A tibble containing the summarised values.
 #' @export
 
 summarise_split <- function(data) {
 
   date_time <- index_var(data)
 
-  summary_tbl <- data %>%
+  split_tbl <- data %>%
     as_tibble() %>%
     select(slice, sample, id, !!sym(date_time)) %>%
     distinct() %>%
     group_by(slice, sample) %>%
     summarise(
-      start_date = first(!!sym(date_time)),
-      start_index = first(id),
-      end_date = last(!!sym(date_time)),
-      end_index = last(id)) %>%
-    arrange(slice, start_index, end_index) %>%
+      time_start = first(!!sym(date_time)),
+      index_start = first(id),
+      time_end = last(!!sym(date_time)),
+      index_end = last(id)) %>%
+    arrange(slice, index_start, index_end) %>%
     ungroup()
 
-  summary_tbl <- summary_tbl %>%
-    mutate(dates = paste0("[", start_date, "/", end_date, "]")) %>%
+  split_tbl <- split_tbl %>%
+    mutate(time = paste0("[", time_start, "/", time_end, "]")) %>%
     mutate(
       index = paste0(
         "[",
-        formatC(start_index, width = nchar(max(c(start_index, end_index))), flag = "0"),
+        formatC(index_start, width = nchar(max(c(index_start, index_end))), flag = "0"),
         "/",
-        formatC(end_index, width = nchar(max(c(start_index, end_index))), flag = "0"),
+        formatC(index_end, width = nchar(max(c(index_start, index_end))), flag = "0"),
         "]")) %>%
-    select(-c(start_date, start_index, end_date, end_index)) %>%
+    select(-c(time_start, index_start, time_end, index_end)) %>%
     pivot_wider(
       names_from = sample,
-      values_from = c(dates, index))
+      values_from = c(time, index))
 
-  return(summary_tbl)
+  return(split_tbl)
 }
