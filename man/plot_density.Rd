@@ -16,7 +16,7 @@ plot_density(
   line_color = "#31688EFF",
   line_fill = "#31688EFF",
   line_alpha = 0.5,
-  theme_set = theme_gray(),
+  theme_set = theme_tscv(),
   theme_config = list()
 )
 }

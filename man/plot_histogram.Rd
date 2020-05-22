@@ -14,7 +14,7 @@ plot_histogram(
   bar_line_color = "#31688EFF",
   bar_fill_color = "#31688EFF",
   bar_alpha = 0.5,
-  theme_set = theme_gray(),
+  theme_set = theme_tscv(),
   theme_config = list()
 )
 }

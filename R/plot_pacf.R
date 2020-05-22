@@ -39,7 +39,7 @@ plot_pacf <- function(data,
                       line_width = 0.25,
                       line_type = "solid",
                       line_color = "grey35",
-                      theme_set = theme_gray(),
+                      theme_set = theme_tscv(),
                       theme_config = list()) {
 
   date_time <- index_var(data)

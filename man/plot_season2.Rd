@@ -16,7 +16,7 @@ plot_season2(
   line_type = "solid",
   line_color = "#31688EFF",
   line_alpha = 1,
-  theme_set = theme_gray(),
+  theme_set = theme_tscv(),
   theme_config = list()
 )
 }

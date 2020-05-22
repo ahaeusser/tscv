@@ -14,10 +14,10 @@ plot_forecast(
   xlab = NULL,
   ylab = NULL,
   caption = NULL,
-  line_width = 1.5,
+  line_width = 1,
   point_size = 2,
   point_alpha = 0,
-  theme_set = theme_gray(),
+  theme_set = theme_tscv(),
   theme_config = list()
 )
 }

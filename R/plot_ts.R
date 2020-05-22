@@ -42,7 +42,7 @@ plot_ts <- function(data,
                     line_alpha = 1,
                     smooth_fill = "#D55E00",
                     smooth_alpha = 0.25,
-                    theme_set = theme_gray(),
+                    theme_set = theme_tscv(),
                     theme_config = list()) {
 
   date_time <- index_var(data)

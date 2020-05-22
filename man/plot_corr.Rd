@@ -21,7 +21,7 @@ plot_corr(
   line_width = 0.25,
   line_type = "solid",
   line_color = "grey35",
-  theme_set = theme_gray(),
+  theme_set = theme_tscv(),
   theme_config = list()
 )
 }

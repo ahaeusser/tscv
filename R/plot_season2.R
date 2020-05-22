@@ -31,7 +31,7 @@ plot_season2 <- function(data,
                          line_type = "solid",
                          line_color = "#31688EFF",
                          line_alpha = 1,
-                         theme_set = theme_gray(),
+                         theme_set = theme_tscv(),
                          theme_config = list()) {
 
   date_time <- index_var(data)
