@@ -8,118 +8,114 @@
 #'    \code{n_step}.
 #'
 #' @param data A valid tsibble, either in long format provided by the function \code{clean_data(...)}.
-#' @param mode Character value. Define the setup of the training window for time series cross validation. \code{stretch} is equivalent to an expanding window approach and \code{slide} is a fixed window approach.
 #' @param n_init Integer value. The number of periods for the initial training window (must be positive).
-#' @param n_step Integer value. The number of periods to skip between windows (must be positive).
 #' @param n_ahead Integer value. The forecast horizon (n-steps-ahead, must be positive).
+#' @param n_skip Integer value. The number of periods to skip between windows (must be zero or positive integer).
+#' @param n_lag Integer value. A value to include a lag between the training and testing set. This is useful if lagged predictors will be used during training and testing.
+#' @param mode Character value. Define the setup of the training window for time series cross validation. \code{stretch} is equivalent to an expanding window approach and \code{slide} is a fixed window approach.
 #'
 #' @return data A tsibble with the same format like the input data, but with additional columns:
 #'    \itemize{
 #'       \item{\code{sample}: Character value. Indicating whether the partition is training or testing.}
 #'       \item{\code{slice}: Integer value. The number of the time slice (training and testing).}
 #'       \item{\code{id}: Integer value. The row number corresponding to the observations.}
-#'       \item{\code{horizon}: Integer value. The forecast horizon (i.e. the size of the testing window. NA for training.}
-#'       \item{\code{type}: Character value. Indicating actual values, forecasts etc.}
-#'       \item{\code{model}: Character value. The forecasting model.}
+#'       \item{\code{horizon}: Integer value. The forecast horizon (i.e. the size of the testing window. NAs for training.}
 #'       }
 #' @export
 
 split_data <- function(data,
-                       mode = "stretch",
                        n_init,
-                       n_step,
-                       n_ahead) {
+                       n_ahead,
+                       n_skip = 0,
+                       n_lag = 0,
+                       mode = "slide") {
 
-  date_time <- index_var(data)
-  variable <- key_vars(data)
-  value <- measured_vars(data)
+  date_time <- index(data)
+  variable <- key(data)
 
-  # End date of the sample
-  end_train <- data %>%
-    pull(!!sym(date_time)) %>%
-    unique() %>%
-    last()
-
-  # Extend data for out-of-sample forecasts
-  # (measurement variables are set to NA)
   data <- data %>%
-    update_tsibble(
-      index = !!sym(date_time),
-      key = c(!!!syms(variable))) %>%
-    append_row(n = n_ahead)
+    append_row(n = n_ahead) %>%
+    as_tibble()
 
-  # Start date of first forecast (test slice one)
-  start_test <- data %>%
-    filter(row_number() == (n_init + 1)) %>%
-    pull(!!sym(date_time))
+  time <- data %>%
+    select(!!date_time) %>%
+    distinct() %>%
+    pull(!!date_time)
 
-  # Prepare training data .....................................................
+  n_total <- length(time)
 
-  # Remove (enhanced) NAs
-  data_train <- data %>%
-    filter_index(. ~ end_train)
+  if (n_total < n_init + n_ahead)
+    stop("There should be at least ",
+         n_init + n_ahead,
+         " observations in `data`",
+         call. = FALSE)
 
-  # Roll up tsibble by tscv mode
-  if (mode == "stretch") {
-    data_train <- data_train %>%
-      stretch_tsibble(
-        .init = n_init,
-        .step = n_step,
-        .id = "slice")
+  if (!is.numeric(n_lag) | !(n_lag%%1==0)) {
+    stop("`n_lag` must be a whole number.", call. = FALSE)
   }
 
-  if (mode == "slide") {
-    data_train <- data_train %>%
-      slide_tsibble(
-        .size = n_init,
-        .step = n_step,
-        .id = "slice")
+  if (n_lag > n_init) {
+    stop("`n_lag` must be less than or equal to the number of training observations.", call. = FALSE)
   }
 
-  # Add columns sample and horizon
-  data_train <- data_train %>%
+  # stops <- seq(n_init, (n_total - n_ahead), by = n_skip + 1)
+  # starts <- if (!cumulative) {
+  #   stops - n_init + 1
+  # } else {
+  #   starts <- rep(1, length(stops))
+  # }
+
+  stops <- seq(n_init, (n_total - n_ahead), by = n_skip + 1)
+  starts <- if (mode == "slide") {
+    stops - n_init + 1
+  } else {
+    starts <- rep(1, length(stops))
+  }
+
+  # Prepare index vectors for training and testing as list
+  train_index <- map2(.x = starts, .y = stops, ~seq(.x, .y))
+  test_index <- map2(.x = stops + 1 - n_lag, .y = stops + n_ahead, ~seq(.x, .y))
+
+  # Slice train and test data, grouped by key variables
+  train <- map(.x = 1:length(train_index), ~ {
+    data %>%
+      group_by(!!!variable) %>%
+      slice(train_index[[.x]]) %>%
+      mutate(slice = .x) %>%
+      mutate(id = train_index[[.x]]) %>%
+      ungroup()
+  })
+
+  test <- map(.x = 1:length(test_index), ~ {
+    data %>%
+      group_by(!!!variable) %>%
+      slice(test_index[[.x]]) %>%
+      mutate(slice = .x) %>%
+      mutate(id = test_index[[.x]]) %>%
+      ungroup()
+  })
+
+  # Flatten lists by rowwise binding
+  train <- do.call(rbind, train)
+  test <- do.call(rbind, test)
+
+  # Add columns for sample and horizon
+  train <- train %>%
     mutate(sample = "train") %>%
     mutate(horizon = NA_integer_)
 
-  # Prepare test data .........................................................
-
-  # Roll up tsibble
-  data_test <- data %>%
-    filter_index(start_test ~ .) %>%
-    slide_tsibble(
-      .size = n_ahead,
-      .step = n_step,
-      .id = "slice") %>%
+  test <- test %>%
     mutate(sample = "test") %>%
-    group_by(slice, !!!syms(variable)) %>%
+    group_by(!!!variable, slice) %>%
     mutate(horizon = row_number()) %>%
     ungroup()
 
-  # Concatenate train and test data row-wise
-  data <- rbind(data_train, data_test)
+  data <- rbind(train, test)
 
-  # Add id columns
-  id <- data %>%
-    as_tibble() %>%
-    select(!!sym(date_time)) %>%
-    unique() %>%
-    mutate(id = row_number())
-
-  data <- left_join(
-    x = data,
-    y = id,
-    by = date_time)
-
-  # Adjust key variables
   data <- data %>%
-    select(
-      !!sym(date_time),
-      !!!syms(variable),
-      slice,
-      sample,
-      id,
-      horizon,
-      !!sym(value))
+    as_tsibble(
+      index = !!date_time,
+      key = c(!!!variable, slice))
 
   return(data)
 }

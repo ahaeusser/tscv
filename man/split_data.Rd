@@ -4,18 +4,20 @@
 \alias{split_data}
 \title{Split the data into training and testing.}
 \usage{
-split_data(data, mode = "stretch", n_init, n_step, n_ahead)
+split_data(data, n_init, n_ahead, n_skip = 0, n_lag = 0, mode = "slide")
 }
 \arguments{
 \item{data}{A valid tsibble, either in long format provided by the function \code{clean_data(...)}.}
 
-\item{mode}{Character value. Define the setup of the training window for time series cross validation. \code{stretch} is equivalent to an expanding window approach and \code{slide} is a fixed window approach.}
-
 \item{n_init}{Integer value. The number of periods for the initial training window (must be positive).}
 
-\item{n_step}{Integer value. The number of periods to skip between windows (must be positive).}
-
 \item{n_ahead}{Integer value. The forecast horizon (n-steps-ahead, must be positive).}
+
+\item{n_skip}{Integer value. The number of periods to skip between windows (must be zero or positive integer).}
+
+\item{n_lag}{Integer value. A value to include a lag between the training and testing set. This is useful if lagged predictors will be used during training and testing.}
+
+\item{mode}{Character value. Define the setup of the training window for time series cross validation. \code{stretch} is equivalent to an expanding window approach and \code{slide} is a fixed window approach.}
 }
 \value{
 data A tsibble with the same format like the input data, but with additional columns:
@@ -23,9 +25,7 @@ data A tsibble with the same format like the input data, but with additional col
       \item{\code{sample}: Character value. Indicating whether the partition is training or testing.}
       \item{\code{slice}: Integer value. The number of the time slice (training and testing).}
       \item{\code{id}: Integer value. The row number corresponding to the observations.}
-      \item{\code{horizon}: Integer value. The forecast horizon (i.e. the size of the testing window. NA for training.}
-      \item{\code{type}: Character value. Indicating actual values, forecasts etc.}
-      \item{\code{model}: Character value. The forecasting model.}
+      \item{\code{horizon}: Integer value. The forecast horizon (i.e. the size of the testing window. NAs for training.}
       }
 }
 \description{
