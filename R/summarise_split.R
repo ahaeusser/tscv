@@ -25,24 +25,24 @@ summarise_split <- function(data) {
 
   split_tbl <- data %>%
     as_tibble() %>%
-    select(slice, sample, id, !!sym(date_time)) %>%
+    select(split, sample, id, !!sym(date_time)) %>%
     distinct() %>%
-    group_by(slice, sample) %>%
+    group_by(split, sample) %>%
     summarise(
       time_start = first(!!sym(date_time)),
       index_start = first(id),
       time_end = last(!!sym(date_time)),
       index_end = last(id)) %>%
-    arrange(slice, index_start, index_end) %>%
+    arrange(split, index_start, index_end) %>%
     ungroup()
 
   split_tbl <- split_tbl %>%
-    mutate(time = paste0("[", time_start, "/", time_end, "]")) %>%
+    mutate(time = paste0("[", time_start, ", ", time_end, "]")) %>%
     mutate(
       index = paste0(
         "[",
         formatC(index_start, width = nchar(max(c(index_start, index_end))), flag = "0"),
-        "/",
+        ", ",
         formatC(index_end, width = nchar(max(c(index_start, index_end))), flag = "0"),
         "]")) %>%
     select(-c(time_start, index_start, time_end, index_end)) %>%

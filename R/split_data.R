@@ -58,13 +58,6 @@ split_data <- function(data,
     stop("`n_lag` must be less than or equal to the number of training observations.", call. = FALSE)
   }
 
-  # stops <- seq(n_init, (n_total - n_ahead), by = n_skip + 1)
-  # starts <- if (!cumulative) {
-  #   stops - n_init + 1
-  # } else {
-  #   starts <- rep(1, length(stops))
-  # }
-
   stops <- seq(n_init, (n_total - n_ahead), by = n_skip + 1)
   starts <- if (mode == "slide") {
     stops - n_init + 1
@@ -81,7 +74,7 @@ split_data <- function(data,
     data %>%
       group_by(!!!variable) %>%
       slice(train_index[[.x]]) %>%
-      mutate(slice = .x) %>%
+      mutate(split = .x) %>%
       mutate(id = train_index[[.x]]) %>%
       ungroup()
   })
@@ -90,7 +83,7 @@ split_data <- function(data,
     data %>%
       group_by(!!!variable) %>%
       slice(test_index[[.x]]) %>%
-      mutate(slice = .x) %>%
+      mutate(split = .x) %>%
       mutate(id = test_index[[.x]]) %>%
       ungroup()
   })
@@ -106,7 +99,7 @@ split_data <- function(data,
 
   test <- test %>%
     mutate(sample = "test") %>%
-    group_by(!!!variable, slice) %>%
+    group_by(!!!variable, split) %>%
     mutate(horizon = row_number()) %>%
     ungroup()
 
@@ -115,7 +108,7 @@ split_data <- function(data,
   data <- data %>%
     as_tsibble(
       index = !!date_time,
-      key = c(!!!variable, slice))
+      key = c(!!!variable, split))
 
   return(data)
 }
