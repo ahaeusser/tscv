@@ -1,9 +1,9 @@
-#' @title Hourly Day-ahead Electricity Spot Prices
+#' @title Hourly Day-ahead Electricity Spot Prices.
 #'
-#' @description Hourly "tsibble" with day-ahead electricity spot prices from
+#' @description Hourly \code{tsibble} with day-ahead electricity spot prices from
 #'    the ENTSO-E Transparency Platform. The dataset contains time series data
-#'    from 2019-01-01 00:00:00 to 2019-12-31 23:00:00 for five bidding zones
-#'    within europe (DE, FR, NL, SE1, NO1).
+#'    from 2019-01-01 00:00:00 to 2019-12-31 23:00:00 for four bidding zones
+#'    within europe (DE, FR, SE1, NO1).
 #'
 #' @docType data
 #'
@@ -11,9 +11,11 @@
 #'
 #' @format A time series object of class \code{tsibble} with 43.800 rows and 3 columns:
 #'    \itemize{
-#'       \item{date_time: Date and time (index variable)}
-#'       \item{variable: Variable name (key variable)}
-#'       \item{value: Day-ahead spot price in Euro (measurement variable)}
+#'       \item{\code{Time}: Date and time (index variable)}
+#'       \item{\code{Series}: Time series name (key variable)}
+#'       \item{\code{Unit}: Measurment unit (euros per megawatt-hour)}
+#'       \item{\code{BZN}: Bidding zone (key variable)}
+#'       \item{\code{Value}: Measurement variable}
 #'       }
 #'
 #' @keywords datasets
@@ -27,35 +29,30 @@
 
 
 
-#' @title Daily Sales Data from the M5-Forecasting Competition
+#' @title Hourly Electricity Load.
 #'
-#' @description Daily "tsibble" with sales data from the M5-Forecasting
-#'    Competition. The dataset contains time series data
-#'    from 2011-01-29 to 2016-04-24. The sales data are aggregated for
-#'    category (cat_id), stores (store_id) and states (state_id).
+#' @description Hourly \code{tsibble} with electricity loads from
+#'    the ENTSO-E Transparency Platform. The dataset contains time series data
+#'    from 2019-01-01 00:00:00 to 2019-12-31 23:00:00 for four bidding zones
+#'    within europe (DE, FR, SE1, NO1).
 #'
 #' @docType data
 #'
-#' @usage data(m5_data)
+#' @usage data(elec_load)
 #'
-#' @format A time series object of class \code{tsibble} with 172.170 rows and 10 columns:
+#' @format A time series object of class \code{tsibble} with 43.800 rows and 3 columns:
 #'    \itemize{
-#'       \item{variable: Unique identifier for category, store and state (key variable)}
-#'       \item{cat_id: Product category (Hobbies, Foods, Household)}
-#'       \item{store_id: Store number}
-#'       \item{state_id: State (CA, TX, WI)}
-#'       \item{date: Date (index variable)}
-#'       \item{year: Year}
-#'       \item{month: Month}
-#'       \item{day: Day}
-#'       \item{wday: Weekday}
-#'       \item{value: Sales data (measurement variable)}
+#'       \item{\code{Time}: Date and time (index variable)}
+#'       \item{\code{Series}: Time series name (key variable)}
+#'       \item{\code{Unit}: Measurment unit (megawatt)}
+#'       \item{\code{BZN}: Bidding zone (key variable)}
+#'       \item{\code{Value}: Measurement variable}
 #'       }
 #'
 #' @keywords datasets
 #'
-#' @source \href{https://www.kaggle.com/c/m5-forecasting-accuracy/data}{M5-Forecasting - Accuracy}
+#' @source \href{https://transparency.entsoe.eu/load-domain/r2/totalLoadR2/show}{ENTSO-E Transparency Platform}
 #'
 #' @examples
-#' data(m5_data)
-"m5_data"
+#' data(elec_load)
+"elec_load"
