@@ -14,18 +14,21 @@ data_tbl A tibble containing the summary statistics.
 }
 \description{
 This function calculates several summary statistics for time series data.
-   The function calculates the following statistics for all key combinations:
+   The function calculates the following metrics for all key combinations:
 
    \itemize{
+      \item{\code{start}: Start date (or date-time)}
+      \item{\code{end}: End date (or date-time)}
       \item{\code{n_missing}: Number of missing values (NAs)}
       \item{\code{complete_rate}: Percentange rate of complete values}
-      \item{\code{mean}: Mean}
-      \item{\code{sd}: Standard Deviation}
+      \item{\code{mean}: Arithmetic mean}
+      \item{\code{sd}: Standard deviation}
       \item{\code{p0}: Minimum}
       \item{\code{p25}: 25\%-Quantile}
       \item{\code{p50}: Median}
       \item{\code{p75}: 75\%-Quantile}
       \item{\code{p100}: Maximum}
-      \item{\code{hist}: Histogram as sparkline}
+      \item{\code{skewness}: Skewness}
+      \item{\code{kurtosis}: Kurtosis}
       }
 }
