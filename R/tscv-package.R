@@ -9,7 +9,7 @@
 #' @importFrom future plan
 #' @importFrom magrittr "%>%"
 #' @importFrom feasts ACF PACF
-#' @importFrom skimr skim skim_with sfl
+#' @importFrom moments skewness kurtosis
 #' @import ggplot2
 #' @import tsibble
 #' @import fable
