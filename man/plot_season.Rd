@@ -15,12 +15,14 @@ plot_season(
   line_type = "solid",
   line_color = "#31688EFF",
   line_alpha = 1,
+  fill_color = "#31688EFF",
+  fill_alpha = 0.2,
   theme_set = theme_tscv(),
   theme_config = list()
 )
 }
 \arguments{
-\item{data}{A tsibble containing the columns time, variable and value.}
+\item{data}{A valid tsibble in long format with one measurement variable.}
 
 \item{title}{Title of the plot.}
 
