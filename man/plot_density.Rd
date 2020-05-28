@@ -13,9 +13,9 @@ plot_density(
   caption = NULL,
   line_width = 0.1,
   line_type = "solid",
-  line_color = "#31688EFF",
-  line_fill = "#31688EFF",
-  line_alpha = 0.5,
+  line_color = "black",
+  fill_color = "#31688EFF",
+  fill_alpha = 0.2,
   theme_set = theme_tscv(),
   theme_config = list()
 )
@@ -39,13 +39,13 @@ plot_density(
 
 \item{line_color}{Character value defining the line color of the kernel density estimator.}
 
-\item{line_fill}{Character value defining the fill color for the area under the kernel density estimator.}
-
-\item{line_alpha}{Numeric value defining the transparency of the area under the kernel density estimator.}
-
 \item{theme_set}{A complete ggplot2 theme.}
 
 \item{theme_config}{A list with further arguments passed to \code{ggplot2::theme()}.}
+
+\item{line_fill}{Character value defining the fill color for the area under the kernel density estimator.}
+
+\item{line_alpha}{Numeric value defining the transparency of the area under the kernel density estimator.}
 }
 \value{
 p An object of class ggplot.

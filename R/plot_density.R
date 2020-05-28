@@ -28,9 +28,9 @@ plot_density <- function(data,
                          caption = NULL,
                          line_width = 0.1,
                          line_type = "solid",
-                         line_color = "#31688EFF",
-                         line_fill = "#31688EFF",
-                         line_alpha = 0.5,
+                         line_color = "black", # "#31688EFF",
+                         fill_color = "#31688EFF",
+                         fill_alpha = 0.2,
                          theme_set = theme_tscv(),
                          theme_config = list()) {
 
@@ -44,17 +44,19 @@ plot_density <- function(data,
 
   # Kernel density estimate
   p <- p + geom_density(
-    aes(colour = "Kernel"),
-    # linetype = line_type,
-    # size = line_width,
-    fill = line_fill,
-    alpha = line_alpha,
-    color = line_color)
+    aes(
+      colour = "Kernel"),
+      size = line_width,
+      linetype = line_type,
+      color = line_color,
+      fill = fill_color,
+      alpha = fill_alpha)
 
   # Create grid
   p <- p + facet_wrap(
     vars(!!!syms(variable)),
     scales = "free")
+
 
   # Axis scaling
   p <- p + scale_y_continuous()
