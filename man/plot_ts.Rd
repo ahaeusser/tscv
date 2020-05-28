@@ -6,8 +6,6 @@
 \usage{
 plot_ts(
   data,
-  smooth_method = NULL,
-  smooth_se = FALSE,
   title = NULL,
   subtitle = NULL,
   xlab = NULL,
@@ -20,18 +18,16 @@ plot_ts(
   line_type = "solid",
   line_color = "#31688EFF",
   line_alpha = 1,
+  smooth_method = NULL,
   smooth_fill = "#D55E00",
   smooth_alpha = 0.25,
   theme_set = theme_tscv(),
-  theme_config = list()
+  theme_config = list(),
+  ...
 )
 }
 \arguments{
 \item{data}{A valid tsibble in long format with one measurement variable.}
-
-\item{smooth_method}{Character value. The smoothing method (\code{"loess"}, \code{"lm"} or \code{NULL}).}
-
-\item{smooth_se}{Logical value. If \code{TRUE}, confidence interval is displayed around smooth.}
 
 \item{title}{Title of the plot.}
 
@@ -55,6 +51,8 @@ plot_ts(
 
 \item{line_color}{Character value defining the line color (time series).}
 
+\item{smooth_method}{Character value. The smoothing method (\code{NULL}, \code{"loess"}, \code{"lm"}, \code{glm}, \code{gam}).}
+
 \item{smooth_fill}{Character value defining the fill color of confidence band.}
 
 \item{smooth_alpha}{Numeric value defining the transparency of confidence band.}
@@ -62,6 +60,10 @@ plot_ts(
 \item{theme_set}{A complete ggplot2 theme.}
 
 \item{theme_config}{A list with further arguments passed to \code{ggplot2::theme()}.}
+
+\item{...}{Further arguments passed to \code{ggplot2::stat_smooth()}}
+
+\item{smooth_se}{Logical value. If \code{TRUE}, confidence interval is displayed around smooth.}
 }
 \value{
 p An object of class ggplot.
