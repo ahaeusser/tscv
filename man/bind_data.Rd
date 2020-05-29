@@ -7,9 +7,9 @@
 bind_data(data, fcsts)
 }
 \arguments{
-\item{data}{A tsibble containing the data provided by \code{split_data(...)}.}
+\item{data}{A tsibble containing the data provided by \code{split_data()}.}
 
-\item{fcsts}{A fable ('forecast table') provided by \code{forecast_model(...)}.}
+\item{fcsts}{A fable ('forecast table') provided by \code{forecast_model()}.}
 }
 \value{
 data A tsibble containing the input data and the forecasts.
