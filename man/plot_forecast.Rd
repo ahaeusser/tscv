@@ -6,7 +6,7 @@
 \usage{
 plot_forecast(
   data,
-  slice = NULL,
+  split = NULL,
   model = NULL,
   include = 24,
   title = NULL,
@@ -24,7 +24,7 @@ plot_forecast(
 \arguments{
 \item{data}{A tsibble containing the data and the forecasts.}
 
-\item{slice}{Integer vector. The time slice(s) of the time series cross-validation.}
+\item{split}{Integer vector. The split id (time slices) of the time series cross-validation.}
 
 \item{model}{Character vector. The forecasting model(s).}
 
@@ -54,5 +54,5 @@ plot_forecast(
 p An object of class ggplot.
 }
 \description{
-Plot the actual and fitted values and forecasts for specific target variable(s), slice(s) and forecasting method(s).
+Plot the actual and fitted values and forecasts for specific target variable(s), split(s) and forecasting method(s).
 }

@@ -1,10 +1,10 @@
 
 #' @title Plot the actual and fitted values and forecasts.
 #'
-#' @description Plot the actual and fitted values and forecasts for specific target variable(s), slice(s) and forecasting method(s).
+#' @description Plot the actual and fitted values and forecasts for specific target variable(s), split(s) and forecasting method(s).
 #'
 #' @param data A tsibble containing the data and the forecasts.
-#' @param slice Integer vector. The time slice(s) of the time series cross-validation.
+#' @param split Integer vector. The split id (time slices) of the time series cross-validation.
 #' @param model Character vector. The forecasting model(s).
 #' @param include Integer value. The number of actual values (training) to be included.
 #' @param title Title of the plot.
@@ -22,7 +22,7 @@
 #' @export
 
 plot_forecast <- function(data,
-                          slice = NULL,
+                          split = NULL,
                           model = NULL,
                           include = 24,
                           title = NULL,
@@ -46,10 +46,10 @@ plot_forecast <- function(data,
     select_model <- model
   }
 
-  if (is_empty(slice)) {
-    select_slice <- 1
+  if (is_empty(split)) {
+    select_split <- 1
   } else {
-    select_slice <- slice
+    select_split <- split
   }
 
   date_time <- index_var(data)
@@ -57,7 +57,7 @@ plot_forecast <- function(data,
   all_meas <- measured_vars(data)
 
   # Exclude 'helper' columns (key and measured variables)
-  variable <- all_keys[!all_keys %in% c("slice", "model", "type")]
+  variable <- all_keys[!all_keys %in% c("split", "model", "type")]
   value <- all_meas[!all_meas %in% c("sample", "horizon")]
 
   # Prepare data ..............................................................
@@ -65,12 +65,12 @@ plot_forecast <- function(data,
   # Prepare forecasts and actual values for specified slices and models
 
   fcst <- data %>%
-    filter(slice %in% select_slice) %>%
+    filter(split %in% select_split) %>%
     filter(type == "fcst") %>%
     filter(model %in% select_model)
 
   actual <- data %>%
-    filter(slice %in% select_slice) %>%
+    filter(split %in% select_split) %>%
     filter(type == "actual")
 
   # Cut actual and fitted values to correct length
@@ -81,7 +81,7 @@ plot_forecast <- function(data,
       max(na.rm = TRUE)
 
     actual <- actual %>%
-      group_by(!!!syms(variable), slice) %>%
+      group_by(!!!syms(variable), split) %>%
       slice((n() - include - n_ahead + 1):n()) %>%
       ungroup()
   }
@@ -109,10 +109,10 @@ plot_forecast <- function(data,
     na.rm = TRUE,
     size = line_width)
 
-  # Faceting by .variable and .slice
+  # Faceting by keys and split
   p <- p + facet_grid(
     vars(!!!syms(variable)),
-    vars(slice),
+    vars(split),
     scales = "free")
 
   # Create points for forecasts
