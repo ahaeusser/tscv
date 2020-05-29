@@ -16,7 +16,7 @@ plot_ts(
   smooth_color = "#D55E00",
   line_width = 0.75,
   line_type = "solid",
-  line_color = "#31688EFF",
+  line_color = "#31688E",
   line_alpha = 1,
   smooth_method = NULL,
   smooth_fill = "#D55E00",

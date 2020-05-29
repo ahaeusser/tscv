@@ -37,7 +37,7 @@ plot_ts <- function(data,
                     smooth_color = "#D55E00",
                     line_width = 0.75,
                     line_type = "solid",
-                    line_color = "#31688EFF",
+                    line_color = "#31688E",
                     line_alpha = 1,
                     smooth_method = NULL,
                     smooth_fill = "#D55E00",
@@ -55,14 +55,16 @@ plot_ts <- function(data,
     data = data,
     aes(
       x = !!sym(date_time),
-      y = !!sym(value)))
+      y = !!sym(value))
+    )
 
   # Create lines
   p <- p + geom_line(
     color = line_color,
     size = line_width,
     linetype = line_type,
-    alpha = line_alpha)
+    alpha = line_alpha
+    )
 
   # Create smooth
   if (!is.null(smooth_method)) {
@@ -73,13 +75,15 @@ plot_ts <- function(data,
       size = smooth_width,
       linetype = smooth_type,
       alpha = smooth_alpha,
-      ...)
+      ...
+      )
   }
 
   # Create grid
   p <- p + facet_wrap(
     vars(!!!syms(variable)),
-    scales = "free")
+    scales = "free"
+    )
 
   # Axis scaling
   p <- p + scale_y_continuous()
