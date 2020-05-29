@@ -11,11 +11,13 @@ plot_histogram(
   xlab = NULL,
   ylab = NULL,
   caption = NULL,
-  bar_line_color = "#31688EFF",
-  bar_fill_color = "#31688EFF",
-  bar_alpha = 0.5,
+  bar_line_color = "#31688E",
+  bar_line_size = 0.5,
+  bar_fill_color = "#31688E",
+  bar_fill_alpha = 1,
   theme_set = theme_tscv(),
-  theme_config = list()
+  theme_config = list(),
+  ...
 )
 }
 \arguments{
@@ -35,11 +37,13 @@ plot_histogram(
 
 \item{bar_fill_color}{Character value defining the color of the histrogram bars.}
 
-\item{bar_alpha}{Numeric value defining the transparency of the histogram bars.}
-
 \item{theme_set}{A complete ggplot2 theme.}
 
 \item{theme_config}{A list with further arguments passed to \code{ggplot2::theme()}.}
+
+\item{...}{Further arguments passed to \code{ggplot2::geom_histogram()}.}
+
+\item{bar_alpha}{Numeric value defining the transparency of the histogram bars.}
 }
 \value{
 p An object of class ggplot.

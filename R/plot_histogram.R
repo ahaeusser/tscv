@@ -14,6 +14,7 @@
 #' @param bar_alpha Numeric value defining the transparency of the histogram bars.
 #' @param theme_set A complete ggplot2 theme.
 #' @param theme_config A list with further arguments passed to \code{ggplot2::theme()}.
+#' @param ... Further arguments passed to \code{ggplot2::geom_histogram()}.
 #'
 #' @return p An object of class ggplot.
 #' @export
@@ -24,11 +25,13 @@ plot_histogram <- function(data,
                            xlab = NULL,
                            ylab = NULL,
                            caption = NULL,
-                           bar_line_color = "#31688EFF",
-                           bar_fill_color = "#31688EFF",
-                           bar_alpha = 0.5,
+                           bar_line_color = "#31688E",
+                           bar_line_size = 0.5,
+                           bar_fill_color = "#31688E",
+                           bar_fill_alpha = 1,
                            theme_set = theme_tscv(),
-                           theme_config = list()) {
+                           theme_config = list(),
+                           ...) {
 
   variable <- key_vars(data)
   value <- measured_vars(data)
@@ -36,21 +39,25 @@ plot_histogram <- function(data,
   # Create ggplot
   p <- ggplot(
     data = data,
-    aes(x = !!sym(value)))
+    aes(x = !!sym(value))
+    )
+
+  # Create grid
+  p <- p + facet_wrap(
+    vars(!!!syms(variable)),
+    scales = "free"
+    )
 
   # Histogram
   p <- p + geom_histogram(
     aes(y = ..count..),
     na.rm = TRUE,
-    # color = bar_line_color,
+    color = bar_line_color,
+    size = bar_line_size,
     fill = bar_fill_color,
-    alpha = bar_alpha,
-    binwidth = function(x) 2 * IQR(x) / (length(x)^(1/3)))
-
-  # Create grid
-  p <- p + facet_wrap(
-    vars(!!!syms(variable)),
-    scales = "free")
+    alpha = bar_fill_alpha,
+    ...
+    )
 
   # Axis scaling
   p <- p + scale_y_continuous()
