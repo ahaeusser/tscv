@@ -7,7 +7,7 @@
 #'    for training and testing via \code{n_init} and \code{n_ahead}, as well as the step size for increments via
 #'    \code{n_step}.
 #'
-#' @param data A valid tsibble, either in long format provided by the function \code{clean_data(...)}.
+#' @param data A valid tsibble in long format provided by the function \code{clean_data()}.
 #' @param n_init Integer value. The number of periods for the initial training window (must be positive).
 #' @param n_ahead Integer value. The forecast horizon (n-steps-ahead, must be positive).
 #' @param n_skip Integer value. The number of periods to skip between windows (must be zero or positive integer).
@@ -17,7 +17,7 @@
 #' @return data A tsibble with the same format like the input data, but with additional columns:
 #'    \itemize{
 #'       \item{\code{sample}: Character value. Indicating whether the partition is training or testing.}
-#'       \item{\code{slice}: Integer value. The number of the time slice (training and testing).}
+#'       \item{\code{split}: Integer value. The number of the time slice (training and testing).}
 #'       \item{\code{id}: Integer value. The row number corresponding to the observations.}
 #'       \item{\code{horizon}: Integer value. The forecast horizon (i.e. the size of the testing window. NAs for training.}
 #'       }
