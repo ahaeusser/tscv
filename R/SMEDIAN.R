@@ -1,11 +1,10 @@
 
 #' @title Train seasonal median model.
 #'
-#' @description Train seasonal median model.
+#' @description Train seasonal median model (SMEDIAN).
 #'
 #' @param data Input data as \code{tsibble}.
 #' @param specials Specials as list defined in \code{specials_smedian}.
-#' @param period Integer value. The seasonal period for the calculation.
 #' @param ... Further arguments.
 #'
 #' @return An object of class \code{SMEDIAN}.
@@ -26,26 +25,27 @@ train_smedian <- function(.data,
   }
 
   # Prepare period
+  lag <- specials$lag[[1]]
   n <- length(y)
-  index <- rep(1:period, times = ceiling(n / period))[1:n]
+  index <- rep(1:lag, times = ceiling(n / lag))[1:n]
 
-  medians <- map_dbl(
-    .x = 1:period,
+  smedian <- map_dbl(
+    .x = 1:lag,
     .f = ~median(y[index == .x], na.rm = TRUE)
   )
 
-  fit <- rep(medians, times = ceiling(n / period))[1:n]
-  res <- y - fit
-  sigma <- sd(res, na.rm = TRUE)
+  fitted <- rep(smedian, times = ceiling(n / lag))[1:n]
+  resid <- y - fitted
+  sigma <- sd(resid, na.rm = TRUE)
 
   structure(
     list(
-      .fitted = fit,
-      .resid = res,
-      median = medians,
+      .fitted = fitted,
+      .resid = resid,
+      smedian = smedian,
       sigma = sigma,
       last_period = last(index),
-      period = period
+      lag = lag
     ),
     class = "SMEDIAN"
   )
@@ -53,12 +53,29 @@ train_smedian <- function(.data,
 
 
 
-specials_smedian <- new_specials()
+globalVariables(c("self", "origin"))
+
+specials_smedian <- new_specials(
+  lag = function(lag = NULL) {
+    lag <- get_frequencies(period = lag, data = self$data, .auto = "smallest")
+    if (lag == 1) {
+      abort("Non-seasonal model specification provided, use RW() or provide a different lag specification.")
+    }
+    if (!rlang::is_integerish(lag)) {
+      warn("Non-integer lag orders for random walk models are not supported. Rounding to the nearest integer.")
+      lag <- round(lag)
+    }
+    lag
+  },
+  .required_specials = c("lag")
+)
+
+
 
 
 #' @title Automatic training of SMEDIANs.
 #'
-#' @description Automatic training of SMEDIANs.
+#' @description Automatic training of seasonal median model (SMEDIAN).
 #'
 #' @param formula Model specification (see "Specials" section, currently not in use ...).
 #' @param ... Further arguments.
@@ -96,13 +113,13 @@ forecast.SMEDIAN <- function(object,
                              specials = NULL,
                              ...){
   # Extract model
-  medians <- object$median
+  smedian <- object$smedian
   last_period <- object$last_period
   sigma <- object$sigma
 
   n_ahead <- nrow(new_data)
-  index <- rep(1:length(medians), times = ceiling((n_ahead + last_period) / length(medians)))[(last_period + 1):(last_period + n_ahead)]
-  fcst <- medians[index]
+  index <- rep(1:length(smedian), times = ceiling((n_ahead + last_period) / length(smedian)))[(last_period + 1):(last_period + n_ahead)]
+  fcst <- smedian[index]
 
   # Return forecasts
   construct_fc(

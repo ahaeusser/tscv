@@ -15,5 +15,5 @@ SMEDIAN(formula, ...)
 smedian_model An object of class \code{SMEDIAN}.
 }
 \description{
-Automatic training of SMEDIANs.
+Automatic training of seasonal median model (SMEDIAN).
 }

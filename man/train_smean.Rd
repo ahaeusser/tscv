@@ -4,12 +4,10 @@
 \alias{train_smean}
 \title{Train seasonal mean model.}
 \usage{
-train_smean(.data, specials, period, ...)
+train_smean(.data, specials, ...)
 }
 \arguments{
 \item{specials}{Specials as list defined in \code{specials_smean}.}
-
-\item{period}{Integer value. The seasonal period for the calculation.}
 
 \item{...}{Further arguments.}
 
@@ -19,6 +17,6 @@ train_smean(.data, specials, period, ...)
 An object of class \code{SMEAN}.
 }
 \description{
-Train seasonal mean model. This is equivalent to a linear regression
+Train seasonal mean model (SMEAN). This is equivalent to a linear regression
    against seasonal dummy variables only (\code{TSLM(value ~ season())}).
 }

@@ -9,8 +9,6 @@ train_smedian(.data, specials, period, ...)
 \arguments{
 \item{specials}{Specials as list defined in \code{specials_smedian}.}
 
-\item{period}{Integer value. The seasonal period for the calculation.}
-
 \item{...}{Further arguments.}
 
 \item{data}{Input data as \code{tsibble}.}
@@ -19,5 +17,5 @@ train_smedian(.data, specials, period, ...)
 An object of class \code{SMEDIAN}.
 }
 \description{
-Train seasonal median model.
+Train seasonal median model (SMEDIAN).
 }

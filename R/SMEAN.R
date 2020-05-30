@@ -1,19 +1,17 @@
 
 #' @title Train seasonal mean model.
 #'
-#' @description Train seasonal mean model. This is equivalent to a linear regression
+#' @description Train seasonal mean model (SMEAN). This is equivalent to a linear regression
 #'    against seasonal dummy variables only (\code{TSLM(value ~ season())}).
 #'
 #' @param data Input data as \code{tsibble}.
 #' @param specials Specials as list defined in \code{specials_smean}.
-#' @param period Integer value. The seasonal period for the calculation.
 #' @param ... Further arguments.
 #'
 #' @return An object of class \code{SMEAN}.
 
 train_smean <- function(.data,
                         specials,
-                        period,
                         ...){
 
   if (length(measured_vars(.data)) > 1) {
@@ -27,26 +25,27 @@ train_smean <- function(.data,
   }
 
   # Prepare period
+  lag <- specials$lag[[1]]
   n <- length(y)
-  index <- rep(1:period, times = ceiling(n / period))[1:n]
+  index <- rep(1:lag, times = ceiling(n / lag))[1:n]
 
-  means <- map_dbl(
-    .x = 1:period,
+  smean <- map_dbl(
+    .x = 1:lag,
     .f = ~mean(y[index == .x], na.rm = TRUE)
   )
 
-  fit <- rep(means, times = ceiling(n / period))[1:n]
-  res <- y - fit
-  sigma <- sd(res, na.rm = TRUE)
+  fitted <- rep(smean, times = ceiling(n / lag))[1:n]
+  resid <- y - fitted
+  sigma <- sd(resid, na.rm = TRUE)
 
   structure(
     list(
-      .fitted = fit,
-      .resid = res,
-      mean = means,
+      .fitted = fitted,
+      .resid = resid,
+      smean = smean,
       sigma = sigma,
       last_period = last(index),
-      period = period
+      lag = lag
     ),
     class = "SMEAN"
   )
@@ -54,12 +53,25 @@ train_smean <- function(.data,
 
 
 
-specials_smean <- new_specials()
-
+specials_smean <- new_specials(
+  lag = function(lag = NULL) {
+    lag <- get_frequencies(period = lag, data = self$data, .auto = "smallest")
+    if (lag == 1) {
+      abort("Non-seasonal model specification provided, use RW() or provide a different lag specification.")
+    }
+    if (!rlang::is_integerish(lag)) {
+      warn("Non-integer lag orders for random walk models are not supported. Rounding to the nearest integer.")
+      lag <- round(lag)
+    }
+    lag
+  },
+  .required_specials = c("lag")
+)
 
 #' @title Automatic training of SMEANs.
 #'
-#' @description Automatic training of SMEANs.
+#' @description Automatic training seasonal mean model (SMEAN). This is equivalent to a linear regression
+#'    against seasonal dummy variables only (\code{TSLM(value ~ season())}).
 #'
 #' @param formula Model specification (see "Specials" section, currently not in use ...).
 #' @param ... Further arguments.
@@ -97,13 +109,13 @@ forecast.SMEAN <- function(object,
                            specials = NULL,
                            ...){
   # Extract model
-  means <- object$mean
+  smean <- object$smean
   last_period <- object$last_period
   sigma <- object$sigma
 
   n_ahead <- nrow(new_data)
-  index <- rep(1:length(means), times = ceiling((n_ahead + last_period) / length(means)))[(last_period + 1):(last_period + n_ahead)]
-  fcst <- means[index]
+  index <- rep(1:length(smean), times = ceiling((n_ahead + last_period) / length(smean)))[(last_period + 1):(last_period + n_ahead)]
+  fcst <- smean[index]
 
   # Return forecasts
   construct_fc(

@@ -15,5 +15,6 @@ SMEAN(formula, ...)
 smean_model An object of class \code{SMEAN}.
 }
 \description{
-Automatic training of SMEANs.
+Automatic training seasonal mean model (SMEAN). This is equivalent to a linear regression
+   against seasonal dummy variables only (\code{TSLM(value ~ season())}).
 }
