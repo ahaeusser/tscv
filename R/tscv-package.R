@@ -11,7 +11,7 @@
 #' @importFrom feasts ACF PACF
 #' @importFrom moments skewness kurtosis
 #' @importFrom nnfor elm mlp
-#' @importFrom forecast msts dshw tbats forecast
+#' @importFrom forecast msts dshw tbats thetaf forecast
 #' @importFrom matrixStats rowSds
 #' @import ggplot2
 #' @import tsibble
