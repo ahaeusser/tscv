@@ -10,6 +10,9 @@
 #' @importFrom magrittr "%>%"
 #' @importFrom feasts ACF PACF
 #' @importFrom moments skewness kurtosis
+#' @importFrom nnfor elm mlp
+#' @importFrom forecast msts dshw tbats forecast
+#' @importFrom matrixStats rowSds
 #' @import ggplot2
 #' @import tsibble
 #' @import fable
