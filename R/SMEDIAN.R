@@ -34,17 +34,16 @@ train_smedian <- function(.data,
     .f = ~median(y[index == .x], na.rm = TRUE)
   )
 
-  fits <- rep(medians, times = ceiling(n / period))[1:n]
-  res <- y - fits
+  fit <- rep(medians, times = ceiling(n / period))[1:n]
+  res <- y - fit
   sigma <- sd(res, na.rm = TRUE)
 
   structure(
     list(
-      fitted = fits,
-      resid = res,
+      .fitted = fit,
+      .resid = res,
       median = medians,
       sigma = sigma,
-      nobs = sum(!is.na(y)),
       last_period = last(index),
       period = period
     ),

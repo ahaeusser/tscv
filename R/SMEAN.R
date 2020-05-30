@@ -35,17 +35,16 @@ train_smean <- function(.data,
     .f = ~mean(y[index == .x], na.rm = TRUE)
   )
 
-  fits <- rep(means, times = ceiling(n / period))[1:n]
-  res <- y - fits
+  fit <- rep(means, times = ceiling(n / period))[1:n]
+  res <- y - fit
   sigma <- sd(res, na.rm = TRUE)
 
   structure(
     list(
-      fitted = fits,
-      resid = res,
+      .fitted = fit,
+      .resid = res,
       mean = means,
       sigma = sigma,
-      nobs = sum(!is.na(y)),
       last_period = last(index),
       period = period
     ),
