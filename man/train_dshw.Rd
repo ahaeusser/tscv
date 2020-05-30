@@ -4,12 +4,14 @@
 \alias{train_dshw}
 \title{Train DSHW model.}
 \usage{
-train_dshw(.data, specials, ...)
+train_dshw(.data, specials, periods, ...)
 }
 \arguments{
 \item{.data}{Input data as \code{tsibble}.}
 
 \item{specials}{Specials as list defined in \code{specials_dshw}.}
+
+\item{periods}{Integer vector. The periodicity of the time series (e.g. \code{periods = c(24, 168)} for hourly data).}
 
 \item{...}{Further arguments passed to \code{forecast::dshw()}.}
 }

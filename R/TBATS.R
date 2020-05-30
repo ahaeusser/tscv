@@ -1,25 +1,24 @@
 
 #' @title Train TBATS model.
 #'
-#' @description Train a TBATS model (Trigonometric, Box-Cox Transform, ...).
+#' @description Train a TBATS model (Trigonometric seasonality, Box-Cox transformation,
+#'    ARMA errors, Trend and Seasonal components).
 #'
 #' @param .data Input data as \code{tsibble}.
 #' @param specials Specials as list defined in \code{specials_tbats}.
+#' @param periods Integer vector. The periodicity of the time series (e.g. \code{periods = c(24, 168)} for hourly data).
 #' @param ... Further arguments passed to \code{forecast::tbats()}.
 #'
 #' @return An object of class \code{TBATS}.
 
 train_tbats <- function(.data,
                         specials,
+                        periods,
                         ...){
 
   if(length(tsibble::measured_vars(.data)) > 1){
     abort("Only univariate responses are supported by TBATS.")
   }
-
-  # Get seasonal periods (only two periods are possible)
-  periods <- common_periods(.data)
-  periods <- sort(as.numeric(periods))[1:2]
 
   # Prepare data for modelling
   y <- unclass(.data)[[measured_vars(.data)]]
@@ -32,19 +31,19 @@ train_tbats <- function(.data,
   # Train model
   mdl <- forecast::tbats(y = model_data, ...)
 
-  # Fill NAs in front of fitted values (adjust to equal length of actual values)
-  fit <- mdl$fitted
-  res <- mdl$residuals
-  sigma <- sd(res, na.rm = TRUE)
+  # Extract fitted values and residuals
+  fitted <- mdl$fitted
+  resid <- mdl$residuals
+  sigma <- sd(resid, na.rm = TRUE)
 
   # Return model
   structure(
     list(
       model = mdl,
       est = list(
-        .fitted = fit,
-        .resid = res,
-        sigma = sigma)),
+        .fitted = fitted,
+        .resid = resid),
+      sigma = sigma),
     class = "TBATS")
 }
 
@@ -52,9 +51,10 @@ train_tbats <- function(.data,
 
 specials_tbats <- new_specials()
 
-#' @title Automatic training of TBATSs.
+#' @title Automatic training of a TBATS model.
 #'
-#' @description Automatic training of TBATSs.
+#' @description Automatic training of a TBATS model (Trigonometric seasonality, Box-Cox transformation,
+#'    ARMA errors, Trend and Seasonal components). This function is a wrapper for \code{forecast::tbats()}.
 #'
 #' @param formula Model specification (see "Specials" section, currently not in use...)
 #' @param ... Further arguments passed to \code{forecast::tbats()}.
@@ -91,14 +91,12 @@ forecast.TBATS <- function(object,
                            new_data,
                            specials = NULL,
                            ...){
-  # Extract model
-  mdl <- object$model
   # Forecast model
-  fcst <- forecast(mdl, h = nrow(new_data))
+  fcst <- forecast(object$model, h = nrow(new_data))
 
   # Extract point forecast and simulations
   mean <- as.numeric(fcst$mean)
-  sigma <- as.numeric(object$est$sigma)
+  sigma <- as.numeric(object$sigma)
 
   # Return forecasts
   construct_fc(

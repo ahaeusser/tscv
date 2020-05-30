@@ -32,16 +32,16 @@ train_mlp <- function(.data,
   n_fitted <- length(mdl$fitted)
 
   # Fill NAs in front of fitted values (adjust to equal length of actual values)
-  fit <- c(rep(NA_real_, n_total - n_fitted), mdl$fitted)
-  res <- mdl$y - fit
+  fitted <- c(rep(NA_real_, n_total - n_fitted), mdl$fitted)
+  resid <- mdl$y - fitted
 
   # Return model
   structure(
     list(
       model = mdl,
       est = list(
-        .fitted = fit,
-        .resid = res)),
+        .fitted = fitted,
+        .resid = resid)),
     class = "MLP")
 }
 
@@ -51,7 +51,8 @@ specials_mlp <- new_specials()
 
 #' @title Automatic training of MLPs.
 #'
-#' @description Automatic training of MLPs.
+#' @description Automatic training of Multilayer Perceptrons (MLPs). This function
+#'    is a wrapper for \code{nnfor::mlp()}.
 #'
 #' @param formula Model specification (see "Specials" section, currently not in use...)
 #' @param ... Further arguments passed to \code{nnfor::mlp()}.
@@ -88,20 +89,18 @@ forecast.MLP <- function(object,
                          new_data,
                          specials = NULL,
                          ...){
-  # Extract model
-  mdl <- object$model
   # Forecast model
-  fcst <- forecast(mdl, h = nrow(new_data))
+  fcst <- forecast(object$model, h = nrow(new_data))
 
   # Extract point forecast and simulations
   mean <- fcst$mean
-  sim <- fcst$all.mean
+  sigma <- rowSds(fcst$all.mean)
 
   # Return forecasts
   construct_fc(
     point = mean,
-    sd = rowSds(sim),
-    dist = dist_normal(mean = mean, sd = rowSds(sim)))
+    sd = sigma,
+    dist = dist_normal(mean = mean, sd = sigma))
 }
 
 

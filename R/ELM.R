@@ -32,16 +32,16 @@ train_elm <- function(.data,
   n_fitted <- length(mdl$fitted)
 
   # Fill NAs in front of fitted values (adjust to equal length of actual values)
-  fit <- c(rep(NA_real_, n_total - n_fitted), mdl$fitted)
-  res <- mdl$y - fit
+  fitted <- c(rep(NA_real_, n_total - n_fitted), mdl$fitted)
+  resid <- mdl$y - fitted
 
   # Return model
   structure(
     list(
       model = mdl,
       est = list(
-        .fitted = fit,
-        .resid = res)),
+        .fitted = fitted,
+        .resid = resid)),
     class = "ELM")
 }
 
@@ -51,7 +51,8 @@ specials_elm <- new_specials()
 
 #' @title Automatic training of ELMs.
 #'
-#' @description Automatic training of ELMs.
+#' @description Automatic training of Extreme Learning Machines (ELMs). This function
+#'    is a wrapper for \code{nnfor::elm()}.
 #'
 #' @param formula Model specification (see "Specials" section, currently not in use...)
 #' @param ... Further arguments passed to \code{nnfor::elm()}.
@@ -88,20 +89,18 @@ forecast.ELM <- function(object,
                          new_data,
                          specials = NULL,
                          ...){
-  # Extract model
-  mdl <- object$model
   # Forecast model
-  fcst <- forecast(mdl, h = nrow(new_data))
+  fcst <- forecast(object$model, h = nrow(new_data))
 
   # Extract point forecast and simulations
   mean <- fcst$mean
-  sim <- fcst$all.mean
+  sigma <- rowSds(fcst$all.mean)
 
   # Return forecasts
   construct_fc(
     point = mean,
-    sd = rowSds(sim),
-    dist = dist_normal(mean = mean, sd = rowSds(sim)))
+    sd = sigma,
+    dist = dist_normal(mean = mean, sd = sigma))
 }
 
 

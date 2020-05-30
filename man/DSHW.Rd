@@ -2,7 +2,7 @@
 % Please edit documentation in R/DSHW.R
 \name{DSHW}
 \alias{DSHW}
-\title{Automatic training of DSHWs.}
+\title{Automatic training of DSHW.}
 \usage{
 DSHW(formula, ...)
 }
@@ -15,5 +15,6 @@ DSHW(formula, ...)
 dshw_model An object of class \code{DSHW}.
 }
 \description{
-Automatic training of DSHWs.
+Automatic training of a Double Seasonal Holt-Winters model (DSHW). This function
+   is a wrapper for \code{forecast::dshw()}.
 }

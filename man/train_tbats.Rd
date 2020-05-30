@@ -4,12 +4,14 @@
 \alias{train_tbats}
 \title{Train TBATS model.}
 \usage{
-train_tbats(.data, specials, ...)
+train_tbats(.data, specials, periods, ...)
 }
 \arguments{
 \item{.data}{Input data as \code{tsibble}.}
 
 \item{specials}{Specials as list defined in \code{specials_tbats}.}
+
+\item{periods}{Integer vector. The periodicity of the time series (e.g. \code{periods = c(24, 168)} for hourly data).}
 
 \item{...}{Further arguments passed to \code{forecast::tbats()}.}
 }
@@ -17,5 +19,6 @@ train_tbats(.data, specials, ...)
 An object of class \code{TBATS}.
 }
 \description{
-Train a TBATS model (Trigonometric, Box-Cox Transform, ...).
+Train a TBATS model (Trigonometric seasonality, Box-Cox transformation,
+   ARMA errors, Trend and Seasonal components).
 }

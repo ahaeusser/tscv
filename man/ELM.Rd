@@ -15,5 +15,6 @@ ELM(formula, ...)
 elm_model An object of class \code{ELM}.
 }
 \description{
-Automatic training of ELMs.
+Automatic training of Extreme Learning Machines (ELMs). This function
+   is a wrapper for \code{nnfor::elm()}.
 }

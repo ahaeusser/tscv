@@ -5,30 +5,22 @@
 #'
 #' @param .data Input data as \code{tsibble}.
 #' @param specials Specials as list defined in \code{specials_dshw}.
+#' @param periods Integer vector. The periodicity of the time series (e.g. \code{periods = c(24, 168)} for hourly data).
 #' @param ... Further arguments passed to \code{forecast::dshw()}.
 #'
 #' @return An object of class \code{DSHW}.
 
 train_dshw <- function(.data,
-                      specials,
-                      ...){
+                       specials,
+                       periods,
+                       ...){
 
   if(length(tsibble::measured_vars(.data)) > 1){
     abort("Only univariate responses are supported by DSHW.")
   }
 
-  # Get seasonal periods (only two periods are possible)
-  periods <- common_periods(.data)
-  periods <- sort(as.numeric(periods))[1:2]
-
   # Prepare data for modelling
   y <- unclass(.data)[[measured_vars(.data)]]
-
-  # Shift if y contains negative values
-  # if(y_min < 0) {
-  #   y <- y + abs(y_min) + 1
-  # }
-
   model_data <- msts(data = y, seasonal.periods = periods)
 
   if(any(is.na(model_data))){
@@ -38,19 +30,19 @@ train_dshw <- function(.data,
   # Train model
   mdl <- forecast::dshw(y = model_data, ...)
 
-  # Fill NAs in front of fitted values (adjust to equal length of actual values)
-  fit <- mdl$fitted
-  res <- mdl$residuals
-  sigma <- sd(res, na.rm = TRUE)
+  # Extract fitted values and residuals
+  fitted <- mdl$fitted
+  resid <- mdl$residuals
+  sigma <- sd(resid, na.rm = TRUE)
 
   # Return model
   structure(
     list(
       model = mdl,
       est = list(
-        .fitted = fit,
-        .resid = res,
-        sigma = sigma)),
+        .fitted = fitted,
+        .resid = resid),
+      sigma = sigma),
     class = "DSHW")
 }
 
@@ -58,9 +50,10 @@ train_dshw <- function(.data,
 
 specials_dshw <- new_specials()
 
-#' @title Automatic training of DSHWs.
+#' @title Automatic training of DSHW.
 #'
-#' @description Automatic training of DSHWs.
+#' @description Automatic training of a Double Seasonal Holt-Winters model (DSHW). This function
+#'    is a wrapper for \code{forecast::dshw()}.
 #'
 #' @param formula Model specification (see "Specials" section, currently not in use...)
 #' @param ... Further arguments passed to \code{forecast::dshw()}.
@@ -97,10 +90,8 @@ forecast.DSHW <- function(object,
                          new_data,
                          specials = NULL,
                          ...){
-  # Extract model
-  mdl <- object$model
   # Forecast model
-  fcst <- forecast(mdl, h = nrow(new_data))
+  fcst <- forecast(object$model, h = nrow(new_data))
 
   # Extract point forecast and simulations
   mean <- fcst$mean

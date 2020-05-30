@@ -2,7 +2,7 @@
 % Please edit documentation in R/TBATS.R
 \name{TBATS}
 \alias{TBATS}
-\title{Automatic training of TBATSs.}
+\title{Automatic training of a TBATS model.}
 \usage{
 TBATS(formula, ...)
 }
@@ -15,5 +15,6 @@ TBATS(formula, ...)
 tbats_model An object of class \code{TBATS}.
 }
 \description{
-Automatic training of TBATSs.
+Automatic training of a TBATS model (Trigonometric seasonality, Box-Cox transformation,
+   ARMA errors, Trend and Seasonal components). This function is a wrapper for \code{forecast::tbats()}.
 }
