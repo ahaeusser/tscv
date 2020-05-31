@@ -13,6 +13,7 @@
 #' @importFrom nnfor elm mlp
 #' @importFrom forecast msts dshw tbats thetaf forecast
 #' @importFrom matrixStats rowSds
+#' @importFrom yardstick mae_vec rmse_vec mape_vec smape_vec mase_vec metric_vec_template metric_summarizer
 #' @import ggplot2
 #' @import tsibble
 #' @import fable
