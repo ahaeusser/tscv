@@ -1,3 +1,4 @@
+
 #' @title Plot forecast accuracy metrics.
 #'
 #' @description Plot forecast accuracy metrics, either along the forecast horizon or the slices. The user can define
