@@ -34,32 +34,17 @@ plot_season <- function(data,
                         theme_set = theme_tscv(),
                         theme_config = list()) {
 
-  date_time <- index_var(data)
-  variable <- key_vars(data)
-  value <- measured_vars(data)
-
-  # # Prepare data
-  # data <- data %>%
-  #   mutate(wday = lubridate::wday(!!sym(date_time), label = TRUE, week_start = getOption("lubridate.week.start", 1))) %>%
-  #   mutate(hour = lubridate::hour(!!sym(date_time))) %>%
-  #   as_tibble() %>%
-  #   select(-!!sym(date_time)) %>%
-  #   group_by(!!!syms(variable), wday, hour) %>%
-  #   summarise(
-  #     `10%` = quantile(!!sym(value), probs = 0.10, na.rm = TRUE),
-  #     `25%` = quantile(!!sym(value), probs = 0.25, na.rm = TRUE),
-  #     median = quantile(!!sym(value), probs = 0.5, na.rm = TRUE),
-  #     `75%` = quantile(!!sym(value), probs = 0.75, na.rm = TRUE),
-  #     `90%` = quantile(!!sym(value), probs = 0.90, na.rm = TRUE)) %>%
-  #   ungroup()
+  dttm <- index_var(data)
+  response <- response_vars(data)
+  value <- value_var(data)
 
   # Prepare data
   data <- data %>%
-    mutate(wday = lubridate::wday(!!sym(date_time), label = TRUE, week_start = getOption("lubridate.week.start", 1))) %>%
-    mutate(hour = lubridate::hour(!!sym(date_time))) %>%
+    mutate(wday = lubridate::wday(!!sym(dttm), label = TRUE, week_start = getOption("lubridate.week.start", 1))) %>%
+    mutate(hour = lubridate::hour(!!sym(dttm))) %>%
     as_tibble() %>%
-    select(-!!sym(date_time)) %>%
-    group_by(!!!syms(variable), wday, hour) %>%
+    select(-!!sym(dttm)) %>%
+    group_by(!!!syms(response), wday, hour) %>%
     summarise(
       median = median(!!sym(value), na.rm = TRUE),
       mad = mad(!!sym(value), na.rm = TRUE)) %>%
@@ -70,27 +55,8 @@ plot_season <- function(data,
 
   p <- p + facet_grid(
     cols = vars(wday),
-    rows = vars(!!!syms(variable)),
+    rows = vars(!!!syms(response)),
     scales = "free")
-
-  # p <- p + geom_ribbon(
-  #   aes(
-  #     x = hour,
-  #     ymin = `10%`,
-  #     ymax = `90%`,
-  #     fill = "10%-90%"),
-  #   alpha = 0.2)
-  #
-  # p <- p + geom_ribbon(
-  #   aes(
-  #     x = hour,
-  #     ymin = `25%`,
-  #     ymax = `75%`,
-  #     fill = "25%-75%"),
-  #   alpha = 0.3)
-
-  # p <- p + scale_fill_manual(
-  #   values = c(fill_color, fill_color))
 
   p <- p + geom_ribbon(
     aes(
@@ -121,7 +87,7 @@ plot_season <- function(data,
   # Adjust annotations
   p <- p + labs(title = title)
   p <- p + labs(subtitle = subtitle)
-  p <- p + labs(x = if_else(is_empty(xlab), date_time, xlab))
+  p <- p + labs(x = if_else(is_empty(xlab), dttm, xlab))
   p <- p + labs(y = if_else(is_empty(ylab), value, ylab))
   p <- p + labs(caption = caption)
 

@@ -26,7 +26,7 @@
 #' @export
 
 plot_corr <- function(data,
-                      lag_max = 48,
+                      lag_max = 25,
                       demean = TRUE,
                       level = 0.9,
                       title = NULL,
@@ -44,15 +44,15 @@ plot_corr <- function(data,
                       theme_set = theme_tscv(),
                       theme_config = list()) {
 
-  date_time <- index_var(data)
-  variable <- key_vars(data)
-  value <- measured_vars(data)
+  dttm <- index_var(data)
+  response <- response_vars(data)
+  value <- value_var(data)
 
   # Calculate confidence limits
   sign_tbl <- data %>%
     as_tibble() %>%
-    select(-!!sym(date_time)) %>%
-    group_by(!!!syms(variable)) %>%
+    select(-!!sym(dttm)) %>%
+    group_by(!!!syms(response)) %>%
     summarise(n_obs = n()) %>%
     ungroup() %>%
     mutate(conf = qnorm((1 - level) / 2) / sqrt(n_obs))
@@ -62,22 +62,22 @@ plot_corr <- function(data,
     ACF(!!sym(value), lag_max = lag_max, demean = demean) %>%
     as_tibble() %>%
     rename(ACF = acf) %>%
-    select(!!!syms(variable), ACF) %>%
+    select(!!!syms(response), ACF) %>%
     gather(
       key = "type",
       value = "value",
-      -c(!!!syms(variable)))
+      -c(!!!syms(response)))
 
   # Estimate sample autocorrelation function
   pacf <- data %>%
     PACF(!!sym(value), lag_max = lag_max) %>%
     as_tibble() %>%
     rename(PACF = pacf) %>%
-    select(!!!syms(variable), PACF) %>%
+    select(!!!syms(response), PACF) %>%
     gather(
       key = "type",
       value = "value",
-      -c(!!!syms(variable)))
+      -c(!!!syms(response)))
 
   data <- bind_rows(acf, pacf)
 
@@ -85,8 +85,8 @@ plot_corr <- function(data,
   data <- left_join(
     data,
     sign_tbl,
-    by = variable) %>%
-    group_by(!!!syms(variable)) %>%
+    by = response) %>%
+    group_by(!!!syms(response)) %>%
     mutate(lag = row_number()) %>%
     mutate(sign = ifelse(abs(value) > abs(conf), TRUE, FALSE)) %>%
     ungroup()
@@ -106,9 +106,9 @@ plot_corr <- function(data,
     alpha = bar_alpha,
     width = bar_width)
 
-  # Faceting by .variable and .slice
+  # Faceting by response and type
   p <- p + facet_grid(
-    vars(!!!syms(variable)),
+    vars(!!!syms(response)),
     vars(type),
     scales = "free")
 

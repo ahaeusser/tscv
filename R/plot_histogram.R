@@ -33,8 +33,8 @@ plot_histogram <- function(data,
                            theme_config = list(),
                            ...) {
 
-  variable <- key_vars(data)
-  value <- measured_vars(data)
+  response <- response_vars(data)
+  value <- value_var(data)
 
   # Create ggplot
   p <- ggplot(
@@ -44,7 +44,7 @@ plot_histogram <- function(data,
 
   # Create grid
   p <- p + facet_wrap(
-    vars(!!!syms(variable)),
+    vars(!!!syms(response)),
     scales = "free"
     )
 

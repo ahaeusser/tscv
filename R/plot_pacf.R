@@ -42,15 +42,15 @@ plot_pacf <- function(data,
                       theme_set = theme_tscv(),
                       theme_config = list()) {
 
-  date_time <- index_var(data)
-  variable <- key_vars(data)
-  value <- measured_vars(data)
+  dttm <- index_var(data)
+  response <- response_vars(data)
+  value <- value_var(data)
 
   # Calculate confidence limits
   sign_tbl <- data %>%
     as_tibble() %>%
-    select(-!!sym(date_time)) %>%
-    group_by(!!!syms(variable)) %>%
+    select(-!!sym(dttm)) %>%
+    group_by(!!!syms(response)) %>%
     summarise(n_obs = n()) %>%
     ungroup() %>%
     mutate(conf = qnorm((1 - level) / 2) / sqrt(n_obs))
@@ -60,18 +60,18 @@ plot_pacf <- function(data,
     PACF(!!sym(value), lag_max = lag_max) %>%
     as_tibble() %>%
     rename(PACF = pacf) %>%
-    select(!!!syms(variable), PACF) %>%
+    select(!!!syms(response), PACF) %>%
     gather(
       key = "type",
       value = "value",
-      -c(!!!syms(variable)))
+      -c(!!!syms(response)))
 
   # Prepare data for plotting
   data <- left_join(
     data,
     sign_tbl,
-    by = variable) %>%
-    group_by(!!!syms(variable)) %>%
+    by = response) %>%
+    group_by(!!!syms(response)) %>%
     mutate(lag = row_number()) %>%
     mutate(sign = ifelse(abs(value) > abs(conf), TRUE, FALSE)) %>%
     ungroup()
@@ -93,7 +93,7 @@ plot_pacf <- function(data,
 
   # Create grid
   p <- p + facet_wrap(
-    vars(!!!syms(variable)),
+    vars(!!!syms(response)),
     scales = "free")
 
   # Color bars depending on significance

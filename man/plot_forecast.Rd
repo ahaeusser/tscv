@@ -5,6 +5,7 @@
 \title{Plot the actual and fitted values and forecasts.}
 \usage{
 plot_forecast(
+  fcst,
   data,
   split = NULL,
   model = NULL,
@@ -22,7 +23,9 @@ plot_forecast(
 )
 }
 \arguments{
-\item{data}{A tsibble containing the data and the forecasts.}
+\item{fcst}{A `fable` containing the forecasts for the models, splits, etc.}
+
+\item{data}{A `tsibble` containing the training and testing data.}
 
 \item{split}{Integer vector. The split id (time slices) of the time series cross-validation.}
 

@@ -39,8 +39,8 @@ plot_qq <- function(data,
                     theme_set = theme_tscv(),
                     theme_config = list()) {
 
-  variable <- key_vars(data)
-  value <- measured_vars(data)
+  response <- response_vars(data)
+  value <- value_var(data)
 
   # Create ggplot
   p <- ggplot(
@@ -63,7 +63,7 @@ plot_qq <- function(data,
 
   # Create grid
   p <- p + facet_wrap(
-    vars(!!!syms(variable)),
+    vars(!!!syms(response)),
     scales = "free")
 
   # Axis scaling

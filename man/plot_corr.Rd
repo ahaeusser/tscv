@@ -6,7 +6,7 @@
 \usage{
 plot_corr(
   data,
-  lag_max = 48,
+  lag_max = 25,
   demean = TRUE,
   level = 0.9,
   title = NULL,

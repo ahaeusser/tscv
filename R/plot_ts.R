@@ -46,15 +46,15 @@ plot_ts <- function(data,
                     theme_config = list(),
                     ...) {
 
-  date_time <- index_var(data)
-  variable <- key_vars(data)
-  value <- measured_vars(data)
+  dttm <- index_var(data)
+  response <- response_vars(data)
+  value <- value_var(data)
 
   # Create ggplot
   p <- ggplot(
     data = data,
     aes(
-      x = !!sym(date_time),
+      x = !!sym(dttm),
       y = !!sym(value))
     )
 
@@ -81,7 +81,7 @@ plot_ts <- function(data,
 
   # Create grid
   p <- p + facet_wrap(
-    vars(!!!syms(variable)),
+    vars(!!!syms(response)),
     scales = "free"
     )
 
@@ -91,7 +91,7 @@ plot_ts <- function(data,
   # Adjust annotations
   p <- p + labs(title = title)
   p <- p + labs(subtitle = subtitle)
-  p <- p + labs(x = if_else(is_empty(xlab), date_time, xlab))
+  p <- p + labs(x = if_else(is_empty(xlab), dttm, xlab))
   p <- p + labs(y = if_else(is_empty(ylab), value, ylab))
   p <- p + labs(caption = caption)
 
