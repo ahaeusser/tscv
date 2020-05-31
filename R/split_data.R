@@ -30,7 +30,7 @@ split_data <- function(data,
                        n_lag = 0,
                        mode = "slide") {
 
-  date_time <- index(data)
+  dttm <- index(data)
   variable <- key(data)
 
   data <- data %>%
@@ -38,9 +38,9 @@ split_data <- function(data,
     as_tibble()
 
   time <- data %>%
-    select(!!date_time) %>%
+    select(!!dttm) %>%
     distinct() %>%
-    pull(!!date_time)
+    pull(!!dttm)
 
   n_total <- length(time)
 
@@ -107,7 +107,7 @@ split_data <- function(data,
 
   data <- data %>%
     as_tsibble(
-      index = !!date_time,
+      index = !!dttm,
       key = c(!!!variable, split))
 
   return(data)
