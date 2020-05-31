@@ -25,25 +25,21 @@
 #' @return data_tbl A tibble containing the summary statistics.
 #' @export
 
-summarise_data <- function(data) {
+summarise_data <- function(data, value) {
 
-  date_time <- index_var(data)
-  variable <- key_vars(data)
-  value <- measured_vars(data)
-
-  if (length(value) > 1) {
-    abort("Only one measured variable is supported.")
-  }
+  dttm <- index_var(data)
+  response <- response_vars(data)
+  value <- value_var(data)
 
   data_tbl <- data %>%
     as_tibble() %>%
-    group_by(!!!syms(variable)) %>%
+    group_by(!!!syms(response)) %>%
     summarise(
-      start = first(!!sym(date_time)),
-      end = last(!!sym(date_time)),
+      start = first(!!sym(dttm)),
+      end = last(!!sym(dttm)),
       n_obs = n(),
-      n_missing = sum(is.na(.)),
-      complete_rate = sum(is.na(.)) / n(),
+      n_missing = sum(is.na(!!sym(value))),
+      complete_rate = sum(!is.na(!!sym(value))) / n_obs,
       mean = mean(!!sym(value), na.rm = TRUE),
       sd = sd(!!sym(value), na.rm = TRUE),
       p0 = quantile(!!sym(value), probs = 0, na.rm = TRUE),

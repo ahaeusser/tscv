@@ -4,7 +4,7 @@
 \alias{summarise_data}
 \title{Summary statistics for time series data.}
 \usage{
-summarise_data(data)
+summarise_data(data, value)
 }
 \arguments{
 \item{data}{A valid tsibble in long format with one measurement variable.}
