@@ -2,36 +2,37 @@
 % Please edit documentation in R/error_metrics.R
 \name{error_metrics}
 \alias{error_metrics}
-\title{Create forecast accuracy measures.}
+\title{Estimate accuracy metrics to evaluate point forecast.}
 \usage{
-error_metrics(errors, dim = c("slice", "horizon"))
+error_metrics(fcst, data, period = NULL, by = "split")
 }
 \arguments{
-\item{errors}{A tsibble in long format with standard columns (.date, .variable, .value, etc.) provided by the function \code{create_errors(...)}.}
+\item{fcst}{A `fable` containing the forecasts for the models, splits, etc.}
 
-\item{dim}{Character value defining the dimension for the evaluation. Possible values are "slice" or "horizon" or both.}
+\item{data}{A `tsibble` containing the training and testing data.}
+
+\item{period}{Integer value. The period used for the estimation of the in-sample
+MAE of seasonal naive forecast. The in-sample MAE is required for scaling the sMASE.}
+
+\item{by}{Character value. Either accuracy is estimated by \code{split} or \code{horizon}.}
 }
 \value{
-metrics A tibble with the following columns:
-   \itemize{
-      \item{variable: Target variable}
-      \item{model: Forecasting model}
-      \item{dim: Forecast accuracy by slice or by horizon}
-      \item{num: The number of the slice or the nth-step forecast}
-      \item{type: Training or testing}
-      \item{metric: The accuracy metric}
-      \item{value: Measurement variable}
-      }
+A tibble containg the accuracy metrics for all key variables and models.
 }
 \description{
-This function creates several forecast accuracy measures to evaluate point forecast. By default,
-   the following accuracy measures are provided:
+This function estimates several accuracy metrics to evaluate the
+   accuracy of the point forecasts. By default, the following accuracy metrics
+   are provided:
+
    \itemize{
-      \item{ME: Mean Error}
-      \item{MAE: Mean Absolute Error}
-      \item{MSE: Mean Squared Error}
-      \item{RMSE: Root Mean Squared Error}
-      \item{MPE: Mean Percentage Error}
-      \item{MAPE: Mean Absolute Percentage Error}
+      \item{\code{ME}: mean error}
+      \item{\code{MAE}: mean absolute error}
+      \item{\code{MSE}: mean squared error}
+      \item{\code{RMSE}: root mean squared error}
+      \item{\code{MAPE}: mean absolute percentage error}
+      \item{\code{sMAPE}: scaled mean absolute percentage error}
+      \item{\code{MPE}: mean percentage error}
+      \item{\code{MASE}: mean absolute scaled error}
+      \item{\code{sMASE}: seasonal mean absolute scaled error}
       }
 }

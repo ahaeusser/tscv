@@ -1,128 +1,113 @@
 
-#' @title Create forecast accuracy measures.
+#' @title Estimate accuracy metrics to evaluate point forecast.
 #'
-#' @description This function creates several forecast accuracy measures to evaluate point forecast. By default,
-#'    the following accuracy measures are provided:
+#' @description This function estimates several accuracy metrics to evaluate the
+#'    accuracy of the point forecasts. By default, the following accuracy metrics
+#'    are provided:
+#'
 #'    \itemize{
-#'       \item{ME: Mean Error}
-#'       \item{MAE: Mean Absolute Error}
-#'       \item{MSE: Mean Squared Error}
-#'       \item{RMSE: Root Mean Squared Error}
-#'       \item{MPE: Mean Percentage Error}
-#'       \item{MAPE: Mean Absolute Percentage Error}
+#'       \item{\code{ME}: mean error}
+#'       \item{\code{MAE}: mean absolute error}
+#'       \item{\code{MSE}: mean squared error}
+#'       \item{\code{RMSE}: root mean squared error}
+#'       \item{\code{MAPE}: mean absolute percentage error}
+#'       \item{\code{sMAPE}: scaled mean absolute percentage error}
+#'       \item{\code{MPE}: mean percentage error}
+#'       \item{\code{MASE}: mean absolute scaled error}
+#'       \item{\code{sMASE}: seasonal mean absolute scaled error}
 #'       }
 #'
-#' @param errors A tsibble in long format with standard columns (.date, .variable, .value, etc.) provided by the function \code{create_errors(...)}.
-#' @param dim Character value defining the dimension for the evaluation. Possible values are "slice" or "horizon" or both.
+#' @param fcst A `fable` containing the forecasts for the models, splits, etc.
+#' @param data A `tsibble` containing the training and testing data.
+#' @param period Integer value. The period used for the estimation of the in-sample
+#'    MAE of seasonal naive forecast. The in-sample MAE is required for scaling the sMASE.
+#' @param by Character value. Either accuracy is estimated by \code{split} or \code{horizon}.
 #'
-#' @return metrics A tibble with the following columns:
-#'    \itemize{
-#'       \item{variable: Target variable}
-#'       \item{model: Forecasting model}
-#'       \item{dim: Forecast accuracy by slice or by horizon}
-#'       \item{num: The number of the slice or the nth-step forecast}
-#'       \item{type: Training or testing}
-#'       \item{metric: The accuracy metric}
-#'       \item{value: Measurement variable}
-#'       }
+#' @return A tibble containg the accuracy metrics for all key variables and models.
 #' @export
 
-error_metrics <- function(errors,
-                          dim = c("slice", "horizon")) {
+error_metrics <- function(fcst,
+                          data,
+                          period = NULL,
+                          by = "split") {
+  dttm <- index_var(fcst)
+  response <- response_vars(fcst)
+  value <- value_var(fcst)
 
-  # Exclude the last slice in errors ..........................................
-  # (no test data are available resulting in NaNs)
+  if (is_empty(period)) {
+    period <- min(common_periods(data))
+  }
 
-  errors <- errors %>%
+  # Prepare train and test data
+  # In-sample MAE of seasonal naive is required for scaling of MASE
+  train <- data %>%
+    filter(sample == "train") %>%
+    rename(actual = !!sym(value))
+
+  test <- data %>%
+    filter(sample == "test") %>%
+    rename(actual = !!sym(value))
+
+  # Estimate in-sample MAE for scaling of sMASE
+  mae_train <- train %>%
     as_tibble() %>%
-    filter(!(slice) == max(errors$slice))
+    group_by(!!!syms(response), split) %>%
+    mutate(lagged = dplyr::lag(actual, n = period)) %>%
+    summarise(
+      mae_train = mae_vec(truth = actual, estimate = lagged)) %>%
+    ungroup()
 
-  if (any(dim == "horizon")) {
-    # Calculate error metrics
-    error_metrics <- errors %>%
-      filter(type == "error") %>%
-      group_by(variable, model, horizon) %>%
-      summarise(
-        ME = mean(value, na.rm = TRUE),
-        MAE = mean(abs(value), na.rm = TRUE),
-        MSE = mean(value^2, na.rm = TRUE),
-        RMSE = sqrt(MSE)) %>%
-      gather(key = "metric",
-             value = "value",
-             -c(variable, model, horizon)) %>%
-      rename(num = horizon) %>%
-      add_column(dim = "horizon", .before = "num") %>%
-      add_column(type = "test", .after = "num") %>%
-      ungroup()
+  # Join in-sample MAE to test data
+  test <- left_join(
+    x = test,
+    y = mae_train,
+    by = c(response, "split")
+  )
 
-    # Calculate percentage accuracy metrics
-    pct_error_metrics <- errors %>%
-      filter(type == "pct_error") %>%
-      group_by(variable, model, horizon) %>%
-      summarise(
-        MPE = mean(value, na.rm = TRUE),
-        MAPE = mean(abs(value), na.rm = TRUE)) %>%
-      gather(key = "metric",
-             value = "value",
-             -c(variable, model, horizon)) %>%
-      rename(num = horizon) %>%
-      add_column(dim = "horizon", .before = "num") %>%
-      add_column(type = "test", .after = "num") %>%
-      ungroup()
+  # Join test and forecast data
+  data <- left_join(
+    x = fcst,
+    y = test,
+    by = c(response, "split", dttm)
+  )
 
-    metrics_horizon <- bind_rows(
-      error_metrics,
-      pct_error_metrics)
+  # Estimate common accuracy metrics
+  metrics <- data %>%
+    as_tibble() %>%
+    group_by(!!!syms(response), .model, !!sym(by)) %>%
+    summarise(
+      ME = me_vec(truth = actual, estimate = !!sym(value)),
+      MAE = mae_vec(truth = actual, estimate = !!sym(value)),
+      MSE = mse_vec(truth = actual, estimate = !!sym(value)),
+      RMSE = rmse_vec(truth = actual, estimate = !!sym(value)),
+      MAPE = mape_vec(truth = actual, estimate = !!sym(value)),
+      sMAPE = smape_vec(truth = actual, estimate = !!sym(value)),
+      MPE = mpe_vec(truth = actual, estimate = !!sym(value)),
+      MASE = mase_vec(truth = actual, estimate = !!sym(value))) %>%
+    arrange(!!!syms(response), .model, !!sym(by)) %>%
+    ungroup()
 
-  } else {
-    metrics_horizon <- NULL
-  }
+  # Estimate seasonal MASE
+  mase <- data %>%
+    as_tibble() %>%
+    mutate(q = (actual - !!sym(value)) / mae_train) %>%
+    group_by(!!!syms(response), .model, !!sym(by)) %>%
+    summarise(
+      sMASE = mean(abs(q), na.rm = TRUE)) %>%
+    ungroup()
 
-  if (any(dim == "slice")) {
-    # Calculate error metrics
-    error_metrics <- errors %>%
-      filter(type == "error") %>%
-      group_by(variable, model, slice) %>%
-      summarise(
-        ME = mean(value, na.rm = TRUE),
-        MAE = mean(abs(value), na.rm = TRUE),
-        MSE = mean(value^2, na.rm = TRUE),
-        RMSE = sqrt(MSE)) %>%
-      gather(key = "metric",
-             value = "value",
-             -c(variable, model, slice)) %>%
-      rename(num = slice) %>%
-      add_column(dim = "slice", .before = "num") %>%
-      add_column(type = "test", .after = "num") %>%
-      ungroup()
+  metrics <- left_join(
+    x = metrics,
+    y = mase,
+    by = c(response, ".model", by)
+  )
 
-    # Calculate percentage accuracy metrics
-    pct_error_metrics <- errors %>%
-      filter(type == "pct_error") %>%
-      group_by(variable, model, slice) %>%
-      summarise(
-        MPE = mean(value, na.rm = TRUE),
-        MAPE = mean(abs(value), na.rm = TRUE)) %>%
-      gather(key = "metric",
-             value = "value",
-             -c(variable, model, slice)) %>%
-      rename(num = slice) %>%
-      add_column(dim = "slice", .before = "num") %>%
-      add_column(type = "test", .after = "num") %>%
-      ungroup()
-
-    metrics_slice <- bind_rows(
-      error_metrics,
-      pct_error_metrics)
-
-  } else {
-    metrics_slice <- NULL
-  }
-
-  # Concatenate objects
-  metrics <- bind_rows(
-    metrics_slice,
-    metrics_horizon)
+  metrics <- metrics %>%
+    pivot_longer(
+      cols = c(ME, MAE, MSE, RMSE, MAPE, sMAPE, MPE, MASE, sMASE),
+      names_to = "metric",
+      values_to = "value") %>%
+    arrange(!!!syms(response), .model, metric)
 
   return(metrics)
 }
