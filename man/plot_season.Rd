@@ -13,9 +13,9 @@ plot_season(
   caption = NULL,
   line_width = 0.75,
   line_type = "solid",
-  line_color = "#31688E",
+  line_color = "grey35",
   line_alpha = 1,
-  fill_color = "#31688E",
+  fill_color = "grey35",
   fill_alpha = 0.2,
   theme_set = theme_tscv(),
   theme_config = list()

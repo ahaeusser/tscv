@@ -29,7 +29,7 @@ plot_season2 <- function(data,
                          caption = NULL,
                          line_width = 0.75,
                          line_type = "solid",
-                         line_color = "#31688EFF",
+                         line_color = "grey35",
                          line_alpha = 1,
                          theme_set = theme_tscv(),
                          theme_config = list()) {

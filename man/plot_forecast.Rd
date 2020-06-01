@@ -23,9 +23,9 @@ plot_forecast(
 )
 }
 \arguments{
-\item{fcst}{A `fable` containing the forecasts for the models, splits, etc.}
+\item{fcst}{A \code{fable} containing the forecasts for the models, splits, etc.}
 
-\item{data}{A `tsibble` containing the training and testing data.}
+\item{data}{A \code{tsibble} containing the training and testing data.}
 
 \item{split}{Integer vector. The split id (time slices) of the time series cross-validation.}
 
@@ -57,5 +57,6 @@ plot_forecast(
 p An object of class ggplot.
 }
 \description{
-Plot the actual and fitted values and forecasts for specific target variable(s), split(s) and forecasting method(s).
+Plot the actual and fitted values and forecasts for specific
+   train-test splits and forecasting models.
 }

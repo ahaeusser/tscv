@@ -13,9 +13,9 @@ plot_density(
   caption = NULL,
   line_width = 0.1,
   line_type = "solid",
-  line_color = "black",
-  fill_color = "#31688E",
-  fill_alpha = 0.2,
+  line_color = "grey35",
+  fill_color = "grey35",
+  fill_alpha = 0.75,
   theme_set = theme_tscv(),
   theme_config = list()
 )

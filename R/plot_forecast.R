@@ -1,10 +1,11 @@
 
 #' @title Plot the actual and fitted values and forecasts.
 #'
-#' @description Plot the actual and fitted values and forecasts for specific target variable(s), split(s) and forecasting method(s).
+#' @description Plot the actual and fitted values and forecasts for specific
+#'    train-test splits and forecasting models.
 #'
-#' @param fcst A `fable` containing the forecasts for the models, splits, etc.
-#' @param data A `tsibble` containing the training and testing data.
+#' @param fcst A \code{fable} containing the forecasts for the models, splits, etc.
+#' @param data A \code{tsibble} containing the training and testing data.
 #' @param split Integer vector. The split id (time slices) of the time series cross-validation.
 #' @param model Character vector. The forecasting model(s).
 #' @param include Integer value. The number of actual values (training) to be included.
