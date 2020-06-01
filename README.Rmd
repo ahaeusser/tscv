@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-The package tscv provides a collection of functions and tools for time series analysis and forecasting as well as time series cross-validation. This is mainly a selection of functions that I find useful for research in the area of time series forecasting.
+The package `tscv` provides a collection of functions and tools for time series analysis and forecasting as well as time series cross-validation. This is mainly a set of wrapper and helper functions as well as some extensions for the packages `tsibble`, `fable` and `fabletools` that I find useful for research in the area of time series forecasting.
 
 ## Installation
 
@@ -40,115 +40,124 @@ library(feasts)
 Sys.setlocale("LC_TIME", "C")
 ```
 
-The dataset `elec_price` is a hourly 'tsibble' with day-ahead electricity spot prices from the ENTSO-E Transparency Platform. The dataset contains time series data from 2019-01-01 00:00:00 to 2019-12-31 23:00:00 for five bidding zones in europe. We can use the function `clean_data` to prepare the dataset for further usage. The function checks whether the input data are a valid tsibble or not (regular spaced in time and ordered). Furthermore, implicit missing values are turned into explicit missing values (existing missing values are left untouched). If the data are provided in wide format, they are gathered into long format. For convenience, the index variable is renamed to `date_time`, the key variable is renamed to  `variable` and the measurement variable is renamed to `value`.
+### Data preparation
+
+The dataset `elec_price` is a hourly `tsibble` with day-ahead electricity spot prices from the ENTSO-E Transparency Platform. The dataset contains time series data from 2019-01-01 00:00:00 to 2019-12-31 23:00:00 for four european bidding zones (DE, FR, NO1 and SE1). You can use the function `clean_data()` to prepare the dataset for further usage. The function checks whether the input data are a valid tsibble or not (regular spaced in time and ordered). Furthermore, implicit missing values are turned into explicit missing values (existing missing values are left untouched). If the data are provided in wide format, they are gathered into long format. You can use the function `plot_line()` to visualize the four time series.
 
 ```{r clean data}
 data <- elec_price %>%
+  mutate(Series = paste0(Series, " (", BZN, ")")) %>%
+  update_tsibble(key = Series) %>%
+  select(-c(Unit, BZN)) %>%
   clean_data()
 
 data
- 
-sub_data <- data %>%
-  filter(variable == "Day-ahead Price (DE)")
 
-sub_data %>% plot_ts()
-sub_data %>% plot_season()
-sub_data %>% plot_corr()
+data %>%
+  plot_line(
+    title = "Day-ahead Electricity Spot Price",
+    subtitle = "2019-01-01 to 2019-12-31",
+    xlab = "Time",
+    ylab = "[EUR/MWh]",
+    caption = "Data: ENTSO-E Transparency")
 
 ```
 
-To prepare the dataset for time series cross-validation, we can use the function `split_data`. This function splits the data into training and testing (i.e. partitioning into time slices) for time series cross-validation. The user can choose between `stretch` and `slide`. The first is an expanding window approach, while the latter is a fixed window approach. The user can define the window sizes for training and testing via `n_init` and `n_ahead`, as well as the step size for increments via `n_step`.
+To prepare the dataset for time series cross-validation (TSCV), you can use the function `split_data()`. This function splits the data into training and testing (i.e. partitioning into time slices) for time series cross-validation. You can choose between `stretch` and `slide`. The first is an expanding window approach, while the latter is a fixed window approach. Furthermore, you can define the (initial) window size for training and testing via `n_init` and `n_ahead`, as well as the step size for increments via `n_skip`.
 
 ```{r split data}
 
-mode <- "slide"
-n_init <- 2400
-n_step <- 24
-n_ahead <- 24
+n_init <- 2400   # size for training window
+n_ahead <- 24    # size for testing window (forecast horizon)
+mode <- "slide"  # fixed window approach
+n_skip <- 23     # skip 23 observations
+n_lag <- 0       # no lag
 
 data <- data %>%
   split_data(
-    mode = mode,
     n_init = n_init,
-    n_step = n_step,
-    n_ahead = n_ahead)
-
-data <- data %>% 
-  filter(slice %in% c(1:5))
-```
-
-
-
-```{r train}
-models <- data %>%
-  filter(sample == "train") %>%
-  model(
-    sNaive = SNAIVE(value),
-    STLF = decomposition_model(STL(value ~ trend(window = 7), robust = TRUE), NAIVE(season_adjust)))
-
-fcsts <- models %>%
-  forecast_model(n_ahead = n_ahead)
-```
-
-
-
-```{r bind}
-data <- bind_data(
-  data = data,
-  fcsts = fcsts)
+    n_ahead = n_ahead,
+    mode = mode,
+    n_skip = n_skip,
+    n_lag = n_lag)
 
 data
 ```
 
 
+### Training and forecasting
 
-```{r plot_forecast}
-variable <- c("Day-ahead Price (DE)", "Day-ahead Price (NO1)")
-model <- c("sNaive", "STLF", "TSLM")
-slice <- c(1, 2)
+Now the data are splitted into training and testing slices and we are ready to forecast. Due to the sample size and computation time, only very simple benchmark methods are used. The functions `SMEDIAN` and `SMEAN` are extensions to the `fable` package. The function`SMEAN` is exactly the same as running a regression against seasonal dummy variables (`TSLM(value ~ season())`). I just added this function for convenience. Further forecasting methods are available (e.g. `TBATS()` and `DSHW()` from package `forecast` or `ELM()` and `MLP()` from package `nnfor`).
+
+```{r train}
+
+data <- data %>%
+  filter(split %in% c(1:100))
+
+models <- data %>%
+  filter(sample == "train") %>%
+  model(
+    sNaive = SNAIVE(Value ~ lag("week")),
+    sMean = SMEAN(Value ~ lag("week")),
+    sMedian = SMEDIAN(Value ~ lag("week")),
+    "STL-Naive" = decomposition_model(STL(Value), NAIVE(season_adjust)))
+
+models
+
+
+fcst <- models %>%
+  forecast(h = n_ahead)
+
+fcst
 
 plot_forecast(
+  fcst = fcst,
   data = data,
-  variable = variable,
-  model = model,
-  slice = slice,
-  title = "Day-ahead electricity spot price",
-  subtitle = "Actual versus forecast",
-  caption = "Data: ENTSO-E Transparency Platform",
-  ylab = "[Euro/MWh]",
-  include = 168)
+  include = 48,
+  split = c(10, 11),
+  title = "Day-ahead electricity spot price forecast",
+  subtitle = "Rolling forecasts for splits 10 and 11",
+  ylab = "[EUR/MWh]",
+  caption = "Data: ENTSO-E Transparency, own calculation"
+  )
+```
+
+### Evaluation of forecast accuracy
+
+To evaluate the forecast accuracy, the function `error_metrics()` is used. You can define whether to evaluate the accuracy by `horizon` or by `split`. Several accuracy metrics like `RMSE`, `MAE` or `MAPE` are available.
+
+```{r accuracy}
+
+# Estimate error metrics
+metrics_horizon <- error_metrics(
+  fcst = fcst,
+  data = data,
+  period = 168,
+  by = "horizon")
+
+metrics_horizon %>%
+  plot_error_metrics(
+    title = "Evaluation of forecast accuracy by forecast horizon",
+    subtitle = "Seasonal mean absolute scaled error (sMASE)",
+    xlab = "Forecast horizon (n-step-ahead)",
+    caption = "Data: ENTSO-E Transparency, own calculation")
+
+# Visualize results
+metrics_split <- error_metrics(
+  fcst = fcst,
+  data = data,
+  period = 168,
+  by = "split")
+
+metrics_split %>%
+  plot_error_metrics(
+    title = "Evaluation of forecast accuracy by split",
+    subtitle = "Seasonal mean absolute scaled error (sMASE)",
+    xlab = "Split",
+    caption = "Data: ENTSO-E Transparency, own calculation")
+
+
 ```
 
 
-
-```{r errors}
-# Evaluation
-errors <- data %>%
-  create_errors()
-
-errors
-
-plot_error_dist(
-  data = errors,
-  variable = variable,
-  model = model)
-```
-
-
-
-```{r metrics}
-metrics <- errors %>%
-  error_metrics()
-
-metrics
-
-
-plot_error_metrics(
-  data = metrics,
-  variable = variable,
-  model = model,
-  metric = c("MAE", "MAPE"))
-```
-
-
-
+### Work in progress
