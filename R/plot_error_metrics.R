@@ -2,12 +2,12 @@
 #' @title Plot forecast accuracy metrics.
 #'
 #' @description Plot forecast accuracy metrics, either along the forecast horizon or the slices. The user can define
-#'    specific target variable(s), forecasting method(s) and accuracy metric(s).
+#'    the forecasting models and accuracy metrics.
 #'
-#' @param data A tibble containing the accuracy metrics, i.e. the result of a call to \code{error_metrics(...)}.
+#' @param data A tibble containing the accuracy metrics, i.e. the result of a call to \code{error_metrics()}.
 #' @param variable Character vector defining the target variable.
 #' @param metric Character vector defining the accuracy measures.
-#' @param model Character vector defining the forecasting methods.
+#' @param model Character vector defining the forecasting models.
 #' @param title Title for the plot.
 #' @param subtitle Subtitle for the plot.
 #' @param xlab Label for the x-axis.
@@ -17,44 +17,49 @@
 #' @param point_size Numeric value. Point size.
 #' @param point_shape Integer value. Point shape.
 #' @param point_alpha Numeric value between 0 and 1. The transparency of the points.
-#' @param base_size Integer value. Base font size.
+#' @param theme_set A complete ggplot2 theme.
+#' @param theme_config A list with further arguments passed to \code{ggplot2::theme()}.
 #'
 #' @return p An object of class ggplot.
-#'
 #' @export
 
 plot_error_metrics <- function(data,
-                               variable,
-                               model,
-                               metric,
-                               dim = "horizon",
-                               title = "Evaluation of forecast accuracy",
+                               model = NULL,
+                               metric = "sMASE",
+                               title = NULL,
+                               subtitle = NULL,
                                ylab = NULL,
+                               xlab = NULL,
                                caption = NULL,
-                               line_width = 1.5,
-                               point_size = 3,
+                               line_width = 1,
+                               line_type = "solid",
+                               point_size = 0,
                                point_shape = 19,
                                point_alpha = 1,
-                               base_size = 11) {
+                               theme_set = theme_tscv(),
+                               theme_config = list(),
+                               ...) {
 
-  # Check arguments
-  if (is.null(variable)) {
-    select_variable <- data %>%
-      pull(variable) %>%
-      unique()
+  data_cols <- names(data)
+  def_cols <- c(".model", "horizon", "split", "metric", "value")
+  response <- setdiff(data_cols, def_cols)
+
+  if ("split" %in% data_cols) {
+    by <- "split"
   } else {
-    select_variable <- variable
+    by <- "horizon"
   }
 
-  if (is.null(model)) {
+  # Check arguments
+  if (is_empty(model)) {
     select_model <- data %>%
-      pull(model) %>%
+      pull(.model) %>%
       unique()
   } else {
     select_model <- model
   }
 
-  if (is.null(metric)) {
+  if (is_empty(metric)) {
     select_metric <- data %>%
       pull(metric) %>%
       unique()
@@ -62,53 +67,40 @@ plot_error_metrics <- function(data,
     select_metric <- metric
   }
 
-  select_dim <- dim
-
-  if (length(select_dim) > 1) {
-    stop("Please select only one dimension, either 'horizon' or 'slice'.")
-  }
-
-  # Preparation
-  if (select_dim == "horizon") {
-    xlab <- "Forecast horizon (n-step)"
-  } else if (select_dim == "slice") {
-    xlab <- "Time slice"
-  }
-
-  subtitle <- paste("Forecast accuracy by ", select_dim, sep = "")
-
-  data_plot <- data %>%
-    filter(variable %in% select_variable) %>%
+  data <- data %>%
     filter(metric %in% select_metric) %>%
-    filter(model %in% select_model) %>%
-    filter(dim %in% select_dim)
+    filter(.model %in% select_model)
 
   # Initialize plot
   p <- ggplot(
-    data = data_plot,
+    data = data,
     aes(
-      x = num,
-      # x = factor(num),
+      x = !!sym(by),
       y = value,
-      colour = model,
-      group = model))
+      colour = .model,
+      group = .model))
 
   # Add lines and point
   p <- p + geom_line(
     na.rm = TRUE,
-    size = line_width)
+    size = line_width,
+    linetype = line_type,
+    ...)
 
-  # p <- p + geom_point(
-  #   na.rm = TRUE,
-  #   size = point_size,
-  #   alpha = point_alpha)
+  p <- p + geom_point(
+    na.rm = TRUE,
+    size = point_size,
+    shape = point_shape,
+    alpha = point_alpha,
+    ...)
 
   # Scale axis and aesthetics
   p <- p + scale_y_continuous()
 
-  # Create faceting
-  p <- p + facet_wrap(
-    ~variable + ~metric,
+  # Create faceting (by response variables and metric)
+  p <- p + facet_grid(
+    vars(metric),
+    vars(!!!syms(response)),
     scales = "free")
 
   # Adjust annotations
@@ -117,7 +109,9 @@ plot_error_metrics <- function(data,
   p <- p + labs(x = xlab)
   p <- p + labs(y = ylab)
   p <- p + labs(caption = caption)
-  # Adjust theme
-  p <- p + theme_tscv(base_size = base_size)
+
+  # Adjust ggplot2 theme
+  p <- p + eval(theme_set)
+  p <- p + do.call(theme, theme_config)
   return(p)
 }

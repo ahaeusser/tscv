@@ -6,32 +6,37 @@
 \usage{
 plot_error_metrics(
   data,
-  variable,
-  model,
-  metric,
-  dim = "horizon",
-  title = "Evaluation of forecast accuracy",
+  model = NULL,
+  metric = "sMASE",
+  title = NULL,
+  subtitle = NULL,
   ylab = NULL,
+  xlab = NULL,
   caption = NULL,
-  line_width = 1.5,
-  point_size = 3,
+  line_width = 1,
+  line_type = "solid",
+  point_size = 0,
   point_shape = 19,
   point_alpha = 1,
-  base_size = 11
+  theme_set = theme_tscv(),
+  theme_config = list(),
+  ...
 )
 }
 \arguments{
-\item{data}{A tibble containing the accuracy metrics, i.e. the result of a call to \code{error_metrics(...)}.}
+\item{data}{A tibble containing the accuracy metrics, i.e. the result of a call to \code{error_metrics()}.}
 
-\item{variable}{Character vector defining the target variable.}
-
-\item{model}{Character vector defining the forecasting methods.}
+\item{model}{Character vector defining the forecasting models.}
 
 \item{metric}{Character vector defining the accuracy measures.}
 
 \item{title}{Title for the plot.}
 
+\item{subtitle}{Subtitle for the plot.}
+
 \item{ylab}{Label for the y-axis.}
+
+\item{xlab}{Label for the x-axis.}
 
 \item{caption}{Caption (footnote) for the plot.}
 
@@ -43,16 +48,16 @@ plot_error_metrics(
 
 \item{point_alpha}{Numeric value between 0 and 1. The transparency of the points.}
 
-\item{base_size}{Integer value. Base font size.}
+\item{theme_set}{A complete ggplot2 theme.}
 
-\item{subtitle}{Subtitle for the plot.}
+\item{theme_config}{A list with further arguments passed to \code{ggplot2::theme()}.}
 
-\item{xlab}{Label for the x-axis.}
+\item{variable}{Character vector defining the target variable.}
 }
 \value{
 p An object of class ggplot.
 }
 \description{
 Plot forecast accuracy metrics, either along the forecast horizon or the slices. The user can define
-   specific target variable(s), forecasting method(s) and accuracy metric(s).
+   the forecasting models and accuracy metrics.
 }

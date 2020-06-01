@@ -1,10 +1,10 @@
+
 #' @title Plot the forecast errors along the forecast horizon.
 #'
 #' @description Plot the forecast errors along the forecast horizon (and corresponding Box-Whisker Plots) for a specific target variable and forecasting methods.
 #'
-#' @param data A tsibble containing the forecasts errors for all target variables, slice, models etc. provided by the function \code{create_errors(...)}.
-#' @param variable Character value. The target variable.
-#' @param model Character vector. Choose the forecasting methods (e.g. c("ARIMA", "ETS"))
+#' @param data A tsibble containing the forecasts errors for all target variables, slice, models etc. provided by the function \code{errors()}.
+#' @param model Character vector. Choose the forecasting models.
 #' @param add_points Logical value. If \code{TRUE}, the errors are plotted as points. Ohterwise, Box-Whisker plots only.
 #' @param jitter Logical value. If \code{TRUE}, points are jittered.
 #' @param title Title for the plot
@@ -16,16 +16,17 @@
 #' @param pointshape Integer value defining the point shape.
 #' @param point_alpha Numeric value. The transparency of the points.
 #' @param box_line_width Numeric value defining the line width of the Box-Whisker.
-#' @param box_alpha Numeric value. The transparency of the Box-Whisker.
-#' @param base_size Integer value. Base font size.
+#' @param box_line_color Character value. The outline color of the Box-Whisker.
+#' @param box_fill_alpha Numeric value. The transparency of the Box-Whisker.
+#' @param theme_set A complete ggplot2 theme.
+#' @param theme_config A list with further arguments passed to \code{ggplot2::theme()}.
 #'
 #' @return p An object of class ggplot
 #' @export
 
 plot_error_dist <- function(data,
-                            variable = NULL,
                             model = NULL,
-                            add_points = TRUE,
+                            add_points = FALSE,
                             jitter = TRUE,
                             title = "Evaluation of forecast accuracy",
                             subtitle = "Distribution of forecast errors by horizon",
@@ -36,43 +37,33 @@ plot_error_dist <- function(data,
                             point_shape = 19,
                             point_alpha = 0.25,
                             box_line_width = 0.25,
-                            box_alpha = 0.75,
-                            base_size = 11) {
+                            box_line_color = "black",
+                            box_fill_alpha = 0.75,
+                            theme_set = theme_tscv(),
+                            theme_config = list()) {
 
-  # Check arguments
-  if (is.null(variable)) {
-    select_variable <- data %>%
-      pull(variable) %>%
-      unique()
-  } else {
-    select_variable <- variable
-  }
+  response <- response_vars(data)
 
   if (is.null(model)) {
     select_model <- data %>%
-      pull(model) %>%
+      pull(.model) %>%
       unique()
   } else {
     select_model <- model
   }
 
-  # Prepare data ................................................................
+  # Prepare data
+  data <- data %>%
+    filter(.model %in% select_model)
 
-  # Filter by variable and slice
-  data_plot <- data %>%
-    filter(variable %in% select_variable) %>%
-    filter(model %in% select_model) %>%
-    filter(type == "error")
-
-  # Visualize forecast errors and distributions .................................
+  # Visualize forecast errors and distribution as Box-Whisker
   p <- ggplot(
-    data_plot,
+    data,
     aes(
       x = horizon,
-      y = value,
-      fill = model,
-      group = horizon,
-      colour = model
+      y = error,
+      fill = .model,
+      group = horizon
     )
   )
 
@@ -104,14 +95,15 @@ plot_error_dist <- function(data,
     na.rm = TRUE,
     outlier.shape = NA,
     lwd = box_line_width,
-    alpha = box_alpha)
+    color = box_line_color,
+    alpha = box_fill_alpha)
 
   # Scale axis and aesthetics
   p <- p + scale_y_continuous()
 
   p <- p + facet_grid(
-    vars(variable),
-    vars(model),
+    vars(!!!syms(response)),
+    vars(.model),
     scales = "free")
 
   # Adjust annotations
@@ -120,7 +112,9 @@ plot_error_dist <- function(data,
   p <- p + labs(x = xlab)
   p <- p + labs(y = ylab)
   p <- p + labs(caption = caption)
-  # Adjust theme
-  p <- p + theme_tscv(base_size = base_size)
+
+  # Adjust ggplot2 theme
+  p <- p + eval(theme_set)
+  p <- p + do.call(theme, theme_config)
   return(p)
 }

@@ -6,9 +6,8 @@
 \usage{
 plot_error_dist(
   data,
-  variable = NULL,
   model = NULL,
-  add_points = TRUE,
+  add_points = FALSE,
   jitter = TRUE,
   title = "Evaluation of forecast accuracy",
   subtitle = "Distribution of forecast errors by horizon",
@@ -19,16 +18,16 @@ plot_error_dist(
   point_shape = 19,
   point_alpha = 0.25,
   box_line_width = 0.25,
-  box_alpha = 0.75,
-  base_size = 11
+  box_line_color = "black",
+  box_fill_alpha = 0.75,
+  theme_set = theme_tscv(),
+  theme_config = list()
 )
 }
 \arguments{
-\item{data}{A tsibble containing the forecasts errors for all target variables, slice, models etc. provided by the function \code{create_errors(...)}.}
+\item{data}{A tsibble containing the forecasts errors for all target variables, slice, models etc. provided by the function \code{errors()}.}
 
-\item{variable}{Character value. The target variable.}
-
-\item{model}{Character vector. Choose the forecasting methods (e.g. c("ARIMA", "ETS"))}
+\item{model}{Character vector. Choose the forecasting models.}
 
 \item{add_points}{Logical value. If \code{TRUE}, the errors are plotted as points. Ohterwise, Box-Whisker plots only.}
 
@@ -50,9 +49,13 @@ plot_error_dist(
 
 \item{box_line_width}{Numeric value defining the line width of the Box-Whisker.}
 
-\item{box_alpha}{Numeric value. The transparency of the Box-Whisker.}
+\item{box_line_color}{Character value. The outline color of the Box-Whisker.}
 
-\item{base_size}{Integer value. Base font size.}
+\item{box_fill_alpha}{Numeric value. The transparency of the Box-Whisker.}
+
+\item{theme_set}{A complete ggplot2 theme.}
+
+\item{theme_config}{A list with further arguments passed to \code{ggplot2::theme()}.}
 
 \item{pointshape}{Integer value defining the point shape.}
 }
