@@ -12,7 +12,7 @@
 #' @param line_width Numeric value defining the line width (time series).
 #' @param line_type Numeric value defining the line type (time series).
 #' @param line_color Character value defining the line color (time series).
-#' @param smooth_method Character value. The smoothing method (\code{NULL}, \code{"loess"}, \code{"lm"}, \code{glm}, \code{gam}).
+#' @param smooth_method Character value. The smoothing method (\code{NULL}, \code{"loess"}, \code{"lm"}, \code{"glm"}, \code{"gam"}).
 #' @param smooth_se Logical value. If \code{TRUE}, confidence interval is displayed around smooth.
 #' @param smooth_width Numeric value defining the line width (smooth curve).
 #' @param smooth_type Numeric value defining the line type (smooth curve).
@@ -26,25 +26,25 @@
 #' @return p An object of class ggplot.
 #' @export
 
-plot_ts <- function(data,
-                    title = NULL,
-                    subtitle = NULL,
-                    xlab = NULL,
-                    ylab = NULL,
-                    caption = NULL,
-                    smooth_width = 0.5,
-                    smooth_type = "solid",
-                    smooth_color = "#D55E00",
-                    line_width = 0.75,
-                    line_type = "solid",
-                    line_color = "#31688E",
-                    line_alpha = 1,
-                    smooth_method = NULL,
-                    smooth_fill = "#D55E00",
-                    smooth_alpha = 0.25,
-                    theme_set = theme_tscv(),
-                    theme_config = list(),
-                    ...) {
+plot_line <- function(data,
+                      title = NULL,
+                      subtitle = NULL,
+                      xlab = NULL,
+                      ylab = NULL,
+                      caption = NULL,
+                      smooth_width = 0.75,
+                      smooth_type = "solid",
+                      smooth_color = "#D55E00",
+                      line_width = 0.75,
+                      line_type = "solid",
+                      line_color = "grey35",
+                      line_alpha = 1,
+                      smooth_method = NULL,
+                      smooth_fill = "grey35",
+                      smooth_alpha = 0.25,
+                      theme_set = theme_tscv(),
+                      theme_config = list(),
+                      ...) {
 
   dttm <- index_var(data)
   response <- response_vars(data)
