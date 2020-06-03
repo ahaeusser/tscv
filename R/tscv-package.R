@@ -14,7 +14,8 @@
 #' @importFrom forecast msts dshw tbats thetaf forecast
 #' @importFrom matrixStats rowSds
 #' @importFrom yardstick mae_vec rmse_vec mape_vec smape_vec mase_vec metric_vec_template metric_summarizer
-#' @import ggplot2
+#' @rawNamespace import(ggplot2, except = stat_qq_line)
+#' @importFrom qqplotr stat_qq_point stat_qq_line stat_qq_band
 #' @import tsibble
 #' @import fable
 #' @import fabletools
