@@ -12,13 +12,12 @@
 #' @param line_width Numeric value defining the line width (time series).
 #' @param line_type Numeric value defining the line type (time series).
 #' @param line_color Character value defining the line color (time series).
-#' @param smooth_method Character value. The smoothing method (\code{NULL}, \code{"loess"}, \code{"lm"}, \code{"glm"}, \code{"gam"}).
-#' @param smooth_se Logical value. If \code{TRUE}, confidence interval is displayed around smooth.
-#' @param smooth_width Numeric value defining the line width (smooth curve).
-#' @param smooth_type Numeric value defining the line type (smooth curve).
-#' @param smooth_color Character value defining the line color (smooth curve).
-#' @param smooth_fill Character value defining the fill color of confidence band.
-#' @param smooth_alpha Numeric value defining the transparency of confidence band.
+#' @param stat_method Character value. The smoothing method (\code{NULL}, \code{"loess"}, \code{"lm"}, \code{"glm"}, \code{"gam"}).
+#' @param stat_width Numeric value defining the line width (smooth curve).
+#' @param stat_type Numeric value defining the line type (smooth curve).
+#' @param stat_color Character value defining the line color (smooth curve).
+#' @param stat_fill Character value defining the fill color of confidence band.
+#' @param stat_alpha Numeric value defining the transparency of confidence band.
 #' @param theme_set A complete ggplot2 theme.
 #' @param theme_config A list with further arguments passed to \code{ggplot2::theme()}.
 #' @param ... Further arguments passed to \code{ggplot2::stat_smooth()}
@@ -32,16 +31,16 @@ plot_line <- function(data,
                       xlab = NULL,
                       ylab = NULL,
                       caption = NULL,
-                      smooth_width = 0.75,
-                      smooth_type = "solid",
-                      smooth_color = "#D55E00",
                       line_width = 0.75,
                       line_type = "solid",
                       line_color = "grey35",
                       line_alpha = 1,
-                      smooth_method = NULL,
-                      smooth_fill = "grey35",
-                      smooth_alpha = 0.25,
+                      stat_method = NULL,
+                      stat_width = 0.75,
+                      stat_type = "solid",
+                      stat_color = "#D55E00",
+                      stat_fill = "grey35",
+                      stat_alpha = 0.25,
                       theme_set = theme_tscv(),
                       theme_config = list(),
                       ...) {
@@ -67,14 +66,14 @@ plot_line <- function(data,
     )
 
   # Create smooth
-  if (!is.null(smooth_method)) {
+  if (!is_empty(stat_method)) {
     p <- p + stat_smooth(
-      method = smooth_method,
-      color = smooth_color,
-      fill = smooth_fill,
-      size = smooth_width,
-      linetype = smooth_type,
-      alpha = smooth_alpha,
+      method = stat_method,
+      color = stat_color,
+      fill = stat_fill,
+      size = stat_width,
+      linetype = stat_type,
+      alpha = stat_alpha,
       ...
       )
   }

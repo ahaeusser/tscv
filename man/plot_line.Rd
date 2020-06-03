@@ -11,16 +11,16 @@ plot_line(
   xlab = NULL,
   ylab = NULL,
   caption = NULL,
-  smooth_width = 0.75,
-  smooth_type = "solid",
-  smooth_color = "#D55E00",
   line_width = 0.75,
   line_type = "solid",
   line_color = "grey35",
   line_alpha = 1,
-  smooth_method = NULL,
-  smooth_fill = "grey35",
-  smooth_alpha = 0.25,
+  stat_method = NULL,
+  stat_width = 0.75,
+  stat_type = "solid",
+  stat_color = "#D55E00",
+  stat_fill = "grey35",
+  stat_alpha = 0.25,
   theme_set = theme_tscv(),
   theme_config = list(),
   ...
@@ -39,31 +39,29 @@ plot_line(
 
 \item{caption}{Caption of the plot.}
 
-\item{smooth_width}{Numeric value defining the line width (smooth curve).}
-
-\item{smooth_type}{Numeric value defining the line type (smooth curve).}
-
-\item{smooth_color}{Character value defining the line color (smooth curve).}
-
 \item{line_width}{Numeric value defining the line width (time series).}
 
 \item{line_type}{Numeric value defining the line type (time series).}
 
 \item{line_color}{Character value defining the line color (time series).}
 
-\item{smooth_method}{Character value. The smoothing method (\code{NULL}, \code{"loess"}, \code{"lm"}, \code{"glm"}, \code{"gam"}).}
+\item{stat_method}{Character value. The smoothing method (\code{NULL}, \code{"loess"}, \code{"lm"}, \code{"glm"}, \code{"gam"}).}
 
-\item{smooth_fill}{Character value defining the fill color of confidence band.}
+\item{stat_width}{Numeric value defining the line width (smooth curve).}
 
-\item{smooth_alpha}{Numeric value defining the transparency of confidence band.}
+\item{stat_type}{Numeric value defining the line type (smooth curve).}
+
+\item{stat_color}{Character value defining the line color (smooth curve).}
+
+\item{stat_fill}{Character value defining the fill color of confidence band.}
+
+\item{stat_alpha}{Numeric value defining the transparency of confidence band.}
 
 \item{theme_set}{A complete ggplot2 theme.}
 
 \item{theme_config}{A list with further arguments passed to \code{ggplot2::theme()}.}
 
 \item{...}{Further arguments passed to \code{ggplot2::stat_smooth()}}
-
-\item{smooth_se}{Logical value. If \code{TRUE}, confidence interval is displayed around smooth.}
 }
 \value{
 p An object of class ggplot.
