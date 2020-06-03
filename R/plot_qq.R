@@ -1,7 +1,7 @@
 
-#' @title Quantile-Quantile plot (normal).
+#' @title Quantile-Quantile plot.
 #'
-#' @description Quantile-Quantile plot (normal) of one or more time series.
+#' @description Quantile-Quantile plot of one or more time series.
 #'
 #' @param data A valid tsibble in long format with one measurement variable.
 #' @param title Title of the plot (default select.target)
@@ -18,6 +18,8 @@
 #' @param line_color Character value defining the line color (45-degree line)
 #' @param theme_set A complete ggplot2 theme.
 #' @param theme_config A list with further arguments passed to \code{ggplot2::theme()}.
+#' @param ... Further arguments passed to \code{qqplotr::stat_qq_point()},
+#'    \code{qqplotr::stat_qq_line()}, \code{qqplotr::stat_qq_band()}.
 #'
 #' @return p An object of class ggplot
 #' @export
@@ -36,8 +38,12 @@ plot_qq <- function(data,
                     line_width = 0.25,
                     line_type = "solid",
                     line_color = "grey35",
+                    line_alpha = 1,
+                    band_color = "grey35",
+                    band_alpha = 0.25,
                     theme_set = theme_tscv(),
-                    theme_config = list()) {
+                    theme_config = list(),
+                    ...) {
 
   response <- response_vars(data)
   value <- value_var(data)
@@ -48,18 +54,28 @@ plot_qq <- function(data,
     aes(sample = !!sym(value)))
 
   # Create points
-  p <- p + stat_qq(
+  p <- p + stat_qq_point(
     color = point_color,
     fill = point_fill,
     alpha = point_alpha,
     size = point_size,
-    shape = point_shape)
+    shape = point_shape,
+    ...)
 
-  # Create 45-degree line
+  # Create line
   p <- p + stat_qq_line(
     color = line_color,
     size = line_width,
-    linetype = line_type)
+    linetype = line_type,
+    alpha = line_alpha,
+    ...)
+
+  # Create confidence bands
+  p <- p + stat_qq_band(
+    bandType = "pointwise",
+    fill = band_color,
+    alpha = band_alpha,
+    ...)
 
   # Create grid
   p <- p + facet_wrap(

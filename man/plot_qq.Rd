@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_qq.R
 \name{plot_qq}
 \alias{plot_qq}
-\title{Quantile-Quantile plot (normal).}
+\title{Quantile-Quantile plot.}
 \usage{
 plot_qq(
   data,
@@ -19,8 +19,12 @@ plot_qq(
   line_width = 0.25,
   line_type = "solid",
   line_color = "grey35",
+  line_alpha = 1,
+  band_color = "grey35",
+  band_alpha = 0.25,
   theme_set = theme_tscv(),
-  theme_config = list()
+  theme_config = list(),
+  ...
 )
 }
 \arguments{
@@ -53,10 +57,13 @@ plot_qq(
 \item{theme_set}{A complete ggplot2 theme.}
 
 \item{theme_config}{A list with further arguments passed to \code{ggplot2::theme()}.}
+
+\item{...}{Further arguments passed to \code{qqplotr::stat_qq_point()},
+\code{qqplotr::stat_qq_line()}, \code{qqplotr::stat_qq_band()}.}
 }
 \value{
 p An object of class ggplot
 }
 \description{
-Quantile-Quantile plot (normal) of one or more time series.
+Quantile-Quantile plot of one or more time series.
 }
