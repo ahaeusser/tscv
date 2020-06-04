@@ -8,6 +8,7 @@ output: github_document
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
+  dev = "svg",
   fig.path = "man/figures/README-",
   out.width = "100%"
 )

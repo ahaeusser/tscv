@@ -85,7 +85,7 @@ data %>%
     caption = "Data: ENTSO-E Transparency")
 ```
 
-<img src="man/figures/README-clean data-1.png" width="100%" />
+<img src="man/figures/README-clean data-1.svg" width="100%" />
 
 To prepare the dataset for time series cross-validation (TSCV), you can
 use the function `split_data()`. This function splits the data into
@@ -205,7 +205,7 @@ plot_forecast(
   )
 ```
 
-<img src="man/figures/README-train-1.png" width="100%" />
+<img src="man/figures/README-train-1.svg" width="100%" />
 
 ### Evaluation of forecast accuracy
 
@@ -231,7 +231,7 @@ metrics_horizon %>%
     caption = "Data: ENTSO-E Transparency, own calculation")
 ```
 
-<img src="man/figures/README-accuracy-1.png" width="100%" />
+<img src="man/figures/README-accuracy-1.svg" width="100%" />
 
 ``` r
 
@@ -250,6 +250,6 @@ metrics_split %>%
     caption = "Data: ENTSO-E Transparency, own calculation")
 ```
 
-<img src="man/figures/README-accuracy-2.png" width="100%" />
+<img src="man/figures/README-accuracy-2.svg" width="100%" />
 
 ### Work in progress
