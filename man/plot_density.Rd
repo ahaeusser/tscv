@@ -5,7 +5,11 @@
 \title{Plot the density via Kernel Density Estimator.}
 \usage{
 plot_density(
-  data,
+  .data,
+  x,
+  facet = NULL,
+  color = NULL,
+  fill = NULL,
   title = NULL,
   subtitle = NULL,
   xlab = NULL,
@@ -15,14 +19,13 @@ plot_density(
   line_type = "solid",
   line_color = "grey35",
   fill_color = "grey35",
-  fill_alpha = 0.75,
+  fill_alpha = 0.5,
   theme_set = theme_tscv(),
-  theme_config = list()
+  theme_config = list(),
+  ...
 )
 }
 \arguments{
-\item{data}{A valid tsibble in long format with one measurement variable.}
-
 \item{title}{Title of the plot.}
 
 \item{subtitle}{Subtitle of the plot.}
@@ -42,6 +45,8 @@ plot_density(
 \item{theme_set}{A complete ggplot2 theme.}
 
 \item{theme_config}{A list with further arguments passed to \code{ggplot2::theme()}.}
+
+\item{data}{A valid tsibble in long format with one measurement variable.}
 
 \item{line_fill}{Character value defining the fill color for the area under the kernel density estimator.}
 

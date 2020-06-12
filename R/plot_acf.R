@@ -13,7 +13,7 @@
 #' @param ylab Label for the y-axis.
 #' @param caption Caption of the plot.
 #' @param bar_width Numeric value. The width of the bars.
-#' @param bar_color Character value. The color of the significant bars.
+#' @param bar_color1 Character value. The color of the significant bars.
 #' @param bar_color2 Character value. The color of the non-significant bars.
 #' @param bar_alpha Numeric value. The transparency of the bars.
 #' @param line_width Numeric value. Line width of the confidence line.
@@ -35,9 +35,9 @@ plot_acf <- function(data,
                      ylab = NULL,
                      caption = NULL,
                      bar_width = 1,
-                     bar_color = "grey35",
-                     bar_color2 = "#D55E00",
-                     bar_alpha = 0.6,
+                     bar_color1 = "#00aedb",
+                     bar_color2 = "#ffc425",
+                     bar_alpha = 1,
                      line_width = 0.25,
                      line_type = "solid",
                      line_color = "grey35",
@@ -102,9 +102,9 @@ plot_acf <- function(data,
   if (all(data$sign == FALSE)) {
     p <- p + scale_fill_manual(values = c(bar_color2))
   } else if (all(data$sign == TRUE)) {
-    p <- p + scale_fill_manual(values = c(bar_color))
+    p <- p + scale_fill_manual(values = c(bar_color1))
   } else {
-    p <- p + scale_fill_manual(values = c(bar_color2, bar_color))
+    p <- p + scale_fill_manual(values = c(bar_color2, bar_color1))
   }
 
   # # Lower confidence interval
@@ -120,6 +120,9 @@ plot_acf <- function(data,
   #   color = line_color,
   #   size = line_width,
   #   linetype = line_type)
+
+  # Scale x axis with integers
+  p <- p + scale_x_continuous(breaks = pretty_breaks())
 
   # Adjust annotations
   p <- p + labs(title = title)

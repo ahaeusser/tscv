@@ -24,7 +24,10 @@
 #' @return p An object of class ggplot
 #' @export
 
-plot_qq <- function(data,
+plot_qq <- function(.data,
+                    x,
+                    facet = NULL,
+                    color = NULL,
                     title = NULL,
                     subtitle = NULL,
                     xlab = NULL,
@@ -45,46 +48,76 @@ plot_qq <- function(data,
                     theme_config = list(),
                     ...) {
 
-  response <- response_vars(data)
-  value <- value_var(data)
+  # Create initial ggplot object
+  p <- ggplot(data = .data)
 
-  # Create ggplot
-  p <- ggplot(
-    data = data,
-    aes(sample = !!sym(value)))
+  # Create density plot
+  if (quo_is_null(enquo(color))) {
+    # Create points
+    p <- p + stat_qq_point(
+      aes(sample = {{x}}),
+      color = point_color,
+      fill = point_fill,
+      alpha = point_alpha,
+      size = point_size,
+      shape = point_shape,
+      ...)
 
-  # Create points
-  p <- p + stat_qq_point(
-    color = point_color,
-    fill = point_fill,
-    alpha = point_alpha,
-    size = point_size,
-    shape = point_shape,
-    ...)
+    # Create line
+    p <- p + stat_qq_line(
+      aes(sample = {{x}}),
+      color = line_color,
+      size = line_width,
+      linetype = line_type,
+      alpha = line_alpha,
+      ...)
 
-  # Create line
-  p <- p + stat_qq_line(
-    color = line_color,
-    size = line_width,
-    linetype = line_type,
-    alpha = line_alpha,
-    ...)
+    # Create confidence bands
+    p <- p + stat_qq_band(
+      aes(sample = {{x}}),
+      bandType = "pointwise",
+      fill = band_color,
+      alpha = band_alpha,
+      ...)
+  } else {
+    # Create points
+    p <- p + stat_qq_point(
+      aes(
+        sample = {{x}},
+        color = {{color}},
+        fill = {{color}}),
+      alpha = point_alpha,
+      size = point_size,
+      shape = point_shape,
+      ...)
 
-  # Create confidence bands
-  p <- p + stat_qq_band(
-    bandType = "pointwise",
-    fill = band_color,
-    alpha = band_alpha,
-    ...)
+    # Create line
+    p <- p + stat_qq_line(
+      aes(
+        sample = {{x}},
+        color = {{color}}),
+      size = line_width,
+      linetype = line_type,
+      alpha = line_alpha,
+      ...)
 
-  # Create grid
-  p <- p + facet_wrap(
-    vars(!!!syms(response)),
-    scales = "free")
+    # Create confidence bands
+    p <- p + stat_qq_band(
+      aes(
+        sample = {{x}},
+        fill = {{color}}),
+      bandType = "pointwise",
+      alpha = band_alpha,
+      ...)
+  }
 
-  # Axis scaling
-  p <- p + scale_x_continuous()
-  p <- p + scale_y_continuous()
+  # Create facet
+  if (!quo_is_null(enquo(facet))) {
+    p <- p + facet_wrap(
+      vars({{facet}}),
+      scales = "free"
+    )
+  }
 
   # Adjust annotations
   p <- p + labs(title = title)

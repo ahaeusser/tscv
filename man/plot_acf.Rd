@@ -15,9 +15,9 @@ plot_acf(
   ylab = NULL,
   caption = NULL,
   bar_width = 1,
-  bar_color = "grey35",
-  bar_color2 = "#D55E00",
-  bar_alpha = 0.6,
+  bar_color1 = "#00aedb",
+  bar_color2 = "#ffc425",
+  bar_alpha = 1,
   line_width = 0.25,
   line_type = "solid",
   line_color = "grey35",
@@ -46,7 +46,7 @@ plot_acf(
 
 \item{bar_width}{Numeric value. The width of the bars.}
 
-\item{bar_color}{Character value. The color of the significant bars.}
+\item{bar_color1}{Character value. The color of the significant bars.}
 
 \item{bar_color2}{Character value. The color of the non-significant bars.}
 

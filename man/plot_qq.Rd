@@ -5,7 +5,10 @@
 \title{Quantile-Quantile plot.}
 \usage{
 plot_qq(
-  data,
+  .data,
+  x,
+  facet = NULL,
+  color = NULL,
   title = NULL,
   subtitle = NULL,
   xlab = NULL,
@@ -28,8 +31,6 @@ plot_qq(
 )
 }
 \arguments{
-\item{data}{A valid tsibble in long format with one measurement variable.}
-
 \item{title}{Title of the plot (default select.target)}
 
 \item{subtitle}{Subtitle of the plot (default NULL)}
@@ -60,6 +61,8 @@ plot_qq(
 
 \item{...}{Further arguments passed to \code{qqplotr::stat_qq_point()},
 \code{qqplotr::stat_qq_line()}, \code{qqplotr::stat_qq_band()}.}
+
+\item{data}{A valid tsibble in long format with one measurement variable.}
 }
 \value{
 p An object of class ggplot

@@ -20,7 +20,11 @@
 #' @return p An object of class ggplot.
 #' @export
 
-plot_density <- function(data,
+plot_density <- function(.data,
+                         x,
+                         facet = NULL,
+                         color = NULL,
+                         fill = NULL,
                          title = NULL,
                          subtitle = NULL,
                          xlab = NULL,
@@ -30,41 +34,50 @@ plot_density <- function(data,
                          line_type = "solid",
                          line_color = "grey35",
                          fill_color = "grey35",
-                         fill_alpha = 0.75,
+                         fill_alpha = 0.5,
                          theme_set = theme_tscv(),
-                         theme_config = list()) {
+                         theme_config = list(),
+                         ...) {
 
-  response <- response_vars(data)
-  value <- value_var(data)
+  # Create initial ggplot object
+  p <- ggplot(data = .data)
 
-  # Create ggplot
-  p <- ggplot(
-    data = data,
-    aes(x = !!sym(value)))
-
-  # Kernel density estimate
-  p <- p + geom_density(
-    aes(
-      colour = "Kernel"),
-      size = line_width,
-      linetype = line_type,
+  # Create density plot
+  if (quo_is_null(enquo(color))) {
+    p <- p + geom_density(
+      aes(x = {{x}}),
+      na.rm = TRUE,
       color = line_color,
       fill = fill_color,
-      alpha = fill_alpha)
+      size = line_width,
+      alpha = fill_alpha,
+      ...
+    )
+  } else {
+    p <- p + geom_density(
+      aes(
+        x = {{x}},
+        color = {{color}},
+        fill = {{color}}),
+      na.rm = TRUE,
+      size = line_width,
+      alpha = fill_alpha,
+      ...
+    )
+  }
 
-  # Create grid
-  p <- p + facet_wrap(
-    vars(!!!syms(response)),
-    scales = "free")
-
-
-  # Axis scaling
-  p <- p + scale_y_continuous()
+  # Create facet
+  if (!quo_is_null(enquo(facet))) {
+    p <- p + facet_wrap(
+      vars({{facet}}),
+      scales = "free"
+    )
+  }
 
   # Adjust annotations
   p <- p + labs(title = title)
   p <- p + labs(subtitle = subtitle)
-  p <- p + labs(x = if_else(is_empty(xlab), value, xlab))
+  p <- p + labs(x = if_else(is_empty(xlab), as_name(enquo(x)), xlab))
   p <- p + labs(y = if_else(is_empty(ylab), "Density", ylab))
   p <- p + labs(caption = caption)
 

@@ -5,7 +5,11 @@
 \title{Plot time series as line chart.}
 \usage{
 plot_line(
-  data,
+  .data,
+  x,
+  y,
+  facet = NULL,
+  color = NULL,
   title = NULL,
   subtitle = NULL,
   xlab = NULL,
@@ -27,7 +31,15 @@ plot_line(
 )
 }
 \arguments{
-\item{data}{A valid tsibble in long format with one measurement variable.}
+\item{.data}{A \code{data.frame}, \code{tibble} or \code{tsibble} in long format.}
+
+\item{x}{Unquoted column within \code{.data}.}
+
+\item{y}{Unquoted column within \code{.data} containing numeric values.}
+
+\item{facet}{Character or factor column.}
+
+\item{color}{Character or factor column.}
 
 \item{title}{Title of the plot.}
 
@@ -43,7 +55,7 @@ plot_line(
 
 \item{line_type}{Numeric value defining the line type (time series).}
 
-\item{line_color}{Character value defining the line color (time series).}
+\item{line_color}{Character value defining the line color (ignored if \code{color} is present).}
 
 \item{stat_method}{Character value. The smoothing method (\code{NULL}, \code{"loess"}, \code{"lm"}, \code{"glm"}, \code{"gam"}).}
 
@@ -51,7 +63,7 @@ plot_line(
 
 \item{stat_type}{Numeric value defining the line type (smooth curve).}
 
-\item{stat_color}{Character value defining the line color (smooth curve).}
+\item{stat_color}{Character value defining the line color (ignored if \code{color} is present).}
 
 \item{stat_fill}{Character value defining the fill color of confidence band.}
 
