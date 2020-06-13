@@ -1,5 +1,5 @@
 Package: tscv
-Title: Functions and utilities for tidy time series forecasting and time series cross-validation.
+Title: Functions and utilities for tidy time series forecasting and time series cross-validation
 Version: 0.1.0
 Description: The package tscv provides a collection of functions and tools for time series 
    analysis and forecasting as well as time series cross-validation. This is mainly a set 
@@ -19,15 +19,21 @@ Imports:
     rlang,
     dplyr,
     ggplot2,
+    grDevices,
     tidyr,
     tibble,
     lubridate,
     purrr,
-    furrr,
     future,
     tsibble,
     fable,
     fabletools,
+    feasts,
+    forecast,
+    magrittr,
+    nnfor,
+    stats,
+    matrixStats,
     yardstick,
     qqplotr,
     scales
@@ -36,5 +42,6 @@ LazyData: true
 RoxygenNote: 7.1.0
 Suggests: 
     knitr,
-    rmarkdown
+    rmarkdown,
+    tidyverse
 VignetteBuilder: knitr
