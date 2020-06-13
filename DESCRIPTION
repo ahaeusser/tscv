@@ -7,7 +7,7 @@ Description: The package tscv provides a collection of functions and tools for t
    fable and fabletools that I find useful for research in the area of time series forecasting.
 Authors@R: 
     person(given = "Alexander",
-           family = "Haeusser",
+           family = "Häußer",
            email = "alexander-haeusser@gmx.de",
            role = c("aut", "cre"))
 License: GPL-3
@@ -29,8 +29,12 @@ Imports:
     fable,
     fabletools,
     yardstick,
-    moments,
-    qqplotr
+    qqplotr,
+    scales
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.0
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
