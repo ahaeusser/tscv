@@ -18,7 +18,7 @@ pct_errors <- function(fcst,
 
   # Prepare test data
   test <- data %>%
-    filter(sample == "test") %>%
+    filter(.data$sample == "test") %>%
     rename(actual = !!sym(value))
 
   # Join test and forecast data
@@ -30,8 +30,8 @@ pct_errors <- function(fcst,
 
   # Calculate forecast errors (actual - fcst)
   pct_errors <- data %>%
-    mutate(pct_error = ((actual - !!sym(value)) / actual) * 100) %>%
-    select(-c(!!sym(value), actual, .distribution))
+    mutate(pct_error = ((.data$actual - !!sym(value)) / .data$actual) * 100) %>%
+    select(-c(!!sym(value), .data$actual, .data$.distribution))
 
   return(pct_errors)
 }

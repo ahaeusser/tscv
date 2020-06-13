@@ -2,7 +2,7 @@
 % Please edit documentation in R/smooth_outlier.R
 \name{smooth_outlier}
 \alias{smooth_outlier}
-\title{Identidy and smooth outliers.}
+\title{Identify and smooth outliers.}
 \usage{
 smooth_outlier(data, alpha = 0.05)
 }
@@ -18,6 +18,6 @@ data A \code{tsibble} containing the outlier adjusted time series.
 \code{smooth_outliers} identifies and adjusts outliers. The time
    series is decomposed via \code{STL} decomposition into trend, season and
    remainder. The IQR method is then applied to the remainder to
-   identidy and replace outliers with NAs. Afterwards, the NAs are linearly
-   interpolated and the time series is additively reconstructed.
+   identify and replace outliers with NAs. Afterwards, the NAs are linearly
+   interpolated and the time series is additive reconstructed.
 }

@@ -41,20 +41,22 @@ error_metrics <- function(fcst,
   # Prepare train and test data
   # In-sample MAE of seasonal naive is required for scaling of MASE
   train <- data %>%
-    filter(sample == "train") %>%
+    filter(.data$sample == "train") %>%
     rename(actual = !!sym(value))
 
   test <- data %>%
-    filter(sample == "test") %>%
+    filter(.data$sample == "test") %>%
     rename(actual = !!sym(value))
 
   # Estimate in-sample MAE for scaling of sMASE
   mae_train <- train %>%
     as_tibble() %>%
-    group_by(!!!syms(response), split) %>%
-    mutate(lagged = dplyr::lag(actual, n = period)) %>%
+    group_by(!!!syms(response), .data$split) %>%
+    mutate(lagged = dplyr::lag(.data$actual, n = period)) %>%
     summarise(
-      mae_train = mae_vec(truth = actual, estimate = lagged)) %>%
+      mae_train = mae_vec(
+        truth = .data$actual,
+        estimate = .data$lagged)) %>%
     ungroup()
 
   # Join in-sample MAE to test data
@@ -74,24 +76,24 @@ error_metrics <- function(fcst,
   # Estimate common accuracy metrics
   metrics <- data %>%
     as_tibble() %>%
-    group_by(!!!syms(response), .model, !!sym(by)) %>%
+    group_by(!!!syms(response), .data$.model, !!sym(by)) %>%
     summarise(
-      ME = me_vec(truth = actual, estimate = !!sym(value)),
-      MAE = mae_vec(truth = actual, estimate = !!sym(value)),
-      MSE = mse_vec(truth = actual, estimate = !!sym(value)),
-      RMSE = rmse_vec(truth = actual, estimate = !!sym(value)),
-      MAPE = mape_vec(truth = actual, estimate = !!sym(value)),
-      sMAPE = smape_vec(truth = actual, estimate = !!sym(value)),
-      MPE = mpe_vec(truth = actual, estimate = !!sym(value)),
-      MASE = mase_vec(truth = actual, estimate = !!sym(value))) %>%
-    arrange(!!!syms(response), .model, !!sym(by)) %>%
+      ME = me_vec(truth = .data$actual, estimate = !!sym(value)),
+      MAE = mae_vec(truth = .data$actual, estimate = !!sym(value)),
+      MSE = mse_vec(truth = .data$actual, estimate = !!sym(value)),
+      RMSE = rmse_vec(truth = .data$actual, estimate = !!sym(value)),
+      MAPE = mape_vec(truth = .data$actual, estimate = !!sym(value)),
+      sMAPE = smape_vec(truth = .data$actual, estimate = !!sym(value)),
+      MPE = mpe_vec(truth = .data$actual, estimate = !!sym(value)),
+      MASE = mase_vec(truth = .data$actual, estimate = !!sym(value))) %>%
+    arrange(!!!syms(response), .data$.model, !!sym(by)) %>%
     ungroup()
 
   # Estimate seasonal MASE
   mase <- data %>%
     as_tibble() %>%
-    mutate(q = (actual - !!sym(value)) / mae_train) %>%
-    group_by(!!!syms(response), .model, !!sym(by)) %>%
+    mutate(q = (.data$actual - !!sym(value)) / mae_train) %>%
+    group_by(!!!syms(response), .data$.model, !!sym(by)) %>%
     summarise(
       sMASE = mean(abs(q), na.rm = TRUE)) %>%
     ungroup()
@@ -107,7 +109,7 @@ error_metrics <- function(fcst,
       cols = c(ME, MAE, MSE, RMSE, MAPE, sMAPE, MPE, MASE, sMASE),
       names_to = "metric",
       values_to = "value") %>%
-    arrange(!!!syms(response), .model, metric)
+    arrange(!!!syms(response), .data$.model, .data$metric)
 
   return(metrics)
 }

@@ -39,7 +39,7 @@ summarise_data <- function(data, value) {
       end = last(!!sym(dttm)),
       n_obs = n(),
       n_missing = sum(is.na(!!sym(value))),
-      complete_rate = sum(!is.na(!!sym(value))) / n_obs,
+      complete_rate = sum(!is.na(!!sym(value))) / n(),
       mean = mean(!!sym(value), na.rm = TRUE),
       sd = sd(!!sym(value), na.rm = TRUE),
       p0 = quantile(!!sym(value), probs = 0, na.rm = TRUE),

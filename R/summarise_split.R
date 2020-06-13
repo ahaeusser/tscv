@@ -25,30 +25,34 @@ summarise_split <- function(data) {
 
   split_tbl <- data %>%
     as_tibble() %>%
-    select(split, sample, id, !!sym(date_time)) %>%
+    select(.data$split, .data$sample, .data$id, !!sym(date_time)) %>%
     distinct() %>%
-    group_by(split, sample) %>%
+    group_by(.data$split, .data$sample) %>%
     summarise(
       time_start = first(!!sym(date_time)),
-      index_start = first(id),
+      index_start = first(.data$id),
       time_end = last(!!sym(date_time)),
-      index_end = last(id)) %>%
-    arrange(split, index_start, index_end) %>%
+      index_end = last(.data$id)) %>%
+    arrange(.data$split, .data$index_start, .data$index_end) %>%
     ungroup()
 
   split_tbl <- split_tbl %>%
-    mutate(time = paste0("[", time_start, ", ", time_end, "]")) %>%
+    mutate(time = paste0("[", .data$time_start, ", ", .data$time_end, "]")) %>%
     mutate(
       index = paste0(
         "[",
-        formatC(index_start, width = nchar(max(c(index_start, index_end))), flag = "0"),
+        formatC(.data$index_start, width = nchar(max(c(.data$index_start, .data$index_end))), flag = "0"),
         ", ",
-        formatC(index_end, width = nchar(max(c(index_start, index_end))), flag = "0"),
+        formatC(.data$index_end, width = nchar(max(c(.data$index_start, .data$index_end))), flag = "0"),
         "]")) %>%
-    select(-c(time_start, index_start, time_end, index_end)) %>%
+    select(
+      -c(.data$time_start,
+         .data$index_start,
+         .data$time_end,
+         .data$index_end)) %>%
     pivot_wider(
-      names_from = sample,
-      values_from = c(time, index))
+      names_from = .data$sample,
+      values_from = c(.data$time, .data$index))
 
   return(split_tbl)
 }
