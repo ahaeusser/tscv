@@ -83,3 +83,44 @@ approx_vec <- function(x) {
   # Use linear interpolation
   x <- approx(idx, x[idx], tt, rule = 2)$y
 }
+
+
+
+#' @title Measure of kurtosis.
+#'
+#' @param x Numeric vector.
+#' @param na_rm Logical value. If \code{TRUE}, missing values are dropped.
+#'
+#' @return Numeric value.
+
+kurtosis_vec <- function(x,
+                         na_rm = TRUE) {
+
+  if (na_rm == TRUE) {
+    x <- x[!is.na(x)]
+    }
+
+  n <- length(x)
+  n * sum((x - mean(x))^4) / (sum((x - mean(x))^2)^2)
+}
+
+
+
+#' @title Measure of skewness.
+#'
+#' @param x Numeric vector.
+#' @param na_rm Logical value. If \code{TRUE}, missing values are dropped.
+#'
+#' @return Numeric value.
+
+skewness_vec <- function(x,
+                         na_rm = TRUE) {
+
+  if (na_rm == TRUE) {
+    x <- x[!is.na(x)]
+  }
+
+  n <- length(x)
+  (sum((x - mean(x))^3) / n) / (sum((x - mean(x))^2) / n)^(3/2)
+}
+

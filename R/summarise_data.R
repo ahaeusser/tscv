@@ -47,8 +47,8 @@ summarise_data <- function(data, value) {
       p50 = quantile(!!sym(value), probs = 0.5, na.rm = TRUE),
       p75 = quantile(!!sym(value), probs = 0.75, na.rm = TRUE),
       p100 = quantile(!!sym(value), probs = 1, na.rm = TRUE),
-      skewness = skewness(!!sym(value), na.rm = TRUE),
-      kurtosis = kurtosis(!!sym(value), na.rm = TRUE)) %>%
+      skewness = skewness_vec(!!sym(value), na_rm = TRUE),
+      kurtosis = kurtosis_vec(!!sym(value), na_rm = TRUE)) %>%
     ungroup()
 
   return(data_tbl)
