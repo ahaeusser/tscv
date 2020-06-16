@@ -2,12 +2,12 @@
 % Please edit documentation in R/SMEDIAN.R
 \name{model_sum.SMEDIAN}
 \alias{model_sum.SMEDIAN}
-\title{Provide a succinct summary of the SMEDIAN.}
+\title{Provide a succinct summary of the SMEDIAN}
 \usage{
 \method{model_sum}{SMEDIAN}(x)
 }
 \arguments{
-\item{object}{The SMEDIAN to summarize.}
+\item{x}{The SMEDIAN to summarize.}
 }
 \value{
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/MLP.R
 \name{train_mlp}
 \alias{train_mlp}
-\title{Train MLP neural network.}
+\title{Train MLP neural network}
 \usage{
 train_mlp(.data, specials, ...)
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/SMEDIAN.R
 \name{forecast.SMEDIAN}
 \alias{forecast.SMEDIAN}
-\title{Forecast a trained SMEDIAN model.}
+\title{Forecast a trained SMEDIAN model}
 \usage{
 \method{forecast}{SMEDIAN}(object, new_data, specials = NULL, ...)
 }

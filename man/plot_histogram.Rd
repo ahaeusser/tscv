@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_histogram.R
 \name{plot_histogram}
 \alias{plot_histogram}
-\title{Plot the histogram of time series.}
+\title{Plot the histogram of time series}
 \usage{
 plot_histogram(
   .data,
@@ -25,6 +25,16 @@ plot_histogram(
 )
 }
 \arguments{
+\item{.data}{A \code{data.frame}, \code{tibble} or \code{tsibble} in long format.}
+
+\item{x}{Unquoted column within \code{.data} containing numeric values.}
+
+\item{facet}{Unquoted column within \code{.data} (facet).}
+
+\item{color}{Unquoted column within \code{.data} (color).}
+
+\item{fill}{Unquoted column within \code{.data} (fill color).}
+
 \item{title}{Title of the plot.}
 
 \item{subtitle}{Subtitle of the plot.}
@@ -35,23 +45,23 @@ plot_histogram(
 
 \item{caption}{Caption of the plot.}
 
+\item{line_color}{Character value defining the outline color of the histogram bars.}
+
+\item{line_width}{Numeric value defining the outline width of the histogram bars.}
+
+\item{fill_color}{Character value defining the color of the histogram bars.}
+
+\item{fill_alpha}{Numeric value defining the transparency of the histogram bars.}
+
 \item{theme_set}{A complete ggplot2 theme.}
 
 \item{theme_config}{A list with further arguments passed to \code{ggplot2::theme()}.}
 
 \item{...}{Further arguments passed to \code{ggplot2::geom_histogram()}.}
-
-\item{data}{A valid tsibble in long format with one measurement variable.}
-
-\item{bar_line_color}{Character value defining the outline color of the histrogram bars.}
-
-\item{bar_fill_color}{Character value defining the color of the histrogram bars.}
-
-\item{bar_alpha}{Numeric value defining the transparency of the histogram bars.}
 }
 \value{
 p An object of class ggplot.
 }
 \description{
-Plot the historgram of one or more time series.
+Plot the histogram of one or more time series.
 }

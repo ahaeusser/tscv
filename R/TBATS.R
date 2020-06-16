@@ -1,5 +1,5 @@
 
-#' @title Train TBATS model.
+#' @title Train TBATS model
 #'
 #' @description Train a TBATS model (Trigonometric seasonality, Box-Cox transformation,
 #'    ARMA errors, Trend and Seasonal components).
@@ -48,10 +48,10 @@ train_tbats <- function(.data,
 }
 
 
-
 specials_tbats <- new_specials()
 
-#' @title Automatic training of a TBATS model.
+
+#' @title Automatic training of a TBATS model
 #'
 #' @description Automatic training of a TBATS model (Trigonometric seasonality, Box-Cox transformation,
 #'    ARMA errors, Trend and Seasonal components). This function is a wrapper for \code{forecast::tbats()}.
@@ -75,7 +75,7 @@ TBATS <- function(formula, ...){
 }
 
 
-#' @title Forecast a trained TBATS model.
+#' @title Forecast a trained TBATS model
 #'
 #' @description Forecast a trained TBATS model.
 #'
@@ -107,7 +107,7 @@ forecast.TBATS <- function(object,
 }
 
 
-#' @title Extract fitted values from a TBATS.
+#' @title Extract fitted values from a TBATS
 #'
 #' @description Extract fitted values from a TBATS.
 #'
@@ -122,7 +122,7 @@ fitted.TBATS <- function(object, ...){
 }
 
 
-#' @title Extract residuals from a TBATS.
+#' @title Extract residuals from a TBATS
 #'
 #' @description Extract residuals from a TBATS.
 #'
@@ -136,11 +136,12 @@ residuals.TBATS <- function(object, ...){
   object$est[[".resid"]]
 }
 
-#' @title Provide a succinct summary of the TBATS.
+
+#' @title Provide a succinct summary of the TBATS
 #'
 #' @description Provide a succinct summary of the TBATS.
 #'
-#' @param object The TBATS to summarize.
+#' @param x The TBATS to summarize.
 #'
 #' @return
 #' @export

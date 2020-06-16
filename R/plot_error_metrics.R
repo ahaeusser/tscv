@@ -1,24 +1,25 @@
 
-#' @title Plot forecast accuracy metrics.
+#' @title Plot forecast accuracy metrics
 #'
 #' @description Plot forecast accuracy metrics, either along the forecast horizon or the slices. The user can define
 #'    the forecasting models and accuracy metrics.
 #'
 #' @param data A tibble containing the accuracy metrics, i.e. the result of a call to \code{error_metrics()}.
-#' @param variable Character vector defining the target variable.
-#' @param metric Character vector defining the accuracy measures.
 #' @param model Character vector defining the forecasting models.
+#' @param metric Character vector defining the accuracy measures.
 #' @param title Title for the plot.
 #' @param subtitle Subtitle for the plot.
 #' @param xlab Label for the x-axis.
 #' @param ylab Label for the y-axis.
 #' @param caption Caption (footnote) for the plot.
 #' @param line_width Numeric value. Line width.
+#' @param line_type Character value defining the line type.
 #' @param point_size Numeric value. Point size.
 #' @param point_shape Integer value. Point shape.
 #' @param point_alpha Numeric value between 0 and 1. The transparency of the points.
 #' @param theme_set A complete ggplot2 theme.
 #' @param theme_config A list with further arguments passed to \code{ggplot2::theme()}.
+#' @param ... Further arguments passed to \code{ggplot2::geom_line()} or \code{ggplot2::geom_point()}.
 #'
 #' @return p An object of class ggplot.
 #' @export

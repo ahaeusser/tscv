@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_error_metrics.R
 \name{plot_error_metrics}
 \alias{plot_error_metrics}
-\title{Plot forecast accuracy metrics.}
+\title{Plot forecast accuracy metrics}
 \usage{
 plot_error_metrics(
   data,
@@ -42,6 +42,8 @@ plot_error_metrics(
 
 \item{line_width}{Numeric value. Line width.}
 
+\item{line_type}{Character value defining the line type.}
+
 \item{point_size}{Numeric value. Point size.}
 
 \item{point_shape}{Integer value. Point shape.}
@@ -52,7 +54,7 @@ plot_error_metrics(
 
 \item{theme_config}{A list with further arguments passed to \code{ggplot2::theme()}.}
 
-\item{variable}{Character vector defining the target variable.}
+\item{...}{Further arguments passed to \code{ggplot2::geom_line()} or \code{ggplot2::geom_point()}.}
 }
 \value{
 p An object of class ggplot.

@@ -2,7 +2,7 @@
 % Please edit documentation in R/ELM.R
 \name{fitted.ELM}
 \alias{fitted.ELM}
-\title{Extract fitted values from a ELM.}
+\title{Extract fitted values from a ELM}
 \usage{
 \method{fitted}{ELM}(object, ...)
 }

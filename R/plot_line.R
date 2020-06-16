@@ -1,13 +1,13 @@
 
-#' @title Plot time series as line chart.
+#' @title Plot time series as line chart
 #'
 #' @description Plot one or more time series incl. smooth curve (linear or loess) as line chart.
 #'
 #' @param .data A \code{data.frame}, \code{tibble} or \code{tsibble} in long format.
 #' @param x Unquoted column within \code{.data}.
 #' @param y Unquoted column within \code{.data} containing numeric values.
-#' @param facet Character or factor column.
-#' @param color Character or factor column.
+#' @param facet Unquoted column within \code{.data} (facet).
+#' @param color Unquoted column within \code{.data} (color).
 #' @param title Title of the plot.
 #' @param subtitle Subtitle of the plot.
 #' @param xlab Label for the x-axis.
@@ -16,6 +16,7 @@
 #' @param line_width Numeric value defining the line width (time series).
 #' @param line_type Numeric value defining the line type (time series).
 #' @param line_color Character value defining the line color (ignored if \code{color} is present).
+#' @param line_alpha Numeric value defining the transparency of the line.
 #' @param stat_method Character value. The smoothing method (\code{NULL}, \code{"loess"}, \code{"lm"}, \code{"glm"}, \code{"gam"}).
 #' @param stat_width Numeric value defining the line width (smooth curve).
 #' @param stat_type Numeric value defining the line type (smooth curve).

@@ -1,5 +1,5 @@
 
-#' @title Train ELM neural network.
+#' @title Train ELM neural network
 #'
 #' @description Train an Extreme Learning Machine (ELM).
 #'
@@ -17,7 +17,7 @@ train_elm <- function(.data,
     abort("Only univariate responses are supported by ELM.")
   }
 
-  # Prepare data for modelling
+  # Prepare data for modeling
   model_data <- as.ts(.data)
 
   if(any(is.na(model_data))){
@@ -46,10 +46,10 @@ train_elm <- function(.data,
 }
 
 
-
 specials_elm <- new_specials()
 
-#' @title Automatic training of ELMs.
+
+#' @title Automatic training of ELMs
 #'
 #' @description Automatic training of Extreme Learning Machines (ELMs). This function
 #'    is a wrapper for \code{nnfor::elm()}.
@@ -73,7 +73,7 @@ ELM <- function(formula, ...){
 }
 
 
-#' @title Forecast a trained ELM model.
+#' @title Forecast a trained ELM model
 #'
 #' @description Forecast a trained ELM model.
 #'
@@ -104,7 +104,7 @@ forecast.ELM <- function(object,
 }
 
 
-#' @title Extract fitted values from a ELM.
+#' @title Extract fitted values from a ELM
 #'
 #' @description Extract fitted values from a ELM.
 #'
@@ -119,7 +119,7 @@ fitted.ELM <- function(object, ...){
 }
 
 
-#' @title Extract residuals from a ELM.
+#' @title Extract residuals from a ELM
 #'
 #' @description Extract residuals from a ELM.
 #'
@@ -133,11 +133,12 @@ residuals.ELM <- function(object, ...){
   object$est[[".resid"]]
 }
 
-#' @title Provide a succinct summary of the ELM.
+
+#' @title Provide a succinct summary of the ELM
 #'
 #' @description Provide a succinct summary of the ELM.
 #'
-#' @param object The ELM to summarize.
+#' @param x The ELM to summarize.
 #'
 #' @return
 #' @export

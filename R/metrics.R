@@ -1,24 +1,11 @@
 
-#' @title Calculate the mean error.
+#' @title Calculate the mean error
 #'
-#' @description Calculate the mean error. `me()` is a metric that is in
-#' the same units as the original data.
+#' @description Calculate the mean error. \code{me()} is a metric that is in
+#'    the same units as the original data.
 #'
-#' @param data A `data.frame` containing the `truth` and `estimate`
-#'    columns.
-#' @param truth The column identifier for the true results
-#'    (that is `numeric`). This should be an unquoted column name although
-#'    this argument is passed by expression and supports
-#'    [quasiquotation][rlang::quasiquotation] (you can unquote column
-#'    names). For `_vec()` functions, a `numeric` vector.
-#'
-#' @param estimate The column identifier for the predicted
-#'    results (that is also `numeric`). As with `truth` this can be
-#'    specified different ways but the primary method is to use an
-#'    unquoted variable name. For `_vec()` functions, a `numeric` vector.
-#' @param na_rm A  `logical` value indicating whether `NA`
-#'    values should be stripped before the computation proceeds.
-#'
+#' @param data A \code{data.frame}, \code{tibble} or \code{tsibble} containing
+#'    the \code{truth} and \code{estimate}.
 #' @param ... Not currently used.
 #'
 #' @return
@@ -27,6 +14,19 @@
 me <- function(data, ...) {
   UseMethod("me")
 }
+
+
+#' @title Calculate the mean error
+#'
+#' @description Calculate the mean error of a numeric vector. \code{me()}
+#'    is a metric that is in the same units as the original data.
+#'
+#' @param truth Numeric vector containing the actual values.
+#' @param estimate Numeric vector containing the forecasts.
+#' @param na_rm Logical value. If \code{TRUE}, missing values are removed.
+#' @param ... Further arguments passed to \code{metric_vec_template()}.
+#'
+#' @return Numeric value.
 
 me_vec <- function(truth,
                    estimate,
@@ -47,6 +47,21 @@ me_vec <- function(truth,
   )
 }
 
+
+#' @title Calculate the mean error
+#'
+#' @description Calculate the mean error for the columns of a data.frame.
+#'    \code{me()} is a metric that is in the same units as the original data.
+#'
+#' @param data A \code{data.frame}, \code{tibble} or \code{tsibble} containing
+#'    the \code{truth} and \code{estimate}.
+#' @param truth Numeric vector containing the actual values.
+#' @param estimate Numeric vector containing the forecasts.
+#' @param na_rm Logical value. If \code{TRUE}, missing values are removed.
+#' @param ... Further arguments passed to \code{metric_summarizer()}.
+#'
+#' @return A \code{data.frame} or \code{tibble}.
+
 me.data.frame <- function(data,
                           truth,
                           estimate,
@@ -65,26 +80,13 @@ me.data.frame <- function(data,
 
 
 
-#' @title Calculate the mean squared error.
+#' @title Calculate the mean squared error
 #'
-#' @description Calculate the mean squared error. `mse()` is a metric that is in
-#'    quadratic units.
+#' @description Calculate the mean squared error. \code{mse()} is a metric
+#'    that is in quadratic units.
 #'
-#' @param data A `data.frame` containing the `truth` and `estimate`
-#'    columns.
-#' @param truth The column identifier for the true results
-#'    (that is `numeric`). This should be an unquoted column name although
-#'    this argument is passed by expression and supports
-#'    [quasiquotation][rlang::quasiquotation] (you can unquote column
-#'    names). For `_vec()` functions, a `numeric` vector.
-#'
-#' @param estimate The column identifier for the predicted
-#'    results (that is also `numeric`). As with `truth` this can be
-#'    specified different ways but the primary method is to use an
-#'    unquoted variable name. For `_vec()` functions, a `numeric` vector.
-#' @param na_rm A  `logical` value indicating whether `NA`
-#'    values should be stripped before the computation proceeds.
-#'
+#' @param data A \code{data.frame}, \code{tibble} or \code{tsibble} containing
+#'    the \code{truth} and \code{estimate}.
 #' @param ... Not currently used.
 #'
 #' @return
@@ -93,6 +95,19 @@ me.data.frame <- function(data,
 mse <- function(data, ...) {
   UseMethod("mse")
 }
+
+
+#' @title Calculate the mean squared error
+#'
+#' @description Calculate the mean squared error of a numeric vector.
+#'    \code{mse()} is a metric that is in quadratic units.
+#'
+#' @param truth Numeric vector containing the actual values.
+#' @param estimate Numeric vector containing the forecasts.
+#' @param na_rm Logical value. If \code{TRUE}, missing values are removed.
+#' @param ... Further arguments passed to \code{metric_vec_template()}.
+#'
+#' @return Numeric value.
 
 mse_vec <- function(truth,
                     estimate,
@@ -113,6 +128,21 @@ mse_vec <- function(truth,
   )
 }
 
+
+#' @title Calculate the mean squared error
+#'
+#' @description Calculate the mean squared error for the columns of a data.frame.
+#'    \code{mse()} is a metric that is in quadratic units.
+#'
+#' @param data A \code{data.frame}, \code{tibble} or \code{tsibble} containing
+#'    the \code{truth} and \code{estimate}.
+#' @param truth Numeric vector containing the actual values.
+#' @param estimate Numeric vector containing the forecasts.
+#' @param na_rm Logical value. If \code{TRUE}, missing values are removed.
+#' @param ... Further arguments passed to \code{metric_summarizer()}.
+#'
+#' @return A \code{data.frame} or \code{tibble}.
+
 mse.data.frame <- function(data,
                            truth,
                            estimate,
@@ -130,25 +160,13 @@ mse.data.frame <- function(data,
 }
 
 
-#' @title Calculate the mean percentage error.
+#' @title Calculate the mean percentage error
 #'
-#' @description Calculate the mean percentage error. `mpe()` is in relative units.
+#' @description Calculate the mean percentage error. \code{mpe()} is a metric
+#'    that is in relative units.
 #'
-#' @param data A `data.frame` containing the `truth` and `estimate`
-#'    columns.
-#' @param truth The column identifier for the true results
-#'    (that is `numeric`). This should be an unquoted column name although
-#'    this argument is passed by expression and supports
-#'    [quasiquotation][rlang::quasiquotation] (you can unquote column
-#'    names). For `_vec()` functions, a `numeric` vector.
-#'
-#' @param estimate The column identifier for the predicted
-#'    results (that is also `numeric`). As with `truth` this can be
-#'    specified different ways but the primary method is to use an
-#'    unquoted variable name. For `_vec()` functions, a `numeric` vector.
-#' @param na_rm A  `logical` value indicating whether `NA`
-#'    values should be stripped before the computation proceeds.
-#'
+#' @param data A \code{data.frame}, \code{tibble} or \code{tsibble} containing
+#'    the \code{truth} and \code{estimate}.
 #' @param ... Not currently used.
 #'
 #' @return
@@ -157,6 +175,19 @@ mse.data.frame <- function(data,
 mpe <- function(data, ...) {
   UseMethod("mpe")
 }
+
+
+#' @title Calculate the mean percentage error
+#'
+#' @description Calculate the mean percentage error of a numeric vector.
+#'    \code{mpe()} is a metric that is in relative units.
+#'
+#' @param truth Numeric vector containing the actual values.
+#' @param estimate Numeric vector containing the forecasts.
+#' @param na_rm Logical value. If \code{TRUE}, missing values are removed.
+#' @param ... Further arguments passed to \code{metric_vec_template()}.
+#'
+#' @return Numeric value.
 
 mpe_vec <- function(truth,
                     estimate,
@@ -176,6 +207,21 @@ mpe_vec <- function(truth,
     ...
   )
 }
+
+
+#' @title Calculate the mean percentage error
+#'
+#' @description Calculate the mean percentage error for the columns of a data.frame.
+#'    \code{mpe()} is a metric that is in relative units.
+#'
+#' @param data A \code{data.frame}, \code{tibble} or \code{tsibble} containing
+#'    the \code{truth} and \code{estimate}.
+#' @param truth Numeric vector containing the actual values.
+#' @param estimate Numeric vector containing the forecasts.
+#' @param na_rm Logical value. If \code{TRUE}, missing values are removed.
+#' @param ... Further arguments passed to \code{metric_summarizer()}.
+#'
+#' @return A \code{data.frame} or \code{tibble}.
 
 mpe.data.frame <- function(data,
                            truth,

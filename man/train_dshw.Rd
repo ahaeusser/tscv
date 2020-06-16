@@ -2,7 +2,7 @@
 % Please edit documentation in R/DSHW.R
 \name{train_dshw}
 \alias{train_dshw}
-\title{Train DSHW model.}
+\title{Train DSHW model}
 \usage{
 train_dshw(.data, specials, periods, ...)
 }

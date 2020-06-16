@@ -1,5 +1,5 @@
 
-#' @title Train DSHW model.
+#' @title Train DSHW model
 #'
 #' @description Train a Double Seasonal Holt-Winters model (DSHW).
 #'
@@ -47,10 +47,10 @@ train_dshw <- function(.data,
 }
 
 
-
 specials_dshw <- new_specials()
 
-#' @title Automatic training of DSHW.
+
+#' @title Automatic training of DSHW
 #'
 #' @description Automatic training of a Double Seasonal Holt-Winters model (DSHW). This function
 #'    is a wrapper for \code{forecast::dshw()}.
@@ -74,7 +74,7 @@ DSHW <- function(formula, ...){
 }
 
 
-#' @title Forecast a trained DSHW model.
+#' @title Forecast a trained DSHW model
 #'
 #' @description Forecast a trained DSHW model.
 #'
@@ -87,9 +87,9 @@ DSHW <- function(formula, ...){
 #' @export
 
 forecast.DSHW <- function(object,
-                         new_data,
-                         specials = NULL,
-                         ...){
+                          new_data,
+                          specials = NULL,
+                          ...){
   # Forecast model
   fcst <- forecast(object$model, h = nrow(new_data))
 
@@ -105,7 +105,7 @@ forecast.DSHW <- function(object,
 }
 
 
-#' @title Extract fitted values from a DSHW.
+#' @title Extract fitted values from a DSHW
 #'
 #' @description Extract fitted values from a DSHW.
 #'
@@ -120,7 +120,7 @@ fitted.DSHW <- function(object, ...){
 }
 
 
-#' @title Extract residuals from a DSHW.
+#' @title Extract residuals from a DSHW
 #'
 #' @description Extract residuals from a DSHW.
 #'
@@ -134,11 +134,12 @@ residuals.DSHW <- function(object, ...){
   object$est[[".resid"]]
 }
 
-#' @title Provide a succinct summary of the DSHW.
+
+#' @title Provide a succinct summary of the DSHW
 #'
 #' @description Provide a succinct summary of the DSHW.
 #'
-#' @param object The DSHW to summarize.
+#' @param x The DSHW to summarize.
 #'
 #' @return
 #' @export

@@ -1,5 +1,5 @@
 
-#' @title Train MLP neural network.
+#' @title Train MLP neural network
 #'
 #' @description Train a Multilayer Perceptron (MLP).
 #'
@@ -46,10 +46,9 @@ train_mlp <- function(.data,
 }
 
 
-
 specials_mlp <- new_specials()
 
-#' @title Automatic training of MLPs.
+#' @title Automatic training of MLPs
 #'
 #' @description Automatic training of Multilayer Perceptrons (MLPs). This function
 #'    is a wrapper for \code{nnfor::mlp()}.
@@ -73,7 +72,7 @@ MLP <- function(formula, ...){
 }
 
 
-#' @title Forecast a trained MLP model.
+#' @title Forecast a trained MLP model
 #'
 #' @description Forecast a trained MLP model.
 #'
@@ -119,7 +118,7 @@ fitted.MLP <- function(object, ...){
 }
 
 
-#' @title Extract residuals from a MLP.
+#' @title Extract residuals from a MLP
 #'
 #' @description Extract residuals from a MLP.
 #'
@@ -133,11 +132,12 @@ residuals.MLP <- function(object, ...){
   object$est[[".resid"]]
 }
 
-#' @title Provide a succinct summary of the MLP.
+
+#' @title Provide a succinct summary of the MLP
 #'
 #' @description Provide a succinct summary of the MLP.
 #'
-#' @param object The MLP to summarize.
+#' @param x The MLP to summarize.
 #'
 #' @return
 #' @export

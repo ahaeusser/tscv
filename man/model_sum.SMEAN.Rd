@@ -2,12 +2,12 @@
 % Please edit documentation in R/SMEAN.R
 \name{model_sum.SMEAN}
 \alias{model_sum.SMEAN}
-\title{Provide a succinct summary of the SMEAN.}
+\title{Provide a succinct summary of the SMEAN}
 \usage{
 \method{model_sum}{SMEAN}(x)
 }
 \arguments{
-\item{object}{The SMEAN to summarize.}
+\item{x}{The SMEAN to summarize.}
 }
 \value{
 

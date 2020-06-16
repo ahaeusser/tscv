@@ -2,12 +2,12 @@
 % Please edit documentation in R/ELM.R
 \name{model_sum.ELM}
 \alias{model_sum.ELM}
-\title{Provide a succinct summary of the ELM.}
+\title{Provide a succinct summary of the ELM}
 \usage{
 \method{model_sum}{ELM}(x)
 }
 \arguments{
-\item{object}{The ELM to summarize.}
+\item{x}{The ELM to summarize.}
 }
 \value{
 

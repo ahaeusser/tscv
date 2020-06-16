@@ -2,7 +2,7 @@
 % Please edit documentation in R/SMEAN.R
 \name{SMEAN}
 \alias{SMEAN}
-\title{Automatic training of SMEANs.}
+\title{Automatic training of SMEANs}
 \usage{
 SMEAN(formula, ...)
 }

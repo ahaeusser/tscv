@@ -2,12 +2,12 @@
 % Please edit documentation in R/DSHW.R
 \name{model_sum.DSHW}
 \alias{model_sum.DSHW}
-\title{Provide a succinct summary of the DSHW.}
+\title{Provide a succinct summary of the DSHW}
 \usage{
 \method{model_sum}{DSHW}(x)
 }
 \arguments{
-\item{object}{The DSHW to summarize.}
+\item{x}{The DSHW to summarize.}
 }
 \value{
 

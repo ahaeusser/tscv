@@ -2,7 +2,7 @@
 % Please edit documentation in R/TBATS.R
 \name{TBATS}
 \alias{TBATS}
-\title{Automatic training of a TBATS model.}
+\title{Automatic training of a TBATS model}
 \usage{
 TBATS(formula, ...)
 }

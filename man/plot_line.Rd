@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_line.R
 \name{plot_line}
 \alias{plot_line}
-\title{Plot time series as line chart.}
+\title{Plot time series as line chart}
 \usage{
 plot_line(
   .data,
@@ -37,9 +37,9 @@ plot_line(
 
 \item{y}{Unquoted column within \code{.data} containing numeric values.}
 
-\item{facet}{Character or factor column.}
+\item{facet}{Unquoted column within \code{.data} (facet).}
 
-\item{color}{Character or factor column.}
+\item{color}{Unquoted column within \code{.data} (color).}
 
 \item{title}{Title of the plot.}
 
@@ -56,6 +56,8 @@ plot_line(
 \item{line_type}{Numeric value defining the line type (time series).}
 
 \item{line_color}{Character value defining the line color (ignored if \code{color} is present).}
+
+\item{line_alpha}{Numeric value defining the transparency of the line.}
 
 \item{stat_method}{Character value. The smoothing method (\code{NULL}, \code{"loess"}, \code{"lm"}, \code{"glm"}, \code{"gam"}).}
 

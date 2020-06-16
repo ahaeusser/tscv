@@ -2,7 +2,7 @@
 % Please edit documentation in R/DSHW.R
 \name{DSHW}
 \alias{DSHW}
-\title{Automatic training of DSHW.}
+\title{Automatic training of DSHW}
 \usage{
 DSHW(formula, ...)
 }

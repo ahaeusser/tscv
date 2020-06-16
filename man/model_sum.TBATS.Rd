@@ -2,12 +2,12 @@
 % Please edit documentation in R/TBATS.R
 \name{model_sum.TBATS}
 \alias{model_sum.TBATS}
-\title{Provide a succinct summary of the TBATS.}
+\title{Provide a succinct summary of the TBATS}
 \usage{
 \method{model_sum}{TBATS}(x)
 }
 \arguments{
-\item{object}{The TBATS to summarize.}
+\item{x}{The TBATS to summarize.}
 }
 \value{
 

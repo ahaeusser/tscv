@@ -1,9 +1,13 @@
 
-#' @title Plot the density via Kernel Density Estimator.
+#' @title Plot the density via Kernel Density Estimator
 #'
 #' @description Plot the density of one or more time series via Kernel Density Estimator.
 #'
-#' @param data A valid tsibble in long format with one measurement variable.
+#' @param .data A \code{data.frame}, \code{tibble} or \code{tsibble} in long format.
+#' @param x Unquoted column within \code{.data} containing numeric values.
+#' @param facet Unquoted column within \code{.data} (facet).
+#' @param color Unquoted column within \code{.data} (color).
+#' @param fill Unquoted column within \code{.data} (fill color).
 #' @param title Title of the plot.
 #' @param subtitle Subtitle of the plot.
 #' @param xlab Label for the x-axis.
@@ -12,10 +16,11 @@
 #' @param line_width Numeric value defining the line width of the kernel density estimator.
 #' @param line_type Integer value defining the line type of the kernel density estimator.
 #' @param line_color Character value defining the line color of the kernel density estimator.
-#' @param line_fill Character value defining the fill color for the area under the kernel density estimator.
-#' @param line_alpha Numeric value defining the transparency of the area under the kernel density estimator.
+#' @param fill_color Character value defining the fill color for the area under the kernel density estimator.
+#' @param fill_alpha Numeric value defining the transparency of the area under the kernel density estimator.
 #' @param theme_set A complete ggplot2 theme.
 #' @param theme_config A list with further arguments passed to \code{ggplot2::theme()}.
+#' @param ... Further arguments passed to \code{geom_density()}.
 #'
 #' @return p An object of class ggplot.
 #' @export

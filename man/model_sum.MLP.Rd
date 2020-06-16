@@ -2,12 +2,12 @@
 % Please edit documentation in R/MLP.R
 \name{model_sum.MLP}
 \alias{model_sum.MLP}
-\title{Provide a succinct summary of the MLP.}
+\title{Provide a succinct summary of the MLP}
 \usage{
 \method{model_sum}{MLP}(x)
 }
 \arguments{
-\item{object}{The MLP to summarize.}
+\item{x}{The MLP to summarize.}
 }
 \value{
 

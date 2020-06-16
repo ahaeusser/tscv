@@ -2,7 +2,7 @@
 % Please edit documentation in R/DSHW.R
 \name{forecast.DSHW}
 \alias{forecast.DSHW}
-\title{Forecast a trained DSHW model.}
+\title{Forecast a trained DSHW model}
 \usage{
 \method{forecast}{DSHW}(object, new_data, specials = NULL, ...)
 }

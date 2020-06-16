@@ -2,7 +2,7 @@
 % Please edit documentation in R/MLP.R
 \name{forecast.MLP}
 \alias{forecast.MLP}
-\title{Forecast a trained MLP model.}
+\title{Forecast a trained MLP model}
 \usage{
 \method{forecast}{MLP}(object, new_data, specials = NULL, ...)
 }

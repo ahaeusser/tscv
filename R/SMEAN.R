@@ -1,10 +1,10 @@
 
-#' @title Train seasonal mean model.
+#' @title Train seasonal mean model
 #'
 #' @description Train seasonal mean model (SMEAN). This is equivalent to a linear regression
 #'    against seasonal dummy variables only (\code{TSLM(value ~ season())}).
 #'
-#' @param data Input data as \code{tsibble}.
+#' @param .data Input data as \code{tsibble}.
 #' @param specials Specials as list defined in \code{specials_smean}.
 #' @param ... Further arguments.
 #'
@@ -52,7 +52,6 @@ train_smean <- function(.data,
 }
 
 
-
 specials_smean <- new_specials(
   lag = function(lag = NULL) {
     lag <- get_frequencies(period = lag, data = self$data, .auto = "smallest")
@@ -68,7 +67,8 @@ specials_smean <- new_specials(
   .required_specials = c("lag")
 )
 
-#' @title Automatic training of SMEANs.
+
+#' @title Automatic training of SMEANs
 #'
 #' @description Automatic training seasonal mean model (SMEAN). This is equivalent to a linear regression
 #'    against seasonal dummy variables only (\code{TSLM(value ~ season())}).
@@ -92,7 +92,7 @@ SMEAN <- function(formula, ...){
 }
 
 
-#' @title Forecast a trained SMEAN model.
+#' @title Forecast a trained SMEAN model
 #'
 #' @description Forecast a trained SMEAN model.
 #'
@@ -125,7 +125,7 @@ forecast.SMEAN <- function(object,
 }
 
 
-#' @title Extract fitted values from SMEAN.
+#' @title Extract fitted values from SMEAN
 #'
 #' @description Extract fitted values from SMEAN.
 #'
@@ -140,7 +140,7 @@ fitted.SMEAN <- function(object, ...){
 }
 
 
-#' @title Extract residuals from SMEAN.
+#' @title Extract residuals from SMEAN
 #'
 #' @description Extract residuals from SMEAN.
 #'
@@ -154,11 +154,12 @@ residuals.SMEAN <- function(object, ...){
   object$est[[".resid"]]
 }
 
-#' @title Provide a succinct summary of the SMEAN.
+
+#' @title Provide a succinct summary of the SMEAN
 #'
 #' @description Provide a succinct summary of the SMEAN.
 #'
-#' @param object The SMEAN to summarize.
+#' @param x The SMEAN to summarize.
 #'
 #' @return
 #' @export

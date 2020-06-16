@@ -2,7 +2,7 @@
 % Please edit documentation in R/TBATS.R
 \name{forecast.TBATS}
 \alias{forecast.TBATS}
-\title{Forecast a trained TBATS model.}
+\title{Forecast a trained TBATS model}
 \usage{
 \method{forecast}{TBATS}(object, new_data, specials = NULL, ...)
 }

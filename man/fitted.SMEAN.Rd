@@ -2,7 +2,7 @@
 % Please edit documentation in R/SMEAN.R
 \name{fitted.SMEAN}
 \alias{fitted.SMEAN}
-\title{Extract fitted values from SMEAN.}
+\title{Extract fitted values from SMEAN}
 \usage{
 \method{fitted}{SMEAN}(object, ...)
 }

@@ -1,27 +1,34 @@
 
-#' @title Quantile-Quantile plot.
+#' @title Quantile-Quantile plot
 #'
 #' @description Quantile-Quantile plot of one or more time series.
 #'
-#' @param data A valid tsibble in long format with one measurement variable.
-#' @param title Title of the plot (default select.target)
-#' @param subtitle Subtitle of the plot (default NULL)
-#' @param xlab Label for the x-axis
-#' @param ylab Label for the y-axis
-#' @param caption Caption of the plot
-#' @param point_size Numeric value defining the point size
-#' @param point_shape Integer value defining the point shape
-#' @param point_color Character value defining the point color
-#' @param point_alpha Numeric value defining the transperency of points
-#' @param line_width Numeric value defining the line width (45-degree line)
-#' @param line_type Integer value defining the line type (45-degree line)
-#' @param line_color Character value defining the line color (45-degree line)
+#' @param .data A \code{data.frame}, \code{tibble} or \code{tsibble} in long format.
+#' @param x Unquoted column within \code{.data} containing numeric values.
+#' @param facet Unquoted column within \code{.data} (facet).
+#' @param color Unquoted column within \code{.data} (color).
+#' @param title Title of the plot.
+#' @param subtitle Subtitle of the plot.
+#' @param xlab Label for the x-axis.
+#' @param ylab Label for the y-axis.
+#' @param caption Caption of the plot.
+#' @param point_size Numeric value defining the point size.
+#' @param point_shape Integer value defining the point shape.
+#' @param point_color Character value defining the point color (ignored if \code{color} is present).
+#' @param point_fill Character value defining the fill color (ignored if \code{color} is present).
+#' @param point_alpha Numeric value defining the transparency of points.
+#' @param line_width Numeric value defining the line width (45-degree line).
+#' @param line_type Integer value defining the line type (45-degree line).
+#' @param line_color Character value defining the line color (45-degree line).
+#' @param line_alpha Numeric value defining the transparency of the line.
+#' @param band_color Character value defining the fill color of the confidence bands.
+#' @param band_alpha Numeric value defining the transparency of the confidence bands.
 #' @param theme_set A complete ggplot2 theme.
 #' @param theme_config A list with further arguments passed to \code{ggplot2::theme()}.
 #' @param ... Further arguments passed to \code{qqplotr::stat_qq_point()},
 #'    \code{qqplotr::stat_qq_line()}, \code{qqplotr::stat_qq_band()}.
 #'
-#' @return p An object of class ggplot
+#' @return p An object of class ggplot.
 #' @export
 
 plot_qq <- function(.data,

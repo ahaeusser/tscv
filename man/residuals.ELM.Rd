@@ -2,7 +2,7 @@
 % Please edit documentation in R/ELM.R
 \name{residuals.ELM}
 \alias{residuals.ELM}
-\title{Extract residuals from a ELM.}
+\title{Extract residuals from a ELM}
 \usage{
 \method{residuals}{ELM}(object, ...)
 }

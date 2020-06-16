@@ -2,7 +2,7 @@
 % Please edit documentation in R/theme_tscv.R
 \name{theme_tscv}
 \alias{theme_tscv}
-\title{Custom ggplot2 theme for tscv package.}
+\title{Custom ggplot2 theme for tscv package}
 \usage{
 theme_tscv(
   base_size = 11,
@@ -12,13 +12,13 @@ theme_tscv(
 )
 }
 \arguments{
-\item{base_size}{Base font size}
+\item{base_size}{Base font size.}
 
-\item{base_line_size}{Base size for line elements}
+\item{base_family}{Base font family.}
 
-\item{base_rect_size}{Base size for rect elements}
+\item{base_line_size}{Base size for "line" elements.}
 
-\item{base_familiy}{Base font family}
+\item{base_rect_size}{Base size for "rect" elements.}
 }
 \description{
 Custom ggplot2 theme for tscv package.

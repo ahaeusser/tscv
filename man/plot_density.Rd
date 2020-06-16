@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_density.R
 \name{plot_density}
 \alias{plot_density}
-\title{Plot the density via Kernel Density Estimator.}
+\title{Plot the density via Kernel Density Estimator}
 \usage{
 plot_density(
   .data,
@@ -26,6 +26,16 @@ plot_density(
 )
 }
 \arguments{
+\item{.data}{A \code{data.frame}, \code{tibble} or \code{tsibble} in long format.}
+
+\item{x}{Unquoted column within \code{.data} containing numeric values.}
+
+\item{facet}{Unquoted column within \code{.data} (facet).}
+
+\item{color}{Unquoted column within \code{.data} (color).}
+
+\item{fill}{Unquoted column within \code{.data} (fill color).}
+
 \item{title}{Title of the plot.}
 
 \item{subtitle}{Subtitle of the plot.}
@@ -42,15 +52,15 @@ plot_density(
 
 \item{line_color}{Character value defining the line color of the kernel density estimator.}
 
+\item{fill_color}{Character value defining the fill color for the area under the kernel density estimator.}
+
+\item{fill_alpha}{Numeric value defining the transparency of the area under the kernel density estimator.}
+
 \item{theme_set}{A complete ggplot2 theme.}
 
 \item{theme_config}{A list with further arguments passed to \code{ggplot2::theme()}.}
 
-\item{data}{A valid tsibble in long format with one measurement variable.}
-
-\item{line_fill}{Character value defining the fill color for the area under the kernel density estimator.}
-
-\item{line_alpha}{Numeric value defining the transparency of the area under the kernel density estimator.}
+\item{...}{Further arguments passed to \code{geom_density()}.}
 }
 \value{
 p An object of class ggplot.

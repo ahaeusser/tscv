@@ -2,12 +2,12 @@
 % Please edit documentation in R/summarise_data.R
 \name{summarise_data}
 \alias{summarise_data}
-\title{Summary statistics for time series data.}
+\title{Summary statistics for time series data}
 \usage{
-summarise_data(data, value)
+summarise_data(.data)
 }
 \arguments{
-\item{data}{A valid tsibble in long format with one measurement variable.}
+\item{.data}{A valid \code{tsibble} in long format with one measurement variable.}
 }
 \value{
 data_tbl A tibble containing the summary statistics.
@@ -20,7 +20,7 @@ This function calculates several summary statistics for time series data.
       \item{\code{start}: Start date (or date-time)}
       \item{\code{end}: End date (or date-time)}
       \item{\code{n_missing}: Number of missing values (NAs)}
-      \item{\code{complete_rate}: Percentange rate of complete values}
+      \item{\code{complete_rate}: Percentage rate of complete values}
       \item{\code{mean}: Arithmetic mean}
       \item{\code{sd}: Standard deviation}
       \item{\code{p0}: Minimum}

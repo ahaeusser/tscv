@@ -2,7 +2,7 @@
 % Please edit documentation in R/TBATS.R
 \name{train_tbats}
 \alias{train_tbats}
-\title{Train TBATS model.}
+\title{Train TBATS model}
 \usage{
 train_tbats(.data, specials, periods, ...)
 }

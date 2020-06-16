@@ -1,17 +1,22 @@
 
-#' @title Plot the histogram of time series.
+#' @title Plot the histogram of time series
 #'
-#' @description Plot the historgram of one or more time series.
+#' @description Plot the histogram of one or more time series.
 #'
-#' @param data A valid tsibble in long format with one measurement variable.
+#' @param .data A \code{data.frame}, \code{tibble} or \code{tsibble} in long format.
+#' @param x Unquoted column within \code{.data} containing numeric values.
+#' @param facet Unquoted column within \code{.data} (facet).
+#' @param color Unquoted column within \code{.data} (color).
+#' @param fill Unquoted column within \code{.data} (fill color).
 #' @param title Title of the plot.
 #' @param subtitle Subtitle of the plot.
 #' @param xlab Label for the x-axis.
 #' @param ylab Label for the y-axis.
 #' @param caption Caption of the plot.
-#' @param bar_line_color Character value defining the outline color of the histrogram bars.
-#' @param bar_fill_color Character value defining the color of the histrogram bars.
-#' @param bar_alpha Numeric value defining the transparency of the histogram bars.
+#' @param line_color Character value defining the outline color of the histogram bars.
+#' @param line_width Numeric value defining the outline width of the histogram bars.
+#' @param fill_color Character value defining the color of the histogram bars.
+#' @param fill_alpha Numeric value defining the transparency of the histogram bars.
 #' @param theme_set A complete ggplot2 theme.
 #' @param theme_config A list with further arguments passed to \code{ggplot2::theme()}.
 #' @param ... Further arguments passed to \code{ggplot2::geom_histogram()}.

@@ -2,7 +2,7 @@
 % Please edit documentation in R/ELM.R
 \name{ELM}
 \alias{ELM}
-\title{Automatic training of ELMs.}
+\title{Automatic training of ELMs}
 \usage{
 ELM(formula, ...)
 }

@@ -2,14 +2,14 @@
 % Please edit documentation in R/error_metrics.R
 \name{error_metrics}
 \alias{error_metrics}
-\title{Estimate accuracy metrics to evaluate point forecast.}
+\title{Estimate accuracy metrics to evaluate point forecast}
 \usage{
 error_metrics(fcst, data, period = NULL, by = "split")
 }
 \arguments{
-\item{fcst}{A `fable` containing the forecasts for the models, splits, etc.}
+\item{fcst}{A \code{fable} containing the forecasts for the models, splits, etc.}
 
-\item{data}{A `tsibble` containing the training and testing data.}
+\item{data}{A \code{tsibble} containing the training and testing data.}
 
 \item{period}{Integer value. The period used for the estimation of the in-sample
 MAE of seasonal naive forecast. The in-sample MAE is required for scaling the sMASE.}
@@ -17,7 +17,7 @@ MAE of seasonal naive forecast. The in-sample MAE is required for scaling the sM
 \item{by}{Character value. Either accuracy is estimated by \code{split} or \code{horizon}.}
 }
 \value{
-A tibble containg the accuracy metrics for all key variables and models.
+A \code{tibble} containing the accuracy metrics for all key variables and models.
 }
 \description{
 This function estimates several accuracy metrics to evaluate the

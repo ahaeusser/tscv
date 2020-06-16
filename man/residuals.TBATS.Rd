@@ -2,7 +2,7 @@
 % Please edit documentation in R/TBATS.R
 \name{residuals.TBATS}
 \alias{residuals.TBATS}
-\title{Extract residuals from a TBATS.}
+\title{Extract residuals from a TBATS}
 \usage{
 \method{residuals}{TBATS}(object, ...)
 }

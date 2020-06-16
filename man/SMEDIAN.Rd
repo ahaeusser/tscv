@@ -2,7 +2,7 @@
 % Please edit documentation in R/SMEDIAN.R
 \name{SMEDIAN}
 \alias{SMEDIAN}
-\title{Automatic training of SMEDIANs.}
+\title{Automatic training of SMEDIANs}
 \usage{
 SMEDIAN(formula, ...)
 }

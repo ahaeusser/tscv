@@ -2,7 +2,7 @@
 % Please edit documentation in R/SMEDIAN.R
 \name{fitted.SMEDIAN}
 \alias{fitted.SMEDIAN}
-\title{Extract fitted values from SMEDIAN.}
+\title{Extract fitted values from SMEDIAN}
 \usage{
 \method{fitted}{SMEDIAN}(object, ...)
 }

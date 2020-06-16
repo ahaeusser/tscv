@@ -2,7 +2,7 @@
 % Please edit documentation in R/DSHW.R
 \name{residuals.DSHW}
 \alias{residuals.DSHW}
-\title{Extract residuals from a DSHW.}
+\title{Extract residuals from a DSHW}
 \usage{
 \method{residuals}{DSHW}(object, ...)
 }

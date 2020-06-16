@@ -1,12 +1,12 @@
 
-#' @title Custom ggplot2 theme for tscv package.
+#' @title Custom ggplot2 theme for tscv package
 #'
 #' @description Custom ggplot2 theme for tscv package.
 #'
-#' @param base_size Base font size
-#' @param base_familiy Base font family
-#' @param base_line_size Base size for line elements
-#' @param base_rect_size Base size for rect elements
+#' @param base_size Base font size.
+#' @param base_family Base font family.
+#' @param base_line_size Base size for "line" elements.
+#' @param base_rect_size Base size for "rect" elements.
 #'
 #' @export
 

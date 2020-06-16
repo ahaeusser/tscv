@@ -2,7 +2,7 @@
 % Please edit documentation in R/ELM.R
 \name{forecast.ELM}
 \alias{forecast.ELM}
-\title{Forecast a trained ELM model.}
+\title{Forecast a trained ELM model}
 \usage{
 \method{forecast}{ELM}(object, new_data, specials = NULL, ...)
 }

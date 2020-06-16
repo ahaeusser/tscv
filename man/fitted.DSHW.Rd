@@ -2,7 +2,7 @@
 % Please edit documentation in R/DSHW.R
 \name{fitted.DSHW}
 \alias{fitted.DSHW}
-\title{Extract fitted values from a DSHW.}
+\title{Extract fitted values from a DSHW}
 \usage{
 \method{fitted}{DSHW}(object, ...)
 }

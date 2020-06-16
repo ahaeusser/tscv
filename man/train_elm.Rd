@@ -2,7 +2,7 @@
 % Please edit documentation in R/ELM.R
 \name{train_elm}
 \alias{train_elm}
-\title{Train ELM neural network.}
+\title{Train ELM neural network}
 \usage{
 train_elm(.data, specials, ...)
 }

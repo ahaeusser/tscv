@@ -2,7 +2,7 @@
 % Please edit documentation in R/MLP.R
 \name{MLP}
 \alias{MLP}
-\title{Automatic training of MLPs.}
+\title{Automatic training of MLPs}
 \usage{
 MLP(formula, ...)
 }

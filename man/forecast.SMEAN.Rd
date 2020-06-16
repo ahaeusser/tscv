@@ -2,7 +2,7 @@
 % Please edit documentation in R/SMEAN.R
 \name{forecast.SMEAN}
 \alias{forecast.SMEAN}
-\title{Forecast a trained SMEAN model.}
+\title{Forecast a trained SMEAN model}
 \usage{
 \method{forecast}{SMEAN}(object, new_data, specials = NULL, ...)
 }

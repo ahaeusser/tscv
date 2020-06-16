@@ -2,7 +2,7 @@
 % Please edit documentation in R/MLP.R
 \name{residuals.MLP}
 \alias{residuals.MLP}
-\title{Extract residuals from a MLP.}
+\title{Extract residuals from a MLP}
 \usage{
 \method{residuals}{MLP}(object, ...)
 }

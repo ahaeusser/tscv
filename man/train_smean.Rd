@@ -2,16 +2,16 @@
 % Please edit documentation in R/SMEAN.R
 \name{train_smean}
 \alias{train_smean}
-\title{Train seasonal mean model.}
+\title{Train seasonal mean model}
 \usage{
 train_smean(.data, specials, ...)
 }
 \arguments{
+\item{.data}{Input data as \code{tsibble}.}
+
 \item{specials}{Specials as list defined in \code{specials_smean}.}
 
 \item{...}{Further arguments.}
-
-\item{data}{Input data as \code{tsibble}.}
 }
 \value{
 An object of class \code{SMEAN}.

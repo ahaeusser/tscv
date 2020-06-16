@@ -2,7 +2,7 @@
 % Please edit documentation in R/SMEDIAN.R
 \name{residuals.SMEDIAN}
 \alias{residuals.SMEDIAN}
-\title{Extract residuals from SMEDIAN.}
+\title{Extract residuals from SMEDIAN}
 \usage{
 \method{residuals}{SMEDIAN}(object, ...)
 }

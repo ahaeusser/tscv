@@ -1,5 +1,5 @@
 
-#' @title Estimate accuracy metrics to evaluate point forecast.
+#' @title Estimate accuracy metrics to evaluate point forecast
 #'
 #' @description This function estimates several accuracy metrics to evaluate the
 #'    accuracy of the point forecasts. By default, the following accuracy metrics
@@ -17,13 +17,13 @@
 #'       \item{\code{sMASE}: seasonal mean absolute scaled error}
 #'       }
 #'
-#' @param fcst A `fable` containing the forecasts for the models, splits, etc.
-#' @param data A `tsibble` containing the training and testing data.
+#' @param fcst A \code{fable} containing the forecasts for the models, splits, etc.
+#' @param data A \code{tsibble} containing the training and testing data.
 #' @param period Integer value. The period used for the estimation of the in-sample
 #'    MAE of seasonal naive forecast. The in-sample MAE is required for scaling the sMASE.
 #' @param by Character value. Either accuracy is estimated by \code{split} or \code{horizon}.
 #'
-#' @return A tibble containg the accuracy metrics for all key variables and models.
+#' @return A \code{tibble} containing the accuracy metrics for all key variables and models.
 #' @export
 
 error_metrics <- function(fcst,

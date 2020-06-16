@@ -1,9 +1,9 @@
 
-#' @title Train seasonal median model.
+#' @title Train seasonal median model
 #'
 #' @description Train seasonal median model (SMEDIAN).
 #'
-#' @param data Input data as \code{tsibble}.
+#' @param .data Input data as \code{tsibble}.
 #' @param specials Specials as list defined in \code{specials_smedian}.
 #' @param ... Further arguments.
 #'
@@ -11,7 +11,6 @@
 
 train_smedian <- function(.data,
                           specials,
-                          period,
                           ...){
 
   if (length(measured_vars(.data)) > 1) {
@@ -52,7 +51,6 @@ train_smedian <- function(.data,
 }
 
 
-
 globalVariables(c("self", "origin"))
 
 specials_smedian <- new_specials(
@@ -71,9 +69,7 @@ specials_smedian <- new_specials(
 )
 
 
-
-
-#' @title Automatic training of SMEDIANs.
+#' @title Automatic training of SMEDIANs
 #'
 #' @description Automatic training of seasonal median model (SMEDIAN).
 #'
@@ -96,7 +92,7 @@ SMEDIAN <- function(formula, ...){
 }
 
 
-#' @title Forecast a trained SMEDIAN model.
+#' @title Forecast a trained SMEDIAN model
 #'
 #' @description Forecast a trained SMEDIAN model.
 #'
@@ -129,7 +125,7 @@ forecast.SMEDIAN <- function(object,
 }
 
 
-#' @title Extract fitted values from SMEDIAN.
+#' @title Extract fitted values from SMEDIAN
 #'
 #' @description Extract fitted values from SMEDIAN.
 #'
@@ -144,7 +140,7 @@ fitted.SMEDIAN <- function(object, ...){
 }
 
 
-#' @title Extract residuals from SMEDIAN.
+#' @title Extract residuals from SMEDIAN
 #'
 #' @description Extract residuals from SMEDIAN.
 #'
@@ -158,11 +154,12 @@ residuals.SMEDIAN <- function(object, ...){
   object$est[[".resid"]]
 }
 
-#' @title Provide a succinct summary of the SMEDIAN.
+
+#' @title Provide a succinct summary of the SMEDIAN
 #'
 #' @description Provide a succinct summary of the SMEDIAN.
 #'
-#' @param object The SMEDIAN to summarize.
+#' @param x The SMEDIAN to summarize.
 #'
 #' @return
 #' @export

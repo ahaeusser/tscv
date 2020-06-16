@@ -2,7 +2,7 @@
 % Please edit documentation in R/TBATS.R
 \name{fitted.TBATS}
 \alias{fitted.TBATS}
-\title{Extract fitted values from a TBATS.}
+\title{Extract fitted values from a TBATS}
 \usage{
 \method{fitted}{TBATS}(object, ...)
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/SMEAN.R
 \name{residuals.SMEAN}
 \alias{residuals.SMEAN}
-\title{Extract residuals from SMEAN.}
+\title{Extract residuals from SMEAN}
 \usage{
 \method{residuals}{SMEAN}(object, ...)
 }

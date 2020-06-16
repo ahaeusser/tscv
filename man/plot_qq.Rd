@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_qq.R
 \name{plot_qq}
 \alias{plot_qq}
-\title{Quantile-Quantile plot.}
+\title{Quantile-Quantile plot}
 \usage{
 plot_qq(
   .data,
@@ -31,29 +31,45 @@ plot_qq(
 )
 }
 \arguments{
-\item{title}{Title of the plot (default select.target)}
+\item{.data}{A \code{data.frame}, \code{tibble} or \code{tsibble} in long format.}
 
-\item{subtitle}{Subtitle of the plot (default NULL)}
+\item{x}{Unquoted column within \code{.data} containing numeric values.}
 
-\item{xlab}{Label for the x-axis}
+\item{facet}{Unquoted column within \code{.data} (facet).}
 
-\item{ylab}{Label for the y-axis}
+\item{color}{Unquoted column within \code{.data} (color).}
 
-\item{caption}{Caption of the plot}
+\item{title}{Title of the plot.}
 
-\item{point_size}{Numeric value defining the point size}
+\item{subtitle}{Subtitle of the plot.}
 
-\item{point_shape}{Integer value defining the point shape}
+\item{xlab}{Label for the x-axis.}
 
-\item{point_color}{Character value defining the point color}
+\item{ylab}{Label for the y-axis.}
 
-\item{point_alpha}{Numeric value defining the transperency of points}
+\item{caption}{Caption of the plot.}
 
-\item{line_width}{Numeric value defining the line width (45-degree line)}
+\item{point_size}{Numeric value defining the point size.}
 
-\item{line_type}{Integer value defining the line type (45-degree line)}
+\item{point_shape}{Integer value defining the point shape.}
 
-\item{line_color}{Character value defining the line color (45-degree line)}
+\item{point_color}{Character value defining the point color (ignored if \code{color} is present).}
+
+\item{point_fill}{Character value defining the fill color (ignored if \code{color} is present).}
+
+\item{point_alpha}{Numeric value defining the transparency of points.}
+
+\item{line_width}{Numeric value defining the line width (45-degree line).}
+
+\item{line_type}{Integer value defining the line type (45-degree line).}
+
+\item{line_color}{Character value defining the line color (45-degree line).}
+
+\item{line_alpha}{Numeric value defining the transparency of the line.}
+
+\item{band_color}{Character value defining the fill color of the confidence bands.}
+
+\item{band_alpha}{Numeric value defining the transparency of the confidence bands.}
 
 \item{theme_set}{A complete ggplot2 theme.}
 
@@ -61,11 +77,9 @@ plot_qq(
 
 \item{...}{Further arguments passed to \code{qqplotr::stat_qq_point()},
 \code{qqplotr::stat_qq_line()}, \code{qqplotr::stat_qq_band()}.}
-
-\item{data}{A valid tsibble in long format with one measurement variable.}
 }
 \value{
-p An object of class ggplot
+p An object of class ggplot.
 }
 \description{
 Quantile-Quantile plot of one or more time series.
