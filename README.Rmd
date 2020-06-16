@@ -32,7 +32,7 @@ devtools::install_github("ahaeusser/tscv")
 ```
 ## Example
 
-```{r packages, message=FALSE, warning=FALSE}
+```{r packages, message = FALSE, warning = FALSE}
 # Load relevant packages
 library(tscv)
 library(tidyverse)
@@ -42,11 +42,19 @@ library(feasts)
 Sys.setlocale("LC_TIME", "C")
 ```
 
-### Data preparation
+## Data preparation
 
-The dataset `elec_price` is a hourly `tsibble` with day-ahead electricity spot prices from the ENTSO-E Transparency Platform. The dataset contains time series data from 2019-01-01 00:00:00 to 2019-12-31 23:00:00 for four european bidding zones (DE, FR, NO1 and SE1). You can use the function `clean_data()` to prepare the dataset for further usage. The function checks whether the input data are a valid tsibble or not (regular spaced in time and ordered). Furthermore, implicit missing values are turned into explicit missing values (existing missing values are left untouched). If the data are provided in wide format, they are gathered into long format. You can use the function `plot_line()` to visualize the four time series.
+The dataset `elec_price` is a hourly `tsibble` with day-ahead electricity spot prices in [EUR/MWh] from the ENTSO-E Transparency Platform. The dataset contains time series data from 2019-01-01 to 2019-12-31 for four european bidding zones: 
 
-```{r clean data}
+* DE-LU: Germany and Luxembourg
+* FR: France
+* NO1: Norway 1 (Oslo)
+* SE1: Sweden 1 (Lulea)
+
+You can use the function `clean_data()` to prepare the dataset for further usage. The function checks whether the input data are a valid tsibble or not (regular spaced in time and ordered). Furthermore, implicit missing values are turned into explicit missing values (existing missing values are left untouched). If the data are provided in wide format, they are gathered into long format. You can use the function `plot_line()` to visualize the four time series.
+
+```{r clean_data}
+# Prepare dataset
 data <- elec_price %>%
   mutate(Series = paste0(Series, " (", BZN, ")")) %>%
   update_tsibble(key = Series) %>%
@@ -57,18 +65,23 @@ data
 
 data %>%
   plot_line(
+    x = Time,
+    y = Value,
+    color = Series,
     title = "Day-ahead Electricity Spot Price",
-    subtitle = "2019-01-01 to 2019-12-31",
+    subtitle = "2019-03-01 to 2019-03-15",
     xlab = "Time",
     ylab = "[EUR/MWh]",
     caption = "Data: ENTSO-E Transparency")
-
 ```
+
+
+## Split data into training and testing
 
 To prepare the dataset for time series cross-validation (TSCV), you can use the function `split_data()`. This function splits the data into training and testing (i.e. partitioning into time slices) for time series cross-validation. You can choose between `stretch` and `slide`. The first is an expanding window approach, while the latter is a fixed window approach. Furthermore, you can define the (initial) window size for training and testing via `n_init` and `n_ahead`, as well as the step size for increments via `n_skip`.
 
-```{r split data}
-
+```{r split_data}
+# Setup for time series cross validation
 n_init <- 2400   # size for training window
 n_ahead <- 24    # size for testing window (forecast horizon)
 mode <- "slide"  # fixed window approach
@@ -87,12 +100,19 @@ data
 ```
 
 
-### Training and forecasting
+The function `summarise_split()` provides a summary table of the partitioning into training and testing with the corresponding start and end (as date and index) for each split. This is very useful to identfy specific splits by date. For example, if a holiday falls into a specific testing slice or not. 
 
-Now the data are splitted into training and testing slices and we are ready to forecast. Due to the sample size and computation time, only very simple benchmark methods are used. The functions `SMEDIAN` and `SMEAN` are extensions to the `fable` package. The function`SMEAN` is exactly the same as running a regression against seasonal dummy variables (`TSLM(value ~ season())`). I just added this function for convenience. Further forecasting methods are available (e.g. `TBATS()` and `DSHW()` from package `forecast` or `ELM()` and `MLP()` from package `nnfor`).
+```{r summarise_split}
+# Summarize split into training and testing data
+data %>% summarise_split()
+```
 
-```{r train}
+## Training and forecasting
 
+The data are splitted into training and testing slices and we are ready to forecast. Due to the sample size and computation time, only very simple benchmark methods are used. The functions `SMEDIAN` and `SMEAN` are extensions to the `fable` package. The function `SMEAN` is exactly the same as running a regression against seasonal dummy variables (`TSLM(value ~ season())`). I just added this function for convenience. Further forecasting methods are available (e.g. `TBATS()` and `DSHW()` from package `forecast` or `ELM()` and `MLP()` from package `nnfor`).
+
+```{r train_models}
+# Model training
 data <- data %>%
   filter(split %in% c(1:100))
 
@@ -106,7 +126,7 @@ models <- data %>%
 
 models
 
-
+# Forecasting
 fcst <- models %>%
   forecast(h = n_ahead)
 
@@ -124,12 +144,24 @@ plot_forecast(
   )
 ```
 
-### Evaluation of forecast accuracy
 
-To evaluate the forecast accuracy, the function `error_metrics()` is used. You can define whether to evaluate the accuracy by `horizon` or by `split`. Several accuracy metrics like `RMSE`, `MAE` or `MAPE` are available.
+## Evaluation of forecast accuracy
 
-```{r accuracy}
+To evaluate the forecast accuracy, the function `error_metrics()` is used. You can define whether to evaluate the accuracy by `horizon` or by `split`. Several accuracy metrics are available:
 
+* `ME`: mean error
+* `MAE`: mean absolute error
+* `MSE`: mean squared error
+* `RMSE`: root mean squared error
+* `MAPE`: mean absolute percentage error
+* `sMAPE`: scaled mean absolute percentage error
+* `MPE`: mean percentage error
+* `MASE`: mean absolute scale error
+* `sMASE`: seasonal mean absolute scaled error
+
+
+### Forecast accuracy by forecast horizon
+```{r accuracy_horizon}
 # Estimate error metrics
 metrics_horizon <- error_metrics(
   fcst = fcst,
@@ -137,29 +169,34 @@ metrics_horizon <- error_metrics(
   period = 168,
   by = "horizon")
 
+metrics_horizon
+
+# Visualize results
 metrics_horizon %>%
   plot_error_metrics(
     title = "Evaluation of forecast accuracy by forecast horizon",
     subtitle = "Seasonal mean absolute scaled error (sMASE)",
     xlab = "Forecast horizon (n-step-ahead)",
     caption = "Data: ENTSO-E Transparency, own calculation")
+```
 
-# Visualize results
+
+### Forecast accuracy by split
+```{r accuracy_split}
+# Estimate error metrics
 metrics_split <- error_metrics(
   fcst = fcst,
   data = data,
   period = 168,
   by = "split")
 
+metrics_split
+
+# Visualize results
 metrics_split %>%
   plot_error_metrics(
     title = "Evaluation of forecast accuracy by split",
     subtitle = "Seasonal mean absolute scaled error (sMASE)",
     xlab = "Split",
     caption = "Data: ENTSO-E Transparency, own calculation")
-
-
 ```
-
-
-### Work in progress

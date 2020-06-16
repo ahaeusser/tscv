@@ -38,21 +38,28 @@ Sys.setlocale("LC_TIME", "C")
 #> [1] "C"
 ```
 
-### Data preparation
+## Data preparation
 
 The dataset `elec_price` is a hourly `tsibble` with day-ahead
-electricity spot prices from the ENTSO-E Transparency Platform. The
-dataset contains time series data from 2019-01-01 00:00:00 to 2019-12-31
-23:00:00 for four european bidding zones (DE, FR, NO1 and SE1). You can
-use the function `clean_data()` to prepare the dataset for further
-usage. The function checks whether the input data are a valid tsibble or
-not (regular spaced in time and ordered). Furthermore, implicit missing
-values are turned into explicit missing values (existing missing values
-are left untouched). If the data are provided in wide format, they are
-gathered into long format. You can use the function `plot_line()` to
-visualize the four time series.
+electricity spot prices in \[EUR/MWh\] from the ENTSO-E Transparency
+Platform. The dataset contains time series data from 2019-01-01 to
+2019-12-31 for four european bidding zones:
+
+  - DE-LU: Germany and Luxembourg
+  - FR: France
+  - NO1: Norway 1 (Oslo)
+  - SE1: Sweden 1 (Lulea)
+
+You can use the function `clean_data()` to prepare the dataset for
+further usage. The function checks whether the input data are a valid
+tsibble or not (regular spaced in time and ordered). Furthermore,
+implicit missing values are turned into explicit missing values
+(existing missing values are left untouched). If the data are provided
+in wide format, they are gathered into long format. You can use the
+function `plot_line()` to visualize the four time series.
 
 ``` r
+# Prepare dataset
 data <- elec_price %>%
   mutate(Series = paste0(Series, " (", BZN, ")")) %>%
   update_tsibble(key = Series) %>%
@@ -78,14 +85,19 @@ data
 
 data %>%
   plot_line(
+    x = Time,
+    y = Value,
+    color = Series,
     title = "Day-ahead Electricity Spot Price",
-    subtitle = "2019-01-01 to 2019-12-31",
+    subtitle = "2019-03-01 to 2019-03-15",
     xlab = "Time",
     ylab = "[EUR/MWh]",
     caption = "Data: ENTSO-E Transparency")
 ```
 
-<img src="man/figures/README-clean data-1.svg" width="100%" />
+<img src="man/figures/README-clean_data-1.svg" width="100%" />
+
+## Split data into training and testing
 
 To prepare the dataset for time series cross-validation (TSCV), you can
 use the function `split_data()`. This function splits the data into
@@ -97,7 +109,7 @@ for training and testing via `n_init` and `n_ahead`, as well as the step
 size for increments via `n_skip`.
 
 ``` r
-
+# Setup for time series cross validation
 n_init <- 2400   # size for training window
 n_ahead <- 24    # size for testing window (forecast horizon)
 mode <- "slide"  # fixed window approach
@@ -130,20 +142,44 @@ data
 #> # ... with 2,579,126 more rows
 ```
 
-### Training and forecasting
-
-Now the data are splitted into training and testing slices and we are
-ready to forecast. Due to the sample size and computation time, only
-very simple benchmark methods are used. The functions `SMEDIAN` and
-`SMEAN` are extensions to the `fable` package. The function`SMEAN` is
-exactly the same as running a regression against seasonal dummy
-variables (`TSLM(value ~ season())`). I just added this function for
-convenience. Further forecasting methods are available (e.g. `TBATS()`
-and `DSHW()` from package `forecast` or `ELM()` and `MLP()` from package
-`nnfor`).
+The function `summarise_split()` provides a summary table of the
+partitioning into training and testing with the corresponding start and
+end (as date and index) for each split. This is very useful to identfy
+specific splits by date. For example, if a holiday falls into a specific
+testing slice or not.
 
 ``` r
+# Summarize split into training and testing data
+data %>% summarise_split()
+#> # A tibble: 266 x 5
+#>    split time_train              time_test               index_train index_test 
+#>    <int> <chr>                   <chr>                   <chr>       <chr>      
+#>  1     1 [2019-01-01, 2019-04-1~ [2019-04-11, 2019-04-1~ [0001, 240~ [2401, 242~
+#>  2     2 [2019-01-02, 2019-04-1~ [2019-04-12, 2019-04-1~ [0025, 242~ [2425, 244~
+#>  3     3 [2019-01-03, 2019-04-1~ [2019-04-13, 2019-04-1~ [0049, 244~ [2449, 247~
+#>  4     4 [2019-01-04, 2019-04-1~ [2019-04-14, 2019-04-1~ [0073, 247~ [2473, 249~
+#>  5     5 [2019-01-05, 2019-04-1~ [2019-04-15, 2019-04-1~ [0097, 249~ [2497, 252~
+#>  6     6 [2019-01-06, 2019-04-1~ [2019-04-16, 2019-04-1~ [0121, 252~ [2521, 254~
+#>  7     7 [2019-01-07, 2019-04-1~ [2019-04-17, 2019-04-1~ [0145, 254~ [2545, 256~
+#>  8     8 [2019-01-08, 2019-04-1~ [2019-04-18, 2019-04-1~ [0169, 256~ [2569, 259~
+#>  9     9 [2019-01-09, 2019-04-1~ [2019-04-19, 2019-04-1~ [0193, 259~ [2593, 261~
+#> 10    10 [2019-01-10, 2019-04-1~ [2019-04-20, 2019-04-2~ [0217, 261~ [2617, 264~
+#> # ... with 256 more rows
+```
 
+## Training and forecasting
+
+The data are splitted into training and testing slices and we are ready
+to forecast. Due to the sample size and computation time, only very
+simple benchmark methods are used. The functions `SMEDIAN` and `SMEAN`
+are extensions to the `fable` package. The function `SMEAN` is exactly
+the same as running a regression against seasonal dummy variables
+(`TSLM(value ~ season())`). I just added this function for convenience.
+Further forecasting methods are available (e.g. `TBATS()` and `DSHW()`
+from package `forecast` or `ELM()` and `MLP()` from package `nnfor`).
+
+``` r
+# Model training
 data <- data %>%
   filter(split %in% c(1:100))
 
@@ -172,7 +208,7 @@ models
 #> 10 Price (DE-LU)    10 <SNAIVE> <SMEAN> <SMEDIAN> <STL decomposition model>
 #> # ... with 390 more rows
 
-
+# Forecasting
 fcst <- models %>%
   forecast(h = n_ahead)
 
@@ -205,17 +241,27 @@ plot_forecast(
   )
 ```
 
-<img src="man/figures/README-train-1.svg" width="100%" />
+<img src="man/figures/README-train_models-1.svg" width="100%" />
 
-### Evaluation of forecast accuracy
+## Evaluation of forecast accuracy
 
 To evaluate the forecast accuracy, the function `error_metrics()` is
 used. You can define whether to evaluate the accuracy by `horizon` or by
-`split`. Several accuracy metrics like `RMSE`, `MAE` or `MAPE` are
-available.
+`split`. Several accuracy metrics are available:
+
+  - `ME`: mean error
+  - `MAE`: mean absolute error
+  - `MSE`: mean squared error
+  - `RMSE`: root mean squared error
+  - `MAPE`: mean absolute percentage error
+  - `sMAPE`: scaled mean absolute percentage error
+  - `MPE`: mean percentage error
+  - `MASE`: mean absolute scale error
+  - `sMASE`: seasonal mean absolute scaled error
+
+### Forecast accuracy by forecast horizon
 
 ``` r
-
 # Estimate error metrics
 metrics_horizon <- error_metrics(
   fcst = fcst,
@@ -223,6 +269,23 @@ metrics_horizon <- error_metrics(
   period = 168,
   by = "horizon")
 
+metrics_horizon
+#> # A tibble: 3,456 x 5
+#>    Series        .model horizon metric value
+#>    <chr>         <chr>    <int> <chr>  <dbl>
+#>  1 Price (DE-LU) sMean        1 MAE     5.57
+#>  2 Price (DE-LU) sMean        2 MAE     5.80
+#>  3 Price (DE-LU) sMean        3 MAE     5.94
+#>  4 Price (DE-LU) sMean        4 MAE     5.84
+#>  5 Price (DE-LU) sMean        5 MAE     7.36
+#>  6 Price (DE-LU) sMean        6 MAE     7.69
+#>  7 Price (DE-LU) sMean        7 MAE     7.42
+#>  8 Price (DE-LU) sMean        8 MAE     7.45
+#>  9 Price (DE-LU) sMean        9 MAE     7.89
+#> 10 Price (DE-LU) sMean       10 MAE     9.13
+#> # ... with 3,446 more rows
+
+# Visualize results
 metrics_horizon %>%
   plot_error_metrics(
     title = "Evaluation of forecast accuracy by forecast horizon",
@@ -231,17 +294,35 @@ metrics_horizon %>%
     caption = "Data: ENTSO-E Transparency, own calculation")
 ```
 
-<img src="man/figures/README-accuracy-1.svg" width="100%" />
+<img src="man/figures/README-accuracy_horizon-1.svg" width="100%" />
+
+### Forecast accuracy by split
 
 ``` r
-
-# Visualize results
+# Estimate error metrics
 metrics_split <- error_metrics(
   fcst = fcst,
   data = data,
   period = 168,
   by = "split")
 
+metrics_split
+#> # A tibble: 14,400 x 5
+#>    Series        .model split metric value
+#>    <chr>         <chr>  <int> <chr>  <dbl>
+#>  1 Price (DE-LU) sMean      1 MAE     5.40
+#>  2 Price (DE-LU) sMean      2 MAE     4.75
+#>  3 Price (DE-LU) sMean      3 MAE     5.44
+#>  4 Price (DE-LU) sMean      4 MAE     5.99
+#>  5 Price (DE-LU) sMean      5 MAE     7.04
+#>  6 Price (DE-LU) sMean      6 MAE     5.17
+#>  7 Price (DE-LU) sMean      7 MAE     5.19
+#>  8 Price (DE-LU) sMean      8 MAE     8.01
+#>  9 Price (DE-LU) sMean      9 MAE    11.7 
+#> 10 Price (DE-LU) sMean     10 MAE     5.44
+#> # ... with 14,390 more rows
+
+# Visualize results
 metrics_split %>%
   plot_error_metrics(
     title = "Evaluation of forecast accuracy by split",
@@ -250,6 +331,4 @@ metrics_split %>%
     caption = "Data: ENTSO-E Transparency, own calculation")
 ```
 
-<img src="man/figures/README-accuracy-2.svg" width="100%" />
-
-### Work in progress
+<img src="man/figures/README-accuracy_split-1.svg" width="100%" />
