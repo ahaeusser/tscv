@@ -1,100 +1,42 @@
 
 #' @title Calculate the mean error
 #'
-#' @description Calculate the mean error. \code{me()} is a metric that is in
-#'    the same units as the original data.
-#'
-#' @param data A \code{data.frame}, \code{tibble} or \code{tsibble} containing
-#'    the \code{truth} and \code{estimate}.
-#' @param ... Not currently used.
-#'
-#' @return
-#' @export
-
-me <- function(data, ...) {
-  UseMethod("me")
-}
-
-
-#' @title Calculate the mean error
-#'
 #' @description Calculate the mean error of a numeric vector. \code{me()}
 #'    is a metric that is in the same units as the original data.
 #'
 #' @param truth Numeric vector containing the actual values.
 #' @param estimate Numeric vector containing the forecasts.
 #' @param na_rm Logical value. If \code{TRUE}, missing values are removed.
-#' @param ... Further arguments passed to \code{metric_vec_template()}.
 #'
 #' @return Numeric value.
 
 me_vec <- function(truth,
                    estimate,
-                   na_rm = TRUE,
-                   ...) {
+                   na_rm = TRUE) {
 
-  me_impl <- function(truth, estimate) {
-    mean(truth - estimate)
-  }
-
-  metric_vec_template(
-    metric_impl = me_impl,
-    truth = truth,
-    estimate = estimate,
-    na_rm = na_rm,
-    cls = "numeric",
-    ...
-  )
+  mean(truth - estimate, na.rm = na_rm)
 }
 
 
-#' @title Calculate the mean error
+
+#' @title Calculate the mean absolute error
 #'
-#' @description Calculate the mean error for the columns of a data.frame.
-#'    \code{me()} is a metric that is in the same units as the original data.
+#' @description Calculate the mean absolute error of a numeric vector.
+#'    \code{mae()} is a metric that is in the same units as the original data.
 #'
-#' @param data A \code{data.frame}, \code{tibble} or \code{tsibble} containing
-#'    the \code{truth} and \code{estimate}.
 #' @param truth Numeric vector containing the actual values.
 #' @param estimate Numeric vector containing the forecasts.
 #' @param na_rm Logical value. If \code{TRUE}, missing values are removed.
-#' @param ... Further arguments passed to \code{metric_summarizer()}.
 #'
-#' @return A \code{data.frame} or \code{tibble}.
+#' @return Numeric value.
 
-me.data.frame <- function(data,
-                          truth,
-                          estimate,
-                          na_rm = TRUE,
-                          ...) {
-  metric_summarizer(
-    metric_nm = "me",
-    metric_fn = me_vec,
-    data = data,
-    truth = !!enquo(truth),
-    estimate = !!enquo(estimate),
-    na_rm = na_rm,
-    ...
-  )
+mae_vec <- function(truth,
+                    estimate,
+                    na_rm = TRUE) {
+
+  mean(abs(truth - estimate), na.rm = na_rm)
 }
 
-
-
-#' @title Calculate the mean squared error
-#'
-#' @description Calculate the mean squared error. \code{mse()} is a metric
-#'    that is in quadratic units.
-#'
-#' @param data A \code{data.frame}, \code{tibble} or \code{tsibble} containing
-#'    the \code{truth} and \code{estimate}.
-#' @param ... Not currently used.
-#'
-#' @return
-#' @export
-
-mse <- function(data, ...) {
-  UseMethod("mse")
-}
 
 
 #' @title Calculate the mean squared error
@@ -105,76 +47,36 @@ mse <- function(data, ...) {
 #' @param truth Numeric vector containing the actual values.
 #' @param estimate Numeric vector containing the forecasts.
 #' @param na_rm Logical value. If \code{TRUE}, missing values are removed.
-#' @param ... Further arguments passed to \code{metric_vec_template()}.
 #'
 #' @return Numeric value.
 
 mse_vec <- function(truth,
                     estimate,
-                    na_rm = TRUE,
-                    ...) {
+                    na_rm = TRUE) {
 
-  mse_impl <- function(truth, estimate) {
-    mean((truth - estimate) ^ 2)
-  }
-
-  metric_vec_template(
-    metric_impl = mse_impl,
-    truth = truth,
-    estimate = estimate,
-    na_rm = na_rm,
-    cls = "numeric",
-    ...
-  )
+  mean((truth - estimate) ^ 2, na.rm = na_rm)
 }
 
 
-#' @title Calculate the mean squared error
+
+#' @title Calculate the root mean squared error
 #'
-#' @description Calculate the mean squared error for the columns of a data.frame.
-#'    \code{mse()} is a metric that is in quadratic units.
+#' @description Calculate the root mean squared error of a numeric vector.
+#'    \code{rmse()} is a metric that is in the same units as the original data.
 #'
-#' @param data A \code{data.frame}, \code{tibble} or \code{tsibble} containing
-#'    the \code{truth} and \code{estimate}.
 #' @param truth Numeric vector containing the actual values.
 #' @param estimate Numeric vector containing the forecasts.
 #' @param na_rm Logical value. If \code{TRUE}, missing values are removed.
-#' @param ... Further arguments passed to \code{metric_summarizer()}.
 #'
-#' @return A \code{data.frame} or \code{tibble}.
+#' @return Numeric value.
 
-mse.data.frame <- function(data,
-                           truth,
-                           estimate,
-                           na_rm = TRUE,
-                           ...) {
-  metric_summarizer(
-    metric_nm = "mse",
-    metric_fn = mse_vec,
-    data = data,
-    truth = !!enquo(truth),
-    estimate = !!enquo(estimate),
-    na_rm = na_rm,
-    ...
-  )
+rmse_vec <- function(truth,
+                     estimate,
+                     na_rm = TRUE) {
+
+  sqrt(mean((truth - estimate) ^ 2, na.rm = na_rm))
 }
 
-
-#' @title Calculate the mean percentage error
-#'
-#' @description Calculate the mean percentage error. \code{mpe()} is a metric
-#'    that is in relative units.
-#'
-#' @param data A \code{data.frame}, \code{tibble} or \code{tsibble} containing
-#'    the \code{truth} and \code{estimate}.
-#' @param ... Not currently used.
-#'
-#' @return
-#' @export
-
-mpe <- function(data, ...) {
-  UseMethod("mpe")
-}
 
 
 #' @title Calculate the mean percentage error
@@ -185,56 +87,56 @@ mpe <- function(data, ...) {
 #' @param truth Numeric vector containing the actual values.
 #' @param estimate Numeric vector containing the forecasts.
 #' @param na_rm Logical value. If \code{TRUE}, missing values are removed.
-#' @param ... Further arguments passed to \code{metric_vec_template()}.
 #'
 #' @return Numeric value.
 
+
 mpe_vec <- function(truth,
                     estimate,
-                    na_rm = TRUE,
-                    ...) {
+                    na_rm = TRUE) {
 
-  mpe_impl <- function(truth, estimate) {
-    mean(((truth - estimate) / truth) * 100)
-  }
-
-  metric_vec_template(
-    metric_impl = mpe_impl,
-    truth = truth,
-    estimate = estimate,
-    na_rm = na_rm,
-    cls = "numeric",
-    ...
-  )
+  mean(((truth - estimate) / truth) * 100, na.rm = na_rm)
 }
 
 
-#' @title Calculate the mean percentage error
+
+#' @title Calculate the mean absolute percentage error
 #'
-#' @description Calculate the mean percentage error for the columns of a data.frame.
-#'    \code{mpe()} is a metric that is in relative units.
+#' @description Calculate the mean absolute percentage error of a numeric vector.
+#'    \code{mape()} is a metric that is in relative units.
 #'
-#' @param data A \code{data.frame}, \code{tibble} or \code{tsibble} containing
-#'    the \code{truth} and \code{estimate}.
 #' @param truth Numeric vector containing the actual values.
 #' @param estimate Numeric vector containing the forecasts.
 #' @param na_rm Logical value. If \code{TRUE}, missing values are removed.
-#' @param ... Further arguments passed to \code{metric_summarizer()}.
 #'
-#' @return A \code{data.frame} or \code{tibble}.
+#' @return Numeric value.
 
-mpe.data.frame <- function(data,
-                           truth,
-                           estimate,
-                           na_rm = TRUE,
-                           ...) {
-  metric_summarizer(
-    metric_nm = "mpe",
-    metric_fn = mpe_vec,
-    data = data,
-    truth = !!enquo(truth),
-    estimate = !!enquo(estimate),
-    na_rm = na_rm,
-    ...
-  )
+mape_vec <- function(truth,
+                     estimate,
+                     na_rm = TRUE) {
+
+  mean(abs((truth - estimate) / truth), na.rm = na_rm) * 100
+}
+
+
+
+#' @title Calculate the symmetric mean absolute percentage error
+#'
+#' @description Calculate the symmetric mean absolute percentage error
+#'    of a numeric vector. \code{mape()} is a metric that is in relative units.
+#'
+#' @param truth Numeric vector containing the actual values.
+#' @param estimate Numeric vector containing the forecasts.
+#' @param na_rm Logical value. If \code{TRUE}, missing values are removed.
+#'
+#' @return Numeric value.
+
+smape_vec <- function(truth,
+                      estimate,
+                      na_rm = TRUE) {
+
+  percent_scale <- 100
+  numer <- abs(estimate - truth)
+  denom <- (abs(truth) + abs(estimate)) / 2
+  mean(numer / denom, na.rm = na_rm) * percent_scale
 }

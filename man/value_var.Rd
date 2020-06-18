@@ -14,5 +14,5 @@ value A character vector.
 }
 \description{
 \code{value_var()} returns a character with the value variable, i.e.
-   measured variables without "helper variables" like \code{split}, \code{id}, \code{sample}, etc.
+   measured variables without "helper variables" like \code{.split}, \code{.id}, \code{.sample}, etc.
 }

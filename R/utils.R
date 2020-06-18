@@ -1,26 +1,26 @@
 
-#' @title Return response variables.
+#' @title Return target variables.
 #'
-#' @description \code{response_vars()} returns a character vector with the response variables, i.e.
-#'    key variables without "helper variables" like \code{split}, \code{id}, \code{sample}, etc.
+#' @description \code{target_vars()} returns a character vector with the target variables, i.e.
+#'    key variables without "helper variables" like \code{.split}, \code{.id}, \code{.sample}, etc.
 #'
 #' @param .data A \code{tsibble} or \code{fable}.
 #'
-#' @return response A character vector.
+#' @return target A character vector.
 #' @export
 
-response_vars <- function(.data) {
+target_vars <- function(.data) {
   keys <- key_vars(.data)
-  drop <- c("split", "id", "sample", "horizon", ".model")
-  response <- keys[!keys %in% drop]
-  return(response)
+  drop <- c(".split", ".id", ".sample", ".horizon", ".model", ".mean", ".distribution")
+  target <- keys[!keys %in% drop]
+  return(target)
 }
 
 
 #' @title Return value variable.
 #'
 #' @description \code{value_var()} returns a character with the value variable, i.e.
-#'    measured variables without "helper variables" like \code{split}, \code{id}, \code{sample}, etc.
+#'    measured variables without "helper variables" like \code{.split}, \code{.id}, \code{.sample}, etc.
 #'
 #' @param .data A \code{tsibble} or \code{fable}.
 #'
@@ -29,7 +29,7 @@ response_vars <- function(.data) {
 
 value_var <- function(.data) {
   value <- measured_vars(.data)
-  drop <- c("split", "id", "sample", "horizon", ".model", ".distribution")
+  drop <- c(".split", ".id", ".sample", ".horizon", ".model", ".mean", ".distribution")
   value <- value[!value %in% drop]
   return(value)
 }

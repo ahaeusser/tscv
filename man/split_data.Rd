@@ -2,12 +2,12 @@
 % Please edit documentation in R/split_data.R
 \name{split_data}
 \alias{split_data}
-\title{Split the data into training and testing.}
+\title{Split the data into training and testing}
 \usage{
 split_data(data, n_init, n_ahead, n_skip = 0, n_lag = 0, mode = "slide")
 }
 \arguments{
-\item{data}{A valid tsibble in long format provided by the function \code{clean_data()}.}
+\item{data}{A valid \code{tsibble} in long format provided by the function \code{clean_data()}.}
 
 \item{n_init}{Integer value. The number of periods for the initial training window (must be positive).}
 
@@ -20,12 +20,12 @@ split_data(data, n_init, n_ahead, n_skip = 0, n_lag = 0, mode = "slide")
 \item{mode}{Character value. Define the setup of the training window for time series cross validation. \code{stretch} is equivalent to an expanding window approach and \code{slide} is a fixed window approach.}
 }
 \value{
-data A tsibble with the same format like the input data, but with additional columns:
+data A \code{tsibble} in the same format as the input data, but with the following additional columns:
    \itemize{
-      \item{\code{sample}: Character value. Indicating whether the partition is training or testing.}
-      \item{\code{split}: Integer value. The number of the time slice (training and testing).}
-      \item{\code{id}: Integer value. The row number corresponding to the observations.}
-      \item{\code{horizon}: Integer value. The forecast horizon (i.e. the size of the testing window. NAs for training.}
+      \item{\code{.sample}: Character value. Indicating whether the partition is training or testing.}
+      \item{\code{.split}: Integer value. The number of the time slice (training and testing).}
+      \item{\code{.id}: Integer value. The row number of the corresponding observations.}
+      \item{\code{.horizon}: Integer value. The forecast horizon (i.e. the size of the testing window. NAs for training.}
       }
 }
 \description{

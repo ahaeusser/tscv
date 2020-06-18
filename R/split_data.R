@@ -1,5 +1,5 @@
 
-#' @title Split the data into training and testing.
+#' @title Split the data into training and testing
 #'
 #' @description This function splits the data into training and testing (i.e. partitioning into time slices) for
 #'    time series cross-validation. The user can choose between \code{stretch} and \code{slide}. The first is an
@@ -7,19 +7,19 @@
 #'    for training and testing via \code{n_init} and \code{n_ahead}, as well as the step size for increments via
 #'    \code{n_step}.
 #'
-#' @param data A valid tsibble in long format provided by the function \code{clean_data()}.
+#' @param data A valid \code{tsibble} in long format provided by the function \code{clean_data()}.
 #' @param n_init Integer value. The number of periods for the initial training window (must be positive).
 #' @param n_ahead Integer value. The forecast horizon (n-steps-ahead, must be positive).
 #' @param n_skip Integer value. The number of periods to skip between windows (must be zero or positive integer).
 #' @param n_lag Integer value. A value to include a lag between the training and testing set. This is useful if lagged predictors will be used during training and testing.
 #' @param mode Character value. Define the setup of the training window for time series cross validation. \code{stretch} is equivalent to an expanding window approach and \code{slide} is a fixed window approach.
 #'
-#' @return data A tsibble with the same format like the input data, but with additional columns:
+#' @return data A \code{tsibble} in the same format as the input data, but with the following additional columns:
 #'    \itemize{
-#'       \item{\code{sample}: Character value. Indicating whether the partition is training or testing.}
-#'       \item{\code{split}: Integer value. The number of the time slice (training and testing).}
-#'       \item{\code{id}: Integer value. The row number corresponding to the observations.}
-#'       \item{\code{horizon}: Integer value. The forecast horizon (i.e. the size of the testing window. NAs for training.}
+#'       \item{\code{.sample}: Character value. Indicating whether the partition is training or testing.}
+#'       \item{\code{.split}: Integer value. The number of the time slice (training and testing).}
+#'       \item{\code{.id}: Integer value. The row number of the corresponding observations.}
+#'       \item{\code{.horizon}: Integer value. The forecast horizon (i.e. the size of the testing window. NAs for training.}
 #'       }
 #' @export
 
@@ -88,7 +88,7 @@ split_data <- function(data,
       ungroup()
   })
 
-  # Flatten lists by rowwise binding
+  # Flatten lists by row-wise binding
   train <- do.call(rbind, train)
   test <- do.call(rbind, test)
 

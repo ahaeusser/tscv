@@ -4,7 +4,7 @@
 \alias{mse_vec}
 \title{Calculate the mean squared error}
 \usage{
-mse_vec(truth, estimate, na_rm = TRUE, ...)
+mse_vec(truth, estimate, na_rm = TRUE)
 }
 \arguments{
 \item{truth}{Numeric vector containing the actual values.}
@@ -12,8 +12,6 @@ mse_vec(truth, estimate, na_rm = TRUE, ...)
 \item{estimate}{Numeric vector containing the forecasts.}
 
 \item{na_rm}{Logical value. If \code{TRUE}, missing values are removed.}
-
-\item{...}{Further arguments passed to \code{metric_vec_template()}.}
 }
 \value{
 Numeric value.

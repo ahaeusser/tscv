@@ -4,7 +4,7 @@
 \alias{mpe_vec}
 \title{Calculate the mean percentage error}
 \usage{
-mpe_vec(truth, estimate, na_rm = TRUE, ...)
+mpe_vec(truth, estimate, na_rm = TRUE)
 }
 \arguments{
 \item{truth}{Numeric vector containing the actual values.}
@@ -12,8 +12,6 @@ mpe_vec(truth, estimate, na_rm = TRUE, ...)
 \item{estimate}{Numeric vector containing the forecasts.}
 
 \item{na_rm}{Logical value. If \code{TRUE}, missing values are removed.}
-
-\item{...}{Further arguments passed to \code{metric_vec_template()}.}
 }
 \value{
 Numeric value.
