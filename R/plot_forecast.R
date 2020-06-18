@@ -41,30 +41,32 @@ plot_forecast <- function(fcst,
 
   # Check arguments
   if (is_empty(model)) {
-    select_model <- fcst %>%
+    set_model <- fcst %>%
       pull(.model) %>%
       unique()
   } else {
-    select_model <- model
+    set_model <- model
   }
 
   if (is_empty(split)) {
-    select_split <- 1
+    set_split <- 1
   } else {
-    select_split <- split
+    set_split <- split
   }
 
   dttm <- index_var(fcst)
-  response <- response_vars(fcst)
+  target <- target_vars(fcst)
   value <- value_var(fcst)
 
   # Prepare forecasts and actual values for specified slices and models
   fcst <- fcst %>%
-    filter(split %in% select_split) %>%
-    filter(.model %in% select_model)
+    mutate(!!sym(value) := map_dbl(fcst[[value]], `[[`, "mu")) %>%
+    filter(split %in% set_split) %>%
+    filter(.model %in% set_model) %>%
+    as_tsibble()
 
   actual <- data %>%
-    filter(split %in% select_split)
+    filter(split %in% set_split)
 
   # Cut actual and fitted values to correct length
   if (!is_empty(include)) {
@@ -74,7 +76,7 @@ plot_forecast <- function(fcst,
       max(na.rm = TRUE)
 
     actual <- actual %>%
-      group_by(!!!syms(response), split) %>%
+      group_by(!!!syms(target), split) %>%
       slice((n() - include - n_ahead + 1):n()) %>%
       ungroup()
   }
@@ -103,7 +105,7 @@ plot_forecast <- function(fcst,
 
   # Faceting by keys and split
   p <- p + facet_grid(
-    vars(!!!syms(response)),
+    vars(!!!syms(target)),
     vars(split),
     scales = "free")
 
@@ -113,7 +115,7 @@ plot_forecast <- function(fcst,
     aes(
       x = !!sym(dttm),
       y = !!sym(value),
-      color = model),
+      color = .model),
     na.rm = TRUE,
     size = point_size,
     alpha = point_alpha)

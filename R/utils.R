@@ -11,7 +11,7 @@
 
 target_vars <- function(.data) {
   keys <- key_vars(.data)
-  drop <- c(".split", ".id", ".sample", ".horizon", ".model", ".mean", ".distribution")
+  drop <- c("split", "id", "sample", "horizon", ".model", ".mean", ".distribution")
   target <- keys[!keys %in% drop]
   return(target)
 }
@@ -29,7 +29,7 @@ target_vars <- function(.data) {
 
 value_var <- function(.data) {
   value <- measured_vars(.data)
-  drop <- c(".split", ".id", ".sample", ".horizon", ".model", ".mean", ".distribution")
+  drop <- c("split", "id", "sample", "horizon", ".model", ".mean", ".distribution")
   value <- value[!value %in% drop]
   return(value)
 }

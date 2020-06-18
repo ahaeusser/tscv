@@ -7,7 +7,7 @@
 plot_error_metrics(
   data,
   model = NULL,
-  metric = "sMASE",
+  metric = "MASE",
   title = NULL,
   subtitle = NULL,
   ylab = NULL,
@@ -24,7 +24,7 @@ plot_error_metrics(
 )
 }
 \arguments{
-\item{data}{A tibble containing the accuracy metrics, i.e. the result of a call to \code{error_metrics()}.}
+\item{data}{A \code{tibble} containing the accuracy metrics, i.e. the result of a call to \code{error_metrics()}.}
 
 \item{model}{Character vector defining the forecasting models.}
 

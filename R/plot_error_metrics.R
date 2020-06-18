@@ -4,7 +4,7 @@
 #' @description Plot forecast accuracy metrics, either along the forecast horizon or the slices. The user can define
 #'    the forecasting models and accuracy metrics.
 #'
-#' @param data A tibble containing the accuracy metrics, i.e. the result of a call to \code{error_metrics()}.
+#' @param data A \code{tibble} containing the accuracy metrics, i.e. the result of a call to \code{error_metrics()}.
 #' @param model Character vector defining the forecasting models.
 #' @param metric Character vector defining the accuracy measures.
 #' @param title Title for the plot.
@@ -26,7 +26,7 @@
 
 plot_error_metrics <- function(data,
                                model = NULL,
-                               metric = "sMASE",
+                               metric = "MASE",
                                title = NULL,
                                subtitle = NULL,
                                ylab = NULL,
@@ -43,7 +43,7 @@ plot_error_metrics <- function(data,
 
   data_cols <- names(data)
   def_cols <- c(".model", "horizon", "split", "metric", "value")
-  response <- setdiff(data_cols, def_cols)
+  target <- setdiff(data_cols, def_cols)
 
   if ("split" %in% data_cols) {
     by <- "split"
@@ -53,24 +53,24 @@ plot_error_metrics <- function(data,
 
   # Check arguments
   if (is_empty(model)) {
-    select_model <- data %>%
+    set_model <- data %>%
       pull(.model) %>%
       unique()
   } else {
-    select_model <- model
+    set_model <- model
   }
 
   if (is_empty(metric)) {
-    select_metric <- data %>%
+    set_metric <- data %>%
       pull(metric) %>%
       unique()
   } else {
-    select_metric <- metric
+    set_metric <- metric
   }
 
   data <- data %>%
-    filter(metric %in% select_metric) %>%
-    filter(.model %in% select_model)
+    filter(metric %in% set_metric) %>%
+    filter(.model %in% set_model)
 
   # Initialize plot
   p <- ggplot(
@@ -98,10 +98,10 @@ plot_error_metrics <- function(data,
   # Scale axis and aesthetics
   p <- p + scale_y_continuous()
 
-  # Create faceting (by response variables and metric)
+  # Create faceting (by target variables and metric)
   p <- p + facet_grid(
-    vars(metric),
-    vars(!!!syms(response)),
+    vars(data$metric),
+    vars(!!!syms(target)),
     scales = "free")
 
   # Adjust annotations

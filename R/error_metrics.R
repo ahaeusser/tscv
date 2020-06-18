@@ -21,7 +21,7 @@
 #' @param data A \code{tsibble} containing the training and testing data.
 #' @param period Integer value. The period used for the estimation of the in-sample
 #'    MAE of seasonal naive forecast. The in-sample MAE is required for scaling the sMASE.
-#' @param by Character value. Either accuracy is estimated by \code{split} or \code{horizon}.
+#' @param by Character value. Either accuracy is estimated by \code{.split} or \code{.horizon}.
 #'
 #' @return A \code{tibble} containing the accuracy metrics for all key variables and models.
 #' @export
@@ -30,8 +30,9 @@ error_metrics <- function(fcst,
                           data,
                           period = NULL,
                           by = "split") {
+
   dttm <- index_var(fcst)
-  response <- response_vars(fcst)
+  target <- target_vars(fcst)
   value <- value_var(fcst)
 
   if (is_empty(period)) {
@@ -51,7 +52,7 @@ error_metrics <- function(fcst,
   # Estimate in-sample MAE for scaling of sMASE
   mae_train <- train %>%
     as_tibble() %>%
-    group_by(!!!syms(response), .data$split) %>%
+    group_by(!!!syms(target), .data$split) %>%
     mutate(lagged = dplyr::lag(.data$actual, n = period)) %>%
     summarise(
       mae_train = mae_vec(
@@ -63,20 +64,25 @@ error_metrics <- function(fcst,
   test <- left_join(
     x = test,
     y = mae_train,
-    by = c(response, "split")
+    by = c(target, "split")
   )
+
+  # Extract point forecasts
+  fcst <- fcst %>%
+    mutate(!!sym(value) := map_dbl(fcst[[value]], `[[`, "mu")) %>%
+    as_tsibble()
 
   # Join test and forecast data
   data <- left_join(
     x = fcst,
     y = test,
-    by = c(response, "split", dttm)
+    by = c(target, "split", dttm)
   )
 
   # Estimate common accuracy metrics
   metrics <- data %>%
     as_tibble() %>%
-    group_by(!!!syms(response), .data$.model, !!sym(by)) %>%
+    group_by(!!!syms(target), .data$.model, !!sym(by)) %>%
     summarise(
       ME = me_vec(truth = .data$actual, estimate = !!sym(value)),
       MAE = mae_vec(truth = .data$actual, estimate = !!sym(value)),
@@ -84,32 +90,31 @@ error_metrics <- function(fcst,
       RMSE = rmse_vec(truth = .data$actual, estimate = !!sym(value)),
       MAPE = mape_vec(truth = .data$actual, estimate = !!sym(value)),
       sMAPE = smape_vec(truth = .data$actual, estimate = !!sym(value)),
-      MPE = mpe_vec(truth = .data$actual, estimate = !!sym(value)),
-      MASE = mase_vec(truth = .data$actual, estimate = !!sym(value))) %>%
-    arrange(!!!syms(response), .data$.model, !!sym(by)) %>%
+      MPE = mpe_vec(truth = .data$actual, estimate = !!sym(value))) %>%
+    arrange(!!!syms(target), .data$.model, !!sym(by)) %>%
     ungroup()
 
   # Estimate seasonal MASE
   mase <- data %>%
     as_tibble() %>%
     mutate(q = (.data$actual - !!sym(value)) / mae_train) %>%
-    group_by(!!!syms(response), .data$.model, !!sym(by)) %>%
+    group_by(!!!syms(target), .data$.model, !!sym(by)) %>%
     summarise(
-      sMASE = mean(abs(q), na.rm = TRUE)) %>%
+      MASE = mean(abs(q), na.rm = TRUE)) %>%
     ungroup()
 
   metrics <- left_join(
     x = metrics,
     y = mase,
-    by = c(response, ".model", by)
+    by = c(target, ".model", by)
   )
 
   metrics <- metrics %>%
     pivot_longer(
-      cols = c(ME, MAE, MSE, RMSE, MAPE, sMAPE, MPE, MASE, sMASE),
+      cols = c(ME, MAE, MSE, RMSE, MAPE, sMAPE, MPE, MASE),
       names_to = "metric",
       values_to = "value") %>%
-    arrange(!!!syms(response), .data$.model, .data$metric)
+    arrange(!!!syms(target), .data$.model, .data$metric)
 
   return(metrics)
 }

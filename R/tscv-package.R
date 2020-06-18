@@ -11,7 +11,6 @@
 #' @importFrom nnfor elm mlp
 #' @importFrom forecast msts dshw tbats thetaf forecast
 #' @importFrom matrixStats rowSds
-#' @importFrom yardstick mae_vec rmse_vec mape_vec smape_vec mase_vec metric_vec_template metric_summarizer
 #' @importFrom scales pretty_breaks
 #' @importFrom stats approx quantile qnorm median mad sd as.ts acf pacf lag time
 #' @importFrom grDevices colorRampPalette

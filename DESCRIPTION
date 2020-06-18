@@ -34,7 +34,6 @@ Imports:
     nnfor,
     stats,
     matrixStats,
-    yardstick,
     qqplotr,
     scales
 Encoding: UTF-8
