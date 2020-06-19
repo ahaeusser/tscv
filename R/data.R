@@ -13,7 +13,7 @@
 #'    \itemize{
 #'       \item{\code{Time}: Date and time (index variable)}
 #'       \item{\code{Series}: Time series name (key variable)}
-#'       \item{\code{Unit}: Measurment unit (euros per megawatt-hour)}
+#'       \item{\code{Unit}: Measurement unit (euros per megawatt-hour)}
 #'       \item{\code{BZN}: Bidding zone (key variable)}
 #'       \item{\code{Value}: Measurement variable}
 #'       }
@@ -44,7 +44,7 @@
 #'    \itemize{
 #'       \item{\code{Time}: Date and time (index variable)}
 #'       \item{\code{Series}: Time series name (key variable)}
-#'       \item{\code{Unit}: Measurment unit (megawatt)}
+#'       \item{\code{Unit}: Measurement unit (megawatt)}
 #'       \item{\code{BZN}: Bidding zone (key variable)}
 #'       \item{\code{Value}: Measurement variable}
 #'       }
