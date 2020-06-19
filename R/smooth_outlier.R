@@ -16,6 +16,7 @@
 
 smooth_outlier <- function(data,
                            alpha = 0.05) {
+
   dttm <- index_var(data)
   keys <- key_vars(data)
   value <- value_var(data)

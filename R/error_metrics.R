@@ -109,9 +109,12 @@ error_metrics <- function(fcst,
     by = c(target, ".model", by)
   )
 
+  set_metrics <- c(
+    "ME", "MAE", "MSE", "RMSE", "MAPE", "sMAPE", "MPE", "MASE")
+
   metrics <- metrics %>%
     pivot_longer(
-      cols = c(ME, MAE, MSE, RMSE, MAPE, sMAPE, MPE, MASE),
+      cols = all_of(set_metrics),
       names_to = "metric",
       values_to = "value") %>%
     arrange(!!!syms(target), .data$.model, .data$metric)
