@@ -54,7 +54,7 @@ plot_error_metrics <- function(data,
   # Check arguments
   if (is_empty(model)) {
     set_model <- data %>%
-      pull(.model) %>%
+      pull(.data$.model) %>%
       unique()
   } else {
     set_model <- model
@@ -69,17 +69,17 @@ plot_error_metrics <- function(data,
   }
 
   data <- data %>%
-    filter(metric %in% set_metric) %>%
-    filter(.model %in% set_model)
+    filter(.data$metric %in% set_metric) %>%
+    filter(.data$.model %in% set_model)
 
   # Initialize plot
   p <- ggplot(
     data = data,
     aes(
       x = !!sym(by),
-      y = value,
-      colour = .model,
-      group = .model))
+      y = .data$value,
+      colour = .data$.model,
+      group = .data$.model))
 
   # Add lines and point
   p <- p + geom_line(
@@ -100,9 +100,12 @@ plot_error_metrics <- function(data,
 
   # Create faceting (by target variables and metric)
   p <- p + facet_grid(
-    vars(data$metric),
+    vars(.data$metric),
     vars(!!!syms(target)),
     scales = "free")
+
+  # Scale x axis with integers
+  p <- p + scale_x_continuous(breaks = pretty_breaks())
 
   # Adjust annotations
   p <- p + labs(title = title)

@@ -3,7 +3,7 @@
 #'
 #' @description Plot the histogram of one or more time series.
 #'
-#' @param .data A \code{data.frame}, \code{tibble} or \code{tsibble} in long format.
+#' @param data A \code{data.frame}, \code{tibble} or \code{tsibble} in long format.
 #' @param x Unquoted column within \code{.data} containing numeric values.
 #' @param facet Unquoted column within \code{.data} (facet).
 #' @param color Unquoted column within \code{.data} (color).
@@ -24,7 +24,7 @@
 #' @return p An object of class ggplot.
 #' @export
 
-plot_histogram <- function(.data,
+plot_histogram <- function(data,
                            x,
                            facet = NULL,
                            color = NULL,
@@ -43,14 +43,13 @@ plot_histogram <- function(.data,
                            ...) {
 
   # Create initial ggplot object
-  p <- ggplot(data = .data)
+  p <- ggplot(data = data)
 
   # Create histogram
   if (quo_is_null(enquo(color))) {
     p <- p + geom_histogram(
       aes(
-        x = {{x}},
-        y = ..count..),
+        x = {{x}}),
       na.rm = TRUE,
       color = line_color,
       fill = fill_color,
@@ -62,7 +61,6 @@ plot_histogram <- function(.data,
     p <- p + geom_histogram(
       aes(
         x = {{x}},
-        y = ..count..,
         color = {{color}},
         fill = {{color}}),
       na.rm = TRUE,

@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_pacf.R
 \name{plot_pacf}
 \alias{plot_pacf}
-\title{Plot partial autocorrelation function.}
+\title{Plot partial autocorrelation function}
 \usage{
 plot_pacf(
   data,
@@ -14,8 +14,8 @@ plot_pacf(
   ylab = NULL,
   caption = NULL,
   bar_width = 1,
-  bar_color1 = "#00aedb",
-  bar_color2 = "#ffc425",
+  bar_color1 = "#00BFC4",
+  bar_color2 = "#F8766D",
   bar_alpha = 1,
   line_width = 0.25,
   line_type = "solid",
@@ -25,7 +25,7 @@ plot_pacf(
 )
 }
 \arguments{
-\item{data}{A valid tsibble in long format with one measurement variable.}
+\item{data}{A \code{tsibble} in long format with one measurement variable.}
 
 \item{lag_max}{Integer value. Maximum number of lags.}
 

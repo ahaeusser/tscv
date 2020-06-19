@@ -1,9 +1,9 @@
 
-#' @title Plot autocorrelation and partial autocorrelation function.
+#' @title Plot autocorrelation and partial autocorrelation function
 #'
 #' @description This function plots the sample autocorrelation and partial autocorrelation function.
 #'
-#' @param data A valid tsibble in long format with one measurement variable.
+#' @param data A \code{tsibble} in long format with one measurement variable.
 #' @param lag_max Integer value. Maximum number of lags.
 #' @param demean Logical value. If \code{TRUE}, the time series is demeaned.
 #' @param level Numeric value. The confidence level to check significance.
@@ -13,7 +13,7 @@
 #' @param ylab Label for the y-axis.
 #' @param caption Caption of the plot.
 #' @param bar_width Numeric value. The width of the bars.
-#' @param bar_color Character value. The color of the significant bars.
+#' @param bar_color1 Character value. The color of the significant bars.
 #' @param bar_color2 Character value. The color of the non-significant bars.
 #' @param bar_alpha Numeric value. The transparency of the bars.
 #' @param line_width Numeric value. Line width of the confidence line.
@@ -35,9 +35,9 @@ plot_corr <- function(data,
                       ylab = NULL,
                       caption = NULL,
                       bar_width = 1,
-                      bar_color = "grey35",
-                      bar_color2 = "#D55E00",
-                      bar_alpha = 0.6,
+                      bar_color1 = "#00BFC4",
+                      bar_color2 = "#F8766D",
+                      bar_alpha = 1,
                       line_width = 0.25,
                       line_type = "solid",
                       line_color = "grey35",
@@ -45,39 +45,39 @@ plot_corr <- function(data,
                       theme_config = list()) {
 
   dttm <- index_var(data)
-  response <- response_vars(data)
+  target <- target_vars(data)
   value <- value_var(data)
 
   # Calculate confidence limits
   sign_tbl <- data %>%
     as_tibble() %>%
     select(-!!sym(dttm)) %>%
-    group_by(!!!syms(response)) %>%
+    group_by(!!!syms(target)) %>%
     summarise(n_obs = n()) %>%
     ungroup() %>%
-    mutate(conf = qnorm((1 - level) / 2) / sqrt(n_obs))
+    mutate(conf = qnorm((1 - level) / 2) / sqrt(.data$n_obs))
 
   # Estimate sample autocorrelation function
   acf <- data %>%
     ACF(!!sym(value), lag_max = lag_max, demean = demean) %>%
     as_tibble() %>%
     rename(ACF = acf) %>%
-    select(!!!syms(response), ACF) %>%
+    select(!!!syms(target), ACF) %>%
     gather(
       key = "type",
       value = "value",
-      -c(!!!syms(response)))
+      -c(!!!syms(target)))
 
   # Estimate sample autocorrelation function
   pacf <- data %>%
     PACF(!!sym(value), lag_max = lag_max) %>%
     as_tibble() %>%
     rename(PACF = pacf) %>%
-    select(!!!syms(response), PACF) %>%
+    select(!!!syms(target), PACF) %>%
     gather(
       key = "type",
       value = "value",
-      -c(!!!syms(response)))
+      -c(!!!syms(target)))
 
   data <- bind_rows(acf, pacf)
 
@@ -85,10 +85,10 @@ plot_corr <- function(data,
   data <- left_join(
     data,
     sign_tbl,
-    by = response) %>%
-    group_by(!!!syms(response)) %>%
+    by = target) %>%
+    group_by(!!!syms(target)) %>%
     mutate(lag = row_number()) %>%
-    mutate(sign = ifelse(abs(value) > abs(conf), TRUE, FALSE)) %>%
+    mutate(sign = ifelse(abs(value) > abs(.data$conf), TRUE, FALSE)) %>%
     ungroup()
 
   # Create ggplot
@@ -106,34 +106,23 @@ plot_corr <- function(data,
     alpha = bar_alpha,
     width = bar_width)
 
-  # Faceting by response and type
+  # Faceting by target and type
   p <- p + facet_grid(
-    vars(!!!syms(response)),
-    vars(type),
+    vars(!!!syms(target)),
+    vars(.data$type),
     scales = "free")
 
   # Color bars depending on significance
   if (all(data$sign == FALSE)) {
     p <- p + scale_fill_manual(values = c(bar_color2))
   } else if (all(data$sign == TRUE)) {
-    p <- p + scale_fill_manual(values = c(bar_color))
+    p <- p + scale_fill_manual(values = c(bar_color1))
   } else {
-    p <- p + scale_fill_manual(values = c(bar_color2, bar_color))
+    p <- p + scale_fill_manual(values = c(bar_color2, bar_color1))
   }
 
-  # # Lower confidence interval
-  # p <- p + geom_hline(
-  #   yintercept = -ci_line,
-  #   color = line_color,
-  #   size = line_width,
-  #   linetype = line_type)
-  #
-  # # Upper confidence interval
-  # p <- p + geom_hline(
-  #   yintercept = ci_line,
-  #   color = line_color,
-  #   size = line_width,
-  #   linetype = line_type)
+  # Scale x axis with integers
+  p <- p + scale_x_continuous(breaks = pretty_breaks())
 
   # Adjust annotations
   p <- p + labs(title = title)

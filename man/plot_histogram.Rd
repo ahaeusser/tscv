@@ -5,7 +5,7 @@
 \title{Plot the histogram of time series}
 \usage{
 plot_histogram(
-  .data,
+  data,
   x,
   facet = NULL,
   color = NULL,
@@ -25,7 +25,7 @@ plot_histogram(
 )
 }
 \arguments{
-\item{.data}{A \code{data.frame}, \code{tibble} or \code{tsibble} in long format.}
+\item{data}{A \code{data.frame}, \code{tibble} or \code{tsibble} in long format.}
 
 \item{x}{Unquoted column within \code{.data} containing numeric values.}
 

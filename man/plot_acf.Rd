@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_acf.R
 \name{plot_acf}
 \alias{plot_acf}
-\title{Plot autocorrelation function.}
+\title{Plot autocorrelation function}
 \usage{
 plot_acf(
   data,
@@ -15,8 +15,8 @@ plot_acf(
   ylab = NULL,
   caption = NULL,
   bar_width = 1,
-  bar_color1 = "#00aedb",
-  bar_color2 = "#ffc425",
+  bar_color1 = "#00BFC4",
+  bar_color2 = "#F8766D",
   bar_alpha = 1,
   line_width = 0.25,
   line_type = "solid",
@@ -26,7 +26,7 @@ plot_acf(
 )
 }
 \arguments{
-\item{data}{A valid tsibble in long format with one measurement variable.}
+\item{data}{A \code{tsibble} in long format with one measurement variable.}
 
 \item{lag_max}{Integer value. Maximum number of lags.}
 

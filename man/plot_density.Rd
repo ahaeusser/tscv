@@ -5,7 +5,7 @@
 \title{Plot the density via Kernel Density Estimator}
 \usage{
 plot_density(
-  .data,
+  data,
   x,
   facet = NULL,
   color = NULL,
@@ -26,7 +26,7 @@ plot_density(
 )
 }
 \arguments{
-\item{.data}{A \code{data.frame}, \code{tibble} or \code{tsibble} in long format.}
+\item{data}{A \code{data.frame}, \code{tibble} or \code{tsibble} in long format.}
 
 \item{x}{Unquoted column within \code{.data} containing numeric values.}
 

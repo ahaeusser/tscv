@@ -3,7 +3,7 @@
 #'
 #' @description Plot the density of one or more time series via Kernel Density Estimator.
 #'
-#' @param .data A \code{data.frame}, \code{tibble} or \code{tsibble} in long format.
+#' @param data A \code{data.frame}, \code{tibble} or \code{tsibble} in long format.
 #' @param x Unquoted column within \code{.data} containing numeric values.
 #' @param facet Unquoted column within \code{.data} (facet).
 #' @param color Unquoted column within \code{.data} (color).
@@ -25,7 +25,7 @@
 #' @return p An object of class ggplot.
 #' @export
 
-plot_density <- function(.data,
+plot_density <- function(data,
                          x,
                          facet = NULL,
                          color = NULL,
@@ -45,7 +45,7 @@ plot_density <- function(.data,
                          ...) {
 
   # Create initial ggplot object
-  p <- ggplot(data = .data)
+  p <- ggplot(data = data)
 
   # Create density plot
   if (quo_is_null(enquo(color))) {

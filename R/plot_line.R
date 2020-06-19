@@ -3,7 +3,7 @@
 #'
 #' @description Plot one or more time series incl. smooth curve (linear or loess) as line chart.
 #'
-#' @param .data A \code{data.frame}, \code{tibble} or \code{tsibble} in long format.
+#' @param data A \code{data.frame}, \code{tibble} or \code{tsibble} in long format.
 #' @param x Unquoted column within \code{.data}.
 #' @param y Unquoted column within \code{.data} containing numeric values.
 #' @param facet Unquoted column within \code{.data} (facet).
@@ -30,7 +30,7 @@
 #' @return p An object of class ggplot.
 #' @export
 
-plot_line <- function(.data,
+plot_line <- function(data,
                       x,
                       y,
                       facet = NULL,
@@ -55,7 +55,7 @@ plot_line <- function(.data,
                       ...) {
 
   # Create initial ggplot object
-  p <- ggplot(data = .data)
+  p <- ggplot(data = data)
 
   # Create line
   if (quo_is_null(enquo(color))) {

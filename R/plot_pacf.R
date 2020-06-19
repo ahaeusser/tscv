@@ -1,9 +1,9 @@
 
-#' @title Plot partial autocorrelation function.
+#' @title Plot partial autocorrelation function
 #'
 #' @description This function plots the sample partial autocorrelation function of one or more time series.
 #'
-#' @param data A valid tsibble in long format with one measurement variable.
+#' @param data A \code{tsibble} in long format with one measurement variable.
 #' @param lag_max Integer value. Maximum number of lags.
 #' @param level Numeric value. The confidence level to check significance.
 #' @param title Title of the plot.
@@ -33,8 +33,8 @@ plot_pacf <- function(data,
                       ylab = NULL,
                       caption = NULL,
                       bar_width = 1,
-                      bar_color1 = "#00aedb",
-                      bar_color2 = "#ffc425",
+                      bar_color1 = "#00BFC4",
+                      bar_color2 = "#F8766D",
                       bar_alpha = 1,
                       line_width = 0.25,
                       line_type = "solid",
@@ -43,37 +43,37 @@ plot_pacf <- function(data,
                       theme_config = list()) {
 
   dttm <- index_var(data)
-  response <- response_vars(data)
+  target <- target_vars(data)
   value <- value_var(data)
 
   # Calculate confidence limits
   sign_tbl <- data %>%
     as_tibble() %>%
     select(-!!sym(dttm)) %>%
-    group_by(!!!syms(response)) %>%
+    group_by(!!!syms(target)) %>%
     summarise(n_obs = n()) %>%
     ungroup() %>%
-    mutate(conf = qnorm((1 - level) / 2) / sqrt(n_obs))
+    mutate(conf = qnorm((1 - level) / 2) / sqrt(.data$n_obs))
 
   # Estimate sample autocorrelation function
   data <- data %>%
     PACF(!!sym(value), lag_max = lag_max) %>%
     as_tibble() %>%
     rename(PACF = pacf) %>%
-    select(!!!syms(response), PACF) %>%
+    select(!!!syms(target), PACF) %>%
     gather(
       key = "type",
       value = "value",
-      -c(!!!syms(response)))
+      -c(!!!syms(target)))
 
   # Prepare data for plotting
   data <- left_join(
     data,
     sign_tbl,
-    by = response) %>%
-    group_by(!!!syms(response)) %>%
+    by = target) %>%
+    group_by(!!!syms(target)) %>%
     mutate(lag = row_number()) %>%
-    mutate(sign = ifelse(abs(value) > abs(conf), TRUE, FALSE)) %>%
+    mutate(sign = ifelse(abs(value) > abs(.data$conf), TRUE, FALSE)) %>%
     ungroup()
 
   # Create ggplot
@@ -93,7 +93,7 @@ plot_pacf <- function(data,
 
   # Create grid
   p <- p + facet_wrap(
-    vars(!!!syms(response)),
+    vars(!!!syms(target)),
     scales = "free")
 
   # Color bars depending on significance
@@ -104,20 +104,6 @@ plot_pacf <- function(data,
   } else {
     p <- p + scale_fill_manual(values = c(bar_color2, bar_color1))
   }
-
-  # # Lower confidence interval
-  # p <- p + geom_hline(
-  #   yintercept = -conf,
-  #   color = line_color,
-  #   size = line_width,
-  #   linetype = line_type)
-  #
-  # # Upper confidence interval
-  # p <- p + geom_hline(
-  #   yintercept = conf,
-  #   color = line_color,
-  #   size = line_width,
-  #   linetype = line_type)
 
   # Scale x axis with integers
   p <- p + scale_x_continuous(breaks = pretty_breaks())

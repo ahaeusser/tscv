@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_corr.R
 \name{plot_corr}
 \alias{plot_corr}
-\title{Plot autocorrelation and partial autocorrelation function.}
+\title{Plot autocorrelation and partial autocorrelation function}
 \usage{
 plot_corr(
   data,
@@ -15,9 +15,9 @@ plot_corr(
   ylab = NULL,
   caption = NULL,
   bar_width = 1,
-  bar_color = "grey35",
-  bar_color2 = "#D55E00",
-  bar_alpha = 0.6,
+  bar_color1 = "#00BFC4",
+  bar_color2 = "#F8766D",
+  bar_alpha = 1,
   line_width = 0.25,
   line_type = "solid",
   line_color = "grey35",
@@ -26,7 +26,7 @@ plot_corr(
 )
 }
 \arguments{
-\item{data}{A valid tsibble in long format with one measurement variable.}
+\item{data}{A \code{tsibble} in long format with one measurement variable.}
 
 \item{lag_max}{Integer value. Maximum number of lags.}
 
@@ -46,7 +46,7 @@ plot_corr(
 
 \item{bar_width}{Numeric value. The width of the bars.}
 
-\item{bar_color}{Character value. The color of the significant bars.}
+\item{bar_color1}{Character value. The color of the significant bars.}
 
 \item{bar_color2}{Character value. The color of the non-significant bars.}
 

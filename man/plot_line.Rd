@@ -5,7 +5,7 @@
 \title{Plot time series as line chart}
 \usage{
 plot_line(
-  .data,
+  data,
   x,
   y,
   facet = NULL,
@@ -31,7 +31,7 @@ plot_line(
 )
 }
 \arguments{
-\item{.data}{A \code{data.frame}, \code{tibble} or \code{tsibble} in long format.}
+\item{data}{A \code{data.frame}, \code{tibble} or \code{tsibble} in long format.}
 
 \item{x}{Unquoted column within \code{.data}.}
 
