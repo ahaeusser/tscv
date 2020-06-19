@@ -43,7 +43,7 @@ Sys.setlocale("LC_TIME", "C")
 The dataset `elec_price` is a hourly `tsibble` with day-ahead
 electricity spot prices in \[EUR/MWh\] from the ENTSO-E Transparency
 Platform. The dataset contains time series data from 2019-01-01 to
-2019-12-31 for four european bidding zones:
+2019-12-31 for four european bidding zones (BZN):
 
   - DE-LU: Germany and Luxembourg
   - FR: France
@@ -61,33 +61,30 @@ function `plot_line()` to visualize the four time series.
 ``` r
 # Prepare dataset
 data <- elec_price %>%
-  mutate(Series = paste0(Series, " (", BZN, ")")) %>%
-  update_tsibble(key = Series) %>%
-  select(-c(Unit, BZN)) %>%
   clean_data()
 
 data
-#> # A tsibble: 35,040 x 3 [1h] <UTC>
-#> # Key:       Series [4]
-#>    Time                Series         Value
-#>    <dttm>              <chr>          <dbl>
-#>  1 2019-01-01 00:00:00 Price (DE-LU)  10.1 
-#>  2 2019-01-01 01:00:00 Price (DE-LU)  -4.08
-#>  3 2019-01-01 02:00:00 Price (DE-LU)  -9.91
-#>  4 2019-01-01 03:00:00 Price (DE-LU)  -7.41
-#>  5 2019-01-01 04:00:00 Price (DE-LU) -12.6 
-#>  6 2019-01-01 05:00:00 Price (DE-LU) -17.2 
-#>  7 2019-01-01 06:00:00 Price (DE-LU) -15.1 
-#>  8 2019-01-01 07:00:00 Price (DE-LU)  -4.93
-#>  9 2019-01-01 08:00:00 Price (DE-LU)  -6.33
-#> 10 2019-01-01 09:00:00 Price (DE-LU)  -4.93
+#> # A tsibble: 35,040 x 4 [1h] <UTC>
+#> # Key:       Series, BZN [4]
+#>    Time                Series          BZN    Value
+#>    <dttm>              <chr>           <chr>  <dbl>
+#>  1 2019-01-01 00:00:00 Price [EUR/MWh] DE-LU  10.1 
+#>  2 2019-01-01 01:00:00 Price [EUR/MWh] DE-LU  -4.08
+#>  3 2019-01-01 02:00:00 Price [EUR/MWh] DE-LU  -9.91
+#>  4 2019-01-01 03:00:00 Price [EUR/MWh] DE-LU  -7.41
+#>  5 2019-01-01 04:00:00 Price [EUR/MWh] DE-LU -12.6 
+#>  6 2019-01-01 05:00:00 Price [EUR/MWh] DE-LU -17.2 
+#>  7 2019-01-01 06:00:00 Price [EUR/MWh] DE-LU -15.1 
+#>  8 2019-01-01 07:00:00 Price [EUR/MWh] DE-LU  -4.93
+#>  9 2019-01-01 08:00:00 Price [EUR/MWh] DE-LU  -6.33
+#> 10 2019-01-01 09:00:00 Price [EUR/MWh] DE-LU  -4.93
 #> # ... with 35,030 more rows
 
 data %>%
   plot_line(
     x = Time,
     y = Value,
-    color = Series,
+    color = BZN,
     title = "Day-ahead Electricity Spot Price",
     subtitle = "2019-03-01 to 2019-03-15",
     xlab = "Time",
@@ -125,26 +122,26 @@ data <- data %>%
     n_lag = n_lag)
 
 data
-#> # A tsibble: 2,579,136 x 7 [1h] <UTC>
-#> # Key:       Series, split [1,064]
-#>    Time                Series         Value split    id sample horizon
-#>    <dttm>              <chr>          <dbl> <int> <int> <chr>    <int>
-#>  1 2019-01-01 00:00:00 Price (DE-LU)  10.1      1     1 train       NA
-#>  2 2019-01-01 01:00:00 Price (DE-LU)  -4.08     1     2 train       NA
-#>  3 2019-01-01 02:00:00 Price (DE-LU)  -9.91     1     3 train       NA
-#>  4 2019-01-01 03:00:00 Price (DE-LU)  -7.41     1     4 train       NA
-#>  5 2019-01-01 04:00:00 Price (DE-LU) -12.6      1     5 train       NA
-#>  6 2019-01-01 05:00:00 Price (DE-LU) -17.2      1     6 train       NA
-#>  7 2019-01-01 06:00:00 Price (DE-LU) -15.1      1     7 train       NA
-#>  8 2019-01-01 07:00:00 Price (DE-LU)  -4.93     1     8 train       NA
-#>  9 2019-01-01 08:00:00 Price (DE-LU)  -6.33     1     9 train       NA
-#> 10 2019-01-01 09:00:00 Price (DE-LU)  -4.93     1    10 train       NA
+#> # A tsibble: 2,579,136 x 8 [1h] <UTC>
+#> # Key:       Series, BZN, split [1,064]
+#>    Time                Series          BZN    Value split    id sample horizon
+#>    <dttm>              <chr>           <chr>  <dbl> <int> <int> <chr>    <int>
+#>  1 2019-01-01 00:00:00 Price [EUR/MWh] DE-LU  10.1      1     1 train       NA
+#>  2 2019-01-01 01:00:00 Price [EUR/MWh] DE-LU  -4.08     1     2 train       NA
+#>  3 2019-01-01 02:00:00 Price [EUR/MWh] DE-LU  -9.91     1     3 train       NA
+#>  4 2019-01-01 03:00:00 Price [EUR/MWh] DE-LU  -7.41     1     4 train       NA
+#>  5 2019-01-01 04:00:00 Price [EUR/MWh] DE-LU -12.6      1     5 train       NA
+#>  6 2019-01-01 05:00:00 Price [EUR/MWh] DE-LU -17.2      1     6 train       NA
+#>  7 2019-01-01 06:00:00 Price [EUR/MWh] DE-LU -15.1      1     7 train       NA
+#>  8 2019-01-01 07:00:00 Price [EUR/MWh] DE-LU  -4.93     1     8 train       NA
+#>  9 2019-01-01 08:00:00 Price [EUR/MWh] DE-LU  -6.33     1     9 train       NA
+#> 10 2019-01-01 09:00:00 Price [EUR/MWh] DE-LU  -4.93     1    10 train       NA
 #> # ... with 2,579,126 more rows
 ```
 
 The function `summarise_split()` provides a summary table of the
 partitioning into training and testing with the corresponding start and
-end (as date and index) for each split. This is very useful to identfy
+end (as date and index) for each split. This is very useful to identify
 specific splits by date. For example, if a holiday falls into a specific
 testing slice or not.
 
@@ -192,20 +189,20 @@ models <- data %>%
     "STL-Naive" = decomposition_model(STL(Value), NAIVE(season_adjust)))
 
 models
-#> # A mable: 400 x 6
-#> # Key:     Series, split [400]
-#>    Series        split sNaive   sMean   sMedian   `STL-Naive`              
-#>    <chr>         <int> <model>  <model> <model>   <model>                  
-#>  1 Price (DE-LU)     1 <SNAIVE> <SMEAN> <SMEDIAN> <STL decomposition model>
-#>  2 Price (DE-LU)     2 <SNAIVE> <SMEAN> <SMEDIAN> <STL decomposition model>
-#>  3 Price (DE-LU)     3 <SNAIVE> <SMEAN> <SMEDIAN> <STL decomposition model>
-#>  4 Price (DE-LU)     4 <SNAIVE> <SMEAN> <SMEDIAN> <STL decomposition model>
-#>  5 Price (DE-LU)     5 <SNAIVE> <SMEAN> <SMEDIAN> <STL decomposition model>
-#>  6 Price (DE-LU)     6 <SNAIVE> <SMEAN> <SMEDIAN> <STL decomposition model>
-#>  7 Price (DE-LU)     7 <SNAIVE> <SMEAN> <SMEDIAN> <STL decomposition model>
-#>  8 Price (DE-LU)     8 <SNAIVE> <SMEAN> <SMEDIAN> <STL decomposition model>
-#>  9 Price (DE-LU)     9 <SNAIVE> <SMEAN> <SMEDIAN> <STL decomposition model>
-#> 10 Price (DE-LU)    10 <SNAIVE> <SMEAN> <SMEDIAN> <STL decomposition model>
+#> # A mable: 400 x 7
+#> # Key:     Series, BZN, split [400]
+#>    Series       BZN   split   sNaive   sMean   sMedian               `STL-Naive`
+#>    <chr>        <chr> <int>  <model> <model>   <model>                   <model>
+#>  1 Price [EUR/~ DE-LU     1 <SNAIVE> <SMEAN> <SMEDIAN> <STL decomposition model>
+#>  2 Price [EUR/~ DE-LU     2 <SNAIVE> <SMEAN> <SMEDIAN> <STL decomposition model>
+#>  3 Price [EUR/~ DE-LU     3 <SNAIVE> <SMEAN> <SMEDIAN> <STL decomposition model>
+#>  4 Price [EUR/~ DE-LU     4 <SNAIVE> <SMEAN> <SMEDIAN> <STL decomposition model>
+#>  5 Price [EUR/~ DE-LU     5 <SNAIVE> <SMEAN> <SMEDIAN> <STL decomposition model>
+#>  6 Price [EUR/~ DE-LU     6 <SNAIVE> <SMEAN> <SMEDIAN> <STL decomposition model>
+#>  7 Price [EUR/~ DE-LU     7 <SNAIVE> <SMEAN> <SMEDIAN> <STL decomposition model>
+#>  8 Price [EUR/~ DE-LU     8 <SNAIVE> <SMEAN> <SMEDIAN> <STL decomposition model>
+#>  9 Price [EUR/~ DE-LU     9 <SNAIVE> <SMEAN> <SMEDIAN> <STL decomposition model>
+#> 10 Price [EUR/~ DE-LU    10 <SNAIVE> <SMEAN> <SMEDIAN> <STL decomposition model>
 #> # ... with 390 more rows
 
 # Forecasting
@@ -213,20 +210,20 @@ fcst <- models %>%
   forecast(h = n_ahead)
 
 fcst
-#> # A fable: 38,400 x 6 [1h] <UTC>
-#> # Key:     Series, split, .model [1,600]
-#>    Series        split .model Time                Value .distribution
-#>    <chr>         <int> <chr>  <dttm>              <dbl> <dist>       
-#>  1 Price (DE-LU)     1 sNaive 2019-04-11 00:00:00  33   N(33, 367)   
-#>  2 Price (DE-LU)     1 sNaive 2019-04-11 01:00:00  32.6 N(33, 367)   
-#>  3 Price (DE-LU)     1 sNaive 2019-04-11 02:00:00  34.1 N(34, 367)   
-#>  4 Price (DE-LU)     1 sNaive 2019-04-11 03:00:00  36.9 N(37, 367)   
-#>  5 Price (DE-LU)     1 sNaive 2019-04-11 04:00:00  44.7 N(45, 367)   
-#>  6 Price (DE-LU)     1 sNaive 2019-04-11 05:00:00  53.6 N(54, 367)   
-#>  7 Price (DE-LU)     1 sNaive 2019-04-11 06:00:00  59.9 N(60, 367)   
-#>  8 Price (DE-LU)     1 sNaive 2019-04-11 07:00:00  46.9 N(47, 367)   
-#>  9 Price (DE-LU)     1 sNaive 2019-04-11 08:00:00  48   N(48, 367)   
-#> 10 Price (DE-LU)     1 sNaive 2019-04-11 09:00:00  47   N(47, 367)   
+#> # A fable: 38,400 x 7 [1h] <UTC>
+#> # Key:     Series, BZN, split, .model [1,600]
+#>    Series          BZN   split .model Time                     Value .mean
+#>    <chr>           <chr> <int> <chr>  <dttm>                  <dist> <dbl>
+#>  1 Price [EUR/MWh] DE-LU     1 sNaive 2019-04-11 00:00:00 N(33, 367)  33  
+#>  2 Price [EUR/MWh] DE-LU     1 sNaive 2019-04-11 01:00:00 N(33, 367)  32.6
+#>  3 Price [EUR/MWh] DE-LU     1 sNaive 2019-04-11 02:00:00 N(34, 367)  34.1
+#>  4 Price [EUR/MWh] DE-LU     1 sNaive 2019-04-11 03:00:00 N(37, 367)  36.9
+#>  5 Price [EUR/MWh] DE-LU     1 sNaive 2019-04-11 04:00:00 N(45, 367)  44.7
+#>  6 Price [EUR/MWh] DE-LU     1 sNaive 2019-04-11 05:00:00 N(54, 367)  53.6
+#>  7 Price [EUR/MWh] DE-LU     1 sNaive 2019-04-11 06:00:00 N(60, 367)  59.9
+#>  8 Price [EUR/MWh] DE-LU     1 sNaive 2019-04-11 07:00:00 N(47, 367)  46.9
+#>  9 Price [EUR/MWh] DE-LU     1 sNaive 2019-04-11 08:00:00 N(48, 367)  48  
+#> 10 Price [EUR/MWh] DE-LU     1 sNaive 2019-04-11 09:00:00 N(47, 367)  47  
 #> # ... with 38,390 more rows
 
 plot_forecast(
@@ -257,7 +254,6 @@ used. You can define whether to evaluate the accuracy by `horizon` or by
   - `sMAPE`: scaled mean absolute percentage error
   - `MPE`: mean percentage error
   - `MASE`: mean absolute scale error
-  - `sMASE`: seasonal mean absolute scaled error
 
 ### Forecast accuracy by forecast horizon
 
@@ -270,26 +266,26 @@ metrics_horizon <- error_metrics(
   by = "horizon")
 
 metrics_horizon
-#> # A tibble: 3,456 x 5
-#>    Series        .model horizon metric value
-#>    <chr>         <chr>    <int> <chr>  <dbl>
-#>  1 Price (DE-LU) sMean        1 MAE     5.57
-#>  2 Price (DE-LU) sMean        2 MAE     5.80
-#>  3 Price (DE-LU) sMean        3 MAE     5.94
-#>  4 Price (DE-LU) sMean        4 MAE     5.84
-#>  5 Price (DE-LU) sMean        5 MAE     7.36
-#>  6 Price (DE-LU) sMean        6 MAE     7.69
-#>  7 Price (DE-LU) sMean        7 MAE     7.42
-#>  8 Price (DE-LU) sMean        8 MAE     7.45
-#>  9 Price (DE-LU) sMean        9 MAE     7.89
-#> 10 Price (DE-LU) sMean       10 MAE     9.13
-#> # ... with 3,446 more rows
+#> # A tibble: 3,072 x 6
+#>    Series          BZN   .model horizon metric value
+#>    <chr>           <chr> <chr>    <int> <chr>  <dbl>
+#>  1 Price [EUR/MWh] DE-LU sMean        1 MAE     5.57
+#>  2 Price [EUR/MWh] DE-LU sMean        2 MAE     5.80
+#>  3 Price [EUR/MWh] DE-LU sMean        3 MAE     5.94
+#>  4 Price [EUR/MWh] DE-LU sMean        4 MAE     5.84
+#>  5 Price [EUR/MWh] DE-LU sMean        5 MAE     7.36
+#>  6 Price [EUR/MWh] DE-LU sMean        6 MAE     7.69
+#>  7 Price [EUR/MWh] DE-LU sMean        7 MAE     7.42
+#>  8 Price [EUR/MWh] DE-LU sMean        8 MAE     7.45
+#>  9 Price [EUR/MWh] DE-LU sMean        9 MAE     7.89
+#> 10 Price [EUR/MWh] DE-LU sMean       10 MAE     9.13
+#> # ... with 3,062 more rows
 
 # Visualize results
 metrics_horizon %>%
   plot_error_metrics(
     title = "Evaluation of forecast accuracy by forecast horizon",
-    subtitle = "Seasonal mean absolute scaled error (sMASE)",
+    subtitle = "Mean absolute scaled error (MASE)",
     xlab = "Forecast horizon (n-step-ahead)",
     caption = "Data: ENTSO-E Transparency, own calculation")
 ```
@@ -307,26 +303,26 @@ metrics_split <- error_metrics(
   by = "split")
 
 metrics_split
-#> # A tibble: 14,400 x 5
-#>    Series        .model split metric value
-#>    <chr>         <chr>  <int> <chr>  <dbl>
-#>  1 Price (DE-LU) sMean      1 MAE     5.40
-#>  2 Price (DE-LU) sMean      2 MAE     4.75
-#>  3 Price (DE-LU) sMean      3 MAE     5.44
-#>  4 Price (DE-LU) sMean      4 MAE     5.99
-#>  5 Price (DE-LU) sMean      5 MAE     7.04
-#>  6 Price (DE-LU) sMean      6 MAE     5.17
-#>  7 Price (DE-LU) sMean      7 MAE     5.19
-#>  8 Price (DE-LU) sMean      8 MAE     8.01
-#>  9 Price (DE-LU) sMean      9 MAE    11.7 
-#> 10 Price (DE-LU) sMean     10 MAE     5.44
-#> # ... with 14,390 more rows
+#> # A tibble: 12,800 x 6
+#>    Series          BZN   .model split metric value
+#>    <chr>           <chr> <chr>  <int> <chr>  <dbl>
+#>  1 Price [EUR/MWh] DE-LU sMean      1 MAE     5.40
+#>  2 Price [EUR/MWh] DE-LU sMean      2 MAE     4.75
+#>  3 Price [EUR/MWh] DE-LU sMean      3 MAE     5.44
+#>  4 Price [EUR/MWh] DE-LU sMean      4 MAE     5.99
+#>  5 Price [EUR/MWh] DE-LU sMean      5 MAE     7.04
+#>  6 Price [EUR/MWh] DE-LU sMean      6 MAE     5.17
+#>  7 Price [EUR/MWh] DE-LU sMean      7 MAE     5.19
+#>  8 Price [EUR/MWh] DE-LU sMean      8 MAE     8.01
+#>  9 Price [EUR/MWh] DE-LU sMean      9 MAE    11.7 
+#> 10 Price [EUR/MWh] DE-LU sMean     10 MAE     5.44
+#> # ... with 12,790 more rows
 
 # Visualize results
 metrics_split %>%
   plot_error_metrics(
     title = "Evaluation of forecast accuracy by split",
-    subtitle = "Seasonal mean absolute scaled error (sMASE)",
+    subtitle = "Mean absolute scaled error (MASE)",
     xlab = "Split",
     caption = "Data: ENTSO-E Transparency, own calculation")
 ```
