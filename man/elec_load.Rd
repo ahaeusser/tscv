@@ -9,7 +9,7 @@ A time series object of class \code{tsibble} with 43.800 rows and 3 columns:
    \itemize{
       \item{\code{Time}: Date and time (index variable)}
       \item{\code{Series}: Time series name (key variable)}
-      \item{\code{Unit}: Measurment unit (megawatt)}
+      \item{\code{Unit}: Measurement unit (megawatt)}
       \item{\code{BZN}: Bidding zone (key variable)}
       \item{\code{Value}: Measurement variable}
       }
