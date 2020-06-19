@@ -1,0 +1,172 @@
+---
+title: "Visualization of Time Series Data"
+author: "Alexander Häußer"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Visualization of Time Series Data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  dev = "svg",
+  fig.path = "figures/viz-",
+  fig.height = 5,
+  fig.width = 7
+)
+```
+
+You can install the development version from [GitHub](https://github.com/) with:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("ahaeusser/tscv")
+```
+
+```{r packages, message = FALSE, warning = FALSE}
+# Load relevant packages
+library(tscv)
+library(tidyverse)
+library(tsibble)
+Sys.setlocale("LC_TIME", "C")
+```
+
+## Data
+
+```{r data}
+data <- elec_price
+
+data
+```
+
+## Line plot
+
+```{r plot_line}
+data %>%
+  plot_line(
+    x = Time,
+    y = Value,
+    color = BZN,
+    title = "Day-ahead Electricity Spot Price",
+    subtitle = "2019-01-01 to 2019-12-31",
+    xlab = "Time",
+    ylab = "[EUR/MWh]",
+    caption = "Data: ENTSO-E Transparency")
+
+start <- "2019-03-01"
+end <- "2019-03-30"
+
+data <- data %>%
+  filter_index(start ~ end)
+
+data %>%
+  plot_line(
+    x = Time,
+    y = Value,
+    color = BZN,
+    facet = BZN,
+    title = "Day-ahead Electricity Spot Price",
+    subtitle = "2019-03-01 to 2019-03-30",
+    xlab = "Time",
+    ylab = "[EUR/MWh]",
+    caption = "Data: ENTSO-E Transparency")
+```
+
+## Distributions (histogram, density, QQ plot)
+
+```{r plot_histogram}
+data %>%
+  plot_histogram(
+    x = Value,
+    color = BZN,
+    title = "Day-ahead Electricity Spot Price",
+    subtitle = "2019-03-01 to 2019-03-30",
+    xlab = "Time",
+    ylab = "[EUR/MWh]",
+    caption = "Data: ENTSO-E Transparency")
+
+data %>%
+  plot_histogram(
+    x = Value,
+    color = BZN,
+    facet = BZN,
+    title = "Day-ahead Electricity Spot Price",
+    subtitle = "2019-03-01 to 2019-03-30",
+    xlab = "Time",
+    ylab = "[EUR/MWh]",
+    caption = "Data: ENTSO-E Transparency")
+```
+
+
+```{r plot_density}
+data %>%
+  plot_density(
+    x = Value,
+    color = BZN,
+    title = "Day-ahead Electricity Spot Price",
+    subtitle = "2019-03-01 to 2019-03-30",
+    xlab = "Time",
+    ylab = "[EUR/MWh]",
+    caption = "Data: ENTSO-E Transparency")
+
+data %>%
+  plot_density(
+    x = Value,
+    color = BZN,
+    facet = BZN,
+    title = "Day-ahead Electricity Spot Price",
+    subtitle = "2019-03-01 to 2019-03-30",
+    xlab = "Time",
+    ylab = "[EUR/MWh]",
+    caption = "Data: ENTSO-E Transparency")
+```
+
+
+```{r plot_qq}
+data %>%
+  plot_qq(
+    x = Value,
+    color = BZN,
+    title = "Day-ahead Electricity Spot Price",
+    subtitle = "2019-03-01 to 2019-03-30",
+    xlab = "Time",
+    ylab = "[EUR/MWh]",
+    caption = "Data: ENTSO-E Transparency")
+
+data %>%
+  plot_qq(
+    x = Value,
+    color = BZN,
+    facet = BZN,
+    title = "Day-ahead Electricity Spot Price",
+    subtitle = "2019-03-01 to 2019-03-30",
+    xlab = "Time",
+    ylab = "[EUR/MWh]",
+    caption = "Data: ENTSO-E Transparency")
+```
+
+## Autocorrelation and Partial Autocorrelation
+
+```{r plot_corr}
+data %>%
+  plot_acf(
+    title = "Day-ahead Electricity Spot Price",
+    subtitle = "2019-03-01 to 2019-03-30",
+    xlab = "Time",
+    ylab = "[EUR/MWh]",
+    caption = "Data: ENTSO-E Transparency")
+
+data %>%
+  plot_pacf(
+    title = "Day-ahead Electricity Spot Price",
+    subtitle = "2019-03-01 to 2019-03-30",
+    xlab = "Time",
+    ylab = "[EUR/MWh]",
+    caption = "Data: ENTSO-E Transparency")
+
+```
+
