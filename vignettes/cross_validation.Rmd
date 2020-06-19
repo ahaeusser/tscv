@@ -1,8 +1,10 @@
 ---
 title: "Time Series Cross Validation"
+author: "Alexander Häußer"
+date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{cross_validation}
+  %\VignetteIndexEntry{Time Series Cross Validation}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
