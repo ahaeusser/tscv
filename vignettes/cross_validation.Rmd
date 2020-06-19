@@ -39,7 +39,7 @@ Sys.setlocale("LC_TIME", "C")
 
 ## Data preparation
 
-The dataset `elec_price` is a hourly `tsibble` with day-ahead electricity spot prices in [EUR/MWh] from the ENTSO-E Transparency Platform. The dataset contains time series data from 2019-01-01 to 2019-12-31 for four european bidding zones: 
+The dataset `elec_price` is a hourly `tsibble` with day-ahead electricity spot prices in [EUR/MWh] from the ENTSO-E Transparency Platform. The dataset contains time series data from 2019-01-01 to 2019-12-31 for four european bidding zones (BZN): 
 
 * DE-LU: Germany and Luxembourg
 * FR: France
@@ -51,9 +51,6 @@ You can use the function `clean_data()` to prepare the dataset for further usage
 ```{r clean_data}
 # Prepare dataset
 data <- elec_price %>%
-  mutate(Series = paste0(Series, " (", BZN, ")")) %>%
-  update_tsibble(key = Series) %>%
-  select(-c(Unit, BZN)) %>%
   clean_data()
 
 data
@@ -62,7 +59,7 @@ data %>%
   plot_line(
     x = Time,
     y = Value,
-    color = Series,
+    color = BZN,
     title = "Day-ahead Electricity Spot Price",
     subtitle = "2019-03-01 to 2019-03-15",
     xlab = "Time",
@@ -95,7 +92,7 @@ data
 ```
 
 
-The function `summarise_split()` provides a summary table of the partitioning into training and testing with the corresponding start and end (as date and index) for each split. This is very useful to identfy specific splits by date. For example, if a holiday falls into a specific testing slice or not. 
+The function `summarise_split()` provides a summary table of the partitioning into training and testing with the corresponding start and end (as date and index) for each split. This is very useful to identify specific splits by date. For example, if a holiday falls into a specific testing slice or not. 
 
 ```{r summarise_split}
 # Summarize split into training and testing data
@@ -152,7 +149,6 @@ To evaluate the forecast accuracy, the function `error_metrics()` is used. You c
 * `sMAPE`: scaled mean absolute percentage error
 * `MPE`: mean percentage error
 * `MASE`: mean absolute scale error
-* `sMASE`: seasonal mean absolute scaled error
 
 
 ### Forecast accuracy by forecast horizon
@@ -170,7 +166,7 @@ metrics_horizon
 metrics_horizon %>%
   plot_error_metrics(
     title = "Evaluation of forecast accuracy by forecast horizon",
-    subtitle = "Seasonal mean absolute scaled error (sMASE)",
+    subtitle = "Mean absolute scaled error (MASE)",
     xlab = "Forecast horizon (n-step-ahead)",
     caption = "Data: ENTSO-E Transparency, own calculation")
 ```
@@ -191,7 +187,7 @@ metrics_split
 metrics_split %>%
   plot_error_metrics(
     title = "Evaluation of forecast accuracy by split",
-    subtitle = "Seasonal mean absolute scaled error (sMASE)",
+    subtitle = "Mean absolute scaled error (MASE)",
     xlab = "Split",
     caption = "Data: ENTSO-E Transparency, own calculation")
 ```
