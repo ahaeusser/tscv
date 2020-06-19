@@ -10,7 +10,7 @@
 \item{x}{The TBATS to summarize.}
 }
 \value{
-
+Model summary as character value.
 }
 \description{
 Provide a succinct summary of the TBATS.

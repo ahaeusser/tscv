@@ -12,7 +12,7 @@
 \item{...}{Further arguments.}
 }
 \value{
-
+Residuals as \code{tsibble}.
 }
 \description{
 Extract residuals from a DSHW.

@@ -12,7 +12,7 @@
 \item{...}{Further arguments.}
 }
 \value{
-
+Fitted values as \code{tsibble}.
 }
 \description{
 Extract fitted values from a ELM.

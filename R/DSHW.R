@@ -101,7 +101,9 @@ forecast.DSHW <- function(object,
   construct_fc(
     point = mean,
     sd = sigma,
-    dist = dist_normal(mean = mean, sd =  rep(sigma, times = n_ahead)))
+    dist = dist_normal(
+      mean = mean,
+      sd =  rep(sigma, times = nrow(new_data))))
 }
 
 
@@ -112,7 +114,7 @@ forecast.DSHW <- function(object,
 #' @param object The time series model used to produce the forecast.
 #' @param ... Further arguments.
 #'
-#' @return
+#' @return Fitted values as \code{tsibble}.
 #' @export
 
 fitted.DSHW <- function(object, ...){
@@ -127,7 +129,7 @@ fitted.DSHW <- function(object, ...){
 #' @param object The time series model used to produce the forecast.
 #' @param ... Further arguments.
 #'
-#' @return
+#' @return Residuals as \code{tsibble}.
 #' @export
 
 residuals.DSHW <- function(object, ...){
@@ -141,7 +143,7 @@ residuals.DSHW <- function(object, ...){
 #'
 #' @param x The DSHW to summarize.
 #'
-#' @return
+#' @return Model summary as character value.
 #' @export
 
 model_sum.DSHW <- function(x){

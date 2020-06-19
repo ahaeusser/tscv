@@ -132,7 +132,7 @@ forecast.SMEAN <- function(object,
 #' @param object The time series model used to produce the forecast.
 #' @param ... Further arguments.
 #'
-#' @return
+#' @return Fitted values as \code{tsibble}.
 #' @export
 
 fitted.SMEAN <- function(object, ...){
@@ -147,7 +147,7 @@ fitted.SMEAN <- function(object, ...){
 #' @param object The time series model used to produce the forecast.
 #' @param ... Further arguments.
 #'
-#' @return
+#' @return Residuals as \code{tsibble}.
 #' @export
 
 residuals.SMEAN <- function(object, ...){
@@ -161,7 +161,7 @@ residuals.SMEAN <- function(object, ...){
 #'
 #' @param x The SMEAN to summarize.
 #'
-#' @return
+#' @return Model summary as character value.
 #' @export
 
 model_sum.SMEAN <- function(x){

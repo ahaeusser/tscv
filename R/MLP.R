@@ -110,7 +110,7 @@ forecast.MLP <- function(object,
 #' @param object The time series model used to produce the forecast.
 #' @param ... Further arguments.
 #'
-#' @return
+#' @return Fitted values as \code{tsibble}.
 #' @export
 
 fitted.MLP <- function(object, ...){
@@ -125,7 +125,7 @@ fitted.MLP <- function(object, ...){
 #' @param object The time series model used to produce the forecast.
 #' @param ... Further arguments.
 #'
-#' @return
+#' @return Residuals as \code{tsibble}.
 #' @export
 
 residuals.MLP <- function(object, ...){
@@ -139,7 +139,7 @@ residuals.MLP <- function(object, ...){
 #'
 #' @param x The MLP to summarize.
 #'
-#' @return
+#' @return Model summary as character value.
 #' @export
 
 model_sum.MLP <- function(x){

@@ -111,7 +111,7 @@ forecast.ELM <- function(object,
 #' @param object The time series model used to produce the forecast.
 #' @param ... Further arguments.
 #'
-#' @return
+#' @return Fitted values as \code{tsibble}.
 #' @export
 
 fitted.ELM <- function(object, ...){
@@ -126,7 +126,7 @@ fitted.ELM <- function(object, ...){
 #' @param object The time series model used to produce the forecast.
 #' @param ... Further arguments.
 #'
-#' @return
+#' @return Residuals as \code{tsibble}.
 #' @export
 
 residuals.ELM <- function(object, ...){
@@ -140,7 +140,7 @@ residuals.ELM <- function(object, ...){
 #'
 #' @param x The ELM to summarize.
 #'
-#' @return
+#' @return Model summary as character value.
 #' @export
 
 model_sum.ELM <- function(x){

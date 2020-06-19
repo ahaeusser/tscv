@@ -102,7 +102,9 @@ forecast.TBATS <- function(object,
   construct_fc(
     point = mean,
     sd = sigma,
-    dist = dist_normal(mean = mean, sd =  rep(sigma, times = n_ahead))
+    dist = dist_normal(
+      mean = mean,
+      sd =  rep(sigma, times = nrow(new_data)))
     )
 }
 
@@ -114,7 +116,7 @@ forecast.TBATS <- function(object,
 #' @param object The time series model used to produce the forecast.
 #' @param ... Further arguments.
 #'
-#' @return
+#' @return Fitted values as \code{tsibble}.
 #' @export
 
 fitted.TBATS <- function(object, ...){
@@ -129,7 +131,7 @@ fitted.TBATS <- function(object, ...){
 #' @param object The time series model used to produce the forecast.
 #' @param ... Further arguments.
 #'
-#' @return
+#' @return Residuals as \code{tsibble}.
 #' @export
 
 residuals.TBATS <- function(object, ...){
@@ -143,7 +145,7 @@ residuals.TBATS <- function(object, ...){
 #'
 #' @param x The TBATS to summarize.
 #'
-#' @return
+#' @return Model summary as character value.
 #' @export
 
 model_sum.TBATS <- function(x){

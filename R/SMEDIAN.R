@@ -132,7 +132,7 @@ forecast.SMEDIAN <- function(object,
 #' @param object The time series model used to produce the forecast.
 #' @param ... Further arguments.
 #'
-#' @return
+#' @return Fitted values as \code{tsibble}.
 #' @export
 
 fitted.SMEDIAN <- function(object, ...){
@@ -147,7 +147,7 @@ fitted.SMEDIAN <- function(object, ...){
 #' @param object The time series model used to produce the forecast.
 #' @param ... Further arguments.
 #'
-#' @return
+#' @return Residuals as \code{tsibble}.
 #' @export
 
 residuals.SMEDIAN <- function(object, ...){
@@ -161,7 +161,7 @@ residuals.SMEDIAN <- function(object, ...){
 #'
 #' @param x The SMEDIAN to summarize.
 #'
-#' @return
+#' @return Model summary as character value.
 #' @export
 
 model_sum.SMEDIAN <- function(x){
