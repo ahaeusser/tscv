@@ -22,10 +22,10 @@ split_data(data, n_init, n_ahead, n_skip = 0, n_lag = 0, mode = "slide")
 \value{
 data A \code{tsibble} in the same format as the input data, but with the following additional columns:
    \itemize{
-      \item{\code{.sample}: Character value. Indicating whether the partition is training or testing.}
-      \item{\code{.split}: Integer value. The number of the time slice (training and testing).}
-      \item{\code{.id}: Integer value. The row number of the corresponding observations.}
-      \item{\code{.horizon}: Integer value. The forecast horizon (i.e. the size of the testing window. NAs for training.}
+      \item{\code{sample}: Character value. Indicating whether the partition is training or testing.}
+      \item{\code{split}: Integer value. The number of the time slice (training and testing).}
+      \item{\code{id}: Integer value. The row number of the corresponding observations.}
+      \item{\code{horizon}: Integer value. The forecast horizon (i.e. the size of the testing window. NAs for training.}
       }
 }
 \description{

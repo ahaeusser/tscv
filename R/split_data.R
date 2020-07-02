@@ -16,10 +16,10 @@
 #'
 #' @return data A \code{tsibble} in the same format as the input data, but with the following additional columns:
 #'    \itemize{
-#'       \item{\code{.sample}: Character value. Indicating whether the partition is training or testing.}
-#'       \item{\code{.split}: Integer value. The number of the time slice (training and testing).}
-#'       \item{\code{.id}: Integer value. The row number of the corresponding observations.}
-#'       \item{\code{.horizon}: Integer value. The forecast horizon (i.e. the size of the testing window. NAs for training.}
+#'       \item{\code{sample}: Character value. Indicating whether the partition is training or testing.}
+#'       \item{\code{split}: Integer value. The number of the time slice (training and testing).}
+#'       \item{\code{id}: Integer value. The row number of the corresponding observations.}
+#'       \item{\code{horizon}: Integer value. The forecast horizon (i.e. the size of the testing window. NAs for training.}
 #'       }
 #' @export
 
@@ -89,8 +89,8 @@ split_data <- function(data,
   })
 
   # Flatten lists by row-wise binding
-  train <- do.call(rbind, train)
-  test <- do.call(rbind, test)
+  train <- bind_rows(train)
+  test <- bind_rows(test)
 
   # Add columns for sample and horizon
   train <- train %>%
@@ -103,7 +103,7 @@ split_data <- function(data,
     mutate(horizon = row_number()) %>%
     ungroup()
 
-  data <- rbind(train, test)
+  data <- bind_rows(train, test)
 
   data <- data %>%
     as_tsibble(
