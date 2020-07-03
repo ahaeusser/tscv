@@ -3,13 +3,12 @@
 \docType{data}
 \name{elec_load}
 \alias{elec_load}
-\title{Hourly Electricity Load.}
+\title{Hourly electricity load}
 \format{
-A time series object of class \code{tsibble} with 43.800 rows and 3 columns:
+A time series object of class \code{tsibble} with 35.040 rows and 4 columns:
    \itemize{
       \item{\code{Time}: Date and time (index variable)}
       \item{\code{Series}: Time series name (key variable)}
-      \item{\code{Unit}: Measurement unit (megawatt)}
       \item{\code{BZN}: Bidding zone (key variable)}
       \item{\code{Value}: Measurement variable}
       }

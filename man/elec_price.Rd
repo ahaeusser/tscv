@@ -3,13 +3,12 @@
 \docType{data}
 \name{elec_price}
 \alias{elec_price}
-\title{Hourly Day-ahead Electricity Spot Prices.}
+\title{Hourly day-ahead electricity spot prices}
 \format{
-A time series object of class \code{tsibble} with 43.800 rows and 3 columns:
+A time series object of class \code{tsibble} with 35.040 rows and 4 columns:
    \itemize{
       \item{\code{Time}: Date and time (index variable)}
       \item{\code{Series}: Time series name (key variable)}
-      \item{\code{Unit}: Measurement unit (euros per megawatt-hour)}
       \item{\code{BZN}: Bidding zone (key variable)}
       \item{\code{Value}: Measurement variable}
       }
