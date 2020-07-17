@@ -1,12 +1,9 @@
 
 #' @title Plot forecast accuracy metrics
 #'
-#' @description Plot forecast accuracy metrics, either along the forecast horizon or the slices. The user can define
-#'    the forecasting models and accuracy metrics.
+#' @description Plot forecast accuracy metrics, either along the forecast horizon or the slices.
 #'
 #' @param data A \code{tibble} containing the accuracy metrics, i.e. the result of a call to \code{error_metrics()}.
-#' @param model Character vector defining the forecasting models.
-#' @param metric Character vector defining the accuracy measures.
 #' @param title Title for the plot.
 #' @param subtitle Subtitle for the plot.
 #' @param xlab Label for the x-axis.
@@ -25,8 +22,6 @@
 #' @export
 
 plot_error_metrics <- function(data,
-                               model = NULL,
-                               metric = "MASE",
                                title = NULL,
                                subtitle = NULL,
                                ylab = NULL,
@@ -35,7 +30,7 @@ plot_error_metrics <- function(data,
                                line_width = 1,
                                line_type = "solid",
                                point_size = 0,
-                               point_shape = 19,
+                               # point_shape = 19,
                                point_alpha = 1,
                                theme_set = theme_tscv(),
                                theme_config = list(),
@@ -51,27 +46,6 @@ plot_error_metrics <- function(data,
     by <- "horizon"
   }
 
-  # Check arguments
-  if (is_empty(model)) {
-    set_model <- data %>%
-      pull(.data$.model) %>%
-      unique()
-  } else {
-    set_model <- model
-  }
-
-  if (is_empty(metric)) {
-    set_metric <- data %>%
-      pull(metric) %>%
-      unique()
-  } else {
-    set_metric <- metric
-  }
-
-  data <- data %>%
-    filter(.data$metric %in% set_metric) %>%
-    filter(.data$.model %in% set_model)
-
   # Initialize plot
   p <- ggplot(
     data = data,
@@ -79,7 +53,8 @@ plot_error_metrics <- function(data,
       x = !!sym(by),
       y = .data$value,
       colour = .data$.model,
-      group = .data$.model))
+      group = .data$.model,
+      shape = .data$.model))
 
   # Add lines and point
   p <- p + geom_line(
@@ -91,7 +66,7 @@ plot_error_metrics <- function(data,
   p <- p + geom_point(
     na.rm = TRUE,
     size = point_size,
-    shape = point_shape,
+    # shape = point_shape,
     alpha = point_alpha,
     ...)
 

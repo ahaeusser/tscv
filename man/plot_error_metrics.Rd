@@ -6,8 +6,6 @@
 \usage{
 plot_error_metrics(
   data,
-  model = NULL,
-  metric = "MASE",
   title = NULL,
   subtitle = NULL,
   ylab = NULL,
@@ -16,7 +14,6 @@ plot_error_metrics(
   line_width = 1,
   line_type = "solid",
   point_size = 0,
-  point_shape = 19,
   point_alpha = 1,
   theme_set = theme_tscv(),
   theme_config = list(),
@@ -25,10 +22,6 @@ plot_error_metrics(
 }
 \arguments{
 \item{data}{A \code{tibble} containing the accuracy metrics, i.e. the result of a call to \code{error_metrics()}.}
-
-\item{model}{Character vector defining the forecasting models.}
-
-\item{metric}{Character vector defining the accuracy measures.}
 
 \item{title}{Title for the plot.}
 
@@ -46,8 +39,6 @@ plot_error_metrics(
 
 \item{point_size}{Numeric value. Point size.}
 
-\item{point_shape}{Integer value. Point shape.}
-
 \item{point_alpha}{Numeric value between 0 and 1. The transparency of the points.}
 
 \item{theme_set}{A complete ggplot2 theme.}
@@ -55,11 +46,12 @@ plot_error_metrics(
 \item{theme_config}{A list with further arguments passed to \code{ggplot2::theme()}.}
 
 \item{...}{Further arguments passed to \code{ggplot2::geom_line()} or \code{ggplot2::geom_point()}.}
+
+\item{point_shape}{Integer value. Point shape.}
 }
 \value{
 p An object of class ggplot.
 }
 \description{
-Plot forecast accuracy metrics, either along the forecast horizon or the slices. The user can define
-   the forecasting models and accuracy metrics.
+Plot forecast accuracy metrics, either along the forecast horizon or the slices.
 }
