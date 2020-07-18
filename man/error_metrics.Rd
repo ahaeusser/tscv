@@ -14,15 +14,15 @@ error_metrics(fcst, data, period = NULL, by = "split")
 \item{period}{Integer value. The period used for the estimation of the in-sample
 MAE of seasonal naive forecast. The in-sample MAE is required for scaling the sMASE.}
 
-\item{by}{Character value. Either accuracy is estimated by \code{.split} or \code{.horizon}.}
+\item{by}{Character value. Either accuracy is estimated by \code{split} or \code{horizon}.}
 }
 \value{
 A \code{tibble} containing the accuracy metrics for all key variables and models.
 }
 \description{
 This function estimates several accuracy metrics to evaluate the
-   accuracy of the point forecasts. By default, the following accuracy metrics
-   are provided:
+   accuracy of the point forecasts. Either along the forecast horizon or along
+   the train-test-splits. By default, the following accuracy metrics are provided:
 
    \itemize{
       \item{\code{ME}: mean error}

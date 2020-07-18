@@ -2,8 +2,8 @@
 #' @title Estimate accuracy metrics to evaluate point forecast
 #'
 #' @description This function estimates several accuracy metrics to evaluate the
-#'    accuracy of the point forecasts. By default, the following accuracy metrics
-#'    are provided:
+#'    accuracy of the point forecasts. Either along the forecast horizon or along
+#'    the train-test-splits. By default, the following accuracy metrics are provided:
 #'
 #'    \itemize{
 #'       \item{\code{ME}: mean error}
@@ -21,7 +21,7 @@
 #' @param data A \code{tsibble} containing the training and testing data.
 #' @param period Integer value. The period used for the estimation of the in-sample
 #'    MAE of seasonal naive forecast. The in-sample MAE is required for scaling the sMASE.
-#' @param by Character value. Either accuracy is estimated by \code{.split} or \code{.horizon}.
+#' @param by Character value. Either accuracy is estimated by \code{split} or \code{horizon}.
 #'
 #' @return A \code{tibble} containing the accuracy metrics for all key variables and models.
 #' @export
@@ -117,7 +117,9 @@ error_metrics <- function(fcst,
       cols = all_of(set_metrics),
       names_to = "metric",
       values_to = "value") %>%
-    arrange(!!!syms(target), .data$.model, .data$metric)
+    arrange(!!!syms(target), .data$.model, .data$metric) %>%
+    mutate(dimension = by, .after = ".model") %>%
+    rename(n = !!sym(by))
 
   return(metrics)
 }
