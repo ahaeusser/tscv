@@ -37,20 +37,14 @@ plot_error_metrics <- function(data,
                                ...) {
 
   data_cols <- names(data)
-  def_cols <- c(".model", "horizon", "split", "metric", "value")
+  def_cols <- c(".model", "dimension", "n", "metric", "value")
   target <- setdiff(data_cols, def_cols)
-
-  if ("split" %in% data_cols) {
-    by <- "split"
-  } else {
-    by <- "horizon"
-  }
 
   # Initialize plot
   p <- ggplot(
     data = data,
     aes(
-      x = !!sym(by),
+      x = .data$n,
       y = .data$value,
       colour = .data$.model,
       group = .data$.model,
@@ -66,7 +60,6 @@ plot_error_metrics <- function(data,
   p <- p + geom_point(
     na.rm = TRUE,
     size = point_size,
-    # shape = point_shape,
     alpha = point_alpha,
     ...)
 
