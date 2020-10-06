@@ -1,5 +1,5 @@
 
-#' @title Plot the actual and fitted values and forecasts.
+#' @title Plot the actual and fitted values and forecasts
 #'
 #' @description Plot the actual and fitted values and forecasts for specific
 #'    train-test splits and forecasting models.
@@ -60,10 +60,10 @@ plot_forecast <- function(fcst,
 
   # Prepare forecasts and actual values for specified slices and models
   fcst <- fcst %>%
+    as_tsibble() %>%
     mutate(!!sym(value) := map_dbl(fcst[[value]], `[[`, "mu")) %>%
     filter(.data$split %in% set_split) %>%
-    filter(.data$.model %in% set_model) %>%
-    as_tsibble()
+    filter(.data$.model %in% set_model)
 
   actual <- data %>%
     filter(split %in% set_split)

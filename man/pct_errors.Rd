@@ -2,7 +2,7 @@
 % Please edit documentation in R/pct_errors.R
 \name{pct_errors}
 \alias{pct_errors}
-\title{Calculate percentage forecast errors.}
+\title{Calculate percentage forecast errors}
 \usage{
 pct_errors(fcst, data)
 }

@@ -1,5 +1,5 @@
 
-#' @title Calculate forecast errors.
+#' @title Calculate forecast errors
 #'
 #' @description \code{error} calculates the forecast errors (actual - fcst).
 #'
@@ -30,8 +30,8 @@ errors <- function(fcst,
 
   # Calculate forecast errors (actual - fcst)
   errors <- data %>%
-    mutate(!!sym(value) := map_dbl(fcst[[value]], `[[`, "mu")) %>%
     as_tsibble() %>%
+    mutate(!!sym(value) := map_dbl(fcst[[value]], `[[`, "mu")) %>%
     mutate(error = (.data$actual - !!sym(value))) %>%
     select(-c(!!sym(value), .data$actual, .data$.mean))
 

@@ -1,5 +1,5 @@
 
-#' @title Calculate percentage forecast errors.
+#' @title Calculate percentage forecast errors
 #'
 #' @description \code{error} calculates percentage forecast errors (actual - fcst / actual) * 100.
 #'
@@ -30,8 +30,8 @@ pct_errors <- function(fcst,
 
   # Calculate forecast errors (actual - fcst)
   pct_errors <- data %>%
-    mutate(!!sym(value) := map_dbl(fcst[[value]], `[[`, "mu")) %>%
     as_tsibble() %>%
+    mutate(!!sym(value) := map_dbl(fcst[[value]], `[[`, "mu")) %>%
     mutate(pct_error = ((.data$actual - !!sym(value)) / .data$actual) * 100) %>%
     select(-c(!!sym(value), .data$actual, .data$.mean))
 

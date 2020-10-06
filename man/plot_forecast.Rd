@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_forecast.R
 \name{plot_forecast}
 \alias{plot_forecast}
-\title{Plot the actual and fitted values and forecasts.}
+\title{Plot the actual and fitted values and forecasts}
 \usage{
 plot_forecast(
   fcst,

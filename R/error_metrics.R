@@ -69,8 +69,8 @@ error_metrics <- function(fcst,
 
   # Extract point forecasts
   fcst <- fcst %>%
-    mutate(!!sym(value) := map_dbl(fcst[[value]], `[[`, "mu")) %>%
-    as_tsibble()
+    as_tsibble() %>%
+    mutate(!!sym(value) := map_dbl(fcst[[value]], `[[`, "mu"))
 
   # Join test and forecast data
   data <- left_join(

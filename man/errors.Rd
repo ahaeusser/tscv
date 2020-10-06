@@ -2,7 +2,7 @@
 % Please edit documentation in R/errors.R
 \name{errors}
 \alias{errors}
-\title{Calculate forecast errors.}
+\title{Calculate forecast errors}
 \usage{
 errors(fcst, data)
 }
