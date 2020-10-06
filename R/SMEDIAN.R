@@ -111,17 +111,15 @@ forecast.SMEDIAN <- function(object,
   # Extract model
   smedian <- object$smedian
   last_period <- object$last_period
-  sigma <- object$sigma
 
   n_ahead <- nrow(new_data)
   index <- rep(1:length(smedian), times = ceiling((n_ahead + last_period) / length(smedian)))[(last_period + 1):(last_period + n_ahead)]
-  fcst <- smedian[index]
+  point <- as.numeric(smedian[index])
+  sd <- as.numeric(rep(object$sigma, times = n_ahead))
 
   # Return forecasts
-  construct_fc(
-    point = fcst,
-    sd = rep(sigma, times = n_ahead),
-    dist = dist_normal(mean = fcst, sd = rep(sigma, times = n_ahead)))
+  dist_normal(point, sd)
+
 }
 
 

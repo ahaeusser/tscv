@@ -93,14 +93,11 @@ forecast.ELM <- function(object,
   fcst <- forecast(object$model, h = nrow(new_data))
 
   # Extract point forecast and simulations
-  mean <- fcst$mean
-  sigma <- rowSds(fcst$all.mean)
+  point <- as.numeric(fcst$mean)
+  sd <- as.numeric(rowSds(fcst$all.mean))
 
   # Return forecasts
-  construct_fc(
-    point = mean,
-    sd = sigma,
-    dist = dist_normal(mean = mean, sd = sigma))
+  dist_normal(point, sd)
 }
 
 

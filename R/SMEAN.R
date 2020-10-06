@@ -111,17 +111,14 @@ forecast.SMEAN <- function(object,
   # Extract model
   smean <- object$smean
   last_period <- object$last_period
-  sigma <- object$sigma
 
   n_ahead <- nrow(new_data)
   index <- rep(1:length(smean), times = ceiling((n_ahead + last_period) / length(smean)))[(last_period + 1):(last_period + n_ahead)]
-  fcst <- smean[index]
+  point <- as.numeric(smean[index])
+  sd <- as.numeric(rep(object$sigma, times = n_ahead))
 
   # Return forecasts
-  construct_fc(
-    point = fcst,
-    sd = rep(sigma, times = n_ahead),
-    dist = dist_normal(mean = fcst, sd = rep(sigma, times = n_ahead)))
+  dist_normal(point, sd)
 }
 
 

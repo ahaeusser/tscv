@@ -95,17 +95,11 @@ forecast.TBATS <- function(object,
   fcst <- forecast(object$model, h = nrow(new_data))
 
   # Extract point forecast and simulations
-  mean <- as.numeric(fcst$mean)
-  sigma <- as.numeric(object$sigma)
+  point <- as.numeric(fcst$mean)
+  sd <- as.numeric(object$sigma)
 
   # Return forecasts
-  construct_fc(
-    point = mean,
-    sd = sigma,
-    dist = dist_normal(
-      mean = mean,
-      sd =  rep(sigma, times = nrow(new_data)))
-    )
+  dist_normal(point, sd)
 }
 
 
