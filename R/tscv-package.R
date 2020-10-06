@@ -8,6 +8,7 @@
 #' @importFrom future plan
 #' @importFrom magrittr "%>%"
 #' @importFrom feasts ACF PACF STL
+#' @importFrom distributional dist_normal
 #' @importFrom nnfor elm mlp
 #' @importFrom forecast msts dshw tbats thetaf forecast
 #' @importFrom matrixStats rowSds
