@@ -1,6 +1,6 @@
 Package: tscv
 Title: Functions and utilities for tidy time series forecasting and time series cross-validation
-Version: 0.1.0
+Version: 0.1.1
 Description: The package tscv provides a collection of functions and tools for time series 
    analysis and forecasting as well as time series cross-validation. This is mainly a set 
    of wrapper and helper functions as well as some extensions for the packages tsibble, 
@@ -35,7 +35,8 @@ Imports:
     stats,
     matrixStats,
     qqplotr,
-    scales
+    scales,
+    distributional
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1
