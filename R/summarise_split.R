@@ -1,7 +1,7 @@
 
 #' @title Summary table of the splitting into training and testing.
 #'
-#'  @description This functions provides a summary table of the splitting into the
+#' @description This functions provides a summary table of the splitting into the
 #'     training and testing data. This means, the function is applied to the result
 #'     of a call to \code{split_data(...)}.
 #'
@@ -16,7 +16,7 @@
 #' @param data A valid tsibble in long format with one measurment variable and multiple keys.
 #'    One of the keys must be \code{slice}.
 #'
-#' @return split_tbl A tibble containing the summarised values.
+#' @return split_tbl A tibble containing the summarized values.
 #' @export
 
 summarise_split <- function(data) {

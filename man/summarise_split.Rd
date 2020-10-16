@@ -2,19 +2,7 @@
 % Please edit documentation in R/summarise_split.R
 \name{summarise_split}
 \alias{summarise_split}
-\title{Summary table of the splitting into training and testing.
-
- @description This functions provides a summary table of the splitting into the
-    training and testing data. This means, the function is applied to the result
-    of a call to \code{split_data(...)}.
-
-    \itemize{
-      \item{\code{slice}: Time slice}
-      \item{\code{dates_train}: Date (or date-time) range of the training data}
-      \item{\code{dates_test}: Date (or date-time) range of the testing data}
-      \item{\code{index_train}: Index range of the training data}
-      \item{\code{index_test}: Index range of the testing data}
-     }}
+\title{Summary table of the splitting into training and testing.}
 \usage{
 summarise_split(data)
 }
@@ -23,12 +11,10 @@ summarise_split(data)
 One of the keys must be \code{slice}.}
 }
 \value{
-split_tbl A tibble containing the summarised values.
+split_tbl A tibble containing the summarized values.
 }
 \description{
-Summary table of the splitting into training and testing.
-
- @description This functions provides a summary table of the splitting into the
+This functions provides a summary table of the splitting into the
     training and testing data. This means, the function is applied to the result
     of a call to \code{split_data(...)}.
 
