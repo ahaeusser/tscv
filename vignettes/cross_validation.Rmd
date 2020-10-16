@@ -41,18 +41,23 @@ Sys.setlocale("LC_TIME", "C")
 
 ## Data preparation
 
-The dataset `elec_price` is a hourly `tsibble` with day-ahead electricity spot prices in [EUR/MWh] from the ENTSO-E Transparency Platform. The dataset contains time series data from 2019-01-01 to 2019-12-31 for four european bidding zones (BZN): 
+The dataset `elec_price` is a hourly `tsibble` with day-ahead electricity spot prices in [EUR/MWh] from the ENTSO-E Transparency Platform. The dataset contains time series data from 2019-01-01 to 2019-12-31 for 8 european bidding zones (BZN): 
 
-* DE-LU: Germany and Luxembourg
+* DE: Germany (including Luxembourg)
+* DK: Denmark
+* ES: Spain
+* FI: Finland
 * FR: France
+* NL: Netherlands
 * NO1: Norway 1 (Oslo)
 * SE1: Sweden 1 (Lulea)
 
-You can use the function `clean_data()` to prepare the dataset for further usage. The function checks whether the input data are a valid tsibble or not (regular spaced in time and ordered). Furthermore, implicit missing values are turned into explicit missing values (existing missing values are left untouched). If the data are provided in wide format, they are gathered into long format. You can use the function `plot_line()` to visualize the four time series.
+In this vignette, we will use only four time series to demonstrate the functionality of the package (the data set is filtered to the bidding zones Germany, France, Norway 1 and Sweden 1). You can use the function `clean_data()` to prepare the dataset for further usage. The function checks whether the input data are a valid tsibble or not (regular spaced in time and ordered). Furthermore, implicit missing values are turned into explicit missing values (existing missing values are left untouched). If the data are provided in wide format, they are gathered into long format. You can use the function `plot_line()` to visualize the four time series.
 
 ```{r clean_data}
 # Prepare dataset
 data <- elec_price %>%
+  filter(BZN %in% c("DE", "FR", "NO1", "SE1")) %>%
   clean_data()
 
 data
@@ -62,6 +67,7 @@ data %>%
     x = Time,
     y = Value,
     color = BZN,
+    facet = BZN,
     title = "Day-ahead Electricity Spot Price",
     subtitle = "2019-03-01 to 2019-03-15",
     xlab = "Time",
@@ -162,6 +168,9 @@ metrics_horizon <- error_metrics(
   period = 168,
   by = "horizon")
 
+metrics_horizon <- metrics_horizon %>%
+  filter(metric %in% c("MAE", "MASE"))
+
 metrics_horizon
 
 # Visualize results
@@ -182,6 +191,9 @@ metrics_split <- error_metrics(
   data = data,
   period = 168,
   by = "split")
+
+metrics_split <- metrics_split %>%
+  filter(metric %in% c("MAE", "MASE"))
 
 metrics_split
 
