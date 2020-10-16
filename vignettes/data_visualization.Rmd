@@ -13,8 +13,8 @@ vignette: >
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  dev = "svg",
-  fig.path = "figures/viz-",
+  dev = "png",
+  # fig.path = "figures/viz-",
   fig.height = 5,
   fig.width = 7
 )
