@@ -43,41 +43,49 @@ Sys.setlocale("LC_TIME", "C")
 The dataset `elec_price` is a hourly `tsibble` with day-ahead
 electricity spot prices in \[EUR/MWh\] from the ENTSO-E Transparency
 Platform. The dataset contains time series data from 2019-01-01 to
-2019-12-31 for four european bidding zones (BZN):
+2019-12-31 for 8 european bidding zones (BZN):
 
-  - DE-LU: Germany and Luxembourg
+  - DE: Germany (including Luxembourg)
+  - DK: Denmark
+  - ES: Spain
+  - FI: Finland
   - FR: France
+  - NL: Netherlands
   - NO1: Norway 1 (Oslo)
   - SE1: Sweden 1 (Lulea)
 
-You can use the function `clean_data()` to prepare the dataset for
-further usage. The function checks whether the input data are a valid
-tsibble or not (regular spaced in time and ordered). Furthermore,
-implicit missing values are turned into explicit missing values
-(existing missing values are left untouched). If the data are provided
-in wide format, they are gathered into long format. You can use the
-function `plot_line()` to visualize the four time series.
+In this vignette, we will use only four time series to demonstrate the
+functionality of the package (the data set is filtered to the bidding
+zones Germany, France, Norway 1 and Sweden 1). You can use the function
+`clean_data()` to prepare the dataset for further usage. The function
+checks whether the input data are a valid tsibble or not (regular spaced
+in time and ordered). Furthermore, implicit missing values are turned
+into explicit missing values (existing missing values are left
+untouched). If the data are provided in wide format, they are gathered
+into long format. You can use the function `plot_line()` to visualize
+the four time series.
 
 ``` r
 # Prepare dataset
 data <- elec_price %>%
+  filter(BZN %in% c("DE", "FR", "NO1", "SE1")) %>%
   clean_data()
 
 data
-#> # A tsibble: 35,040 x 4 [1h] <UTC>
-#> # Key:       Series, BZN [4]
-#>    Time                Series          BZN    Value
-#>    <dttm>              <chr>           <chr>  <dbl>
-#>  1 2019-01-01 00:00:00 Price [EUR/MWh] DE-LU  10.1 
-#>  2 2019-01-01 01:00:00 Price [EUR/MWh] DE-LU  -4.08
-#>  3 2019-01-01 02:00:00 Price [EUR/MWh] DE-LU  -9.91
-#>  4 2019-01-01 03:00:00 Price [EUR/MWh] DE-LU  -7.41
-#>  5 2019-01-01 04:00:00 Price [EUR/MWh] DE-LU -12.6 
-#>  6 2019-01-01 05:00:00 Price [EUR/MWh] DE-LU -17.2 
-#>  7 2019-01-01 06:00:00 Price [EUR/MWh] DE-LU -15.1 
-#>  8 2019-01-01 07:00:00 Price [EUR/MWh] DE-LU  -4.93
-#>  9 2019-01-01 08:00:00 Price [EUR/MWh] DE-LU  -6.33
-#> 10 2019-01-01 09:00:00 Price [EUR/MWh] DE-LU  -4.93
+#> # A tsibble: 35,040 x 5 [1h] <UTC>
+#> # Key:       Series, Unit, BZN [4]
+#>    Time                Series           Unit      BZN    Value
+#>    <dttm>              <chr>            <chr>     <chr>  <dbl>
+#>  1 2019-01-01 00:00:00 Day-ahead Prices [EUR/MWh] DE     10.1 
+#>  2 2019-01-01 01:00:00 Day-ahead Prices [EUR/MWh] DE     -4.08
+#>  3 2019-01-01 02:00:00 Day-ahead Prices [EUR/MWh] DE     -9.91
+#>  4 2019-01-01 03:00:00 Day-ahead Prices [EUR/MWh] DE     -7.41
+#>  5 2019-01-01 04:00:00 Day-ahead Prices [EUR/MWh] DE    -12.6 
+#>  6 2019-01-01 05:00:00 Day-ahead Prices [EUR/MWh] DE    -17.2 
+#>  7 2019-01-01 06:00:00 Day-ahead Prices [EUR/MWh] DE    -15.1 
+#>  8 2019-01-01 07:00:00 Day-ahead Prices [EUR/MWh] DE     -4.93
+#>  9 2019-01-01 08:00:00 Day-ahead Prices [EUR/MWh] DE     -6.33
+#> 10 2019-01-01 09:00:00 Day-ahead Prices [EUR/MWh] DE     -4.93
 #> # ... with 35,030 more rows
 
 data %>%
@@ -85,6 +93,7 @@ data %>%
     x = Time,
     y = Value,
     color = BZN,
+    facet = BZN,
     title = "Day-ahead Electricity Spot Price",
     subtitle = "2019-03-01 to 2019-03-15",
     xlab = "Time",
@@ -122,20 +131,20 @@ data <- data %>%
     n_lag = n_lag)
 
 data
-#> # A tsibble: 2,579,136 x 8 [1h] <UTC>
-#> # Key:       Series, BZN, split [1,064]
-#>    Time                Series          BZN    Value split    id sample horizon
-#>    <dttm>              <chr>           <chr>  <dbl> <int> <int> <chr>    <int>
-#>  1 2019-01-01 00:00:00 Price [EUR/MWh] DE-LU  10.1      1     1 train       NA
-#>  2 2019-01-01 01:00:00 Price [EUR/MWh] DE-LU  -4.08     1     2 train       NA
-#>  3 2019-01-01 02:00:00 Price [EUR/MWh] DE-LU  -9.91     1     3 train       NA
-#>  4 2019-01-01 03:00:00 Price [EUR/MWh] DE-LU  -7.41     1     4 train       NA
-#>  5 2019-01-01 04:00:00 Price [EUR/MWh] DE-LU -12.6      1     5 train       NA
-#>  6 2019-01-01 05:00:00 Price [EUR/MWh] DE-LU -17.2      1     6 train       NA
-#>  7 2019-01-01 06:00:00 Price [EUR/MWh] DE-LU -15.1      1     7 train       NA
-#>  8 2019-01-01 07:00:00 Price [EUR/MWh] DE-LU  -4.93     1     8 train       NA
-#>  9 2019-01-01 08:00:00 Price [EUR/MWh] DE-LU  -6.33     1     9 train       NA
-#> 10 2019-01-01 09:00:00 Price [EUR/MWh] DE-LU  -4.93     1    10 train       NA
+#> # A tsibble: 2,579,136 x 9 [1h] <UTC>
+#> # Key:       Series, Unit, BZN, split [1,064]
+#>    Time                Series     Unit   BZN    Value split    id sample horizon
+#>    <dttm>              <chr>      <chr>  <chr>  <dbl> <int> <int> <chr>    <int>
+#>  1 2019-01-01 00:00:00 Day-ahead~ [EUR/~ DE     10.1      1     1 train       NA
+#>  2 2019-01-01 01:00:00 Day-ahead~ [EUR/~ DE     -4.08     1     2 train       NA
+#>  3 2019-01-01 02:00:00 Day-ahead~ [EUR/~ DE     -9.91     1     3 train       NA
+#>  4 2019-01-01 03:00:00 Day-ahead~ [EUR/~ DE     -7.41     1     4 train       NA
+#>  5 2019-01-01 04:00:00 Day-ahead~ [EUR/~ DE    -12.6      1     5 train       NA
+#>  6 2019-01-01 05:00:00 Day-ahead~ [EUR/~ DE    -17.2      1     6 train       NA
+#>  7 2019-01-01 06:00:00 Day-ahead~ [EUR/~ DE    -15.1      1     7 train       NA
+#>  8 2019-01-01 07:00:00 Day-ahead~ [EUR/~ DE     -4.93     1     8 train       NA
+#>  9 2019-01-01 08:00:00 Day-ahead~ [EUR/~ DE     -6.33     1     9 train       NA
+#> 10 2019-01-01 09:00:00 Day-ahead~ [EUR/~ DE     -4.93     1    10 train       NA
 #> # ... with 2,579,126 more rows
 ```
 
@@ -189,20 +198,20 @@ models <- data %>%
     "STL-Naive" = decomposition_model(STL(Value), NAIVE(season_adjust)))
 
 models
-#> # A mable: 400 x 7
-#> # Key:     Series, BZN, split [400]
-#>    Series       BZN   split   sNaive   sMean   sMedian               `STL-Naive`
-#>    <chr>        <chr> <int>  <model> <model>   <model>                   <model>
-#>  1 Price [EUR/~ DE-LU     1 <SNAIVE> <SMEAN> <SMEDIAN> <STL decomposition model>
-#>  2 Price [EUR/~ DE-LU     2 <SNAIVE> <SMEAN> <SMEDIAN> <STL decomposition model>
-#>  3 Price [EUR/~ DE-LU     3 <SNAIVE> <SMEAN> <SMEDIAN> <STL decomposition model>
-#>  4 Price [EUR/~ DE-LU     4 <SNAIVE> <SMEAN> <SMEDIAN> <STL decomposition model>
-#>  5 Price [EUR/~ DE-LU     5 <SNAIVE> <SMEAN> <SMEDIAN> <STL decomposition model>
-#>  6 Price [EUR/~ DE-LU     6 <SNAIVE> <SMEAN> <SMEDIAN> <STL decomposition model>
-#>  7 Price [EUR/~ DE-LU     7 <SNAIVE> <SMEAN> <SMEDIAN> <STL decomposition model>
-#>  8 Price [EUR/~ DE-LU     8 <SNAIVE> <SMEAN> <SMEDIAN> <STL decomposition model>
-#>  9 Price [EUR/~ DE-LU     9 <SNAIVE> <SMEAN> <SMEDIAN> <STL decomposition model>
-#> 10 Price [EUR/~ DE-LU    10 <SNAIVE> <SMEAN> <SMEDIAN> <STL decomposition model>
+#> # A mable: 400 x 8
+#> # Key:     Series, Unit, BZN, split [400]
+#>    Series Unit  BZN   split   sNaive   sMean   sMedian               `STL-Naive`
+#>    <chr>  <chr> <chr> <int>  <model> <model>   <model>                   <model>
+#>  1 Day-a~ [EUR~ DE        1 <SNAIVE> <SMEAN> <SMEDIAN> <STL decomposition model>
+#>  2 Day-a~ [EUR~ DE        2 <SNAIVE> <SMEAN> <SMEDIAN> <STL decomposition model>
+#>  3 Day-a~ [EUR~ DE        3 <SNAIVE> <SMEAN> <SMEDIAN> <STL decomposition model>
+#>  4 Day-a~ [EUR~ DE        4 <SNAIVE> <SMEAN> <SMEDIAN> <STL decomposition model>
+#>  5 Day-a~ [EUR~ DE        5 <SNAIVE> <SMEAN> <SMEDIAN> <STL decomposition model>
+#>  6 Day-a~ [EUR~ DE        6 <SNAIVE> <SMEAN> <SMEDIAN> <STL decomposition model>
+#>  7 Day-a~ [EUR~ DE        7 <SNAIVE> <SMEAN> <SMEDIAN> <STL decomposition model>
+#>  8 Day-a~ [EUR~ DE        8 <SNAIVE> <SMEAN> <SMEDIAN> <STL decomposition model>
+#>  9 Day-a~ [EUR~ DE        9 <SNAIVE> <SMEAN> <SMEDIAN> <STL decomposition model>
+#> 10 Day-a~ [EUR~ DE       10 <SNAIVE> <SMEAN> <SMEDIAN> <STL decomposition model>
 #> # ... with 390 more rows
 
 # Forecasting
@@ -210,20 +219,20 @@ fcst <- models %>%
   forecast(h = n_ahead)
 
 fcst
-#> # A fable: 38,400 x 7 [1h] <UTC>
-#> # Key:     Series, BZN, split, .model [1,600]
-#>    Series          BZN   split .model Time                     Value .mean
-#>    <chr>           <chr> <int> <chr>  <dttm>                  <dist> <dbl>
-#>  1 Price [EUR/MWh] DE-LU     1 sNaive 2019-04-11 00:00:00 N(33, 367)  33  
-#>  2 Price [EUR/MWh] DE-LU     1 sNaive 2019-04-11 01:00:00 N(33, 367)  32.6
-#>  3 Price [EUR/MWh] DE-LU     1 sNaive 2019-04-11 02:00:00 N(34, 367)  34.1
-#>  4 Price [EUR/MWh] DE-LU     1 sNaive 2019-04-11 03:00:00 N(37, 367)  36.9
-#>  5 Price [EUR/MWh] DE-LU     1 sNaive 2019-04-11 04:00:00 N(45, 367)  44.7
-#>  6 Price [EUR/MWh] DE-LU     1 sNaive 2019-04-11 05:00:00 N(54, 367)  53.6
-#>  7 Price [EUR/MWh] DE-LU     1 sNaive 2019-04-11 06:00:00 N(60, 367)  59.9
-#>  8 Price [EUR/MWh] DE-LU     1 sNaive 2019-04-11 07:00:00 N(47, 367)  46.9
-#>  9 Price [EUR/MWh] DE-LU     1 sNaive 2019-04-11 08:00:00 N(48, 367)  48  
-#> 10 Price [EUR/MWh] DE-LU     1 sNaive 2019-04-11 09:00:00 N(47, 367)  47  
+#> # A fable: 38,400 x 8 [1h] <UTC>
+#> # Key:     Series, Unit, BZN, split, .model [1,600]
+#>    Series        Unit    BZN   split .model Time                     Value .mean
+#>    <chr>         <chr>   <chr> <int> <chr>  <dttm>                  <dist> <dbl>
+#>  1 Day-ahead Pr~ [EUR/M~ DE        1 sNaive 2019-04-11 00:00:00 N(33, 367)  33  
+#>  2 Day-ahead Pr~ [EUR/M~ DE        1 sNaive 2019-04-11 01:00:00 N(33, 367)  32.6
+#>  3 Day-ahead Pr~ [EUR/M~ DE        1 sNaive 2019-04-11 02:00:00 N(34, 367)  34.1
+#>  4 Day-ahead Pr~ [EUR/M~ DE        1 sNaive 2019-04-11 03:00:00 N(37, 367)  36.9
+#>  5 Day-ahead Pr~ [EUR/M~ DE        1 sNaive 2019-04-11 04:00:00 N(45, 367)  44.7
+#>  6 Day-ahead Pr~ [EUR/M~ DE        1 sNaive 2019-04-11 05:00:00 N(54, 367)  53.6
+#>  7 Day-ahead Pr~ [EUR/M~ DE        1 sNaive 2019-04-11 06:00:00 N(60, 367)  59.9
+#>  8 Day-ahead Pr~ [EUR/M~ DE        1 sNaive 2019-04-11 07:00:00 N(47, 367)  46.9
+#>  9 Day-ahead Pr~ [EUR/M~ DE        1 sNaive 2019-04-11 08:00:00 N(48, 367)  48  
+#> 10 Day-ahead Pr~ [EUR/M~ DE        1 sNaive 2019-04-11 09:00:00 N(47, 367)  47  
 #> # ... with 38,390 more rows
 
 plot_forecast(
@@ -265,21 +274,24 @@ metrics_horizon <- error_metrics(
   period = 168,
   by = "horizon")
 
+metrics_horizon <- metrics_horizon %>%
+  filter(metric %in% c("MAE", "MASE"))
+
 metrics_horizon
-#> # A tibble: 3,072 x 6
-#>    Series          BZN   .model horizon metric value
-#>    <chr>           <chr> <chr>    <int> <chr>  <dbl>
-#>  1 Price [EUR/MWh] DE-LU sMean        1 MAE     5.57
-#>  2 Price [EUR/MWh] DE-LU sMean        2 MAE     5.80
-#>  3 Price [EUR/MWh] DE-LU sMean        3 MAE     5.94
-#>  4 Price [EUR/MWh] DE-LU sMean        4 MAE     5.84
-#>  5 Price [EUR/MWh] DE-LU sMean        5 MAE     7.36
-#>  6 Price [EUR/MWh] DE-LU sMean        6 MAE     7.69
-#>  7 Price [EUR/MWh] DE-LU sMean        7 MAE     7.42
-#>  8 Price [EUR/MWh] DE-LU sMean        8 MAE     7.45
-#>  9 Price [EUR/MWh] DE-LU sMean        9 MAE     7.89
-#> 10 Price [EUR/MWh] DE-LU sMean       10 MAE     9.13
-#> # ... with 3,062 more rows
+#> # A tibble: 768 x 8
+#>    Series           Unit      BZN   .model dimension     n metric value
+#>    <chr>            <chr>     <chr> <chr>  <chr>     <int> <chr>  <dbl>
+#>  1 Day-ahead Prices [EUR/MWh] DE    sMean  horizon       1 MAE     5.57
+#>  2 Day-ahead Prices [EUR/MWh] DE    sMean  horizon       2 MAE     5.80
+#>  3 Day-ahead Prices [EUR/MWh] DE    sMean  horizon       3 MAE     5.94
+#>  4 Day-ahead Prices [EUR/MWh] DE    sMean  horizon       4 MAE     5.84
+#>  5 Day-ahead Prices [EUR/MWh] DE    sMean  horizon       5 MAE     7.36
+#>  6 Day-ahead Prices [EUR/MWh] DE    sMean  horizon       6 MAE     7.69
+#>  7 Day-ahead Prices [EUR/MWh] DE    sMean  horizon       7 MAE     7.42
+#>  8 Day-ahead Prices [EUR/MWh] DE    sMean  horizon       8 MAE     7.45
+#>  9 Day-ahead Prices [EUR/MWh] DE    sMean  horizon       9 MAE     7.89
+#> 10 Day-ahead Prices [EUR/MWh] DE    sMean  horizon      10 MAE     9.13
+#> # ... with 758 more rows
 
 # Visualize results
 metrics_horizon %>%
@@ -302,21 +314,24 @@ metrics_split <- error_metrics(
   period = 168,
   by = "split")
 
+metrics_split <- metrics_split %>%
+  filter(metric %in% c("MAE", "MASE"))
+
 metrics_split
-#> # A tibble: 12,800 x 6
-#>    Series          BZN   .model split metric value
-#>    <chr>           <chr> <chr>  <int> <chr>  <dbl>
-#>  1 Price [EUR/MWh] DE-LU sMean      1 MAE     5.40
-#>  2 Price [EUR/MWh] DE-LU sMean      2 MAE     4.75
-#>  3 Price [EUR/MWh] DE-LU sMean      3 MAE     5.44
-#>  4 Price [EUR/MWh] DE-LU sMean      4 MAE     5.99
-#>  5 Price [EUR/MWh] DE-LU sMean      5 MAE     7.04
-#>  6 Price [EUR/MWh] DE-LU sMean      6 MAE     5.17
-#>  7 Price [EUR/MWh] DE-LU sMean      7 MAE     5.19
-#>  8 Price [EUR/MWh] DE-LU sMean      8 MAE     8.01
-#>  9 Price [EUR/MWh] DE-LU sMean      9 MAE    11.7 
-#> 10 Price [EUR/MWh] DE-LU sMean     10 MAE     5.44
-#> # ... with 12,790 more rows
+#> # A tibble: 3,200 x 8
+#>    Series           Unit      BZN   .model dimension     n metric value
+#>    <chr>            <chr>     <chr> <chr>  <chr>     <int> <chr>  <dbl>
+#>  1 Day-ahead Prices [EUR/MWh] DE    sMean  split         1 MAE     5.40
+#>  2 Day-ahead Prices [EUR/MWh] DE    sMean  split         2 MAE     4.75
+#>  3 Day-ahead Prices [EUR/MWh] DE    sMean  split         3 MAE     5.44
+#>  4 Day-ahead Prices [EUR/MWh] DE    sMean  split         4 MAE     5.99
+#>  5 Day-ahead Prices [EUR/MWh] DE    sMean  split         5 MAE     7.04
+#>  6 Day-ahead Prices [EUR/MWh] DE    sMean  split         6 MAE     5.17
+#>  7 Day-ahead Prices [EUR/MWh] DE    sMean  split         7 MAE     5.19
+#>  8 Day-ahead Prices [EUR/MWh] DE    sMean  split         8 MAE     8.01
+#>  9 Day-ahead Prices [EUR/MWh] DE    sMean  split         9 MAE    11.7 
+#> 10 Day-ahead Prices [EUR/MWh] DE    sMean  split        10 MAE     5.44
+#> # ... with 3,190 more rows
 
 # Visualize results
 metrics_split %>%
