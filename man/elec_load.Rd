@@ -5,10 +5,11 @@
 \alias{elec_load}
 \title{Hourly electricity load}
 \format{
-A time series object of class \code{tsibble} with 35.040 rows and 4 columns:
+A time series object of class \code{tsibble} with 122.640 rows and 5 columns:
    \itemize{
       \item{\code{Time}: Date and time (index variable)}
       \item{\code{Series}: Time series name (key variable)}
+      \item{\code{Unit}: Measured unit (key variable)}
       \item{\code{BZN}: Bidding zone (key variable)}
       \item{\code{Value}: Measurement variable}
       }
@@ -20,10 +21,11 @@ A time series object of class \code{tsibble} with 35.040 rows and 4 columns:
 data(elec_load)
 }
 \description{
-Hourly \code{tsibble} with electricity loads from
-   the ENTSO-E Transparency Platform. The dataset contains time series data
-   from 2019-01-01 00:00:00 to 2019-12-31 23:00:00 for four bidding zones
-   within europe (DE, FR, SE1, NO1).
+Hourly \code{tsibble} with electricity loads and load forecasts
+   from the ENTSO-E Transparency Platform. The dataset contains time series data
+   from 2019-01-01 00:00:00 to 2019-12-31 23:00:00 for 8 bidding zones within
+   europe (DE, DK1, ES, FI, FR, NL, NO1, SE1). The data are aggregated in time
+   from a 15-minutes interval to an hourly basis.
 }
 \examples{
 data(elec_load)
