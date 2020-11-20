@@ -142,3 +142,61 @@
 #' @examples
 #' data(M4_monthly_meta)
 "M4_monthly_meta"
+
+
+
+
+#' @title Quarterly time series data from the M4 Competition
+#'
+#' @description The dataset contains 30 selected time series on a quarterly basis
+#'    from the M4 Competition.
+#'
+#' @docType data
+#'
+#' @usage data(M4_quarterly_data)
+#'
+#' @format A time series object of class \code{tsibble} with 7881 rows and 4 columns:
+#'    \itemize{
+#'       \item{\code{date_time}: Date and time (index variable)}
+#'       \item{\code{series_id}: Time series ID from M4 forecasting competition (key variable)}
+#'       \item{\code{category}: Category from M4 forecasting competition (key variable)}
+#'       \item{\code{value}: Time series value (measurement variable)}
+#'       }
+#'
+#' @keywords datasets
+#'
+#' @source \href{https://github.com/Mcompetitions/M4-methods/tree/master/Dataset}{M4 Competition}
+#'
+#' @examples
+#' data(M4_quarterly_data)
+"M4_quarterly_data"
+
+
+#' @title Meta data for \code{M4_quarterly_data}
+#'
+#' @description The dataset contains meta data for the corresponding
+#'    object \code{M4_quarterly_data}.
+#'
+#' @docType data
+#'
+#' @usage data(M4_quarterly_meta)
+#'
+#' @format A \code{tibble} with 30 rows and 8 columns:
+#'    \itemize{
+#'       \item{\code{series_id}: Time series ID from M4 forecasting competition (key variable)}
+#'       \item{\code{category}: Category from M4 forecasting competition (key variable)}
+#'       \item{\code{freq}: Frequency as character}
+#'       \item{\code{n_freq}: Frequency as integer}
+#'       \item{\code{n_ahead}: Forecast horizon as integer}
+#'       \item{\code{n_obs}: Total number of observations}
+#'       \item{\code{start}: Start date}
+#'       \item{\code{end}: End date}
+#'       }
+#'
+#' @keywords datasets
+#'
+#' @source \href{https://github.com/Mcompetitions/M4-methods/tree/master/Dataset}{M4 Competition}
+#'
+#' @examples
+#' data(M4_quarterly_meta)
+"M4_quarterly_meta"
