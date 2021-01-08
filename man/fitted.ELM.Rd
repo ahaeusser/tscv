@@ -2,18 +2,18 @@
 % Please edit documentation in R/ELM.R
 \name{fitted.ELM}
 \alias{fitted.ELM}
-\title{Extract fitted values from a ELM}
+\title{Extract fitted values from a trained ELM model}
 \usage{
 \method{fitted}{ELM}(object, ...)
 }
 \arguments{
-\item{object}{The time series model used to produce the forecast.}
+\item{object}{An object of class \code{ELM}.}
 
-\item{...}{Further arguments.}
+\item{...}{Currently not in use.}
 }
 \value{
-Fitted values as \code{tsibble}.
+Fitted values as tsibble.
 }
 \description{
-Extract fitted values from a ELM.
+Extract fitted values from a trained ELM model.
 }

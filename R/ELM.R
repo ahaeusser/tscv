@@ -1,9 +1,9 @@
 
-#' @title Train ELM neural network
+#' @title Extreme Learning Machine (ELM)
 #'
-#' @description Train an Extreme Learning Machine (ELM).
+#' @description Train an Extreme Learning Machine (ELM) model.
 #'
-#' @param .data Input data as \code{tsibble}.
+#' @param .data Input data as tsibble.
 #' @param specials Specials as list defined in \code{specials_elm}.
 #' @param ... Further arguments passed to \code{nnfor::elm()}.
 #'
@@ -49,10 +49,10 @@ train_elm <- function(.data,
 specials_elm <- new_specials()
 
 
-#' @title Automatic training of ELMs
+#' @title Extreme Learning Machine (ELM)
 #'
-#' @description Automatic training of Extreme Learning Machines (ELMs). This function
-#'    is a wrapper for \code{nnfor::elm()}.
+#' @description Automatic train an Extreme Learning Machines (ELMs) model.
+#'   This function is a wrapper for \code{nnfor::elm()}.
 #'
 #' @param formula Model specification (see "Specials" section, currently not in use...)
 #' @param ... Further arguments passed to \code{nnfor::elm()}.
@@ -77,12 +77,12 @@ ELM <- function(formula, ...){
 #'
 #' @description Forecast a trained ELM model.
 #'
-#' @param object The trained ELM model used to produce the forecasts.
-#' @param new_data Forecast horizon.
+#' @param object An object of class \code{ELM}.
+#' @param new_data Forecast horizon (n-step ahead forecast)
 #' @param specials Specials are currently not in use.
-#' @param ... Additional arguments for forecast model method.
+#' @param ... Additional arguments for forecast method.
 #'
-#' @return An object of class "fable".
+#' @return An object of class \code{fable}.
 #' @export
 
 forecast.ELM <- function(object,
@@ -101,14 +101,14 @@ forecast.ELM <- function(object,
 }
 
 
-#' @title Extract fitted values from a ELM
+#' @title Extract fitted values from a trained ELM model
 #'
-#' @description Extract fitted values from a ELM.
+#' @description Extract fitted values from a trained ELM model.
 #'
-#' @param object The time series model used to produce the forecast.
-#' @param ... Further arguments.
+#' @param object An object of class \code{ELM}.
+#' @param ... Currently not in use.
 #'
-#' @return Fitted values as \code{tsibble}.
+#' @return Fitted values as tsibble.
 #' @export
 
 fitted.ELM <- function(object, ...){
@@ -116,14 +116,14 @@ fitted.ELM <- function(object, ...){
 }
 
 
-#' @title Extract residuals from a ELM
+#' @title Extract residuals from a trained ELM model
 #'
-#' @description Extract residuals from a ELM.
+#' @description Extract residuals from a trained ELM model.
 #'
-#' @param object The time series model used to produce the forecast.
-#' @param ... Further arguments.
+#' @param object An object of class \code{ELM}.
+#' @param ... Currently not in use.
 #'
-#' @return Residuals as \code{tsibble}.
+#' @return Fitted values as tsibble.
 #' @export
 
 residuals.ELM <- function(object, ...){
@@ -131,15 +131,15 @@ residuals.ELM <- function(object, ...){
 }
 
 
-#' @title Provide a succinct summary of the ELM
+#' @title Provide a succinct summary of a trained ELM model
 #'
-#' @description Provide a succinct summary of the ELM.
+#' @description Provide a succinct summary of a trained ELM model.
 #'
-#' @param x The ELM to summarize.
+#' @param object An object of class \code{ELM}.
 #'
 #' @return Model summary as character value.
 #' @export
 
-model_sum.ELM <- function(x){
+model_sum.ELM <- function(object){
   "ELM"
 }

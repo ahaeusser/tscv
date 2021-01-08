@@ -2,16 +2,16 @@
 % Please edit documentation in R/ELM.R
 \name{model_sum.ELM}
 \alias{model_sum.ELM}
-\title{Provide a succinct summary of the ELM}
+\title{Provide a succinct summary of a trained ELM model}
 \usage{
-\method{model_sum}{ELM}(x)
+\method{model_sum}{ELM}(object)
 }
 \arguments{
-\item{x}{The ELM to summarize.}
+\item{object}{An object of class \code{ELM}.}
 }
 \value{
 Model summary as character value.
 }
 \description{
-Provide a succinct summary of the ELM.
+Provide a succinct summary of a trained ELM model.
 }

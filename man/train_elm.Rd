@@ -2,12 +2,12 @@
 % Please edit documentation in R/ELM.R
 \name{train_elm}
 \alias{train_elm}
-\title{Train ELM neural network}
+\title{Extreme Learning Machine (ELM)}
 \usage{
 train_elm(.data, specials, ...)
 }
 \arguments{
-\item{.data}{Input data as \code{tsibble}.}
+\item{.data}{Input data as tsibble.}
 
 \item{specials}{Specials as list defined in \code{specials_elm}.}
 
@@ -17,5 +17,5 @@ train_elm(.data, specials, ...)
 An object of class \code{ELM}.
 }
 \description{
-Train an Extreme Learning Machine (ELM).
+Train an Extreme Learning Machine (ELM) model.
 }

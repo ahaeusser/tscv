@@ -2,18 +2,18 @@
 % Please edit documentation in R/ELM.R
 \name{residuals.ELM}
 \alias{residuals.ELM}
-\title{Extract residuals from a ELM}
+\title{Extract residuals from a trained ELM model}
 \usage{
 \method{residuals}{ELM}(object, ...)
 }
 \arguments{
-\item{object}{The time series model used to produce the forecast.}
+\item{object}{An object of class \code{ELM}.}
 
-\item{...}{Further arguments.}
+\item{...}{Currently not in use.}
 }
 \value{
-Residuals as \code{tsibble}.
+Fitted values as tsibble.
 }
 \description{
-Extract residuals from a ELM.
+Extract residuals from a trained ELM model.
 }

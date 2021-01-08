@@ -2,7 +2,7 @@
 % Please edit documentation in R/ELM.R
 \name{ELM}
 \alias{ELM}
-\title{Automatic training of ELMs}
+\title{Extreme Learning Machine (ELM)}
 \usage{
 ELM(formula, ...)
 }
@@ -15,6 +15,6 @@ ELM(formula, ...)
 elm_model An object of class \code{ELM}.
 }
 \description{
-Automatic training of Extreme Learning Machines (ELMs). This function
-   is a wrapper for \code{nnfor::elm()}.
+Automatic train an Extreme Learning Machines (ELMs) model.
+  This function is a wrapper for \code{nnfor::elm()}.
 }
