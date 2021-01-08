@@ -2,12 +2,12 @@
 % Please edit documentation in R/DSHW.R
 \name{train_dshw}
 \alias{train_dshw}
-\title{Train DSHW model}
+\title{Double Seasonal Holt-Winters model}
 \usage{
 train_dshw(.data, specials, periods, ...)
 }
 \arguments{
-\item{.data}{Input data as \code{tsibble}.}
+\item{.data}{Input data as tsibble.}
 
 \item{specials}{Specials as list defined in \code{specials_dshw}.}
 

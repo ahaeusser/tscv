@@ -1,9 +1,9 @@
 
-#' @title Train DSHW model
+#' @title Double Seasonal Holt-Winters model
 #'
 #' @description Train a Double Seasonal Holt-Winters model (DSHW).
 #'
-#' @param .data Input data as \code{tsibble}.
+#' @param .data Input data as tsibble.
 #' @param specials Specials as list defined in \code{specials_dshw}.
 #' @param periods Integer vector. The periodicity of the time series (e.g. \code{periods = c(24, 168)} for hourly data).
 #' @param ... Further arguments passed to \code{forecast::dshw()}.
@@ -19,7 +19,7 @@ train_dshw <- function(.data,
     abort("Only univariate responses are supported by DSHW.")
   }
 
-  # Prepare data for modelling
+  # Prepare data for modeling
   y <- unclass(.data)[[measured_vars(.data)]]
   model_data <- msts(data = y, seasonal.periods = periods)
 
@@ -50,12 +50,12 @@ train_dshw <- function(.data,
 specials_dshw <- new_specials()
 
 
-#' @title Automatic training of DSHW
+#' @title Automatic train a DSHW model
 #'
-#' @description Automatic training of a Double Seasonal Holt-Winters model (DSHW). This function
+#' @description Automatic train a Double Seasonal Holt-Winters model (DSHW). This function
 #'    is a wrapper for \code{forecast::dshw()}.
 #'
-#' @param formula Model specification (see "Specials" section, currently not in use...)
+#' @param formula Model specification (see "Specials" section, currently not in use ...)
 #' @param ... Further arguments passed to \code{forecast::dshw()}.
 #'
 #' @return dshw_model An object of class \code{DSHW}.
@@ -78,12 +78,12 @@ DSHW <- function(formula, ...){
 #'
 #' @description Forecast a trained DSHW model.
 #'
-#' @param object The trained DSHW model used to produce the forecasts.
-#' @param new_data Forecast horizon.
+#' @param object An object of class \code{DSHW}.
+#' @param new_data Forecast horizon (n-step ahead forecast)
 #' @param specials Specials are currently not in use.
-#' @param ... Additional arguments for forecast model method.
+#' @param ... Additional arguments for forecast method.
 #'
-#' @return An object of class "fable".
+#' @return An object of class \code{fable}.
 #' @export
 
 forecast.DSHW <- function(object,
@@ -102,14 +102,14 @@ forecast.DSHW <- function(object,
 }
 
 
-#' @title Extract fitted values from a DSHW
+#' @title Extract fitted values from a trained DSHW model
 #'
-#' @description Extract fitted values from a DSHW.
+#' @description Extract fitted values from a trained DSHW model.
 #'
-#' @param object The time series model used to produce the forecast.
-#' @param ... Further arguments.
+#' @param object An object of class \code{DSHW}.
+#' @param ... Currently not in use.
 #'
-#' @return Fitted values as \code{tsibble}.
+#' @return Fitted values as tsibble.
 #' @export
 
 fitted.DSHW <- function(object, ...){
@@ -117,14 +117,14 @@ fitted.DSHW <- function(object, ...){
 }
 
 
-#' @title Extract residuals from a DSHW
+#' @title Extract residuals from a trained DSHW model
 #'
-#' @description Extract residuals from a DSHW.
+#' @description Extract residuals from a trained DSHW model.
 #'
-#' @param object The time series model used to produce the forecast.
-#' @param ... Further arguments.
+#' @param object An object of class \code{DSHW}.
+#' @param ... Currently not in use.
 #'
-#' @return Residuals as \code{tsibble}.
+#' @return Residuals as tsibble.
 #' @export
 
 residuals.DSHW <- function(object, ...){
@@ -132,15 +132,15 @@ residuals.DSHW <- function(object, ...){
 }
 
 
-#' @title Provide a succinct summary of the DSHW
+#' @title Provide a succinct summary of a trained DSHW model
 #'
-#' @description Provide a succinct summary of the DSHW.
+#' @description Provide a succinct summary of a trained DSHW model.
 #'
-#' @param x The DSHW to summarize.
+#' @param object An object of class \code{DSHW}.
 #'
 #' @return Model summary as character value.
 #' @export
 
-model_sum.DSHW <- function(x){
+model_sum.DSHW <- function(object){
   "DSHW"
 }

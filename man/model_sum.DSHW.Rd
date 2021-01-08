@@ -2,16 +2,16 @@
 % Please edit documentation in R/DSHW.R
 \name{model_sum.DSHW}
 \alias{model_sum.DSHW}
-\title{Provide a succinct summary of the DSHW}
+\title{Provide a succinct summary of a trained DSHW model}
 \usage{
-\method{model_sum}{DSHW}(x)
+\method{model_sum}{DSHW}(object)
 }
 \arguments{
-\item{x}{The DSHW to summarize.}
+\item{object}{An object of class \code{DSHW}.}
 }
 \value{
 Model summary as character value.
 }
 \description{
-Provide a succinct summary of the DSHW.
+Provide a succinct summary of a trained DSHW model.
 }

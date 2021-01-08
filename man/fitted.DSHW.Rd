@@ -2,18 +2,18 @@
 % Please edit documentation in R/DSHW.R
 \name{fitted.DSHW}
 \alias{fitted.DSHW}
-\title{Extract fitted values from a DSHW}
+\title{Extract fitted values from a trained DSHW model}
 \usage{
 \method{fitted}{DSHW}(object, ...)
 }
 \arguments{
-\item{object}{The time series model used to produce the forecast.}
+\item{object}{An object of class \code{DSHW}.}
 
-\item{...}{Further arguments.}
+\item{...}{Currently not in use.}
 }
 \value{
-Fitted values as \code{tsibble}.
+Fitted values as tsibble.
 }
 \description{
-Extract fitted values from a DSHW.
+Extract fitted values from a trained DSHW model.
 }

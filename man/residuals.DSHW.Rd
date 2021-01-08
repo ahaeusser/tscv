@@ -2,18 +2,18 @@
 % Please edit documentation in R/DSHW.R
 \name{residuals.DSHW}
 \alias{residuals.DSHW}
-\title{Extract residuals from a DSHW}
+\title{Extract residuals from a trained DSHW model}
 \usage{
 \method{residuals}{DSHW}(object, ...)
 }
 \arguments{
-\item{object}{The time series model used to produce the forecast.}
+\item{object}{An object of class \code{DSHW}.}
 
-\item{...}{Further arguments.}
+\item{...}{Currently not in use.}
 }
 \value{
-Residuals as \code{tsibble}.
+Residuals as tsibble.
 }
 \description{
-Extract residuals from a DSHW.
+Extract residuals from a trained DSHW model.
 }
