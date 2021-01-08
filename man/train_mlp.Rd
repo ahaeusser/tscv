@@ -2,12 +2,12 @@
 % Please edit documentation in R/MLP.R
 \name{train_mlp}
 \alias{train_mlp}
-\title{Train MLP neural network}
+\title{Multilayer Perceptron (MLP)}
 \usage{
 train_mlp(.data, specials, ...)
 }
 \arguments{
-\item{.data}{Input data as \code{tsibble}.}
+\item{.data}{Input data as tsibble.}
 
 \item{specials}{Specials as list defined in \code{specials_mlp}.}
 
@@ -17,5 +17,5 @@ train_mlp(.data, specials, ...)
 An object of class \code{MLP}.
 }
 \description{
-Train a Multilayer Perceptron (MLP).
+Train a Multilayer Perceptron (MLP) model.
 }

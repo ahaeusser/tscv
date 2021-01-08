@@ -2,18 +2,18 @@
 % Please edit documentation in R/MLP.R
 \name{residuals.MLP}
 \alias{residuals.MLP}
-\title{Extract residuals from a MLP}
+\title{Extract residuals from a trained MLP model}
 \usage{
 \method{residuals}{MLP}(object, ...)
 }
 \arguments{
-\item{object}{The time series model used to produce the forecast.}
+\item{object}{An object of class \code{MLP}.}
 
-\item{...}{Further arguments.}
+\item{...}{Currently not in use.}
 }
 \value{
-Residuals as \code{tsibble}.
+Fitted values as tsibble.
 }
 \description{
-Extract residuals from a MLP.
+Extract residuals from a trained MLP model.
 }

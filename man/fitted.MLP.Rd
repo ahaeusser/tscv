@@ -2,18 +2,18 @@
 % Please edit documentation in R/MLP.R
 \name{fitted.MLP}
 \alias{fitted.MLP}
-\title{Extract fitted values from a MLP.}
+\title{Extract fitted values from a trained MLP model}
 \usage{
 \method{fitted}{MLP}(object, ...)
 }
 \arguments{
-\item{object}{The time series model used to produce the forecast.}
+\item{object}{An object of class \code{MLP}.}
 
-\item{...}{Further arguments.}
+\item{...}{Currently not in use.}
 }
 \value{
-Fitted values as \code{tsibble}.
+Fitted values as tsibble.
 }
 \description{
-Extract fitted values from a MLP.
+Extract fitted values from a trained MLP model.
 }

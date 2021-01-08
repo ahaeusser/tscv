@@ -2,16 +2,16 @@
 % Please edit documentation in R/MLP.R
 \name{model_sum.MLP}
 \alias{model_sum.MLP}
-\title{Provide a succinct summary of the MLP}
+\title{Provide a succinct summary of a trained MLP model}
 \usage{
-\method{model_sum}{MLP}(x)
+\method{model_sum}{MLP}(object)
 }
 \arguments{
-\item{x}{The MLP to summarize.}
+\item{object}{An object of class \code{MLP}.}
 }
 \value{
 Model summary as character value.
 }
 \description{
-Provide a succinct summary of the MLP.
+Provide a succinct summary of a trained MLP model.
 }

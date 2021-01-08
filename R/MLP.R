@@ -1,9 +1,9 @@
 
-#' @title Train MLP neural network
+#' @title Multilayer Perceptron (MLP)
 #'
-#' @description Train a Multilayer Perceptron (MLP).
+#' @description Train a Multilayer Perceptron (MLP) model.
 #'
-#' @param .data Input data as \code{tsibble}.
+#' @param .data Input data as tsibble.
 #' @param specials Specials as list defined in \code{specials_mlp}.
 #' @param ... Further arguments passed to \code{nnfor::mlp()}.
 #'
@@ -17,7 +17,7 @@ train_mlp <- function(.data,
     abort("Only univariate responses are supported by MLP.")
   }
 
-  # Prepare data for modelling
+  # Prepare data for modeling
   model_data <- as.ts(.data)
 
   if(any(is.na(model_data))){
@@ -50,8 +50,8 @@ specials_mlp <- new_specials()
 
 #' @title Automatic training of MLPs
 #'
-#' @description Automatic training of Multilayer Perceptrons (MLPs). This function
-#'    is a wrapper for \code{nnfor::mlp()}.
+#' @description Automatic train a Multilayer Perceptron (MLPs) model.
+#'   This function is a wrapper for \code{nnfor::mlp()}.
 #'
 #' @param formula Model specification (see "Specials" section, currently not in use...)
 #' @param ... Further arguments passed to \code{nnfor::mlp()}.
@@ -76,12 +76,12 @@ MLP <- function(formula, ...){
 #'
 #' @description Forecast a trained MLP model.
 #'
-#' @param object The trained MLP model used to produce the forecasts.
-#' @param new_data Forecast horizon.
+#' @param object An object of class \code{MLP}.
+#' @param new_data Forecast horizon (n-step ahead forecast)
 #' @param specials Specials are currently not in use.
-#' @param ... Additional arguments for forecast model method.
+#' @param ... Additional arguments for forecast method.
 #'
-#' @return An object of class "fable".
+#' @return An object of class \code{fable}.
 #' @export
 
 forecast.MLP <- function(object,
@@ -100,14 +100,14 @@ forecast.MLP <- function(object,
 }
 
 
-#' @title Extract fitted values from a MLP.
+#' @title Extract fitted values from a trained MLP model
 #'
-#' @description Extract fitted values from a MLP.
+#' @description Extract fitted values from a trained MLP model.
 #'
-#' @param object The time series model used to produce the forecast.
-#' @param ... Further arguments.
+#' @param object An object of class \code{MLP}.
+#' @param ... Currently not in use.
 #'
-#' @return Fitted values as \code{tsibble}.
+#' @return Fitted values as tsibble.
 #' @export
 
 fitted.MLP <- function(object, ...){
@@ -115,14 +115,14 @@ fitted.MLP <- function(object, ...){
 }
 
 
-#' @title Extract residuals from a MLP
+#' @title Extract residuals from a trained MLP model
 #'
-#' @description Extract residuals from a MLP.
+#' @description Extract residuals from a trained MLP model.
 #'
-#' @param object The time series model used to produce the forecast.
-#' @param ... Further arguments.
+#' @param object An object of class \code{MLP}.
+#' @param ... Currently not in use.
 #'
-#' @return Residuals as \code{tsibble}.
+#' @return Fitted values as tsibble.
 #' @export
 
 residuals.MLP <- function(object, ...){
@@ -130,15 +130,15 @@ residuals.MLP <- function(object, ...){
 }
 
 
-#' @title Provide a succinct summary of the MLP
+#' @title Provide a succinct summary of a trained MLP model
 #'
-#' @description Provide a succinct summary of the MLP.
+#' @description Provide a succinct summary of a trained MLP model.
 #'
-#' @param x The MLP to summarize.
+#' @param object An object of class \code{MLP}.
 #'
 #' @return Model summary as character value.
 #' @export
 
-model_sum.MLP <- function(x){
+model_sum.MLP <- function(object){
   "MLP"
 }

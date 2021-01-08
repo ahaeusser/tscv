@@ -7,16 +7,16 @@
 \method{forecast}{MLP}(object, new_data, specials = NULL, ...)
 }
 \arguments{
-\item{object}{The trained MLP model used to produce the forecasts.}
+\item{object}{An object of class \code{MLP}.}
 
-\item{new_data}{Forecast horizon.}
+\item{new_data}{Forecast horizon (n-step ahead forecast)}
 
 \item{specials}{Specials are currently not in use.}
 
-\item{...}{Additional arguments for forecast model method.}
+\item{...}{Additional arguments for forecast method.}
 }
 \value{
-An object of class "fable".
+An object of class \code{fable}.
 }
 \description{
 Forecast a trained MLP model.

@@ -15,6 +15,6 @@ MLP(formula, ...)
 mlp_model An object of class \code{MLP}.
 }
 \description{
-Automatic training of Multilayer Perceptrons (MLPs). This function
-   is a wrapper for \code{nnfor::mlp()}.
+Automatic train a Multilayer Perceptron (MLPs) model.
+  This function is a wrapper for \code{nnfor::mlp()}.
 }
