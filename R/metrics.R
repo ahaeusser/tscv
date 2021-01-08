@@ -9,6 +9,7 @@
 #' @param na_rm Logical value. If \code{TRUE}, missing values are removed.
 #'
 #' @return Numeric value.
+#' @noRd
 
 me_vec <- function(truth,
                    estimate,
@@ -29,6 +30,7 @@ me_vec <- function(truth,
 #' @param na_rm Logical value. If \code{TRUE}, missing values are removed.
 #'
 #' @return Numeric value.
+#' @noRd
 
 mae_vec <- function(truth,
                     estimate,
@@ -49,6 +51,7 @@ mae_vec <- function(truth,
 #' @param na_rm Logical value. If \code{TRUE}, missing values are removed.
 #'
 #' @return Numeric value.
+#' @noRd
 
 mse_vec <- function(truth,
                     estimate,
@@ -69,6 +72,7 @@ mse_vec <- function(truth,
 #' @param na_rm Logical value. If \code{TRUE}, missing values are removed.
 #'
 #' @return Numeric value.
+#' @noRd
 
 rmse_vec <- function(truth,
                      estimate,
@@ -89,6 +93,7 @@ rmse_vec <- function(truth,
 #' @param na_rm Logical value. If \code{TRUE}, missing values are removed.
 #'
 #' @return Numeric value.
+#' @noRd
 
 
 mpe_vec <- function(truth,
@@ -110,6 +115,7 @@ mpe_vec <- function(truth,
 #' @param na_rm Logical value. If \code{TRUE}, missing values are removed.
 #'
 #' @return Numeric value.
+#' @noRd
 
 mape_vec <- function(truth,
                      estimate,
@@ -130,6 +136,7 @@ mape_vec <- function(truth,
 #' @param na_rm Logical value. If \code{TRUE}, missing values are removed.
 #'
 #' @return Numeric value.
+#' @noRd
 
 smape_vec <- function(truth,
                       estimate,
