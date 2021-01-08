@@ -10,10 +10,10 @@
 #' @importFrom feasts ACF PACF STL
 #' @importFrom distributional dist_normal
 #' @importFrom nnfor elm mlp
-#' @importFrom forecast msts dshw tbats thetaf forecast
+#' @importFrom forecast msts dshw tbats thetaf forecast na.interp
 #' @importFrom matrixStats rowSds
 #' @importFrom scales pretty_breaks
-#' @importFrom stats approx quantile qnorm median mad sd as.ts acf pacf lag time
+#' @importFrom stats approx quantile qnorm median mad sd as.ts acf pacf lag time density
 #' @importFrom grDevices colorRampPalette
 #' @rawNamespace import(ggplot2, except = stat_qq_line)
 #' @importFrom qqplotr stat_qq_point stat_qq_line stat_qq_band
