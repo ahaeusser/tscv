@@ -1,5 +1,5 @@
 
-#' @title Check, convert and shape the input data.
+#' @title Check, convert and shape the input data
 #'
 #' @description This function checks whether the input data are a valid tsibble or not (regular spaced in time
 #'    and ordered). Furthermore, implicit missing values are turned into explicit missing values (existing
@@ -12,7 +12,7 @@
 #' @return data A valid tsibble in long format with one measurement variable.
 #' @export
 
-clean_data <- function(data,
+check_data <- function(data,
                        fill_missing = TRUE) {
 
   # Check input data
