@@ -2,22 +2,22 @@
 % Please edit documentation in R/SMEDIAN.R
 \name{forecast.SMEDIAN}
 \alias{forecast.SMEDIAN}
-\title{Forecast a trained SMEDIAN model}
+\title{Forecast a trained seasonal median model}
 \usage{
 \method{forecast}{SMEDIAN}(object, new_data, specials = NULL, ...)
 }
 \arguments{
-\item{object}{Trained model.}
+\item{object}{An object of class \code{SMEDIAN}.}
 
-\item{new_data}{Forecast horizon.}
+\item{new_data}{Forecast horizon (n-step ahead forecast)}
 
 \item{specials}{Specials are currently not in use.}
 
-\item{...}{Further arguments.}
+\item{...}{Additional arguments for forecast method.}
 }
 \value{
-A \code{fable}.
+An object of class \code{fable}.
 }
 \description{
-Forecast a trained SMEDIAN model.
+Forecast a trained seasonal median model.
 }

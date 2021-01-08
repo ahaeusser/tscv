@@ -2,18 +2,18 @@
 % Please edit documentation in R/SMEDIAN.R
 \name{fitted.SMEDIAN}
 \alias{fitted.SMEDIAN}
-\title{Extract fitted values from SMEDIAN}
+\title{Extract fitted values from a trained seasonal median model}
 \usage{
 \method{fitted}{SMEDIAN}(object, ...)
 }
 \arguments{
-\item{object}{The time series model used to produce the forecast.}
+\item{object}{An object of class \code{SMEDIAN}.}
 
-\item{...}{Further arguments.}
+\item{...}{Currently not in use.}
 }
 \value{
-Fitted values as \code{tsibble}.
+Fitted values as tsibble.
 }
 \description{
-Extract fitted values from SMEDIAN.
+Extract fitted values from a trained seasonal median model.
 }

@@ -2,18 +2,18 @@
 % Please edit documentation in R/SMEDIAN.R
 \name{residuals.SMEDIAN}
 \alias{residuals.SMEDIAN}
-\title{Extract residuals from SMEDIAN}
+\title{Extract residuals from a trained seasonal median model}
 \usage{
 \method{residuals}{SMEDIAN}(object, ...)
 }
 \arguments{
-\item{object}{The time series model used to produce the forecast.}
+\item{object}{An object of class \code{SMEDIAN}.}
 
-\item{...}{Further arguments.}
+\item{...}{Currently not in use.}
 }
 \value{
-Residuals as \code{tsibble}.
+Fitted values as tsibble.
 }
 \description{
-Extract residuals from SMEDIAN.
+Extract residuals from a trained seasonal median model.
 }

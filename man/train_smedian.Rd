@@ -2,16 +2,16 @@
 % Please edit documentation in R/SMEDIAN.R
 \name{train_smedian}
 \alias{train_smedian}
-\title{Train seasonal median model}
+\title{Seasonal median model}
 \usage{
 train_smedian(.data, specials, ...)
 }
 \arguments{
-\item{.data}{Input data as \code{tsibble}.}
+\item{.data}{Input data as tsibble.}
 
 \item{specials}{Specials as list defined in \code{specials_smedian}.}
 
-\item{...}{Further arguments.}
+\item{...}{Currently not in use.}
 }
 \value{
 An object of class \code{SMEDIAN}.

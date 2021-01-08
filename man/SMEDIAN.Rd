@@ -2,7 +2,7 @@
 % Please edit documentation in R/SMEDIAN.R
 \name{SMEDIAN}
 \alias{SMEDIAN}
-\title{Automatic training of SMEDIANs}
+\title{Seasonal median model}
 \usage{
 SMEDIAN(formula, ...)
 }
@@ -15,5 +15,5 @@ SMEDIAN(formula, ...)
 smedian_model An object of class \code{SMEDIAN}.
 }
 \description{
-Automatic training of seasonal median model (SMEDIAN).
+Automatic train a seasonal median model (SMEDIAN).
 }

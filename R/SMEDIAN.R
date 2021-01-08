@@ -1,11 +1,11 @@
 
-#' @title Train seasonal median model
+#' @title Seasonal median model
 #'
 #' @description Train seasonal median model (SMEDIAN).
 #'
-#' @param .data Input data as \code{tsibble}.
+#' @param .data Input data as tsibble.
 #' @param specials Specials as list defined in \code{specials_smedian}.
-#' @param ... Further arguments.
+#' @param ... Currently not in use.
 #'
 #' @return An object of class \code{SMEDIAN}.
 
@@ -14,7 +14,7 @@ train_smedian <- function(.data,
                           ...){
 
   if (length(measured_vars(.data)) > 1) {
-    abort("Only univariate responses are supported by SMEAN.")
+    abort("Only univariate responses are supported by SMEDIAN.")
   }
 
   y <- unclass(.data)[[measured_vars(.data)]]
@@ -70,9 +70,9 @@ specials_smedian <- new_specials(
 )
 
 
-#' @title Automatic training of SMEDIANs
+#' @title Seasonal median model
 #'
-#' @description Automatic training of seasonal median model (SMEDIAN).
+#' @description Automatic train a seasonal median model (SMEDIAN).
 #'
 #' @param formula Model specification (see "Specials" section, currently not in use ...).
 #' @param ... Further arguments.
@@ -93,16 +93,16 @@ SMEDIAN <- function(formula, ...){
 }
 
 
-#' @title Forecast a trained SMEDIAN model
+#' @title Forecast a trained seasonal median model
 #'
-#' @description Forecast a trained SMEDIAN model.
+#' @description Forecast a trained seasonal median model.
 #'
-#' @param object Trained model.
-#' @param new_data Forecast horizon.
+#' @param object An object of class \code{SMEDIAN}.
+#' @param new_data Forecast horizon (n-step ahead forecast)
 #' @param specials Specials are currently not in use.
-#' @param ... Further arguments.
+#' @param ... Additional arguments for forecast method.
 #'
-#' @return A \code{fable}.
+#' @return An object of class \code{fable}.
 #' @export
 
 forecast.SMEDIAN <- function(object,
@@ -124,14 +124,14 @@ forecast.SMEDIAN <- function(object,
 }
 
 
-#' @title Extract fitted values from SMEDIAN
+#' @title Extract fitted values from a trained seasonal median model
 #'
-#' @description Extract fitted values from SMEDIAN.
+#' @description Extract fitted values from a trained seasonal median model.
 #'
-#' @param object The time series model used to produce the forecast.
-#' @param ... Further arguments.
+#' @param object An object of class \code{SMEDIAN}.
+#' @param ... Currently not in use.
 #'
-#' @return Fitted values as \code{tsibble}.
+#' @return Fitted values as tsibble.
 #' @export
 
 fitted.SMEDIAN <- function(object, ...){
@@ -139,14 +139,14 @@ fitted.SMEDIAN <- function(object, ...){
 }
 
 
-#' @title Extract residuals from SMEDIAN
+#' @title Extract residuals from a trained seasonal median model
 #'
-#' @description Extract residuals from SMEDIAN.
+#' @description Extract residuals from a trained seasonal median model.
 #'
-#' @param object The time series model used to produce the forecast.
-#' @param ... Further arguments.
+#' @param object An object of class \code{SMEDIAN}.
+#' @param ... Currently not in use.
 #'
-#' @return Residuals as \code{tsibble}.
+#' @return Fitted values as tsibble.
 #' @export
 
 residuals.SMEDIAN <- function(object, ...){
@@ -154,11 +154,11 @@ residuals.SMEDIAN <- function(object, ...){
 }
 
 
-#' @title Provide a succinct summary of the SMEDIAN
+#' @title Provide a succinct summary of a trained seasonal median model
 #'
-#' @description Provide a succinct summary of the SMEDIAN.
+#' @description Provide a succinct summary of a trained seasonal median model.
 #'
-#' @param x The SMEDIAN to summarize.
+#' @param object An object of class \code{SMEDIAN}.
 #'
 #' @return Model summary as character value.
 #' @export

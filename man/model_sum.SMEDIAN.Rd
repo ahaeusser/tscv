@@ -2,16 +2,16 @@
 % Please edit documentation in R/SMEDIAN.R
 \name{model_sum.SMEDIAN}
 \alias{model_sum.SMEDIAN}
-\title{Provide a succinct summary of the SMEDIAN}
+\title{Provide a succinct summary of a trained seasonal median model}
 \usage{
 \method{model_sum}{SMEDIAN}(x)
 }
 \arguments{
-\item{x}{The SMEDIAN to summarize.}
+\item{object}{An object of class \code{SMEDIAN}.}
 }
 \value{
 Model summary as character value.
 }
 \description{
-Provide a succinct summary of the SMEDIAN.
+Provide a succinct summary of a trained seasonal median model.
 }
