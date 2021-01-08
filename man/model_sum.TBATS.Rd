@@ -2,16 +2,16 @@
 % Please edit documentation in R/TBATS.R
 \name{model_sum.TBATS}
 \alias{model_sum.TBATS}
-\title{Provide a succinct summary of the TBATS}
+\title{Provide a succinct summary of a trained TBATS model}
 \usage{
-\method{model_sum}{TBATS}(x)
+\method{model_sum}{TBATS}(object)
 }
 \arguments{
-\item{x}{The TBATS to summarize.}
+\item{object}{An object of class \code{TBATS}.}
 }
 \value{
 Model summary as character value.
 }
 \description{
-Provide a succinct summary of the TBATS.
+Provide a succinct summary of a trained TBATS model.
 }

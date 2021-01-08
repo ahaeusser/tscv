@@ -2,12 +2,12 @@
 % Please edit documentation in R/TBATS.R
 \name{train_tbats}
 \alias{train_tbats}
-\title{Train TBATS model}
+\title{TBATS model}
 \usage{
 train_tbats(.data, specials, periods, ...)
 }
 \arguments{
-\item{.data}{Input data as \code{tsibble}.}
+\item{.data}{Input data as tsibble.}
 
 \item{specials}{Specials as list defined in \code{specials_tbats}.}
 

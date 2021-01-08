@@ -2,18 +2,18 @@
 % Please edit documentation in R/TBATS.R
 \name{residuals.TBATS}
 \alias{residuals.TBATS}
-\title{Extract residuals from a TBATS}
+\title{Extract residuals from a trained TBATS model}
 \usage{
 \method{residuals}{TBATS}(object, ...)
 }
 \arguments{
-\item{object}{The time series model used to produce the forecast.}
+\item{object}{An object of class \code{TBATS}.}
 
-\item{...}{Further arguments.}
+\item{...}{Currently not in use.}
 }
 \value{
-Residuals as \code{tsibble}.
+Fitted values as tsibble.
 }
 \description{
-Extract residuals from a TBATS.
+Extract residuals from a trained TBATS model.
 }

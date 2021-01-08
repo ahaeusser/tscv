@@ -1,10 +1,10 @@
 
-#' @title Train TBATS model
+#' @title TBATS model
 #'
 #' @description Train a TBATS model (Trigonometric seasonality, Box-Cox transformation,
 #'    ARMA errors, Trend and Seasonal components).
 #'
-#' @param .data Input data as \code{tsibble}.
+#' @param .data Input data as tsibble.
 #' @param specials Specials as list defined in \code{specials_tbats}.
 #' @param periods Integer vector. The periodicity of the time series (e.g. \code{periods = c(24, 168)} for hourly data).
 #' @param ... Further arguments passed to \code{forecast::tbats()}.
@@ -20,7 +20,7 @@ train_tbats <- function(.data,
     abort("Only univariate responses are supported by TBATS.")
   }
 
-  # Prepare data for modelling
+  # Prepare data for modeling
   y <- unclass(.data)[[measured_vars(.data)]]
   model_data <- msts(data = y, seasonal.periods = periods)
 
@@ -51,12 +51,12 @@ train_tbats <- function(.data,
 specials_tbats <- new_specials()
 
 
-#' @title Automatic training of a TBATS model
+#' @title Automatic train a TBATS model
 #'
-#' @description Automatic training of a TBATS model (Trigonometric seasonality, Box-Cox transformation,
+#' @description Automatic train a TBATS model (Trigonometric seasonality, Box-Cox transformation,
 #'    ARMA errors, Trend and Seasonal components). This function is a wrapper for \code{forecast::tbats()}.
 #'
-#' @param formula Model specification (see "Specials" section, currently not in use...)
+#' @param formula Model specification (see "Specials" section, currently not in use ...)
 #' @param ... Further arguments passed to \code{forecast::tbats()}.
 #'
 #' @return tbats_model An object of class \code{TBATS}.
@@ -79,12 +79,12 @@ TBATS <- function(formula, ...){
 #'
 #' @description Forecast a trained TBATS model.
 #'
-#' @param object The trained TBATS model used to produce the forecasts.
-#' @param new_data Forecast horizon.
+#' @param object An object of class \code{TBATS}.
+#' @param new_data Forecast horizon (n-step ahead forecast)
 #' @param specials Specials are currently not in use.
-#' @param ... Additional arguments for forecast model method.
+#' @param ... Additional arguments for forecast method.
 #'
-#' @return An object of class "fable".
+#' @return An object of class \code{fable}.
 #' @export
 
 forecast.TBATS <- function(object,
@@ -103,14 +103,14 @@ forecast.TBATS <- function(object,
 }
 
 
-#' @title Extract fitted values from a TBATS
+#' @title Extract fitted values from a trained TBATS model
 #'
-#' @description Extract fitted values from a TBATS.
+#' @description Extract fitted values from a trained TBATS model.
 #'
-#' @param object The time series model used to produce the forecast.
-#' @param ... Further arguments.
+#' @param object An object of class \code{TBATS}.
+#' @param ... Currently not in use.
 #'
-#' @return Fitted values as \code{tsibble}.
+#' @return Fitted values as tsibble.
 #' @export
 
 fitted.TBATS <- function(object, ...){
@@ -118,14 +118,14 @@ fitted.TBATS <- function(object, ...){
 }
 
 
-#' @title Extract residuals from a TBATS
+#' @title Extract residuals from a trained TBATS model
 #'
-#' @description Extract residuals from a TBATS.
+#' @description Extract residuals from a trained TBATS model.
 #'
-#' @param object The time series model used to produce the forecast.
-#' @param ... Further arguments.
+#' @param object An object of class \code{TBATS}.
+#' @param ... Currently not in use.
 #'
-#' @return Residuals as \code{tsibble}.
+#' @return Fitted values as tsibble.
 #' @export
 
 residuals.TBATS <- function(object, ...){
@@ -133,15 +133,15 @@ residuals.TBATS <- function(object, ...){
 }
 
 
-#' @title Provide a succinct summary of the TBATS
+#' @title Provide a succinct summary of a trained TBATS model
 #'
-#' @description Provide a succinct summary of the TBATS.
+#' @description Provide a succinct summary of a trained TBATS model.
 #'
-#' @param x The TBATS to summarize.
+#' @param object An object of class \code{TBATS}.
 #'
 #' @return Model summary as character value.
 #' @export
 
-model_sum.TBATS <- function(x){
+model_sum.TBATS <- function(object){
   "TBATS"
 }

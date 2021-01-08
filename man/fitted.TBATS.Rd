@@ -2,18 +2,18 @@
 % Please edit documentation in R/TBATS.R
 \name{fitted.TBATS}
 \alias{fitted.TBATS}
-\title{Extract fitted values from a TBATS}
+\title{Extract fitted values from a trained TBATS model}
 \usage{
 \method{fitted}{TBATS}(object, ...)
 }
 \arguments{
-\item{object}{The time series model used to produce the forecast.}
+\item{object}{An object of class \code{TBATS}.}
 
-\item{...}{Further arguments.}
+\item{...}{Currently not in use.}
 }
 \value{
-Fitted values as \code{tsibble}.
+Fitted values as tsibble.
 }
 \description{
-Extract fitted values from a TBATS.
+Extract fitted values from a trained TBATS model.
 }
