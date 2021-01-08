@@ -39,8 +39,9 @@ train_smedian <- function(.data,
 
   structure(
     list(
-      .fitted = fitted,
-      .resid = resid,
+      est = list(
+        .fitted = fitted,
+        .resid = resid),
       smedian = smedian,
       sigma = sigma,
       last_period = last(index),
