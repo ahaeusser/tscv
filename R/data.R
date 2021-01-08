@@ -29,9 +29,9 @@
 
 
 
-#' @title Hourly electricity load
+#' @title Hourly electricity load and load forecasts
 #'
-#' @description Hourly \code{tsibble} with electricity loads and load forecasts
+#' @description Hourly tsibble with electricity loads and load forecasts
 #'    from the ENTSO-E Transparency Platform. The dataset contains time series data
 #'    from 2019-01-01 00:00:00 to 2019-12-31 23:00:00 for 8 bidding zones within
 #'    europe (DE, DK1, ES, FI, FR, NL, NO1, SE1). The data are aggregated in time
@@ -114,37 +114,6 @@
 "M4_monthly_data"
 
 
-#' @title Meta data for \code{M4_monthly_data}
-#'
-#' @description The dataset contains meta data for the corresponding
-#'    object \code{M4_monthly_data}.
-#'
-#' @docType data
-#'
-#' @usage data(M4_monthly_meta)
-#'
-#' @format A \code{tibble} with 30 rows and 8 columns:
-#'    \itemize{
-#'       \item{\code{series_id}: Time series ID from M4 forecasting competition (key variable)}
-#'       \item{\code{category}: Category from M4 forecasting competition (key variable)}
-#'       \item{\code{freq}: Frequency as character}
-#'       \item{\code{n_freq}: Frequency as integer}
-#'       \item{\code{n_ahead}: Forecast horizon as integer}
-#'       \item{\code{n_obs}: Total number of observations}
-#'       \item{\code{start}: Start date}
-#'       \item{\code{end}: End date}
-#'       }
-#'
-#' @keywords datasets
-#'
-#' @source \href{https://github.com/Mcompetitions/M4-methods/tree/master/Dataset}{M4 Competition}
-#'
-#' @examples
-#' data(M4_monthly_meta)
-"M4_monthly_meta"
-
-
-
 
 #' @title Quarterly time series data from the M4 Competition
 #'
@@ -171,32 +140,3 @@
 #' data(M4_quarterly_data)
 "M4_quarterly_data"
 
-
-#' @title Meta data for \code{M4_quarterly_data}
-#'
-#' @description The dataset contains meta data for the corresponding
-#'    object \code{M4_quarterly_data}.
-#'
-#' @docType data
-#'
-#' @usage data(M4_quarterly_meta)
-#'
-#' @format A \code{tibble} with 30 rows and 8 columns:
-#'    \itemize{
-#'       \item{\code{series_id}: Time series ID from M4 forecasting competition (key variable)}
-#'       \item{\code{category}: Category from M4 forecasting competition (key variable)}
-#'       \item{\code{freq}: Frequency as character}
-#'       \item{\code{n_freq}: Frequency as integer}
-#'       \item{\code{n_ahead}: Forecast horizon as integer}
-#'       \item{\code{n_obs}: Total number of observations}
-#'       \item{\code{start}: Start date}
-#'       \item{\code{end}: End date}
-#'       }
-#'
-#' @keywords datasets
-#'
-#' @source \href{https://github.com/Mcompetitions/M4-methods/tree/master/Dataset}{M4 Competition}
-#'
-#' @examples
-#' data(M4_quarterly_meta)
-"M4_quarterly_meta"

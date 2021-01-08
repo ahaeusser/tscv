@@ -3,7 +3,7 @@
 \docType{data}
 \name{elec_load}
 \alias{elec_load}
-\title{Hourly electricity load}
+\title{Hourly electricity load and load forecasts}
 \format{
 A time series object of class \code{tsibble} with 122.640 rows and 5 columns:
    \itemize{
@@ -21,7 +21,7 @@ A time series object of class \code{tsibble} with 122.640 rows and 5 columns:
 data(elec_load)
 }
 \description{
-Hourly \code{tsibble} with electricity loads and load forecasts
+Hourly tsibble with electricity loads and load forecasts
    from the ENTSO-E Transparency Platform. The dataset contains time series data
    from 2019-01-01 00:00:00 to 2019-12-31 23:00:00 for 8 bidding zones within
    europe (DE, DK1, ES, FI, FR, NL, NO1, SE1). The data are aggregated in time
