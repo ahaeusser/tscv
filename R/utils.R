@@ -1,5 +1,5 @@
 
-#' @title Return target variables.
+#' @title Return target variables
 #'
 #' @description \code{target_vars()} returns a character vector with the target variables, i.e.
 #'    key variables without "helper variables" like \code{.split}, \code{.id}, \code{.sample}, etc.
@@ -17,7 +17,7 @@ target_vars <- function(.data) {
 }
 
 
-#' @title Return value variable.
+#' @title Return value variable
 #'
 #' @description \code{value_var()} returns a character with the value variable, i.e.
 #'    measured variables without "helper variables" like \code{.split}, \code{.id}, \code{.sample}, etc.
@@ -36,65 +36,43 @@ value_var <- function(.data) {
 
 
 
-#' @title Replace outliers based on IQR method by NAs.
+#' @title Estimate mode of a distribution based on Kernel Density Estimation
 #'
-#' @description \code{iqr_vec} takes a numeric vector and replaces
-#'    outliers based on the IQR method by NAs.
+#' @description The function estimates the mode of a distribution based on Kernel Density Estimation.
 #'
 #' @param x Numeric vector.
-#' @param alpha Numeric value. Controls the width of the limits.
+#' @param ... Further arguments passed to \code{stats::densitiy()}.
 #'
-#' @return x Numeric vector.
+#' @return mode Numeric value. The mode of the distribution.
+#' @export
 
-iqr_vec <- function(x,
-                    alpha = 0.05) {
+estimate_mode <- function(x,
+                          na_rm = TRUE,
+                          ...) {
 
-  # Estimate 25% and 75% quantiles
-  quantile_x <- stats::quantile(x, prob = c(0.25, 0.75), na.rm = TRUE)
+  if (na_rm == TRUE) {
+    x <- x[!is.na(x)]
+  }
 
-  # Calculate interquartile range and define lower and upper limit
-  iqr <- quantile_x[[2]] - quantile_x[[1]]
-  limits <- quantile_x + (0.15 / alpha) * iqr * c(-1, 1)
+  object <- density(x = x, ...)
+  mode_id <- which.max(object$y)
+  mode <- object$x[mode_id]
 
-  # Identify the index outliers within the vector and replace values with NAs
-  outlier_idx <- which((x < limits[1]) | (x > limits[2]))
-  x[outlier_idx] <- NA_real_
-  return(x)
+  return(mode)
 }
 
 
-#' @title Linear interpolation of NAs.
+#' @title Estimate kurtosis
 #'
-#' @description \code{approx_vec} linearly interpolates NAs
-#'    within a numeric vector.
-#'
-#' @param x Numeric vector.
-#'
-#' @return x Numeric vector.
-
-approx_vec <- function(x) {
-
-  # Index of missing and non-missing values, etc.
-  missing <- is.na(x)
-  n <- length(x)
-  tt <- 1:n
-  idx <- tt[!missing]
-
-  # Use linear interpolation
-  x <- approx(idx, x[idx], tt, rule = 2)$y
-}
-
-
-
-#' @title Measure of kurtosis.
+#' @description The function estimates the kurtosis of a distribution.
 #'
 #' @param x Numeric vector.
 #' @param na_rm Logical value. If \code{TRUE}, missing values are dropped.
 #'
 #' @return Numeric value.
+#' @export
 
-kurtosis_vec <- function(x,
-                         na_rm = TRUE) {
+estimate_kurtosis <- function(x, na_rm = TRUE) {
 
   if (na_rm == TRUE) {
     x <- x[!is.na(x)]
@@ -106,15 +84,17 @@ kurtosis_vec <- function(x,
 
 
 
-#' @title Measure of skewness.
+#' @title Estimate skewness
+#'
+#' @description The function estimates the skewness of a numeric vector.
 #'
 #' @param x Numeric vector.
 #' @param na_rm Logical value. If \code{TRUE}, missing values are dropped.
 #'
 #' @return Numeric value.
+#' @export
 
-skewness_vec <- function(x,
-                         na_rm = TRUE) {
+estimate_skewness <- function(x, na_rm = TRUE) {
 
   if (na_rm == TRUE) {
     x <- x[!is.na(x)]
@@ -124,3 +104,66 @@ skewness_vec <- function(x,
   (sum((x - mean(x))^3) / n) / (sum((x - mean(x))^2) / n)^(3/2)
 }
 
+
+
+#' @title Interpolate missing values
+#'
+#' @description The function \code{interpolate_missing()} is a wrapper
+#'   for \code{forecast::na.interp()}, working with numeric vectors. For
+#'   non-seasonal time series, linear interpolation is used and for
+#'   seasonal time series, the series is decomposed via STL and the
+#'   seasonally adjusted series is linearly interpolated and the seasonal
+#'   component is added back.
+#'
+#' @param x Numeric vector.
+#' @param period Numeric vector. The seasonal periods of the time series.
+#' @param ... Further arguments passed to \code{forecast::msts()} or \code{forecast::na.interp()}.
+#'
+#' @return Numeric vector.
+#' @export
+
+interpolate_missing <- function(x,
+                                period,
+                                ...) {
+  # Create msts object
+  x <- msts(data = x, seasonal.periods = period)
+
+  # Interpolate missing values
+  x <- forecast::na.interp(x = x, ...)
+
+  return(x)
+}
+
+
+
+#' @title Identify and replace outliers
+#'
+#' @description The function \code{smooth_outlier()} is a wrapper
+#'   for \code{forecast::tsoutliers()}, working with numeric vectors. For
+#'   non-seasonal time series, the supsmu method is used. For seasonal
+#'   time series, the series is decomposed via STL and the IQR method is
+#'   used on the remainder component. Values outside the range are
+#'   linear interpolated on the remainder and the series is reconstructed
+#'   with the corrected remainder component.
+#'
+#' @param x Numeric vector.
+#' @param period Numeric vector. The seasonal periods of the time series.
+#' @param ... Further arguments passed to \code{forecast::msts()} or \code{forecast::tsoutliers()}.
+#'
+#' @return Numeric vector.
+#' @export
+
+smooth_outlier <- function(x,
+                           period,
+                           ...) {
+  # Create msts object
+  x <- msts(data = x, seasonal.periods = period)
+
+  # Identify outliers
+  xs <- forecast::tsoutliers(x = x, ...)
+
+  # Replace outliers
+  x[xs$index] <- xs$replacements
+
+  return(x)
+}

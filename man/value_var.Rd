@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{value_var}
 \alias{value_var}
-\title{Return value variable.}
+\title{Return value variable}
 \usage{
 value_var(.data)
 }

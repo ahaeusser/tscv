@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{target_vars}
 \alias{target_vars}
-\title{Return target variables.}
+\title{Return target variables}
 \usage{
 target_vars(.data)
 }
