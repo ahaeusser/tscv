@@ -2,21 +2,22 @@
 % Please edit documentation in R/SMEAN.R
 \name{train_smean}
 \alias{train_smean}
-\title{Train seasonal mean model}
+\title{Seasonal mean model}
 \usage{
 train_smean(.data, specials, ...)
 }
 \arguments{
-\item{.data}{Input data as \code{tsibble}.}
+\item{.data}{Input data as tsibble.}
 
 \item{specials}{Specials as list defined in \code{specials_smean}.}
 
-\item{...}{Further arguments.}
+\item{...}{Currently not in use.}
 }
 \value{
 An object of class \code{SMEAN}.
 }
 \description{
-Train seasonal mean model (SMEAN). This is equivalent to a linear regression
-   against seasonal dummy variables only (\code{TSLM(value ~ season())}).
+Train a seasonal mean model (SMEAN). This is equivalent to a
+  linear regression against seasonal dummy variables only, i.e.
+  \code{TSLM(value ~ season())}.
 }

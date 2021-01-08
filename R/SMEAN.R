@@ -1,12 +1,13 @@
 
-#' @title Train seasonal mean model
+#' @title Seasonal mean model
 #'
-#' @description Train seasonal mean model (SMEAN). This is equivalent to a linear regression
-#'    against seasonal dummy variables only (\code{TSLM(value ~ season())}).
+#' @description Train a seasonal mean model (SMEAN). This is equivalent to a
+#'   linear regression against seasonal dummy variables only, i.e.
+#'   \code{TSLM(value ~ season())}.
 #'
-#' @param .data Input data as \code{tsibble}.
+#' @param .data Input data as tsibble.
 #' @param specials Specials as list defined in \code{specials_smean}.
-#' @param ... Further arguments.
+#' @param ... Currently not in use.
 #'
 #' @return An object of class \code{SMEAN}.
 
@@ -40,8 +41,9 @@ train_smean <- function(.data,
 
   structure(
     list(
-      .fitted = fitted,
-      .resid = resid,
+      est = list(
+        .fitted = fitted,
+        .resid = resid),
       smean = smean,
       sigma = sigma,
       last_period = last(index),
@@ -68,10 +70,11 @@ specials_smean <- new_specials(
 )
 
 
-#' @title Automatic training of SMEANs
+#' @title Seasonal mean model
 #'
-#' @description Automatic training seasonal mean model (SMEAN). This is equivalent to a linear regression
-#'    against seasonal dummy variables only (\code{TSLM(value ~ season())}).
+#' @description Automatic train a seasonal mean model (SMEAN). This is
+#'   equivalent to a linear regression against seasonal dummy variables only,
+#'   i.e. \code{TSLM(value ~ season())}.
 #'
 #' @param formula Model specification (see "Specials" section, currently not in use ...).
 #' @param ... Further arguments.
@@ -92,16 +95,16 @@ SMEAN <- function(formula, ...){
 }
 
 
-#' @title Forecast a trained SMEAN model
+#' @title Forecast a trained seasonal mean model
 #'
-#' @description Forecast a trained SMEAN model.
+#' @description Forecast a trained seasonal mean model.
 #'
-#' @param object Trained model.
-#' @param new_data Forecast horizon.
+#' @param object An object of class \code{SMEAN}.
+#' @param new_data Forecast horizon (n-step ahead forecast)
 #' @param specials Specials are currently not in use.
-#' @param ... Further arguments.
+#' @param ... Additional arguments for forecast method.
 #'
-#' @return A \code{fable}.
+#' @return An object of class \code{fable}.
 #' @export
 
 forecast.SMEAN <- function(object,
@@ -122,14 +125,14 @@ forecast.SMEAN <- function(object,
 }
 
 
-#' @title Extract fitted values from SMEAN
+#' @title Extract fitted values from a trained seasonal mean model
 #'
-#' @description Extract fitted values from SMEAN.
+#' @description Extract fitted values from a trained seasonal mean model.
 #'
-#' @param object The time series model used to produce the forecast.
-#' @param ... Further arguments.
+#' @param object An object of class \code{SMEAN}.
+#' @param ... Currently not in use.
 #'
-#' @return Fitted values as \code{tsibble}.
+#' @return Fitted values as tsibble.
 #' @export
 
 fitted.SMEAN <- function(object, ...){
@@ -137,14 +140,14 @@ fitted.SMEAN <- function(object, ...){
 }
 
 
-#' @title Extract residuals from SMEAN
+#' @title Extract residuals from a trained seasonal mean model
 #'
-#' @description Extract residuals from SMEAN.
+#' @description Extract residuals from a trained seasonal mean model.
 #'
-#' @param object The time series model used to produce the forecast.
-#' @param ... Further arguments.
+#' @param object An object of class \code{SMEAN}.
+#' @param ... Currently not in use.
 #'
-#' @return Residuals as \code{tsibble}.
+#' @return Fitted values as tsibble.
 #' @export
 
 residuals.SMEAN <- function(object, ...){
@@ -152,15 +155,15 @@ residuals.SMEAN <- function(object, ...){
 }
 
 
-#' @title Provide a succinct summary of the SMEAN
+#' @title Provide a succinct summary of a trained seasonal mean model
 #'
-#' @description Provide a succinct summary of the SMEAN.
+#' @description Provide a succinct summary of a trained seasonal mean model.
 #'
-#' @param x The SMEAN to summarize.
+#' @param object An object of class \code{SMEAN}.
 #'
 #' @return Model summary as character value.
 #' @export
 
-model_sum.SMEAN <- function(x){
+model_sum.SMEAN <- function(object){
   "SMEAN"
 }

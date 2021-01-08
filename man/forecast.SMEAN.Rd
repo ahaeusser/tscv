@@ -2,22 +2,22 @@
 % Please edit documentation in R/SMEAN.R
 \name{forecast.SMEAN}
 \alias{forecast.SMEAN}
-\title{Forecast a trained SMEAN model}
+\title{Forecast a trained seasonal mean model}
 \usage{
 \method{forecast}{SMEAN}(object, new_data, specials = NULL, ...)
 }
 \arguments{
-\item{object}{Trained model.}
+\item{object}{An object of class \code{SMEAN}.}
 
-\item{new_data}{Forecast horizon.}
+\item{new_data}{Forecast horizon (n-step ahead forecast)}
 
 \item{specials}{Specials are currently not in use.}
 
-\item{...}{Further arguments.}
+\item{...}{Additional arguments for forecast method.}
 }
 \value{
-A \code{fable}.
+An object of class \code{fable}.
 }
 \description{
-Forecast a trained SMEAN model.
+Forecast a trained seasonal mean model.
 }

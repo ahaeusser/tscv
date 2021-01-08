@@ -2,16 +2,16 @@
 % Please edit documentation in R/SMEAN.R
 \name{model_sum.SMEAN}
 \alias{model_sum.SMEAN}
-\title{Provide a succinct summary of the SMEAN}
+\title{Provide a succinct summary of a trained seasonal mean model}
 \usage{
-\method{model_sum}{SMEAN}(x)
+\method{model_sum}{SMEAN}(object)
 }
 \arguments{
-\item{x}{The SMEAN to summarize.}
+\item{object}{An object of class \code{SMEAN}.}
 }
 \value{
 Model summary as character value.
 }
 \description{
-Provide a succinct summary of the SMEAN.
+Provide a succinct summary of a trained seasonal mean model.
 }

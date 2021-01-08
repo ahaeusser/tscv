@@ -2,7 +2,7 @@
 % Please edit documentation in R/SMEAN.R
 \name{SMEAN}
 \alias{SMEAN}
-\title{Automatic training of SMEANs}
+\title{Seasonal mean model}
 \usage{
 SMEAN(formula, ...)
 }
@@ -15,6 +15,7 @@ SMEAN(formula, ...)
 smean_model An object of class \code{SMEAN}.
 }
 \description{
-Automatic training seasonal mean model (SMEAN). This is equivalent to a linear regression
-   against seasonal dummy variables only (\code{TSLM(value ~ season())}).
+Automatic train a seasonal mean model (SMEAN). This is
+  equivalent to a linear regression against seasonal dummy variables only,
+  i.e. \code{TSLM(value ~ season())}.
 }

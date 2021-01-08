@@ -2,18 +2,18 @@
 % Please edit documentation in R/SMEAN.R
 \name{residuals.SMEAN}
 \alias{residuals.SMEAN}
-\title{Extract residuals from SMEAN}
+\title{Extract residuals from a trained seasonal mean model}
 \usage{
 \method{residuals}{SMEAN}(object, ...)
 }
 \arguments{
-\item{object}{The time series model used to produce the forecast.}
+\item{object}{An object of class \code{SMEAN}.}
 
-\item{...}{Further arguments.}
+\item{...}{Currently not in use.}
 }
 \value{
-Residuals as \code{tsibble}.
+Fitted values as tsibble.
 }
 \description{
-Extract residuals from SMEAN.
+Extract residuals from a trained seasonal mean model.
 }
