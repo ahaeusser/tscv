@@ -22,10 +22,10 @@ data(elec_load)
 }
 \description{
 Hourly tsibble with electricity loads and load forecasts
-   from the ENTSO-E Transparency Platform. The dataset contains time series data
-   from 2019-01-01 00:00:00 to 2019-12-31 23:00:00 for 8 bidding zones within
-   europe (DE, DK1, ES, FI, FR, NL, NO1, SE1). The data are aggregated in time
-   from a 15-minutes interval to an hourly basis.
+  from the ENTSO-E Transparency Platform. The dataset contains time series data
+  from 2019-01-01 00:00:00 to 2019-12-31 23:00:00 for 8 bidding zones within
+  europe (DE, DK1, ES, FI, FR, NL, NO1, SE1). The original data are on a
+  quarter-hourly basis (15-minutes interval), but aggregated to hourly data.
 }
 \examples{
 data(elec_load)

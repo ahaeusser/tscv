@@ -20,8 +20,8 @@ data(weather)
 }
 \description{
 Hourly \code{tsibble} with air temperature and humidity from
-   the DWD ("Deutscher Wetterdienst"). The dataset contains time series data
-   from 2019-01-01 00:00:00 to 2019-12-31 23:00:00 for Germany.
+  the DWD ("Deutscher Wetterdienst"). The dataset contains time series data
+  from 2019-01-01 00:00:00 to 2019-12-31 23:00:00 for Germany.
 }
 \examples{
 data(weather)

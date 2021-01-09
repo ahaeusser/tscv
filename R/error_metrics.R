@@ -1,9 +1,10 @@
 
 #' @title Estimate accuracy metrics to evaluate point forecast
 #'
-#' @description This function estimates several accuracy metrics to evaluate the
-#'    accuracy of the point forecasts. Either along the forecast horizon or along
-#'    the train-test-splits. By default, the following accuracy metrics are provided:
+#' @description This function estimates several accuracy metrics to evaluate
+#'   the accuracy of point forecasts. Either along the forecast horizon or
+#'   along the train-test-splits. By default, the following accuracy metrics
+#'   are provided:
 #'
 #'    \itemize{
 #'       \item{\code{ME}: mean error}

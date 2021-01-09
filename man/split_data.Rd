@@ -7,7 +7,7 @@
 split_data(data, n_init, n_ahead, n_skip = 0, n_lag = 0, mode = "slide")
 }
 \arguments{
-\item{data}{A valid \code{tsibble} in long format provided by the function \code{clean_data()}.}
+\item{data}{A valid \code{tsibble} in long format provided by the function \code{check_data()}.}
 
 \item{n_init}{Integer value. The number of periods for the initial training window (must be positive).}
 
@@ -29,9 +29,11 @@ data A \code{tsibble} in the same format as the input data, but with the followi
       }
 }
 \description{
-This function splits the data into training and testing (i.e. partitioning into time slices) for
-   time series cross-validation. The user can choose between \code{stretch} and \code{slide}. The first is an
-   expanding window approach, while the latter is a fixed window approach. The user can define the window sizes
-   for training and testing via \code{n_init} and \code{n_ahead}, as well as the step size for increments via
-   \code{n_step}.
+This function splits the data into training and testing samples
+  (i.e. partitioning into time slices) for time series cross-validation. The
+  user can choose between \code{stretch} and \code{slide}. The first is an
+  expanding window approach, while the latter is a fixed window approach.
+  The user can define the window sizes for training and testing via
+  \code{n_init} and \code{n_ahead}, as well as the step size for increments
+  via \code{n_step}.
 }

@@ -20,9 +20,10 @@ MAE of seasonal naive forecast. The in-sample MAE is required for scaling the sM
 A \code{tibble} containing the accuracy metrics for all key variables and models.
 }
 \description{
-This function estimates several accuracy metrics to evaluate the
-   accuracy of the point forecasts. Either along the forecast horizon or along
-   the train-test-splits. By default, the following accuracy metrics are provided:
+This function estimates several accuracy metrics to evaluate
+  the accuracy of point forecasts. Either along the forecast horizon or
+  along the train-test-splits. By default, the following accuracy metrics
+  are provided:
 
    \itemize{
       \item{\code{ME}: mean error}

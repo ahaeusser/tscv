@@ -1,9 +1,9 @@
 
 #' @title Check, convert and shape the input data
 #'
-#' @description This function checks whether the input data are a valid tsibble or not (regular spaced in time
+#' @description The function checks whether the input data are a valid tsibble or not (regular spaced in time
 #'    and ordered). Furthermore, implicit missing values are turned into explicit missing values (existing
-#'    missing values are left untouched). If the data are provided in wide format, they are gathered into
+#'    missing values are left untouched). If the data are provided in wide format, they are pivoted into
 #'    long format.
 #'
 #' @param data A valid tsibble, either in long or in wide format.
