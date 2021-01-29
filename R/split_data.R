@@ -94,23 +94,30 @@ split_data <- function(data,
   train <- bind_rows(train)
   test <- bind_rows(test)
 
-  # Add columns for sample and horizon
+  # Finalize data (add columns for sample and horizon and convert to tsibble)
   train <- train %>%
     mutate(sample = "train") %>%
-    mutate(horizon = NA_integer_)
+    mutate(horizon = NA_integer_) %>%
+    as_tsibble(
+      index = !!dttm,
+      key = c(!!!variable, split))
 
   test <- test %>%
     mutate(sample = "test") %>%
     group_by(!!!variable, split) %>%
     mutate(horizon = row_number()) %>%
-    ungroup()
-
-  data <- bind_rows(train, test)
-
-  data <- data %>%
+    ungroup() %>%
     as_tsibble(
       index = !!dttm,
       key = c(!!!variable, split))
 
-  return(data)
+  index <- tibble(
+    train_index = train_index,
+    test_index = test_index)
+
+  list(
+    train = train,
+    test = test,
+    index = index
+  )
 }
