@@ -4,15 +4,18 @@
 \alias{error_metrics}
 \title{Estimate accuracy metrics to evaluate point forecast}
 \usage{
-error_metrics(fcst, data, period = NULL, by = "split")
+error_metrics(fcst, test, train = NULL, period = NULL, by = "split")
 }
 \arguments{
 \item{fcst}{A \code{fable} containing the forecasts for the models, splits, etc.}
 
-\item{data}{A \code{tsibble} containing the training and testing data.}
+\item{test}{A \code{tsibble} containing the testing data.}
+
+\item{train}{A \code{tsibble} containing the training data.
+If \code{train = NULL}, no MASE is calculated.}
 
 \item{period}{Integer value. The period used for the estimation of the in-sample
-MAE of seasonal naive forecast. The in-sample MAE is required for scaling the sMASE.}
+MAE of seasonal naive forecast. The in-sample MAE is required for scaling the MASE.}
 
 \item{by}{Character value. Either accuracy is estimated by \code{split} or \code{horizon}.}
 }
@@ -34,6 +37,5 @@ This function estimates several accuracy metrics to evaluate
       \item{\code{sMAPE}: scaled mean absolute percentage error}
       \item{\code{MPE}: mean percentage error}
       \item{\code{MASE}: mean absolute scaled error}
-      \item{\code{sMASE}: seasonal mean absolute scaled error}
       }
 }

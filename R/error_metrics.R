@@ -15,20 +15,22 @@
 #'       \item{\code{sMAPE}: scaled mean absolute percentage error}
 #'       \item{\code{MPE}: mean percentage error}
 #'       \item{\code{MASE}: mean absolute scaled error}
-#'       \item{\code{sMASE}: seasonal mean absolute scaled error}
 #'       }
 #'
 #' @param fcst A \code{fable} containing the forecasts for the models, splits, etc.
-#' @param data A \code{tsibble} containing the training and testing data.
+#' @param test A \code{tsibble} containing the testing data.
+#' @param train A \code{tsibble} containing the training data.
+#'   If \code{train = NULL}, no MASE is calculated.
 #' @param period Integer value. The period used for the estimation of the in-sample
-#'    MAE of seasonal naive forecast. The in-sample MAE is required for scaling the sMASE.
+#'    MAE of seasonal naive forecast. The in-sample MAE is required for scaling the MASE.
 #' @param by Character value. Either accuracy is estimated by \code{split} or \code{horizon}.
 #'
 #' @return A \code{tibble} containing the accuracy metrics for all key variables and models.
 #' @export
 
 error_metrics <- function(fcst,
-                          data,
+                          test,
+                          train = NULL,
                           period = NULL,
                           by = "split") {
 
@@ -36,37 +38,42 @@ error_metrics <- function(fcst,
   target <- target_vars(fcst)
   value <- value_var(fcst)
 
+  # Check period (relevant for seasonal MASE)
   if (is_empty(period)) {
     period <- min(common_periods(data))
   }
 
-  # Prepare train and test data
-  # In-sample MAE of seasonal naive is required for scaling of MASE
-  train <- data %>%
-    filter(.data$sample == "train") %>%
+  # Prepare test data
+  test <- test %>%
     rename(actual = !!sym(value))
 
-  test <- data %>%
-    filter(.data$sample == "test") %>%
-    rename(actual = !!sym(value))
+  # Prepare train data. In-sample MAE of (seasonal) naive is required for
+  # scaling the MASE. If train = NULL, no MASE is calculated
 
-  # Estimate in-sample MAE for scaling of sMASE
-  mae_train <- train %>%
-    as_tibble() %>%
-    group_by(!!!syms(target), .data$split) %>%
-    mutate(lagged = dplyr::lag(.data$actual, n = period)) %>%
-    summarise(
-      mae_train = mae_vec(
-        truth = .data$actual,
-        estimate = .data$lagged)) %>%
-    ungroup()
+  if (is_empty(train)) {
+    mae_train <- NULL
+  } else {
+    train <- train %>%
+      rename(actual = !!sym(value))
 
-  # Join in-sample MAE to test data
-  test <- left_join(
-    x = test,
-    y = mae_train,
-    by = c(target, "split")
-  )
+    # Estimate in-sample MAE
+    mae_train <- train %>%
+      as_tibble() %>%
+      group_by(!!!syms(target), .data$split) %>%
+      mutate(lagged = dplyr::lag(.data$actual, n = period)) %>%
+      summarise(
+        mae_train = mae_vec(
+          truth = .data$actual,
+          estimate = .data$lagged)) %>%
+      ungroup()
+
+    # Join in-sample MAE to test data
+    test <- left_join(
+      x = test,
+      y = mae_train,
+      by = c(target, "split")
+    )
+  }
 
   # Extract point forecasts
   fcst <- fcst %>%
@@ -95,23 +102,28 @@ error_metrics <- function(fcst,
     arrange(!!!syms(target), .data$.model, !!sym(by)) %>%
     ungroup()
 
-  # Estimate seasonal MASE
-  mase <- data %>%
-    as_tibble() %>%
-    mutate(q = (.data$actual - !!sym(value)) / mae_train) %>%
-    group_by(!!!syms(target), .data$.model, !!sym(by)) %>%
-    summarise(
-      MASE = mean(abs(q), na.rm = TRUE)) %>%
-    ungroup()
+  # Estimate (seasonal) MASE
+  if (is_empty(train)) {
+    mase <- NULL
+  } else {
+    mase <- data %>%
+      as_tibble() %>%
+      mutate(q = (.data$actual - !!sym(value)) / mae_train) %>%
+      group_by(!!!syms(target), .data$.model, !!sym(by)) %>%
+      summarise(
+        MASE = mean(abs(q), na.rm = TRUE)) %>%
+      ungroup()
 
-  metrics <- left_join(
-    x = metrics,
-    y = mase,
-    by = c(target, ".model", by)
-  )
+    metrics <- left_join(
+      x = metrics,
+      y = mase,
+      by = c(target, ".model", by)
+    )
+  }
 
-  set_metrics <- c(
-    "ME", "MAE", "MSE", "RMSE", "MAPE", "sMAPE", "MPE", "MASE")
+  column_all <- names(metrics)
+  column_drop <- c(target, ".model", by)
+  set_metrics <- column_all[!column_all %in% column_drop]
 
   metrics <- metrics %>%
     pivot_longer(
