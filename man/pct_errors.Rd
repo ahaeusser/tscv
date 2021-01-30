@@ -4,16 +4,16 @@
 \alias{pct_errors}
 \title{Calculate percentage forecast errors}
 \usage{
-pct_errors(fcst, data)
+pct_errors(fcst, test)
 }
 \arguments{
 \item{fcst}{A \code{fable} containing the forecasts for the models, splits, etc.}
 
-\item{data}{A \code{tsibble} containing the training and testing data.}
+\item{test}{A \code{tsibble} containing the testing data.}
 }
 \value{
 errors A \code{tsibble}.
 }
 \description{
-\code{error} calculates percentage forecast errors (actual - fcst / actual) * 100.
+\code{pct_error} calculates percentage forecast errors (actual - fcst / actual) * 100.
 }
