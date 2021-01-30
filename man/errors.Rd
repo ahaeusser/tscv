@@ -4,12 +4,12 @@
 \alias{errors}
 \title{Calculate forecast errors}
 \usage{
-errors(fcst, data)
+errors(fcst, test)
 }
 \arguments{
 \item{fcst}{A \code{fable} containing the forecasts for the models, splits, etc.}
 
-\item{data}{A \code{tsibble} containing the training and testing data.}
+\item{test}{A \code{tsibble} containing the testing data.}
 }
 \value{
 errors A \code{tsibble}.
