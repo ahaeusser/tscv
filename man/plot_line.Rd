@@ -2,29 +2,24 @@
 % Please edit documentation in R/plot_line.R
 \name{plot_line}
 \alias{plot_line}
-\title{Plot time series as line chart}
+\title{Plot data as line chart}
 \usage{
 plot_line(
   data,
   x,
   y,
-  facet = NULL,
+  facet_var = NULL,
+  facet_scale = "free",
   color = NULL,
   title = NULL,
   subtitle = NULL,
   xlab = NULL,
   ylab = NULL,
   caption = NULL,
-  line_width = 0.75,
+  line_size = 0.75,
   line_type = "solid",
   line_color = "grey35",
   line_alpha = 1,
-  stat_method = NULL,
-  stat_width = 0.75,
-  stat_type = "solid",
-  stat_color = "#D55E00",
-  stat_fill = "grey35",
-  stat_alpha = 0.25,
   theme_set = theme_tscv(),
   theme_config = list(),
   ...
@@ -37,7 +32,9 @@ plot_line(
 
 \item{y}{Unquoted column within \code{.data} containing numeric values.}
 
-\item{facet}{Unquoted column within \code{.data} (facet).}
+\item{facet_var}{Unquoted column within \code{.data} (facet).}
+
+\item{facet_scale}{Character value defining axis scaling (\code{facet_var = "free"} or \code{facet_var = "fixed"}).}
 
 \item{color}{Unquoted column within \code{.data} (color).}
 
@@ -51,35 +48,23 @@ plot_line(
 
 \item{caption}{Caption of the plot.}
 
-\item{line_width}{Numeric value defining the line width (time series).}
+\item{line_size}{Numeric value defining the line width.}
 
-\item{line_type}{Numeric value defining the line type (time series).}
+\item{line_type}{Numeric value defining the line type.}
 
 \item{line_color}{Character value defining the line color (ignored if \code{color} is present).}
 
 \item{line_alpha}{Numeric value defining the transparency of the line.}
 
-\item{stat_method}{Character value. The smoothing method (\code{NULL}, \code{"loess"}, \code{"lm"}, \code{"glm"}, \code{"gam"}).}
-
-\item{stat_width}{Numeric value defining the line width (smooth curve).}
-
-\item{stat_type}{Numeric value defining the line type (smooth curve).}
-
-\item{stat_color}{Character value defining the line color (ignored if \code{color} is present).}
-
-\item{stat_fill}{Character value defining the fill color of confidence band.}
-
-\item{stat_alpha}{Numeric value defining the transparency of confidence band.}
-
 \item{theme_set}{A complete ggplot2 theme.}
 
 \item{theme_config}{A list with further arguments passed to \code{ggplot2::theme()}.}
 
-\item{...}{Further arguments passed to \code{ggplot2::stat_smooth()}}
+\item{...}{Currently not in use.}
 }
 \value{
 p An object of class ggplot.
 }
 \description{
-Plot one or more time series incl. smooth curve (linear or loess) as line chart.
+Plot one or more variables as line chart.
 }
