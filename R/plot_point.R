@@ -8,6 +8,8 @@
 #' @param y Unquoted column within \code{.data} containing numeric values.
 #' @param facet_var Unquoted column within \code{.data} (facet).
 #' @param facet_scale Character value defining axis scaling (\code{facet_var = "free"} or \code{facet_var = "fixed"}).
+#' @param facet_nrow Integer value. The number of rows.
+#' @param facet_ncol Integer value. The number of columns.
 #' @param color Unquoted column within \code{.data} (color).
 #' @param title Title of the plot.
 #' @param subtitle Subtitle of the plot.
@@ -30,6 +32,8 @@ plot_point <- function(data,
                        y,
                        facet_var = NULL,
                        facet_scale = "free",
+                       facet_nrow = NULL,
+                       facet_ncol = NULL,
                        color = NULL,
                        title = NULL,
                        subtitle = NULL,
@@ -73,8 +77,10 @@ plot_point <- function(data,
   # Create facet
   if (!quo_is_null(enquo(facet_var))) {
     p <- p + facet_wrap(
-      vars({{facet_var}}),
-      scales = facet_scale
+      facets = vars({{facet_var}}),
+      scales = facet_scale,
+      nrow = facet_nrow,
+      ncol = facet_ncol
     )
   }
 
