@@ -7,7 +7,10 @@
 plot_qq(
   data,
   x,
-  facet = NULL,
+  facet_var = NULL,
+  facet_scale = "free",
+  facet_nrow = NULL,
+  facet_ncol = NULL,
   color = NULL,
   title = NULL,
   subtitle = NULL,
@@ -35,7 +38,13 @@ plot_qq(
 
 \item{x}{Unquoted column within \code{.data} containing numeric values.}
 
-\item{facet}{Unquoted column within \code{.data} (facet).}
+\item{facet_var}{Unquoted column within \code{.data} (facet).}
+
+\item{facet_scale}{Character value defining axis scaling (\code{facet_var = "free"} or \code{facet_var = "fixed"}).}
+
+\item{facet_nrow}{Integer value. The number of rows.}
+
+\item{facet_ncol}{Integer value. The number of columns.}
 
 \item{color}{Unquoted column within \code{.data} (color).}
 
