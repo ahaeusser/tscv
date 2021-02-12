@@ -8,6 +8,8 @@
 #' @param y Unquoted column within \code{.data} containing numeric values.
 #' @param facet_var Unquoted column within \code{.data} (facet).
 #' @param facet_scale Character value defining axis scaling. Possible values are \code{"free"}, \code{"fixed"}, \code{"free_x"} and \code{"free_y"}.
+#' @param facet_nrow Integer value. The number of rows.
+#' @param facet_ncol Integer value. The number of columns.
 #' @param color Unquoted column within \code{.data} (color).
 #' @param flip Logical value. If \code{TRUE}, the plot is flipped from horizontal to vertical.
 #' @param title Title of the plot.
@@ -30,6 +32,8 @@ plot_bar <- function(data,
                      y,
                      facet_var = NULL,
                      facet_scale = "free",
+                     facet_nrow = NULL,
+                     facet_ncol = NULL,
                      color = NULL,
                      flip = FALSE,
                      title = NULL,
@@ -73,8 +77,10 @@ plot_bar <- function(data,
   # Create facet
   if (!quo_is_null(enquo(facet_var))) {
     p <- p + facet_wrap(
-      vars({{facet_var}}),
-      scales = facet_scale
+      facets = vars({{facet_var}}),
+      scales = facet_scale,
+      nrow = facet_nrow,
+      ncol = facet_ncol
     )
   }
 

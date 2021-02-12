@@ -10,6 +10,8 @@ plot_bar(
   y,
   facet_var = NULL,
   facet_scale = "free",
+  facet_nrow = NULL,
+  facet_ncol = NULL,
   color = NULL,
   flip = FALSE,
   title = NULL,
@@ -35,6 +37,10 @@ plot_bar(
 \item{facet_var}{Unquoted column within \code{.data} (facet).}
 
 \item{facet_scale}{Character value defining axis scaling. Possible values are \code{"free"}, \code{"fixed"}, \code{"free_x"} and \code{"free_y"}.}
+
+\item{facet_nrow}{Integer value. The number of rows.}
+
+\item{facet_ncol}{Integer value. The number of columns.}
 
 \item{color}{Unquoted column within \code{.data} (color).}
 
