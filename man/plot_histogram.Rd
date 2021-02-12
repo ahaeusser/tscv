@@ -2,12 +2,15 @@
 % Please edit documentation in R/plot_histogram.R
 \name{plot_histogram}
 \alias{plot_histogram}
-\title{Plot the histogram of time series}
+\title{Plot data as histogram}
 \usage{
 plot_histogram(
   data,
   x,
-  facet = NULL,
+  facet_var = NULL,
+  facet_scale = "free",
+  facet_nrow = NULL,
+  facet_ncol = NULL,
   color = NULL,
   fill = NULL,
   title = NULL,
@@ -29,7 +32,13 @@ plot_histogram(
 
 \item{x}{Unquoted column within \code{.data} containing numeric values.}
 
-\item{facet}{Unquoted column within \code{.data} (facet).}
+\item{facet_var}{Unquoted column within \code{.data} (facet).}
+
+\item{facet_scale}{Character value defining axis scaling (\code{facet_var = "free"} or \code{facet_var = "fixed"}).}
+
+\item{facet_nrow}{Integer value. The number of rows.}
+
+\item{facet_ncol}{Integer value. The number of columns.}
 
 \item{color}{Unquoted column within \code{.data} (color).}
 
@@ -63,5 +72,5 @@ plot_histogram(
 p An object of class ggplot.
 }
 \description{
-Plot the histogram of one or more time series.
+Plot one or more variables as histogram.
 }
