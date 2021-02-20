@@ -82,6 +82,7 @@ plot_bar <- function(data,
       nrow = facet_nrow,
       ncol = facet_ncol
     )
+   p <- p + scale_x_reordered()
   }
 
   # Flip plot (from horizontal to vertical)
