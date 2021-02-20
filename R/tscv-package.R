@@ -15,6 +15,7 @@
 #' @importFrom scales pretty_breaks
 #' @importFrom stats approx quantile qnorm median mad sd as.ts acf pacf lag time density
 #' @importFrom grDevices colorRampPalette
+#' @importFrom tidytext scale_x_reordered
 #' @rawNamespace import(ggplot2, except = stat_qq_line)
 #' @importFrom qqplotr stat_qq_point stat_qq_line stat_qq_band
 #' @import tsibble
