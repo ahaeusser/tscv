@@ -14,6 +14,7 @@ plot_bar(
   facet_ncol = NULL,
   color = NULL,
   flip = FALSE,
+  reorder = FALSE,
   title = NULL,
   subtitle = NULL,
   xlab = NULL,
@@ -45,6 +46,8 @@ plot_bar(
 \item{color}{Unquoted column within \code{.data} (color).}
 
 \item{flip}{Logical value. If \code{TRUE}, the plot is flipped from horizontal to vertical.}
+
+\item{reorder}{Logical value. If \code{TRUE}, the values are reordered within each facet.}
 
 \item{title}{Title of the plot.}
 

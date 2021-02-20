@@ -12,6 +12,7 @@
 #' @param facet_ncol Integer value. The number of columns.
 #' @param color Unquoted column within \code{.data} (color).
 #' @param flip Logical value. If \code{TRUE}, the plot is flipped from horizontal to vertical.
+#' @param reorder Logical value. If \code{TRUE}, the values are reordered within each facet.
 #' @param title Title of the plot.
 #' @param subtitle Subtitle of the plot.
 #' @param xlab Label for the x-axis.
@@ -36,6 +37,7 @@ plot_bar <- function(data,
                      facet_ncol = NULL,
                      color = NULL,
                      flip = FALSE,
+                     reorder = FALSE,
                      title = NULL,
                      subtitle = NULL,
                      xlab = NULL,
@@ -80,9 +82,11 @@ plot_bar <- function(data,
       facets = vars({{facet_var}}),
       scales = facet_scale,
       nrow = facet_nrow,
-      ncol = facet_ncol
-    )
-   p <- p + scale_x_reordered()
+      ncol = facet_ncol)
+
+    if (reorder == TRUE) {
+      p <- p + scale_x_reordered()
+    }
   }
 
   # Flip plot (from horizontal to vertical)
