@@ -202,7 +202,7 @@ lst_to_env <- function(x,
 
 #' @title Negated value matching
 #'
-#' @description \code{%out%} is the negation of \code{%in%}.
+#' @description The function '%out%' is the negation of '%in%'.
 #'
 #' @param x Values to be matched.
 #' @param table Values to be matched against.

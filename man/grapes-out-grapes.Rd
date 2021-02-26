@@ -15,5 +15,5 @@ x \%out\% table
 Logical vector, indicating if a non-match was located for each element of x
 }
 \description{
-
+The function '%out%' is the negation of '%in%'.
 }
