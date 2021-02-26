@@ -167,3 +167,51 @@ smooth_outlier <- function(x,
 
   return(x)
 }
+
+
+
+
+#' @title Assign objects within a list to an environment
+#'
+#' @description \code{lst_to_env} is a helper function that assigns
+#'   the objects within a list to an environment.
+#'
+#' @param x A list containing the objects to assign.
+#' @param envir The environment to use (default is \code{.GlobalEnv}).
+#' @param ... Further arguments passed to \code{assign()}.
+
+#' @export
+
+lst_to_env <- function(x,
+                       envir = .GlobalEnv,
+                       ...) {
+
+  lst_names <- names(x)
+
+  for (i in lst_names) {
+    assign(
+      x = i,
+      value = x[[i]],
+      envir = envir,
+      ...
+    )
+  }
+}
+
+
+
+#' @title Negated value matching
+#'
+#' @description \code{%out%} is the negation of \code{%in%}.
+#'
+#' @param x Values to be matched.
+#' @param table Values to be matched against.
+#'
+#' @return Logical vector, indicating if a non-match was located for each element of x
+#' @export
+
+'%out%' <- function(x,
+                    table) {
+  match(x, table, nomatch = 0L) == 0L
+}
+
