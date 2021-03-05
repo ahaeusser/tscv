@@ -215,3 +215,32 @@ lst_to_env <- function(x,
   match(x, table, nomatch = 0L) == 0L
 }
 
+
+
+
+#' @title Create a name for a folder or file
+#'
+#' @description The function creates a name for a folder or file.
+#'
+#' @param primary Character value. Primary file name to be used.
+#' @param extension Character value. File name extension to be used
+#'   (e.g. \code{".csv"}, \code{".rda"}).
+#' @param add_time Logical value. If \code{TRUE}, a time stamp is added in
+#'   front of the file name.
+#'
+#' @return Character value.
+#' @export
+
+create_name <- function(primary,
+                        extension = NULL,
+                        add_time = TRUE) {
+
+  if (add_time == TRUE) {
+    time_stamp <- format(Sys.time(), format = "%Y%m%d_%H%M%S")
+    time_stamp <- paste0(time_stamp, "_")
+  } else {
+    time_stamp <- NULL
+  }
+
+  paste0(time_stamp, primary, extension)
+}
