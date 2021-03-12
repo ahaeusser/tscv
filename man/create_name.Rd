@@ -4,7 +4,12 @@
 \alias{create_name}
 \title{Create a name for a folder or file}
 \usage{
-create_name(primary, extension = NULL, add_time = TRUE)
+create_name(
+  primary,
+  extension = NULL,
+  add_time = TRUE,
+  time_format = "\%Y\%m\%d_\%H\%M\%S"
+)
 }
 \arguments{
 \item{primary}{Character value. Primary file name to be used.}
@@ -14,6 +19,8 @@ create_name(primary, extension = NULL, add_time = TRUE)
 
 \item{add_time}{Logical value. If \code{TRUE}, a time stamp is added in
 front of the file name.}
+
+\item{time_format}{Character value. The time format of the time stamp.}
 }
 \value{
 Character value.
