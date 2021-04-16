@@ -34,8 +34,6 @@ library(tidyverse)
 library(tsibble)
 library(fable)
 library(feasts)
-Sys.setlocale("LC_TIME", "C")
-#> [1] "C"
 ```
 
 ## Data preparation
@@ -45,14 +43,14 @@ electricity spot prices in \[EUR/MWh\] from the ENTSO-E Transparency
 Platform. The dataset contains time series data from 2019-01-01 to
 2019-12-31 for 8 european bidding zones (BZN):
 
-  - DE: Germany (including Luxembourg)
-  - DK: Denmark
-  - ES: Spain
-  - FI: Finland
-  - FR: France
-  - NL: Netherlands
-  - NO1: Norway 1 (Oslo)
-  - SE1: Sweden 1 (Lulea)
+-   DE: Germany (including Luxembourg)
+-   DK: Denmark
+-   ES: Spain
+-   FI: Finland
+-   FR: France
+-   NL: Netherlands
+-   NO1: Norway 1 (Oslo)
+-   SE1: Sweden 1 (Lulea)
 
 In this vignette, we will use only four time series to demonstrate the
 functionality of the package (the data set is filtered to the bidding
@@ -69,7 +67,7 @@ the four time series.
 # Prepare dataset
 data <- elec_price %>%
   filter(BZN %in% c("DE", "FR", "NO1", "SE1")) %>%
-  clean_data()
+  check_data()
 
 data
 #> # A tsibble: 35,040 x 5 [1h] <UTC>
@@ -93,7 +91,7 @@ data %>%
     x = Time,
     y = Value,
     color = BZN,
-    facet = BZN,
+    facet_var = BZN,
     title = "Day-ahead Electricity Spot Price",
     subtitle = "2019-03-01 to 2019-03-15",
     xlab = "Time",
@@ -130,8 +128,9 @@ data <- data %>%
     n_skip = n_skip,
     n_lag = n_lag)
 
-data
-#> # A tsibble: 2,579,136 x 9 [1h] <UTC>
+train <- data$train
+train
+#> # A tsibble: 2,553,600 x 9 [1h] <UTC>
 #> # Key:       Series, Unit, BZN, split [1,064]
 #>    Time                Series     Unit   BZN    Value split    id sample horizon
 #>    <dttm>              <chr>      <chr>  <chr>  <dbl> <int> <int> <chr>    <int>
@@ -145,7 +144,25 @@ data
 #>  8 2019-01-01 07:00:00 Day-ahead~ [EUR/~ DE     -4.93     1     8 train       NA
 #>  9 2019-01-01 08:00:00 Day-ahead~ [EUR/~ DE     -6.33     1     9 train       NA
 #> 10 2019-01-01 09:00:00 Day-ahead~ [EUR/~ DE     -4.93     1    10 train       NA
-#> # ... with 2,579,126 more rows
+#> # ... with 2,553,590 more rows
+
+test <- data$test
+test
+#> # A tsibble: 25,536 x 9 [1h] <UTC>
+#> # Key:       Series, Unit, BZN, split [1,064]
+#>    Time                Series      Unit   BZN   Value split    id sample horizon
+#>    <dttm>              <chr>       <chr>  <chr> <dbl> <int> <int> <chr>    <int>
+#>  1 2019-04-11 00:00:00 Day-ahead ~ [EUR/~ DE     37.1     1  2401 test         1
+#>  2 2019-04-11 01:00:00 Day-ahead ~ [EUR/~ DE     36.5     1  2402 test         2
+#>  3 2019-04-11 02:00:00 Day-ahead ~ [EUR/~ DE     37.1     1  2403 test         3
+#>  4 2019-04-11 03:00:00 Day-ahead ~ [EUR/~ DE     38.9     1  2404 test         4
+#>  5 2019-04-11 04:00:00 Day-ahead ~ [EUR/~ DE     47.9     1  2405 test         5
+#>  6 2019-04-11 05:00:00 Day-ahead ~ [EUR/~ DE     56.4     1  2406 test         6
+#>  7 2019-04-11 06:00:00 Day-ahead ~ [EUR/~ DE     59.2     1  2407 test         7
+#>  8 2019-04-11 07:00:00 Day-ahead ~ [EUR/~ DE     51.7     1  2408 test         8
+#>  9 2019-04-11 08:00:00 Day-ahead ~ [EUR/~ DE     48.6     1  2409 test         9
+#> 10 2019-04-11 09:00:00 Day-ahead ~ [EUR/~ DE     46.0     1  2410 test        10
+#> # ... with 25,526 more rows
 ```
 
 The function `summarise_split()` provides a summary table of the
@@ -156,20 +173,20 @@ testing slice or not.
 
 ``` r
 # Summarize split into training and testing data
-data %>% summarise_split()
-#> # A tibble: 266 x 5
-#>    split time_train              time_test               index_train index_test 
-#>    <int> <chr>                   <chr>                   <chr>       <chr>      
-#>  1     1 [2019-01-01, 2019-04-1~ [2019-04-11, 2019-04-1~ [0001, 240~ [2401, 242~
-#>  2     2 [2019-01-02, 2019-04-1~ [2019-04-12, 2019-04-1~ [0025, 242~ [2425, 244~
-#>  3     3 [2019-01-03, 2019-04-1~ [2019-04-13, 2019-04-1~ [0049, 244~ [2449, 247~
-#>  4     4 [2019-01-04, 2019-04-1~ [2019-04-14, 2019-04-1~ [0073, 247~ [2473, 249~
-#>  5     5 [2019-01-05, 2019-04-1~ [2019-04-15, 2019-04-1~ [0097, 249~ [2497, 252~
-#>  6     6 [2019-01-06, 2019-04-1~ [2019-04-16, 2019-04-1~ [0121, 252~ [2521, 254~
-#>  7     7 [2019-01-07, 2019-04-1~ [2019-04-17, 2019-04-1~ [0145, 254~ [2545, 256~
-#>  8     8 [2019-01-08, 2019-04-1~ [2019-04-18, 2019-04-1~ [0169, 256~ [2569, 259~
-#>  9     9 [2019-01-09, 2019-04-1~ [2019-04-19, 2019-04-1~ [0193, 259~ [2593, 261~
-#> 10    10 [2019-01-10, 2019-04-1~ [2019-04-20, 2019-04-2~ [0217, 261~ [2617, 264~
+data$index
+#> # A tibble: 266 x 2
+#>    train_index   test_index
+#>    <list>        <list>    
+#>  1 <int [2,400]> <int [24]>
+#>  2 <int [2,400]> <int [24]>
+#>  3 <int [2,400]> <int [24]>
+#>  4 <int [2,400]> <int [24]>
+#>  5 <int [2,400]> <int [24]>
+#>  6 <int [2,400]> <int [24]>
+#>  7 <int [2,400]> <int [24]>
+#>  8 <int [2,400]> <int [24]>
+#>  9 <int [2,400]> <int [24]>
+#> 10 <int [2,400]> <int [24]>
 #> # ... with 256 more rows
 ```
 
@@ -186,11 +203,10 @@ from package `forecast` or `ELM()` and `MLP()` from package `nnfor`).
 
 ``` r
 # Model training
-data <- data %>%
+train <- train %>%
   filter(split %in% c(1:100))
 
-models <- data %>%
-  filter(sample == "train") %>%
+models <- train %>%
   model(
     sNaive = SNAIVE(Value ~ lag("week")),
     sMean = SMEAN(Value ~ lag("week")),
@@ -237,7 +253,7 @@ fcst
 
 plot_forecast(
   fcst = fcst,
-  data = data,
+  data = bind_rows(train, test),
   include = 48,
   split = c(10, 11),
   title = "Day-ahead electricity spot price forecast",
@@ -255,14 +271,14 @@ To evaluate the forecast accuracy, the function `error_metrics()` is
 used. You can define whether to evaluate the accuracy by `horizon` or by
 `split`. Several accuracy metrics are available:
 
-  - `ME`: mean error
-  - `MAE`: mean absolute error
-  - `MSE`: mean squared error
-  - `RMSE`: root mean squared error
-  - `MAPE`: mean absolute percentage error
-  - `sMAPE`: scaled mean absolute percentage error
-  - `MPE`: mean percentage error
-  - `MASE`: mean absolute scale error
+-   `ME`: mean error
+-   `MAE`: mean absolute error
+-   `MSE`: mean squared error
+-   `RMSE`: root mean squared error
+-   `MAPE`: mean absolute percentage error
+-   `sMAPE`: scaled mean absolute percentage error
+-   `MPE`: mean percentage error
+-   `MASE`: mean absolute scale error
 
 ### Forecast accuracy by forecast horizon
 
@@ -270,7 +286,8 @@ used. You can define whether to evaluate the accuracy by `horizon` or by
 # Estimate error metrics
 metrics_horizon <- error_metrics(
   fcst = fcst,
-  data = data,
+  test = test,
+  train = train,
   period = 168,
   by = "horizon")
 
@@ -310,7 +327,8 @@ metrics_horizon %>%
 # Estimate error metrics
 metrics_split <- error_metrics(
   fcst = fcst,
-  data = data,
+  test = test,
+  train = train,
   period = 168,
   by = "split")
 

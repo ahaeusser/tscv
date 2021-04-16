@@ -39,8 +39,11 @@ library(tidyverse)
 library(tsibble)
 library(fable)
 library(feasts)
+```
+```{r abbreviations, echo=FALSE, warning=FALSE, message=FALSE, results='hide'}
 Sys.setlocale("LC_TIME", "C")
 ```
+
 
 ## Data preparation
 
@@ -61,7 +64,7 @@ In this vignette, we will use only four time series to demonstrate the functiona
 # Prepare dataset
 data <- elec_price %>%
   filter(BZN %in% c("DE", "FR", "NO1", "SE1")) %>%
-  clean_data()
+  check_data()
 
 data
 
@@ -70,7 +73,7 @@ data %>%
     x = Time,
     y = Value,
     color = BZN,
-    facet = BZN,
+    facet_var = BZN,
     title = "Day-ahead Electricity Spot Price",
     subtitle = "2019-03-01 to 2019-03-15",
     xlab = "Time",
@@ -99,7 +102,12 @@ data <- data %>%
     n_skip = n_skip,
     n_lag = n_lag)
 
-data
+train <- data$train
+train
+
+test <- data$test
+test
+
 ```
 
 
@@ -107,7 +115,7 @@ The function `summarise_split()` provides a summary table of the partitioning in
 
 ```{r summarise_split}
 # Summarize split into training and testing data
-data %>% summarise_split()
+data$index
 ```
 
 ## Training and forecasting
@@ -116,11 +124,10 @@ The data are splitted into training and testing slices and we are ready to forec
 
 ```{r train_models}
 # Model training
-data <- data %>%
+train <- train %>%
   filter(split %in% c(1:100))
 
-models <- data %>%
-  filter(sample == "train") %>%
+models <- train %>%
   model(
     sNaive = SNAIVE(Value ~ lag("week")),
     sMean = SMEAN(Value ~ lag("week")),
@@ -137,7 +144,7 @@ fcst
 
 plot_forecast(
   fcst = fcst,
-  data = data,
+  data = bind_rows(train, test),
   include = 48,
   split = c(10, 11),
   title = "Day-ahead electricity spot price forecast",
@@ -167,7 +174,8 @@ To evaluate the forecast accuracy, the function `error_metrics()` is used. You c
 # Estimate error metrics
 metrics_horizon <- error_metrics(
   fcst = fcst,
-  data = data,
+  test = test,
+  train = train,
   period = 168,
   by = "horizon")
 
@@ -191,7 +199,8 @@ metrics_horizon %>%
 # Estimate error metrics
 metrics_split <- error_metrics(
   fcst = fcst,
-  data = data,
+  test = test,
+  train = train,
   period = 168,
   by = "split")
 
