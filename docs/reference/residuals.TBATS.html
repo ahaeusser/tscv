@@ -6,14 +6,14 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Extract residuals from a TBATS — residuals.TBATS • tscv</title>
+<title>Extract residuals from a trained TBATS model — residuals.TBATS • tscv</title>
 
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
 
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Extract residuals from a TBATS — residuals.TBATS" />
-<meta property="og:description" content="Extract residuals from a TBATS." />
+<meta property="og:title" content="Extract residuals from a trained TBATS model — residuals.TBATS" />
+<meta property="og:description" content="Extract residuals from a trained TBATS model." />
 
 
 
@@ -80,7 +80,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -95,10 +95,13 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/cross_validation.html">Time Series Cross Validation</a>
+      <a href="../articles/vignette_01_introduction.html">Introduction</a>
     </li>
     <li>
-      <a href="../articles/data_visualization.html">Visualization of Time Series Data</a>
+      <a href="../articles/vignette_02_cross_validation.html">Time Series Cross Validation</a>
+    </li>
+    <li>
+      <a href="../articles/vignette_03_data_visualization.html">Visualization of Time Series Data</a>
     </li>
   </ul>
 </li>
@@ -106,7 +109,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/ahaeusser/tscv/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -123,13 +126,13 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Extract residuals from a TBATS</h1>
+    <h1>Extract residuals from a trained TBATS model</h1>
     <small class="dont-index">Source: <a href='https://github.com/ahaeusser/tscv/blob/master/R/TBATS.R'><code>R/TBATS.R</code></a></small>
     <div class="hidden name"><code>residuals.TBATS.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Extract residuals from a TBATS.</p>
+    <p>Extract residuals from a trained TBATS model.</p>
     </div>
 
     <pre class="usage"><span class='co'># S3 method for TBATS</span>
@@ -140,17 +143,17 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>object</th>
-      <td><p>The time series model used to produce the forecast.</p></td>
+      <td><p>An object of class <code>TBATS</code>.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>Further arguments.</p></td>
+      <td><p>Currently not in use.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Residuals as <code>tsibble</code>.</p>
+    <p>Fitted values as tsibble.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

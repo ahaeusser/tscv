@@ -6,14 +6,14 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Summary table of the splitting into training and testing. — summarise_split • tscv</title>
+<title>Summary table of the splitting into training and testing — summarise_split • tscv</title>
 
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
 
@@ -39,10 +39,11 @@
 
 
 
-<meta property="og:title" content="Summary table of the splitting into training and testing. — summarise_split" />
+<meta property="og:title" content="Summary table of the splitting into training and testing — summarise_split" />
 <meta property="og:description" content="This functions provides a summary table of the splitting into the
-    training and testing data. This means, the function is applied to the result
-    of a call to split_data(...).
+  training and testing data giving the start and end date for each train-test
+  sample and the corresponding index as integer.. This means, the function is
+  applied to the result of a call to split_data(...).
 
 slice: Time slice
 dates_train: Date (or date-time) range of the training data
@@ -90,7 +91,7 @@ index_test: Index range of the testing data
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -105,10 +106,13 @@ index_test: Index range of the testing data
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/cross_validation.html">Time Series Cross Validation</a>
+      <a href="../articles/vignette_01_introduction.html">Introduction</a>
     </li>
     <li>
-      <a href="../articles/data_visualization.html">Visualization of Time Series Data</a>
+      <a href="../articles/vignette_02_cross_validation.html">Time Series Cross Validation</a>
+    </li>
+    <li>
+      <a href="../articles/vignette_03_data_visualization.html">Visualization of Time Series Data</a>
     </li>
   </ul>
 </li>
@@ -116,7 +120,7 @@ index_test: Index range of the testing data
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/ahaeusser/tscv/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -133,15 +137,16 @@ index_test: Index range of the testing data
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Summary table of the splitting into training and testing.</h1>
+    <h1>Summary table of the splitting into training and testing</h1>
     <small class="dont-index">Source: <a href='https://github.com/ahaeusser/tscv/blob/master/R/summarise_split.R'><code>R/summarise_split.R</code></a></small>
     <div class="hidden name"><code>summarise_split.Rd</code></div>
     </div>
 
     <div class="ref-description">
     <p>This functions provides a summary table of the splitting into the
-    training and testing data. This means, the function is applied to the result
-    of a call to <code><a href='split_data.html'>split_data(...)</a></code>.</p>
+  training and testing data giving the start and end date for each train-test
+  sample and the corresponding index as integer.. This means, the function is
+  applied to the result of a call to <code><a href='split_data.html'>split_data(...)</a></code>.</p>
 <p></p><ul>
 <li><p><code>slice</code>: Time slice</p></li>
 <li><p><code>dates_train</code>: Date (or date-time) range of the training data</p></li>
@@ -159,7 +164,7 @@ index_test: Index range of the testing data
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>data</th>
-      <td><p>A valid tsibble in long format with one measurment variable and multiple keys.
+      <td><p>A valid tsibble in long format with one measurement variable and multiple keys.
 One of the keys must be <code>slice</code>.</p></td>
     </tr>
     </table>

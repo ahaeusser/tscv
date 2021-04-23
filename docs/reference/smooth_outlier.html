@@ -6,14 +6,14 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Identify and smooth outliers. — smooth_outlier • tscv</title>
+<title>Identify and replace outliers — smooth_outlier • tscv</title>
 
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
 
@@ -39,12 +39,14 @@
 
 
 
-<meta property="og:title" content="Identify and smooth outliers. — smooth_outlier" />
-<meta property="og:description" content="smooth_outliers identifies and adjusts outliers. The time
-   series is decomposed via STL decomposition into trend, season and
-   remainder. The IQR method is then applied to the remainder to
-   identify and replace outliers with NAs. Afterwards, the NAs are linearly
-   interpolated and the time series is additive reconstructed." />
+<meta property="og:title" content="Identify and replace outliers — smooth_outlier" />
+<meta property="og:description" content="The function smooth_outlier() is a wrapper
+  for forecast::tsoutliers(), working with numeric vectors. For
+  non-seasonal time series, the supsmu method is used. For seasonal
+  time series, the series is decomposed via STL and the IQR method is
+  used on the remainder component. Values outside the range are
+  linear interpolated on the remainder and the series is reconstructed
+  with the corrected remainder component." />
 
 
 
@@ -84,7 +86,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -99,10 +101,13 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/cross_validation.html">Time Series Cross Validation</a>
+      <a href="../articles/vignette_01_introduction.html">Introduction</a>
     </li>
     <li>
-      <a href="../articles/data_visualization.html">Visualization of Time Series Data</a>
+      <a href="../articles/vignette_02_cross_validation.html">Time Series Cross Validation</a>
+    </li>
+    <li>
+      <a href="../articles/vignette_03_data_visualization.html">Visualization of Time Series Data</a>
     </li>
   </ul>
 </li>
@@ -110,7 +115,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/ahaeusser/tscv/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -127,37 +132,43 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Identify and smooth outliers.</h1>
-    <small class="dont-index">Source: <a href='https://github.com/ahaeusser/tscv/blob/master/R/smooth_outlier.R'><code>R/smooth_outlier.R</code></a></small>
+    <h1>Identify and replace outliers</h1>
+    <small class="dont-index">Source: <a href='https://github.com/ahaeusser/tscv/blob/master/R/utils.R'><code>R/utils.R</code></a></small>
     <div class="hidden name"><code>smooth_outlier.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p><code>smooth_outliers</code> identifies and adjusts outliers. The time
-   series is decomposed via <code>STL</code> decomposition into trend, season and
-   remainder. The IQR method is then applied to the remainder to
-   identify and replace outliers with NAs. Afterwards, the NAs are linearly
-   interpolated and the time series is additive reconstructed.</p>
+    <p>The function <code>smooth_outlier()</code> is a wrapper
+  for <code><a href='https://pkg.robjhyndman.com/forecast/reference/tsoutliers.html'>forecast::tsoutliers()</a></code>, working with numeric vectors. For
+  non-seasonal time series, the supsmu method is used. For seasonal
+  time series, the series is decomposed via STL and the IQR method is
+  used on the remainder component. Values outside the range are
+  linear interpolated on the remainder and the series is reconstructed
+  with the corrected remainder component.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>smooth_outlier</span><span class='op'>(</span><span class='va'>data</span>, alpha <span class='op'>=</span> <span class='fl'>0.05</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>smooth_outlier</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>period</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>data</th>
-      <td><p>A <code>tsibble</code> containing the time series data.</p></td>
+      <th>x</th>
+      <td><p>Numeric vector.</p></td>
     </tr>
     <tr>
-      <th>alpha</th>
-      <td><p>Numeric value. Controls the width of the limits.</p></td>
+      <th>period</th>
+      <td><p>Numeric vector. The seasonal periods of the time series.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Further arguments passed to <code><a href='https://pkg.robjhyndman.com/forecast/reference/msts.html'>forecast::msts()</a></code> or <code><a href='https://pkg.robjhyndman.com/forecast/reference/tsoutliers.html'>forecast::tsoutliers()</a></code>.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>data A <code>tsibble</code> containing the outlier adjusted time series.</p>
+    <p>Numeric vector.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

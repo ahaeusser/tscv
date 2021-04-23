@@ -6,14 +6,14 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Plot time series as line chart — plot_line • tscv</title>
+<title>Plot data as line chart — plot_line • tscv</title>
 
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
 
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Plot time series as line chart — plot_line" />
-<meta property="og:description" content="Plot one or more time series incl. smooth curve (linear or loess) as line chart." />
+<meta property="og:title" content="Plot data as line chart — plot_line" />
+<meta property="og:description" content="Plot one or more variables as line chart." />
 
 
 
@@ -80,7 +80,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -95,10 +95,13 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/cross_validation.html">Time Series Cross Validation</a>
+      <a href="../articles/vignette_01_introduction.html">Introduction</a>
     </li>
     <li>
-      <a href="../articles/data_visualization.html">Visualization of Time Series Data</a>
+      <a href="../articles/vignette_02_cross_validation.html">Time Series Cross Validation</a>
+    </li>
+    <li>
+      <a href="../articles/vignette_03_data_visualization.html">Visualization of Time Series Data</a>
     </li>
   </ul>
 </li>
@@ -106,7 +109,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/ahaeusser/tscv/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -123,36 +126,33 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Plot time series as line chart</h1>
+    <h1>Plot data as line chart</h1>
     <small class="dont-index">Source: <a href='https://github.com/ahaeusser/tscv/blob/master/R/plot_line.R'><code>R/plot_line.R</code></a></small>
     <div class="hidden name"><code>plot_line.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Plot one or more time series incl. smooth curve (linear or loess) as line chart.</p>
+    <p>Plot one or more variables as line chart.</p>
     </div>
 
     <pre class="usage"><span class='fu'>plot_line</span><span class='op'>(</span>
   <span class='va'>data</span>,
   <span class='va'>x</span>,
   <span class='va'>y</span>,
-  facet <span class='op'>=</span> <span class='cn'>NULL</span>,
+  facet_var <span class='op'>=</span> <span class='cn'>NULL</span>,
+  facet_scale <span class='op'>=</span> <span class='st'>"free"</span>,
+  facet_nrow <span class='op'>=</span> <span class='cn'>NULL</span>,
+  facet_ncol <span class='op'>=</span> <span class='cn'>NULL</span>,
   color <span class='op'>=</span> <span class='cn'>NULL</span>,
   title <span class='op'>=</span> <span class='cn'>NULL</span>,
   subtitle <span class='op'>=</span> <span class='cn'>NULL</span>,
   xlab <span class='op'>=</span> <span class='cn'>NULL</span>,
   ylab <span class='op'>=</span> <span class='cn'>NULL</span>,
   caption <span class='op'>=</span> <span class='cn'>NULL</span>,
-  line_width <span class='op'>=</span> <span class='fl'>0.75</span>,
+  line_size <span class='op'>=</span> <span class='fl'>0.75</span>,
   line_type <span class='op'>=</span> <span class='st'>"solid"</span>,
   line_color <span class='op'>=</span> <span class='st'>"grey35"</span>,
   line_alpha <span class='op'>=</span> <span class='fl'>1</span>,
-  stat_method <span class='op'>=</span> <span class='cn'>NULL</span>,
-  stat_width <span class='op'>=</span> <span class='fl'>0.75</span>,
-  stat_type <span class='op'>=</span> <span class='st'>"solid"</span>,
-  stat_color <span class='op'>=</span> <span class='st'>"#D55E00"</span>,
-  stat_fill <span class='op'>=</span> <span class='st'>"grey35"</span>,
-  stat_alpha <span class='op'>=</span> <span class='fl'>0.25</span>,
   theme_set <span class='op'>=</span> <span class='fu'><a href='theme_tscv.html'>theme_tscv</a></span><span class='op'>(</span><span class='op'>)</span>,
   theme_config <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>,
   <span class='va'>...</span>
@@ -174,8 +174,20 @@
       <td><p>Unquoted column within <code>.data</code> containing numeric values.</p></td>
     </tr>
     <tr>
-      <th>facet</th>
+      <th>facet_var</th>
       <td><p>Unquoted column within <code>.data</code> (facet).</p></td>
+    </tr>
+    <tr>
+      <th>facet_scale</th>
+      <td><p>Character value defining axis scaling (<code>facet_var = "free"</code> or <code>facet_var = "fixed"</code>).</p></td>
+    </tr>
+    <tr>
+      <th>facet_nrow</th>
+      <td><p>Integer value. The number of rows.</p></td>
+    </tr>
+    <tr>
+      <th>facet_ncol</th>
+      <td><p>Integer value. The number of columns.</p></td>
     </tr>
     <tr>
       <th>color</th>
@@ -202,12 +214,12 @@
       <td><p>Caption of the plot.</p></td>
     </tr>
     <tr>
-      <th>line_width</th>
-      <td><p>Numeric value defining the line width (time series).</p></td>
+      <th>line_size</th>
+      <td><p>Numeric value defining the line width.</p></td>
     </tr>
     <tr>
       <th>line_type</th>
-      <td><p>Numeric value defining the line type (time series).</p></td>
+      <td><p>Numeric value defining the line type.</p></td>
     </tr>
     <tr>
       <th>line_color</th>
@@ -216,30 +228,6 @@
     <tr>
       <th>line_alpha</th>
       <td><p>Numeric value defining the transparency of the line.</p></td>
-    </tr>
-    <tr>
-      <th>stat_method</th>
-      <td><p>Character value. The smoothing method (<code>NULL</code>, <code>"loess"</code>, <code>"lm"</code>, <code>"glm"</code>, <code>"gam"</code>).</p></td>
-    </tr>
-    <tr>
-      <th>stat_width</th>
-      <td><p>Numeric value defining the line width (smooth curve).</p></td>
-    </tr>
-    <tr>
-      <th>stat_type</th>
-      <td><p>Numeric value defining the line type (smooth curve).</p></td>
-    </tr>
-    <tr>
-      <th>stat_color</th>
-      <td><p>Character value defining the line color (ignored if <code>color</code> is present).</p></td>
-    </tr>
-    <tr>
-      <th>stat_fill</th>
-      <td><p>Character value defining the fill color of confidence band.</p></td>
-    </tr>
-    <tr>
-      <th>stat_alpha</th>
-      <td><p>Numeric value defining the transparency of confidence band.</p></td>
     </tr>
     <tr>
       <th>theme_set</th>
@@ -251,7 +239,7 @@
     </tr>
     <tr>
       <th>...</th>
-      <td><p>Further arguments passed to <code><a href='https://ggplot2.tidyverse.org/reference/geom_smooth.html'>ggplot2::stat_smooth()</a></code></p></td>
+      <td><p>Currently not in use.</p></td>
     </tr>
     </table>
 

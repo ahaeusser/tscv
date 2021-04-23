@@ -1,0 +1,77 @@
+template:
+  params:
+    bootswatch: flatly
+
+reference:
+- title: Forecasting
+
+- subtitle: DSHW
+  desc: >
+    The DSHW model and its supported methods.
+  contents:
+    - DSHW
+    - forecast.DSHW
+    - fitted.DSHW
+    - residuals.DSHW
+
+- subtitle: ELM
+  desc: >
+    The ELM model and its supported methods.
+  contents:
+    - ELM
+    - forecast.ELM
+    - fitted.ELM
+    - residuals.ELM
+
+- subtitle: MLP
+  desc: >
+    The MLP model and its supported methods.
+  contents:
+    - MLP
+    - forecast.MLP
+    - fitted.MLP
+    - residuals.MLP
+
+- subtitle: SMEAN
+  desc: >
+    The SMEAN model and its supported methods.
+  contents:
+    - SMEAN
+    - forecast.SMEAN
+    - fitted.SMEAN
+    - residuals.SMEAN
+
+- subtitle: SMEDIAN
+  desc: >
+    The SMEDIAN model and its supported methods.
+  contents:
+    - SMEDIAN
+    - forecast.SMEDIAN
+    - fitted.SMEDIAN
+    - residuals.SMEDIAN
+
+- subtitle: SNAIVE2
+  desc: >
+    The SNAIVE2 model and its supported methods.
+  contents:
+    - SNAIVE2
+    - forecast.SNAIVE2
+    - fitted.SNAIVE2
+    - residuals.SNAIVE2
+
+- subtitle: TBATS
+  desc: >
+    The TBATS model and its supported methods.
+  contents:
+    - TBATS
+    - forecast.TBATS
+    - fitted.TBATS
+    - residuals.TBATS
+
+- title: Data visualization
+  desc: >
+    Plotting functions.
+  contents:
+    - plot_line
+    - plot_histogram
+    - plot_density

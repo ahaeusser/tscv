@@ -12,8 +12,8 @@
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
 
@@ -79,7 +79,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -94,10 +94,13 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/cross_validation.html">Time Series Cross Validation</a>
+      <a href="../articles/vignette_01_introduction.html">Introduction</a>
     </li>
     <li>
-      <a href="../articles/data_visualization.html">Visualization of Time Series Data</a>
+      <a href="../articles/vignette_02_cross_validation.html">Time Series Cross Validation</a>
+    </li>
+    <li>
+      <a href="../articles/vignette_03_data_visualization.html">Visualization of Time Series Data</a>
     </li>
   </ul>
 </li>
@@ -105,7 +108,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/ahaeusser/tscv/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -136,8 +139,276 @@
     <tbody>
       <tr>
         <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
+          <h2 id="section-forecasting" class="hasAnchor"><a href="#section-forecasting" class="anchor"></a>Forecasting</h2>
           <p class="section-desc"></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      <tr>
+        <th colspan="2">
+          <h3 id="section-dshw" class="hasAnchor"><a href="#section-dshw" class="anchor"></a>DSHW</h3>
+          <p class="section-desc"><p>The DSHW model and its supported methods.</p></p>
+        </th>
+      </tr>
+      
+    </tbody><tbody>
+      
+      
+      <tr>
+        
+        <td>
+          <p><code><a href="DSHW.html">DSHW()</a></code> </p>
+        </td>
+        <td><p>Automatic train a DSHW model</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="forecast.DSHW.html">forecast(<i>&lt;DSHW&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Forecast a trained DSHW model</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="fitted.DSHW.html">fitted(<i>&lt;DSHW&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Extract fitted values from a trained DSHW model</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="residuals.DSHW.html">residuals(<i>&lt;DSHW&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Extract residuals from a trained DSHW model</p></td>
+      </tr>
+    </tbody><tbody>
+      
+      <tr>
+        <th colspan="2">
+          <h3 id="section-elm" class="hasAnchor"><a href="#section-elm" class="anchor"></a>ELM</h3>
+          <p class="section-desc"><p>The ELM model and its supported methods.</p></p>
+        </th>
+      </tr>
+      
+    </tbody><tbody>
+      
+      
+      <tr>
+        
+        <td>
+          <p><code><a href="ELM.html">ELM()</a></code> </p>
+        </td>
+        <td><p>Extreme Learning Machine (ELM)</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="forecast.ELM.html">forecast(<i>&lt;ELM&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Forecast a trained ELM model</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="fitted.ELM.html">fitted(<i>&lt;ELM&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Extract fitted values from a trained ELM model</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="residuals.ELM.html">residuals(<i>&lt;ELM&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Extract residuals from a trained ELM model</p></td>
+      </tr>
+    </tbody><tbody>
+      
+      <tr>
+        <th colspan="2">
+          <h3 id="section-mlp" class="hasAnchor"><a href="#section-mlp" class="anchor"></a>MLP</h3>
+          <p class="section-desc"><p>The MLP model and its supported methods.</p></p>
+        </th>
+      </tr>
+      
+    </tbody><tbody>
+      
+      
+      <tr>
+        
+        <td>
+          <p><code><a href="MLP.html">MLP()</a></code> </p>
+        </td>
+        <td><p>Automatic training of MLPs</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="forecast.MLP.html">forecast(<i>&lt;MLP&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Forecast a trained MLP model</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="fitted.MLP.html">fitted(<i>&lt;MLP&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Extract fitted values from a trained MLP model</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="residuals.MLP.html">residuals(<i>&lt;MLP&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Extract residuals from a trained MLP model</p></td>
+      </tr>
+    </tbody><tbody>
+      
+      <tr>
+        <th colspan="2">
+          <h3 id="section-smean" class="hasAnchor"><a href="#section-smean" class="anchor"></a>SMEAN</h3>
+          <p class="section-desc"><p>The SMEAN model and its supported methods.</p></p>
+        </th>
+      </tr>
+      
+    </tbody><tbody>
+      
+      
+      <tr>
+        
+        <td>
+          <p><code><a href="SMEAN.html">SMEAN()</a></code> </p>
+        </td>
+        <td><p>Seasonal mean model</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="forecast.SMEAN.html">forecast(<i>&lt;SMEAN&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Forecast a trained seasonal mean model</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="fitted.SMEAN.html">fitted(<i>&lt;SMEAN&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Extract fitted values from a trained seasonal mean model</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="residuals.SMEAN.html">residuals(<i>&lt;SMEAN&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Extract residuals from a trained seasonal mean model</p></td>
+      </tr>
+    </tbody><tbody>
+      
+      <tr>
+        <th colspan="2">
+          <h3 id="section-smedian" class="hasAnchor"><a href="#section-smedian" class="anchor"></a>SMEDIAN</h3>
+          <p class="section-desc"><p>The SMEDIAN model and its supported methods.</p></p>
+        </th>
+      </tr>
+      
+    </tbody><tbody>
+      
+      
+      <tr>
+        
+        <td>
+          <p><code><a href="SMEDIAN.html">SMEDIAN()</a></code> </p>
+        </td>
+        <td><p>Seasonal median model</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="forecast.SMEDIAN.html">forecast(<i>&lt;SMEDIAN&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Forecast a trained seasonal median model</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="fitted.SMEDIAN.html">fitted(<i>&lt;SMEDIAN&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Extract fitted values from a trained seasonal median model</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="residuals.SMEDIAN.html">residuals(<i>&lt;SMEDIAN&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Extract residuals from a trained seasonal median model</p></td>
+      </tr>
+    </tbody><tbody>
+      
+      <tr>
+        <th colspan="2">
+          <h3 id="section-snaive-" class="hasAnchor"><a href="#section-snaive-" class="anchor"></a>SNAIVE2</h3>
+          <p class="section-desc"><p>The SNAIVE2 model and its supported methods.</p></p>
+        </th>
+      </tr>
+      
+    </tbody><tbody>
+      
+      
+      <tr>
+        
+        <td>
+          <p><code><a href="SNAIVE2.html">SNAIVE2()</a></code> </p>
+        </td>
+        <td><p>Seasonal naive model</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="forecast.SNAIVE2.html">forecast(<i>&lt;SNAIVE2&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Forecast a trained seasonal naive model</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="fitted.SNAIVE2.html">fitted(<i>&lt;SNAIVE2&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Extract fitted values from a trained seasonal naive model</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="residuals.SNAIVE2.html">residuals(<i>&lt;SNAIVE2&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Extract residuals from a trained seasonal naive model</p></td>
+      </tr>
+    </tbody><tbody>
+      
+      <tr>
+        <th colspan="2">
+          <h3 id="section-tbats" class="hasAnchor"><a href="#section-tbats" class="anchor"></a>TBATS</h3>
+          <p class="section-desc"><p>The TBATS model and its supported methods.</p></p>
+        </th>
+      </tr>
+      
+    </tbody><tbody>
+      
+      
+      <tr>
+        
+        <td>
+          <p><code><a href="TBATS.html">TBATS()</a></code> </p>
+        </td>
+        <td><p>Automatic train a TBATS model</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="forecast.TBATS.html">forecast(<i>&lt;TBATS&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Forecast a trained TBATS model</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="fitted.TBATS.html">fitted(<i>&lt;TBATS&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Extract fitted values from a trained TBATS model</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="residuals.TBATS.html">residuals(<i>&lt;TBATS&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Extract residuals from a trained TBATS model</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-data-visualization" class="hasAnchor"><a href="#section-data-visualization" class="anchor"></a>Data visualization</h2>
+          <p class="section-desc"><p>Plotting functions.</p></p>
         </th>
       </tr>
       
@@ -148,453 +419,21 @@
       <tr>
         
         <td>
-          <p><code><a href="approx_vec.html">approx_vec()</a></code> </p>
+          <p><code><a href="plot_line.html">plot_line()</a></code> </p>
         </td>
-        <td><p>Linear interpolation of NAs.</p></td>
+        <td><p>Plot data as line chart</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="clean_data.html">clean_data()</a></code> </p>
+          <p><code><a href="plot_histogram.html">plot_histogram()</a></code> </p>
         </td>
-        <td><p>Check, convert and shape the input data.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="DSHW.html">DSHW()</a></code> </p>
-        </td>
-        <td><p>Automatic training of DSHW</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="elec_load.html">elec_load</a></code> </p>
-        </td>
-        <td><p>Hourly electricity load</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="elec_price.html">elec_price</a></code> </p>
-        </td>
-        <td><p>Hourly day-ahead electricity spot prices</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="ELM.html">ELM()</a></code> </p>
-        </td>
-        <td><p>Automatic training of ELMs</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="errors.html">errors()</a></code> </p>
-        </td>
-        <td><p>Calculate forecast errors</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="error_metrics.html">error_metrics()</a></code> </p>
-        </td>
-        <td><p>Estimate accuracy metrics to evaluate point forecast</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="fitted.DSHW.html">fitted(<i>&lt;DSHW&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Extract fitted values from a DSHW</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="fitted.ELM.html">fitted(<i>&lt;ELM&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Extract fitted values from a ELM</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="fitted.MLP.html">fitted(<i>&lt;MLP&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Extract fitted values from a MLP.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="fitted.SMEAN.html">fitted(<i>&lt;SMEAN&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Extract fitted values from SMEAN</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="fitted.SMEDIAN.html">fitted(<i>&lt;SMEDIAN&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Extract fitted values from SMEDIAN</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="fitted.TBATS.html">fitted(<i>&lt;TBATS&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Extract fitted values from a TBATS</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="forecast.DSHW.html">forecast(<i>&lt;DSHW&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Forecast a trained DSHW model</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="forecast.ELM.html">forecast(<i>&lt;ELM&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Forecast a trained ELM model</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="forecast.MLP.html">forecast(<i>&lt;MLP&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Forecast a trained MLP model</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="forecast.SMEAN.html">forecast(<i>&lt;SMEAN&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Forecast a trained SMEAN model</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="forecast.SMEDIAN.html">forecast(<i>&lt;SMEDIAN&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Forecast a trained SMEDIAN model</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="forecast.TBATS.html">forecast(<i>&lt;TBATS&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Forecast a trained TBATS model</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="iqr_vec.html">iqr_vec()</a></code> </p>
-        </td>
-        <td><p>Replace outliers based on IQR method by NAs.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="kurtosis_vec.html">kurtosis_vec()</a></code> </p>
-        </td>
-        <td><p>Measure of kurtosis.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="mae_vec.html">mae_vec()</a></code> </p>
-        </td>
-        <td><p>Calculate the mean absolute error</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="mape_vec.html">mape_vec()</a></code> </p>
-        </td>
-        <td><p>Calculate the mean absolute percentage error</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="me_vec.html">me_vec()</a></code> </p>
-        </td>
-        <td><p>Calculate the mean error</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="MLP.html">MLP()</a></code> </p>
-        </td>
-        <td><p>Automatic training of MLPs</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="model_sum.DSHW.html">model_sum(<i>&lt;DSHW&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Provide a succinct summary of the DSHW</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="model_sum.ELM.html">model_sum(<i>&lt;ELM&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Provide a succinct summary of the ELM</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="model_sum.MLP.html">model_sum(<i>&lt;MLP&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Provide a succinct summary of the MLP</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="model_sum.SMEAN.html">model_sum(<i>&lt;SMEAN&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Provide a succinct summary of the SMEAN</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="model_sum.SMEDIAN.html">model_sum(<i>&lt;SMEDIAN&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Provide a succinct summary of the SMEDIAN</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="model_sum.TBATS.html">model_sum(<i>&lt;TBATS&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Provide a succinct summary of the TBATS</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="mpe_vec.html">mpe_vec()</a></code> </p>
-        </td>
-        <td><p>Calculate the mean percentage error</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="mse_vec.html">mse_vec()</a></code> </p>
-        </td>
-        <td><p>Calculate the mean squared error</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="pct_errors.html">pct_errors()</a></code> </p>
-        </td>
-        <td><p>Calculate percentage forecast errors</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="plot_acf.html">plot_acf()</a></code> </p>
-        </td>
-        <td><p>Plot autocorrelation function</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="plot_corr.html">plot_corr()</a></code> </p>
-        </td>
-        <td><p>Plot autocorrelation and partial autocorrelation function</p></td>
+        <td><p>Plot data as histogram</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="plot_density.html">plot_density()</a></code> </p>
         </td>
         <td><p>Plot the density via Kernel Density Estimator</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="plot_error_metrics.html">plot_error_metrics()</a></code> </p>
-        </td>
-        <td><p>Plot forecast accuracy metrics</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="plot_forecast.html">plot_forecast()</a></code> </p>
-        </td>
-        <td><p>Plot the actual and fitted values and forecasts</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="plot_histogram.html">plot_histogram()</a></code> </p>
-        </td>
-        <td><p>Plot the histogram of time series</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="plot_line.html">plot_line()</a></code> </p>
-        </td>
-        <td><p>Plot time series as line chart</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="plot_pacf.html">plot_pacf()</a></code> </p>
-        </td>
-        <td><p>Plot partial autocorrelation function</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="plot_qq.html">plot_qq()</a></code> </p>
-        </td>
-        <td><p>Quantile-Quantile plot</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="residuals.DSHW.html">residuals(<i>&lt;DSHW&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Extract residuals from a DSHW</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="residuals.ELM.html">residuals(<i>&lt;ELM&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Extract residuals from a ELM</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="residuals.MLP.html">residuals(<i>&lt;MLP&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Extract residuals from a MLP</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="residuals.SMEAN.html">residuals(<i>&lt;SMEAN&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Extract residuals from SMEAN</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="residuals.SMEDIAN.html">residuals(<i>&lt;SMEDIAN&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Extract residuals from SMEDIAN</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="residuals.TBATS.html">residuals(<i>&lt;TBATS&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Extract residuals from a TBATS</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="rmse_vec.html">rmse_vec()</a></code> </p>
-        </td>
-        <td><p>Calculate the root mean squared error</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="scale_color_tscv.html">scale_color_tscv()</a></code> </p>
-        </td>
-        <td><p>Color scale constructor for tscv colors.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="scale_fill_tscv.html">scale_fill_tscv()</a></code> </p>
-        </td>
-        <td><p>Fill scale constructor for tscv colors.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="skewness_vec.html">skewness_vec()</a></code> </p>
-        </td>
-        <td><p>Measure of skewness.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="smape_vec.html">smape_vec()</a></code> </p>
-        </td>
-        <td><p>Calculate the symmetric mean absolute percentage error</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="SMEAN.html">SMEAN()</a></code> </p>
-        </td>
-        <td><p>Automatic training of SMEANs</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="SMEDIAN.html">SMEDIAN()</a></code> </p>
-        </td>
-        <td><p>Automatic training of SMEDIANs</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="smooth_outlier.html">smooth_outlier()</a></code> </p>
-        </td>
-        <td><p>Identify and smooth outliers.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="split_data.html">split_data()</a></code> </p>
-        </td>
-        <td><p>Split the data into training and testing</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="summarise_data.html">summarise_data()</a></code> </p>
-        </td>
-        <td><p>Summary statistics for time series data</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="summarise_split.html">summarise_split()</a></code> </p>
-        </td>
-        <td><p>Summary table of the splitting into training and testing.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="target_vars.html">target_vars()</a></code> </p>
-        </td>
-        <td><p>Return target variables.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="TBATS.html">TBATS()</a></code> </p>
-        </td>
-        <td><p>Automatic training of a TBATS model</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="theme_tscv.html">theme_tscv()</a></code> </p>
-        </td>
-        <td><p>Custom ggplot2 theme for tscv package</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="theme_tscv_dark.html">theme_tscv_dark()</a></code> </p>
-        </td>
-        <td><p>Dark ggplot2 theme for tscv package</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="train_dshw.html">train_dshw()</a></code> </p>
-        </td>
-        <td><p>Train DSHW model</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="train_elm.html">train_elm()</a></code> </p>
-        </td>
-        <td><p>Train ELM neural network</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="train_mlp.html">train_mlp()</a></code> </p>
-        </td>
-        <td><p>Train MLP neural network</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="train_smean.html">train_smean()</a></code> </p>
-        </td>
-        <td><p>Train seasonal mean model</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="train_smedian.html">train_smedian()</a></code> </p>
-        </td>
-        <td><p>Train seasonal median model</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="train_tbats.html">train_tbats()</a></code> </p>
-        </td>
-        <td><p>Train TBATS model</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="tscv_cols.html">tscv_cols()</a></code> </p>
-        </td>
-        <td><p>Function to extract tscv colors as hex codes.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="tscv_pal.html">tscv_pal()</a></code> </p>
-        </td>
-        <td><p>Return function to interpolate a tscv color palette.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="value_var.html">value_var()</a></code> </p>
-        </td>
-        <td><p>Return value variable.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="weather.html">weather</a></code> </p>
-        </td>
-        <td><p>Hourly weather data</p></td>
       </tr>
     </tbody>
     </table>

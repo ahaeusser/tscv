@@ -12,8 +12,8 @@
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
 
@@ -40,11 +40,13 @@
 
 
 <meta property="og:title" content="Split the data into training and testing — split_data" />
-<meta property="og:description" content="This function splits the data into training and testing (i.e. partitioning into time slices) for
-   time series cross-validation. The user can choose between stretch and slide. The first is an
-   expanding window approach, while the latter is a fixed window approach. The user can define the window sizes
-   for training and testing via n_init and n_ahead, as well as the step size for increments via
-   n_step." />
+<meta property="og:description" content="This function splits the data into training and testing samples
+  (i.e. partitioning into time slices) for time series cross-validation. The
+  user can choose between stretch and slide. The first is an
+  expanding window approach, while the latter is a fixed window approach.
+  The user can define the window sizes for training and testing via
+  n_init and n_ahead, as well as the step size for increments
+  via n_step." />
 
 
 
@@ -84,7 +86,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -99,10 +101,13 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/cross_validation.html">Time Series Cross Validation</a>
+      <a href="../articles/vignette_01_introduction.html">Introduction</a>
     </li>
     <li>
-      <a href="../articles/data_visualization.html">Visualization of Time Series Data</a>
+      <a href="../articles/vignette_02_cross_validation.html">Time Series Cross Validation</a>
+    </li>
+    <li>
+      <a href="../articles/vignette_03_data_visualization.html">Visualization of Time Series Data</a>
     </li>
   </ul>
 </li>
@@ -110,7 +115,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/ahaeusser/tscv/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -133,11 +138,13 @@
     </div>
 
     <div class="ref-description">
-    <p>This function splits the data into training and testing (i.e. partitioning into time slices) for
-   time series cross-validation. The user can choose between <code>stretch</code> and <code>slide</code>. The first is an
-   expanding window approach, while the latter is a fixed window approach. The user can define the window sizes
-   for training and testing via <code>n_init</code> and <code>n_ahead</code>, as well as the step size for increments via
-   <code>n_step</code>.</p>
+    <p>This function splits the data into training and testing samples
+  (i.e. partitioning into time slices) for time series cross-validation. The
+  user can choose between <code>stretch</code> and <code>slide</code>. The first is an
+  expanding window approach, while the latter is a fixed window approach.
+  The user can define the window sizes for training and testing via
+  <code>n_init</code> and <code>n_ahead</code>, as well as the step size for increments
+  via <code>n_step</code>.</p>
     </div>
 
     <pre class="usage"><span class='fu'>split_data</span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>n_init</span>, <span class='va'>n_ahead</span>, n_skip <span class='op'>=</span> <span class='fl'>0</span>, n_lag <span class='op'>=</span> <span class='fl'>0</span>, mode <span class='op'>=</span> <span class='st'>"slide"</span><span class='op'>)</span></pre>
@@ -147,7 +154,7 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>data</th>
-      <td><p>A valid <code>tsibble</code> in long format provided by the function <code><a href='clean_data.html'>clean_data()</a></code>.</p></td>
+      <td><p>A valid <code>tsibble</code> in long format provided by the function <code><a href='check_data.html'>check_data()</a></code>.</p></td>
     </tr>
     <tr>
       <th>n_init</th>

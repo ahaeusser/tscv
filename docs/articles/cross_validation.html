@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Time Series Cross Validation • tscv</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
@@ -39,7 +39,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -65,7 +65,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/ahaeusser/tscv/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -79,13 +79,13 @@
 
       
 
-      </header><script src="cross_validation_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><script src="cross_validation_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Time Series Cross Validation</h1>
                         <h4 class="author">Alexander Häußer</h4>
             
-            <h4 class="date">2020-10-16</h4>
+            <h4 class="date">April 2021</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/ahaeusser/tscv/blob/master/vignettes/cross_validation.Rmd"><code>vignettes/cross_validation.Rmd</code></a></small>
       <div class="hidden name"><code>cross_validation.Rmd</code></div>
@@ -94,24 +94,31 @@
 
     
     
-<p>The package <code>tscv</code> provides a collection of functions and tools for time series analysis and forecasting as well as time series cross-validation. This is mainly a set of wrapper and helper functions as well as some extensions for the packages <code>tsibble</code>, <code>fable</code> and <code>fabletools</code> that I find useful in the area of time series forecasting.</p>
+<p>The package <code>tscv</code> provides a collection of functions and tools for time series analysis and forecasting as well as time series cross-validation. This is mainly a set of wrapper and helper functions as well as some extensions for the packages <code>tsibble</code>, <code>fable</code> and <code>fabletools</code> that I find useful for research in the area of time series forecasting.</p>
+<p><strong><em>Disclaimer:</em></strong> The <code>tscv</code> package is highly experimental and it is very likely that there will be (substantial) changes in the near future.</p>
+<div id="installation" class="section level2">
+<h2 class="hasAnchor">
+<a href="#installation" class="anchor"></a>Installation</h2>
 <p>You can install the development version from <a href="https://github.com/">GitHub</a> with:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="co"># install.packages("devtools")</span>
-<span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">"ahaeusser/tscv"</span><span class="op">)</span></pre></div>
-<div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="co"># Load relevant packages</span>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># install.packages("devtools")</span>
+<span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">"ahaeusser/tscv"</span><span class="op">)</span></code></pre></div>
+</div>
+<div id="example" class="section level2">
+<h2 class="hasAnchor">
+<a href="#example" class="anchor"></a>Example</h2>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Load relevant packages</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ahaeusser/tscv">tscv</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tsibble.tidyverts.org">tsibble</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://fable.tidyverts.org">fable</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://feasts.tidyverts.org/">feasts</a></span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/locales.html">Sys.setlocale</a></span><span class="op">(</span><span class="st">"LC_TIME"</span>, <span class="st">"C"</span><span class="op">)</span>
-<span class="co">#&gt; [1] "C"</span></pre></div>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://feasts.tidyverts.org/">feasts</a></span><span class="op">)</span></code></pre></div>
+</div>
 <div id="data-preparation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#data-preparation" class="anchor"></a>Data preparation</h2>
-<p>The dataset <code>elec_price</code> is a hourly <code>tsibble</code> with day-ahead electricity spot prices in [EUR/MWh] from the ENTSO-E Transparency Platform. The dataset contains time series data from 2019-01-01 to 2019-12-31 for 8 european bidding zones (BZN):</p>
+<p>The data set <code>elec_price</code> is a hourly <code>tsibble</code> with day-ahead electricity spot prices in [EUR/MWh] from the ENTSO-E Transparency Platform. The data set contains time series data from 2019-01-01 to 2019-12-31 for 8 european bidding zones (BZN):</p>
 <ul>
 <li>DE: Germany (including Luxembourg)</li>
 <li>DK: Denmark</li>
@@ -122,12 +129,13 @@
 <li>NO1: Norway 1 (Oslo)</li>
 <li>SE1: Sweden 1 (Lulea)</li>
 </ul>
-<p>In this vignette, we will use only four time series to demonstrate the functionality of the package (the data set is filtered to the bidding zones Germany, France, Norway 1 and Sweden 1). You can use the function <code><a href="../reference/clean_data.html">clean_data()</a></code> to prepare the dataset for further usage. The function checks whether the input data are a valid tsibble or not (regular spaced in time and ordered). Furthermore, implicit missing values are turned into explicit missing values (existing missing values are left untouched). If the data are provided in wide format, they are gathered into long format. You can use the function <code><a href="../reference/plot_line.html">plot_line()</a></code> to visualize the four time series.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit">
-<span class="co"># Prepare dataset</span>
+<p>In this vignette, we will use only four time series to demonstrate the functionality of the package (the data set is filtered to the bidding zones Germany, France, Norway and Sweden). You can use the function <code><a href="../reference/check_data.html">check_data()</a></code> to prepare the data set for further usage. The function checks whether the input data are a valid tsibble or not (regular spaced in time and ordered). Furthermore, implicit missing values are turned into explicit missing values (existing missing values are left untouched). If the data is provided in wide format, they are gathered into long format. You can use the function <code><a href="../reference/plot_line.html">plot_line()</a></code> to visualize the four time series.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R">
+<span class="co"># Prepare data set</span>
 <span class="va">data</span> <span class="op">&lt;-</span> <span class="va">elec_price</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">BZN</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"DE"</span>, <span class="st">"FR"</span>, <span class="st">"NO1"</span>, <span class="st">"SE1"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/clean_data.html">clean_data</a></span><span class="op">(</span><span class="op">)</span>
+  <span class="fu"><a href="../reference/check_data.html">check_data</a></span><span class="op">(</span><span class="op">)</span>
 
 <span class="va">data</span>
 <span class="co">#&gt; # A tsibble: 35,040 x 5 [1h] &lt;UTC&gt;</span>
@@ -151,22 +159,23 @@
     x <span class="op">=</span> <span class="va">Time</span>,
     y <span class="op">=</span> <span class="va">Value</span>,
     color <span class="op">=</span> <span class="va">BZN</span>,
-    facet <span class="op">=</span> <span class="va">BZN</span>,
+    facet_var <span class="op">=</span> <span class="va">BZN</span>,
     title <span class="op">=</span> <span class="st">"Day-ahead Electricity Spot Price"</span>,
     subtitle <span class="op">=</span> <span class="st">"2019-03-01 to 2019-03-15"</span>,
     xlab <span class="op">=</span> <span class="st">"Time"</span>,
     ylab <span class="op">=</span> <span class="st">"[EUR/MWh]"</span>,
-    caption <span class="op">=</span> <span class="st">"Data: ENTSO-E Transparency"</span><span class="op">)</span></pre></div>
+    caption <span class="op">=</span> <span class="st">"Data: ENTSO-E Transparency"</span><span class="op">)</span></code></pre></div>
 <p><img src="cross_validation_files/figure-html/clean_data-1.png" width="672"></p>
 </div>
 <div id="split-data-into-training-and-testing" class="section level2">
 <h2 class="hasAnchor">
 <a href="#split-data-into-training-and-testing" class="anchor"></a>Split data into training and testing</h2>
-<p>To prepare the dataset for time series cross-validation (TSCV), you can use the function <code><a href="../reference/split_data.html">split_data()</a></code>. This function splits the data into training and testing (i.e. partitioning into time slices) for time series cross-validation. You can choose between <code>stretch</code> and <code>slide</code>. The first is an expanding window approach, while the latter is a fixed window approach. Furthermore, you can define the (initial) window size for training and testing via <code>n_init</code> and <code>n_ahead</code>, as well as the step size for increments via <code>n_skip</code>.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit">
+<p>To prepare the data set for time series cross-validation (TSCV), you can use the function <code><a href="../reference/split_data.html">split_data()</a></code>. This function splits the data into training and testing (i.e. partitioning into time slices) for time series cross-validation. You can choose between <code>stretch</code> and <code>slide</code>. The first is an expanding window approach, while the latter is a fixed window approach. Furthermore, you can define the (initial) window size for training and testing via <code>n_init</code> and <code>n_ahead</code>, as well as the step size for increments via <code>n_skip</code>.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R">
 <span class="co"># Setup for time series cross validation</span>
 <span class="va">n_init</span> <span class="op">&lt;-</span> <span class="fl">2400</span>   <span class="co"># size for training window</span>
-<span class="va">n_ahead</span> <span class="op">&lt;-</span> <span class="fl">24</span>    <span class="co"># size for testing window (forecast horizon)</span>
+<span class="va">n_ahead</span> <span class="op">&lt;-</span> <span class="fl">24</span>    <span class="co"># size for testing window (= forecast horizon)</span>
 <span class="va">mode</span> <span class="op">&lt;-</span> <span class="st">"slide"</span>  <span class="co"># fixed window approach</span>
 <span class="va">n_skip</span> <span class="op">&lt;-</span> <span class="fl">23</span>     <span class="co"># skip 23 observations</span>
 <span class="va">n_lag</span> <span class="op">&lt;-</span> <span class="fl">0</span>       <span class="co"># no lag</span>
@@ -179,8 +188,9 @@
     n_skip <span class="op">=</span> <span class="va">n_skip</span>,
     n_lag <span class="op">=</span> <span class="va">n_lag</span><span class="op">)</span>
 
-<span class="va">data</span>
-<span class="co">#&gt; # A tsibble: 2,579,136 x 9 [1h] &lt;UTC&gt;</span>
+<span class="va">train</span> <span class="op">&lt;-</span> <span class="va">data</span><span class="op">$</span><span class="va">train</span>
+<span class="va">train</span>
+<span class="co">#&gt; # A tsibble: 2,553,600 x 9 [1h] &lt;UTC&gt;</span>
 <span class="co">#&gt; # Key:       Series, Unit, BZN, split [1,064]</span>
 <span class="co">#&gt;    Time                Series     Unit   BZN    Value split    id sample horizon</span>
 <span class="co">#&gt;    &lt;dttm&gt;              &lt;chr&gt;      &lt;chr&gt;  &lt;chr&gt;  &lt;dbl&gt; &lt;int&gt; &lt;int&gt; &lt;chr&gt;    &lt;int&gt;</span>
@@ -194,62 +204,74 @@
 <span class="co">#&gt;  8 2019-01-01 07:00:00 Day-ahead~ [EUR/~ DE     -4.93     1     8 train       NA</span>
 <span class="co">#&gt;  9 2019-01-01 08:00:00 Day-ahead~ [EUR/~ DE     -6.33     1     9 train       NA</span>
 <span class="co">#&gt; 10 2019-01-01 09:00:00 Day-ahead~ [EUR/~ DE     -4.93     1    10 train       NA</span>
-<span class="co">#&gt; # ... with 2,579,126 more rows</span></pre></div>
-<p>The function <code><a href="../reference/summarise_split.html">summarise_split()</a></code> provides a summary table of the partitioning into training and testing with the corresponding start and end (as date and index) for each split. This is very useful to identify specific splits by date. For example, if a holiday falls into a specific testing slice or not.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit">
-<span class="co"># Summarize split into training and testing data</span>
-<span class="va">data</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/summarise_split.html">summarise_split</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 266 x 5</span>
-<span class="co">#&gt;    split time_train              time_test               index_train index_test </span>
-<span class="co">#&gt;    &lt;int&gt; &lt;chr&gt;                   &lt;chr&gt;                   &lt;chr&gt;       &lt;chr&gt;      </span>
-<span class="co">#&gt;  1     1 [2019-01-01, 2019-04-1~ [2019-04-11, 2019-04-1~ [0001, 240~ [2401, 242~</span>
-<span class="co">#&gt;  2     2 [2019-01-02, 2019-04-1~ [2019-04-12, 2019-04-1~ [0025, 242~ [2425, 244~</span>
-<span class="co">#&gt;  3     3 [2019-01-03, 2019-04-1~ [2019-04-13, 2019-04-1~ [0049, 244~ [2449, 247~</span>
-<span class="co">#&gt;  4     4 [2019-01-04, 2019-04-1~ [2019-04-14, 2019-04-1~ [0073, 247~ [2473, 249~</span>
-<span class="co">#&gt;  5     5 [2019-01-05, 2019-04-1~ [2019-04-15, 2019-04-1~ [0097, 249~ [2497, 252~</span>
-<span class="co">#&gt;  6     6 [2019-01-06, 2019-04-1~ [2019-04-16, 2019-04-1~ [0121, 252~ [2521, 254~</span>
-<span class="co">#&gt;  7     7 [2019-01-07, 2019-04-1~ [2019-04-17, 2019-04-1~ [0145, 254~ [2545, 256~</span>
-<span class="co">#&gt;  8     8 [2019-01-08, 2019-04-1~ [2019-04-18, 2019-04-1~ [0169, 256~ [2569, 259~</span>
-<span class="co">#&gt;  9     9 [2019-01-09, 2019-04-1~ [2019-04-19, 2019-04-1~ [0193, 259~ [2593, 261~</span>
-<span class="co">#&gt; 10    10 [2019-01-10, 2019-04-1~ [2019-04-20, 2019-04-2~ [0217, 261~ [2617, 264~</span>
-<span class="co">#&gt; # ... with 256 more rows</span></pre></div>
+<span class="co">#&gt; # ... with 2,553,590 more rows</span>
+
+<span class="va">test</span> <span class="op">&lt;-</span> <span class="va">data</span><span class="op">$</span><span class="va">test</span>
+<span class="va">test</span>
+<span class="co">#&gt; # A tsibble: 25,536 x 9 [1h] &lt;UTC&gt;</span>
+<span class="co">#&gt; # Key:       Series, Unit, BZN, split [1,064]</span>
+<span class="co">#&gt;    Time                Series      Unit   BZN   Value split    id sample horizon</span>
+<span class="co">#&gt;    &lt;dttm&gt;              &lt;chr&gt;       &lt;chr&gt;  &lt;chr&gt; &lt;dbl&gt; &lt;int&gt; &lt;int&gt; &lt;chr&gt;    &lt;int&gt;</span>
+<span class="co">#&gt;  1 2019-04-11 00:00:00 Day-ahead ~ [EUR/~ DE     37.1     1  2401 test         1</span>
+<span class="co">#&gt;  2 2019-04-11 01:00:00 Day-ahead ~ [EUR/~ DE     36.5     1  2402 test         2</span>
+<span class="co">#&gt;  3 2019-04-11 02:00:00 Day-ahead ~ [EUR/~ DE     37.1     1  2403 test         3</span>
+<span class="co">#&gt;  4 2019-04-11 03:00:00 Day-ahead ~ [EUR/~ DE     38.9     1  2404 test         4</span>
+<span class="co">#&gt;  5 2019-04-11 04:00:00 Day-ahead ~ [EUR/~ DE     47.9     1  2405 test         5</span>
+<span class="co">#&gt;  6 2019-04-11 05:00:00 Day-ahead ~ [EUR/~ DE     56.4     1  2406 test         6</span>
+<span class="co">#&gt;  7 2019-04-11 06:00:00 Day-ahead ~ [EUR/~ DE     59.2     1  2407 test         7</span>
+<span class="co">#&gt;  8 2019-04-11 07:00:00 Day-ahead ~ [EUR/~ DE     51.7     1  2408 test         8</span>
+<span class="co">#&gt;  9 2019-04-11 08:00:00 Day-ahead ~ [EUR/~ DE     48.6     1  2409 test         9</span>
+<span class="co">#&gt; 10 2019-04-11 09:00:00 Day-ahead ~ [EUR/~ DE     46.0     1  2410 test        10</span>
+<span class="co">#&gt; # ... with 25,526 more rows</span></code></pre></div>
 </div>
 <div id="training-and-forecasting" class="section level2">
 <h2 class="hasAnchor">
 <a href="#training-and-forecasting" class="anchor"></a>Training and forecasting</h2>
-<p>The data are splitted into training and testing slices and we are ready to forecast. Due to the sample size and computation time, only very simple benchmark methods are used. The functions <code>SMEDIAN</code> and <code>SMEAN</code> are extensions to the <code>fable</code> package. The function <code>SMEAN</code> is exactly the same as running a regression against seasonal dummy variables (<code><a href="https://fable.tidyverts.org/reference/TSLM.html">TSLM(value ~ season())</a></code>). I just added this function for convenience. Further forecasting methods are available (e.g. <code><a href="../reference/TBATS.html">TBATS()</a></code> and <code><a href="../reference/DSHW.html">DSHW()</a></code> from package <code>forecast</code> or <code><a href="../reference/ELM.html">ELM()</a></code> and <code><a href="../reference/MLP.html">MLP()</a></code> from package <code>nnfor</code>).</p>
-<div class="sourceCode" id="cb6"><pre class="downlit">
+<p>The data is split into training and test sets and we are ready for forecasting. Due to the sample size and computation time, only very simple benchmark methods are used:</p>
+<ul>
+<li>
+<code>SNAIVE</code>: Seasonal naive model with weekly seasonality (from package <code>fable</code>)</li>
+<li>
+<code>STL-NAIVE</code>: STL-decomposition model and naive forecast. The series is decomposed via STL and the seasonal adjusted series is predicted via the naive approach. Afterwards, seasonal component is added to the forecasts (from packages <code>fable</code> and <code>feasts</code>)</li>
+<li>
+<code>SNAIVE2</code>: Variation of the seasonal naive approach. Mondays, Saturdays and Sundays are treated with a weekly lag. Tuesdays, Wednesdays, Thursdays and Fridays are treated with a daily lag.</li>
+<li>
+<code>SMEDIAN</code>: Seasonal median model.</li>
+</ul>
+<p>The functions <code><a href="../reference/SMEDIAN.html">SMEDIAN()</a></code> and <code><a href="../reference/SNAIVE2.html">SNAIVE2()</a></code> are extensions to the <code>fable</code> package.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R">
 <span class="co"># Model training</span>
-<span class="va">data</span> <span class="op">&lt;-</span> <span class="va">data</span> <span class="op">%&gt;%</span>
+<span class="va">train</span> <span class="op">&lt;-</span> <span class="va">train</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">split</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span><span class="op">)</span><span class="op">)</span>
 
-<span class="va">models</span> <span class="op">&lt;-</span> <span class="va">data</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">sample</span> <span class="op">==</span> <span class="st">"train"</span><span class="op">)</span> <span class="op">%&gt;%</span>
+<span class="va">mdls</span> <span class="op">&lt;-</span> <span class="va">train</span> <span class="op">%&gt;%</span>
   <span class="fu">model</span><span class="op">(</span>
-    sNaive <span class="op">=</span> <span class="fu"><a href="https://fable.tidyverts.org/reference/RW.html">SNAIVE</a></span><span class="op">(</span><span class="va">Value</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/lag.html">lag</a></span><span class="op">(</span><span class="st">"week"</span><span class="op">)</span><span class="op">)</span>,
-    sMean <span class="op">=</span> <span class="fu"><a href="../reference/SMEAN.html">SMEAN</a></span><span class="op">(</span><span class="va">Value</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/lag.html">lag</a></span><span class="op">(</span><span class="st">"week"</span><span class="op">)</span><span class="op">)</span>,
-    sMedian <span class="op">=</span> <span class="fu"><a href="../reference/SMEDIAN.html">SMEDIAN</a></span><span class="op">(</span><span class="va">Value</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/lag.html">lag</a></span><span class="op">(</span><span class="st">"week"</span><span class="op">)</span><span class="op">)</span>,
-    <span class="st">"STL-Naive"</span> <span class="op">=</span> <span class="fu">decomposition_model</span><span class="op">(</span><span class="fu"><a href="https://feasts.tidyverts.org/reference/STL.html">STL</a></span><span class="op">(</span><span class="va">Value</span><span class="op">)</span>, <span class="fu"><a href="https://fable.tidyverts.org/reference/RW.html">NAIVE</a></span><span class="op">(</span><span class="va">season_adjust</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+    <span class="st">"SNAIVE"</span> <span class="op">=</span> <span class="fu"><a href="https://fable.tidyverts.org/reference/RW.html">SNAIVE</a></span><span class="op">(</span><span class="va">Value</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/lag.html">lag</a></span><span class="op">(</span><span class="st">"week"</span><span class="op">)</span><span class="op">)</span>,
+    <span class="st">"STL-NAIVE"</span> <span class="op">=</span> <span class="fu">decomposition_model</span><span class="op">(</span><span class="fu"><a href="https://feasts.tidyverts.org/reference/STL.html">STL</a></span><span class="op">(</span><span class="va">Value</span><span class="op">)</span>, <span class="fu"><a href="https://fable.tidyverts.org/reference/RW.html">NAIVE</a></span><span class="op">(</span><span class="va">season_adjust</span><span class="op">)</span><span class="op">)</span>,
+    <span class="st">"SNAIVE2"</span> <span class="op">=</span> <span class="fu"><a href="../reference/SNAIVE2.html">SNAIVE2</a></span><span class="op">(</span><span class="va">Value</span><span class="op">)</span>,
+    <span class="st">"SMEDIAN"</span> <span class="op">=</span> <span class="fu"><a href="../reference/SMEDIAN.html">SMEDIAN</a></span><span class="op">(</span><span class="va">Value</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/lag.html">lag</a></span><span class="op">(</span><span class="st">"week"</span><span class="op">)</span><span class="op">)</span>
+    <span class="op">)</span>
 
-<span class="va">models</span>
+<span class="va">mdls</span>
 <span class="co">#&gt; # A mable: 400 x 8</span>
 <span class="co">#&gt; # Key:     Series, Unit, BZN, split [400]</span>
-<span class="co">#&gt;    Series Unit  BZN   split   sNaive   sMean   sMedian               `STL-Naive`</span>
-<span class="co">#&gt;    &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt; &lt;int&gt;  &lt;model&gt; &lt;model&gt;   &lt;model&gt;                   &lt;model&gt;</span>
-<span class="co">#&gt;  1 Day-a~ [EUR~ DE        1 &lt;SNAIVE&gt; &lt;SMEAN&gt; &lt;SMEDIAN&gt; &lt;STL decomposition model&gt;</span>
-<span class="co">#&gt;  2 Day-a~ [EUR~ DE        2 &lt;SNAIVE&gt; &lt;SMEAN&gt; &lt;SMEDIAN&gt; &lt;STL decomposition model&gt;</span>
-<span class="co">#&gt;  3 Day-a~ [EUR~ DE        3 &lt;SNAIVE&gt; &lt;SMEAN&gt; &lt;SMEDIAN&gt; &lt;STL decomposition model&gt;</span>
-<span class="co">#&gt;  4 Day-a~ [EUR~ DE        4 &lt;SNAIVE&gt; &lt;SMEAN&gt; &lt;SMEDIAN&gt; &lt;STL decomposition model&gt;</span>
-<span class="co">#&gt;  5 Day-a~ [EUR~ DE        5 &lt;SNAIVE&gt; &lt;SMEAN&gt; &lt;SMEDIAN&gt; &lt;STL decomposition model&gt;</span>
-<span class="co">#&gt;  6 Day-a~ [EUR~ DE        6 &lt;SNAIVE&gt; &lt;SMEAN&gt; &lt;SMEDIAN&gt; &lt;STL decomposition model&gt;</span>
-<span class="co">#&gt;  7 Day-a~ [EUR~ DE        7 &lt;SNAIVE&gt; &lt;SMEAN&gt; &lt;SMEDIAN&gt; &lt;STL decomposition model&gt;</span>
-<span class="co">#&gt;  8 Day-a~ [EUR~ DE        8 &lt;SNAIVE&gt; &lt;SMEAN&gt; &lt;SMEDIAN&gt; &lt;STL decomposition model&gt;</span>
-<span class="co">#&gt;  9 Day-a~ [EUR~ DE        9 &lt;SNAIVE&gt; &lt;SMEAN&gt; &lt;SMEDIAN&gt; &lt;STL decomposition model&gt;</span>
-<span class="co">#&gt; 10 Day-a~ [EUR~ DE       10 &lt;SNAIVE&gt; &lt;SMEAN&gt; &lt;SMEDIAN&gt; &lt;STL decomposition model&gt;</span>
-<span class="co">#&gt; # ... with 390 more rows</span>
+<span class="co">#&gt;    Series       Unit    BZN   split   SNAIVE               `STL-NAIVE`   SNAIVE2</span>
+<span class="co">#&gt;    &lt;chr&gt;        &lt;chr&gt;   &lt;chr&gt; &lt;int&gt;  &lt;model&gt;                   &lt;model&gt;   &lt;model&gt;</span>
+<span class="co">#&gt;  1 Day-ahead P~ [EUR/M~ DE        1 &lt;SNAIVE&gt; &lt;STL decomposition model&gt; &lt;SNAIVE2&gt;</span>
+<span class="co">#&gt;  2 Day-ahead P~ [EUR/M~ DE        2 &lt;SNAIVE&gt; &lt;STL decomposition model&gt; &lt;SNAIVE2&gt;</span>
+<span class="co">#&gt;  3 Day-ahead P~ [EUR/M~ DE        3 &lt;SNAIVE&gt; &lt;STL decomposition model&gt; &lt;SNAIVE2&gt;</span>
+<span class="co">#&gt;  4 Day-ahead P~ [EUR/M~ DE        4 &lt;SNAIVE&gt; &lt;STL decomposition model&gt; &lt;SNAIVE2&gt;</span>
+<span class="co">#&gt;  5 Day-ahead P~ [EUR/M~ DE        5 &lt;SNAIVE&gt; &lt;STL decomposition model&gt; &lt;SNAIVE2&gt;</span>
+<span class="co">#&gt;  6 Day-ahead P~ [EUR/M~ DE        6 &lt;SNAIVE&gt; &lt;STL decomposition model&gt; &lt;SNAIVE2&gt;</span>
+<span class="co">#&gt;  7 Day-ahead P~ [EUR/M~ DE        7 &lt;SNAIVE&gt; &lt;STL decomposition model&gt; &lt;SNAIVE2&gt;</span>
+<span class="co">#&gt;  8 Day-ahead P~ [EUR/M~ DE        8 &lt;SNAIVE&gt; &lt;STL decomposition model&gt; &lt;SNAIVE2&gt;</span>
+<span class="co">#&gt;  9 Day-ahead P~ [EUR/M~ DE        9 &lt;SNAIVE&gt; &lt;STL decomposition model&gt; &lt;SNAIVE2&gt;</span>
+<span class="co">#&gt; 10 Day-ahead P~ [EUR/M~ DE       10 &lt;SNAIVE&gt; &lt;STL decomposition model&gt; &lt;SNAIVE2&gt;</span>
+<span class="co">#&gt; # ... with 390 more rows, and 1 more variable: SMEDIAN &lt;model&gt;</span>
 
 <span class="co"># Forecasting</span>
-<span class="va">fcst</span> <span class="op">&lt;-</span> <span class="va">models</span> <span class="op">%&gt;%</span>
+<span class="va">fcst</span> <span class="op">&lt;-</span> <span class="va">mdls</span> <span class="op">%&gt;%</span>
   <span class="fu">forecast</span><span class="op">(</span>h <span class="op">=</span> <span class="va">n_ahead</span><span class="op">)</span>
 
 <span class="va">fcst</span>
@@ -257,28 +279,29 @@
 <span class="co">#&gt; # Key:     Series, Unit, BZN, split, .model [1,600]</span>
 <span class="co">#&gt;    Series        Unit    BZN   split .model Time                     Value .mean</span>
 <span class="co">#&gt;    &lt;chr&gt;         &lt;chr&gt;   &lt;chr&gt; &lt;int&gt; &lt;chr&gt;  &lt;dttm&gt;                  &lt;dist&gt; &lt;dbl&gt;</span>
-<span class="co">#&gt;  1 Day-ahead Pr~ [EUR/M~ DE        1 sNaive 2019-04-11 00:00:00 N(33, 367)  33  </span>
-<span class="co">#&gt;  2 Day-ahead Pr~ [EUR/M~ DE        1 sNaive 2019-04-11 01:00:00 N(33, 367)  32.6</span>
-<span class="co">#&gt;  3 Day-ahead Pr~ [EUR/M~ DE        1 sNaive 2019-04-11 02:00:00 N(34, 367)  34.1</span>
-<span class="co">#&gt;  4 Day-ahead Pr~ [EUR/M~ DE        1 sNaive 2019-04-11 03:00:00 N(37, 367)  36.9</span>
-<span class="co">#&gt;  5 Day-ahead Pr~ [EUR/M~ DE        1 sNaive 2019-04-11 04:00:00 N(45, 367)  44.7</span>
-<span class="co">#&gt;  6 Day-ahead Pr~ [EUR/M~ DE        1 sNaive 2019-04-11 05:00:00 N(54, 367)  53.6</span>
-<span class="co">#&gt;  7 Day-ahead Pr~ [EUR/M~ DE        1 sNaive 2019-04-11 06:00:00 N(60, 367)  59.9</span>
-<span class="co">#&gt;  8 Day-ahead Pr~ [EUR/M~ DE        1 sNaive 2019-04-11 07:00:00 N(47, 367)  46.9</span>
-<span class="co">#&gt;  9 Day-ahead Pr~ [EUR/M~ DE        1 sNaive 2019-04-11 08:00:00 N(48, 367)  48  </span>
-<span class="co">#&gt; 10 Day-ahead Pr~ [EUR/M~ DE        1 sNaive 2019-04-11 09:00:00 N(47, 367)  47  </span>
+<span class="co">#&gt;  1 Day-ahead Pr~ [EUR/M~ DE        1 SNAIVE 2019-04-11 00:00:00 N(33, 367)  33  </span>
+<span class="co">#&gt;  2 Day-ahead Pr~ [EUR/M~ DE        1 SNAIVE 2019-04-11 01:00:00 N(33, 367)  32.6</span>
+<span class="co">#&gt;  3 Day-ahead Pr~ [EUR/M~ DE        1 SNAIVE 2019-04-11 02:00:00 N(34, 367)  34.1</span>
+<span class="co">#&gt;  4 Day-ahead Pr~ [EUR/M~ DE        1 SNAIVE 2019-04-11 03:00:00 N(37, 367)  36.9</span>
+<span class="co">#&gt;  5 Day-ahead Pr~ [EUR/M~ DE        1 SNAIVE 2019-04-11 04:00:00 N(45, 367)  44.7</span>
+<span class="co">#&gt;  6 Day-ahead Pr~ [EUR/M~ DE        1 SNAIVE 2019-04-11 05:00:00 N(54, 367)  53.6</span>
+<span class="co">#&gt;  7 Day-ahead Pr~ [EUR/M~ DE        1 SNAIVE 2019-04-11 06:00:00 N(60, 367)  59.9</span>
+<span class="co">#&gt;  8 Day-ahead Pr~ [EUR/M~ DE        1 SNAIVE 2019-04-11 07:00:00 N(47, 367)  46.9</span>
+<span class="co">#&gt;  9 Day-ahead Pr~ [EUR/M~ DE        1 SNAIVE 2019-04-11 08:00:00 N(48, 367)  48  </span>
+<span class="co">#&gt; 10 Day-ahead Pr~ [EUR/M~ DE        1 SNAIVE 2019-04-11 09:00:00 N(47, 367)  47  </span>
 <span class="co">#&gt; # ... with 38,390 more rows</span>
 
+<span class="co"># Visualize forecasts</span>
 <span class="fu"><a href="../reference/plot_forecast.html">plot_forecast</a></span><span class="op">(</span>
   fcst <span class="op">=</span> <span class="va">fcst</span>,
-  data <span class="op">=</span> <span class="va">data</span>,
-  include <span class="op">=</span> <span class="fl">48</span>,
-  split <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">11</span><span class="op">)</span>,
+  data <span class="op">=</span> <span class="fu">bind_rows</span><span class="op">(</span><span class="va">train</span>, <span class="va">test</span><span class="op">)</span>,
+  include <span class="op">=</span> <span class="fl">48</span>,                   <span class="co"># include the last two days of historical values</span>
+  split <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">11</span><span class="op">)</span>,              <span class="co"># only split 10 and 11 are shown</span>
   title <span class="op">=</span> <span class="st">"Day-ahead electricity spot price forecast"</span>,
   subtitle <span class="op">=</span> <span class="st">"Rolling forecasts for splits 10 and 11"</span>,
   ylab <span class="op">=</span> <span class="st">"[EUR/MWh]"</span>,
   caption <span class="op">=</span> <span class="st">"Data: ENTSO-E Transparency, own calculation"</span>
-  <span class="op">)</span></pre></div>
+  <span class="op">)</span></code></pre></div>
 <p><img src="cross_validation_files/figure-html/train_models-1.png" width="672"></p>
 </div>
 <div id="evaluation-of-forecast-accuracy" class="section level2">
@@ -306,79 +329,86 @@
 <div id="forecast-accuracy-by-forecast-horizon" class="section level3">
 <h3 class="hasAnchor">
 <a href="#forecast-accuracy-by-forecast-horizon" class="anchor"></a>Forecast accuracy by forecast horizon</h3>
-<div class="sourceCode" id="cb7"><pre class="downlit">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R">
 <span class="co"># Estimate error metrics</span>
 <span class="va">metrics_horizon</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/error_metrics.html">error_metrics</a></span><span class="op">(</span>
   fcst <span class="op">=</span> <span class="va">fcst</span>,
-  data <span class="op">=</span> <span class="va">data</span>,
+  test <span class="op">=</span> <span class="va">test</span>,
+  train <span class="op">=</span> <span class="va">train</span>,
   period <span class="op">=</span> <span class="fl">168</span>,
   by <span class="op">=</span> <span class="st">"horizon"</span><span class="op">)</span>
 
 <span class="va">metrics_horizon</span> <span class="op">&lt;-</span> <span class="va">metrics_horizon</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">metric</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"MAE"</span>, <span class="st">"MASE"</span><span class="op">)</span><span class="op">)</span>
+  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">metric</span> <span class="op">==</span> <span class="st">"MAE"</span><span class="op">)</span>
 
 <span class="va">metrics_horizon</span>
-<span class="co">#&gt; # A tibble: 768 x 8</span>
-<span class="co">#&gt;    Series           Unit      BZN   .model dimension     n metric value</span>
-<span class="co">#&gt;    &lt;chr&gt;            &lt;chr&gt;     &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;     &lt;int&gt; &lt;chr&gt;  &lt;dbl&gt;</span>
-<span class="co">#&gt;  1 Day-ahead Prices [EUR/MWh] DE    sMean  horizon       1 MAE     5.57</span>
-<span class="co">#&gt;  2 Day-ahead Prices [EUR/MWh] DE    sMean  horizon       2 MAE     5.80</span>
-<span class="co">#&gt;  3 Day-ahead Prices [EUR/MWh] DE    sMean  horizon       3 MAE     5.94</span>
-<span class="co">#&gt;  4 Day-ahead Prices [EUR/MWh] DE    sMean  horizon       4 MAE     5.84</span>
-<span class="co">#&gt;  5 Day-ahead Prices [EUR/MWh] DE    sMean  horizon       5 MAE     7.36</span>
-<span class="co">#&gt;  6 Day-ahead Prices [EUR/MWh] DE    sMean  horizon       6 MAE     7.69</span>
-<span class="co">#&gt;  7 Day-ahead Prices [EUR/MWh] DE    sMean  horizon       7 MAE     7.42</span>
-<span class="co">#&gt;  8 Day-ahead Prices [EUR/MWh] DE    sMean  horizon       8 MAE     7.45</span>
-<span class="co">#&gt;  9 Day-ahead Prices [EUR/MWh] DE    sMean  horizon       9 MAE     7.89</span>
-<span class="co">#&gt; 10 Day-ahead Prices [EUR/MWh] DE    sMean  horizon      10 MAE     9.13</span>
-<span class="co">#&gt; # ... with 758 more rows</span>
+<span class="co">#&gt; # A tibble: 384 x 8</span>
+<span class="co">#&gt;    Series           Unit      BZN   .model  dimension     n metric value</span>
+<span class="co">#&gt;    &lt;chr&gt;            &lt;chr&gt;     &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;     &lt;int&gt; &lt;chr&gt;  &lt;dbl&gt;</span>
+<span class="co">#&gt;  1 Day-ahead Prices [EUR/MWh] DE    SMEDIAN horizon       1 MAE     5.42</span>
+<span class="co">#&gt;  2 Day-ahead Prices [EUR/MWh] DE    SMEDIAN horizon       2 MAE     5.57</span>
+<span class="co">#&gt;  3 Day-ahead Prices [EUR/MWh] DE    SMEDIAN horizon       3 MAE     5.70</span>
+<span class="co">#&gt;  4 Day-ahead Prices [EUR/MWh] DE    SMEDIAN horizon       4 MAE     5.77</span>
+<span class="co">#&gt;  5 Day-ahead Prices [EUR/MWh] DE    SMEDIAN horizon       5 MAE     7.23</span>
+<span class="co">#&gt;  6 Day-ahead Prices [EUR/MWh] DE    SMEDIAN horizon       6 MAE     7.51</span>
+<span class="co">#&gt;  7 Day-ahead Prices [EUR/MWh] DE    SMEDIAN horizon       7 MAE     7.45</span>
+<span class="co">#&gt;  8 Day-ahead Prices [EUR/MWh] DE    SMEDIAN horizon       8 MAE     7.54</span>
+<span class="co">#&gt;  9 Day-ahead Prices [EUR/MWh] DE    SMEDIAN horizon       9 MAE     8.12</span>
+<span class="co">#&gt; 10 Day-ahead Prices [EUR/MWh] DE    SMEDIAN horizon      10 MAE     8.76</span>
+<span class="co">#&gt; # ... with 374 more rows</span>
 
 <span class="co"># Visualize results</span>
 <span class="va">metrics_horizon</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/plot_error_metrics.html">plot_error_metrics</a></span><span class="op">(</span>
     title <span class="op">=</span> <span class="st">"Evaluation of forecast accuracy by forecast horizon"</span>,
-    subtitle <span class="op">=</span> <span class="st">"Mean absolute scaled error (MASE)"</span>,
+    subtitle <span class="op">=</span> <span class="st">"Mean absolute error (MAE)"</span>,
     xlab <span class="op">=</span> <span class="st">"Forecast horizon (n-step-ahead)"</span>,
-    caption <span class="op">=</span> <span class="st">"Data: ENTSO-E Transparency, own calculation"</span><span class="op">)</span></pre></div>
+    caption <span class="op">=</span> <span class="st">"Data: ENTSO-E Transparency, own calculation"</span>
+    <span class="op">)</span></code></pre></div>
 <p><img src="cross_validation_files/figure-html/accuracy_horizon-1.png" width="672"></p>
 </div>
 <div id="forecast-accuracy-by-split" class="section level3">
 <h3 class="hasAnchor">
 <a href="#forecast-accuracy-by-split" class="anchor"></a>Forecast accuracy by split</h3>
-<div class="sourceCode" id="cb8"><pre class="downlit">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R">
 <span class="co"># Estimate error metrics</span>
 <span class="va">metrics_split</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/error_metrics.html">error_metrics</a></span><span class="op">(</span>
   fcst <span class="op">=</span> <span class="va">fcst</span>,
-  data <span class="op">=</span> <span class="va">data</span>,
+  test <span class="op">=</span> <span class="va">test</span>,
+  train <span class="op">=</span> <span class="va">train</span>,
   period <span class="op">=</span> <span class="fl">168</span>,
-  by <span class="op">=</span> <span class="st">"split"</span><span class="op">)</span>
+  by <span class="op">=</span> <span class="st">"split"</span>
+  <span class="op">)</span>
 
 <span class="va">metrics_split</span> <span class="op">&lt;-</span> <span class="va">metrics_split</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">metric</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"MAE"</span>, <span class="st">"MASE"</span><span class="op">)</span><span class="op">)</span>
+  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">metric</span> <span class="op">==</span> <span class="st">"MAE"</span><span class="op">)</span>
 
 <span class="va">metrics_split</span>
-<span class="co">#&gt; # A tibble: 3,200 x 8</span>
-<span class="co">#&gt;    Series           Unit      BZN   .model dimension     n metric value</span>
-<span class="co">#&gt;    &lt;chr&gt;            &lt;chr&gt;     &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;     &lt;int&gt; &lt;chr&gt;  &lt;dbl&gt;</span>
-<span class="co">#&gt;  1 Day-ahead Prices [EUR/MWh] DE    sMean  split         1 MAE     5.40</span>
-<span class="co">#&gt;  2 Day-ahead Prices [EUR/MWh] DE    sMean  split         2 MAE     4.75</span>
-<span class="co">#&gt;  3 Day-ahead Prices [EUR/MWh] DE    sMean  split         3 MAE     5.44</span>
-<span class="co">#&gt;  4 Day-ahead Prices [EUR/MWh] DE    sMean  split         4 MAE     5.99</span>
-<span class="co">#&gt;  5 Day-ahead Prices [EUR/MWh] DE    sMean  split         5 MAE     7.04</span>
-<span class="co">#&gt;  6 Day-ahead Prices [EUR/MWh] DE    sMean  split         6 MAE     5.17</span>
-<span class="co">#&gt;  7 Day-ahead Prices [EUR/MWh] DE    sMean  split         7 MAE     5.19</span>
-<span class="co">#&gt;  8 Day-ahead Prices [EUR/MWh] DE    sMean  split         8 MAE     8.01</span>
-<span class="co">#&gt;  9 Day-ahead Prices [EUR/MWh] DE    sMean  split         9 MAE    11.7 </span>
-<span class="co">#&gt; 10 Day-ahead Prices [EUR/MWh] DE    sMean  split        10 MAE     5.44</span>
-<span class="co">#&gt; # ... with 3,190 more rows</span>
+<span class="co">#&gt; # A tibble: 1,600 x 8</span>
+<span class="co">#&gt;    Series           Unit      BZN   .model  dimension     n metric value</span>
+<span class="co">#&gt;    &lt;chr&gt;            &lt;chr&gt;     &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;     &lt;int&gt; &lt;chr&gt;  &lt;dbl&gt;</span>
+<span class="co">#&gt;  1 Day-ahead Prices [EUR/MWh] DE    SMEDIAN split         1 MAE     2.80</span>
+<span class="co">#&gt;  2 Day-ahead Prices [EUR/MWh] DE    SMEDIAN split         2 MAE     3.74</span>
+<span class="co">#&gt;  3 Day-ahead Prices [EUR/MWh] DE    SMEDIAN split         3 MAE     2.70</span>
+<span class="co">#&gt;  4 Day-ahead Prices [EUR/MWh] DE    SMEDIAN split         4 MAE     2.53</span>
+<span class="co">#&gt;  5 Day-ahead Prices [EUR/MWh] DE    SMEDIAN split         5 MAE     4.54</span>
+<span class="co">#&gt;  6 Day-ahead Prices [EUR/MWh] DE    SMEDIAN split         6 MAE     3.78</span>
+<span class="co">#&gt;  7 Day-ahead Prices [EUR/MWh] DE    SMEDIAN split         7 MAE     4.38</span>
+<span class="co">#&gt;  8 Day-ahead Prices [EUR/MWh] DE    SMEDIAN split         8 MAE     4.87</span>
+<span class="co">#&gt;  9 Day-ahead Prices [EUR/MWh] DE    SMEDIAN split         9 MAE    11.5 </span>
+<span class="co">#&gt; 10 Day-ahead Prices [EUR/MWh] DE    SMEDIAN split        10 MAE     5.02</span>
+<span class="co">#&gt; # ... with 1,590 more rows</span>
 
 <span class="co"># Visualize results</span>
 <span class="va">metrics_split</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/plot_error_metrics.html">plot_error_metrics</a></span><span class="op">(</span>
     title <span class="op">=</span> <span class="st">"Evaluation of forecast accuracy by split"</span>,
-    subtitle <span class="op">=</span> <span class="st">"Mean absolute scaled error (MASE)"</span>,
+    subtitle <span class="op">=</span> <span class="st">"Mean absolute error (MAE)"</span>,
     xlab <span class="op">=</span> <span class="st">"Split"</span>,
-    caption <span class="op">=</span> <span class="st">"Data: ENTSO-E Transparency, own calculation"</span><span class="op">)</span></pre></div>
+    caption <span class="op">=</span> <span class="st">"Data: ENTSO-E Transparency, own calculation"</span>
+    <span class="op">)</span></code></pre></div>
 <p><img src="cross_validation_files/figure-html/accuracy_split-1.png" width="672"></p>
 </div>
 </div>
