@@ -1,9 +1,9 @@
 
-#' @importFrom dplyr filter as_tibble group_by left_join pull select_if mutate n n_distinct rename slice summarise all_of
+#' @importFrom dplyr filter as_tibble group_by left_join pull select_if mutate n n_distinct rename slice slice_tail summarise all_of
 #' @importFrom dplyr ungroup select bind_rows arrange group_by_if row_number distinct do full_join desc first last if_else starts_with
 #' @importFrom tidyr fill pivot_longer pivot_wider drop_na gather spread
 #' @importFrom tibble add_column add_row
-#' @importFrom lubridate year quarter month hours
+#' @importFrom lubridate year quarter month hours wday
 #' @importFrom rlang is_empty quo_is_null as_name abort .data ":="
 #' @importFrom future plan
 #' @importFrom magrittr "%>%"
