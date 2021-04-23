@@ -7,6 +7,7 @@
 
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+[![Licence](https://img.shields.io/badge/licence-GPL--3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 <!-- badges: end -->
 
 The package `tscv` provides a collection of functions and tools for time
@@ -14,6 +15,9 @@ series analysis and forecasting as well as time series cross-validation.
 This is mainly a set of wrapper and helper functions as well as some
 extensions for the packages `tsibble`, `fable` and `fabletools` that I
 find useful for research in the area of time series forecasting.
+
+***Disclaimer:*** The `tscv` package is highly experimental and it is
+very likely that there will be (substantial) changes in the near future.
 
 ## Installation
 
@@ -343,7 +347,7 @@ metrics_split
 metrics_split %>%
   plot_error_metrics(
     title = "Evaluation of forecast accuracy by split",
-    subtitle = "Mean absolute error (MASE)",
+    subtitle = "Mean absolute error (MAE)",
     xlab = "Split",
     caption = "Data: ENTSO-E Transparency, own calculation"
     )
