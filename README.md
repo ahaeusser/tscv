@@ -38,9 +38,9 @@ library(feasts)
 
 ## Data preparation
 
-The dataset `elec_price` is a hourly `tsibble` with day-ahead
+The data set `elec_price` is a hourly `tsibble` with day-ahead
 electricity spot prices in \[EUR/MWh\] from the ENTSO-E Transparency
-Platform. The dataset contains time series data from 2019-01-01 to
+Platform. The data set contains time series data from 2019-01-01 to
 2019-12-31 for 8 european bidding zones (BZN):
 
 -   DE: Germany (including Luxembourg)
@@ -54,17 +54,17 @@ Platform. The dataset contains time series data from 2019-01-01 to
 
 In this vignette, we will use only four time series to demonstrate the
 functionality of the package (the data set is filtered to the bidding
-zones Germany, France, Norway 1 and Sweden 1). You can use the function
-`clean_data()` to prepare the dataset for further usage. The function
+zones Germany, France, Norway and Sweden). You can use the function
+`check_data()` to prepare the data set for further usage. The function
 checks whether the input data are a valid tsibble or not (regular spaced
 in time and ordered). Furthermore, implicit missing values are turned
 into explicit missing values (existing missing values are left
-untouched). If the data are provided in wide format, they are gathered
+untouched). If the data is provided in wide format, they are gathered
 into long format. You can use the function `plot_line()` to visualize
 the four time series.
 
 ``` r
-# Prepare dataset
+# Prepare data set
 data <- elec_price %>%
   filter(BZN %in% c("DE", "FR", "NO1", "SE1")) %>%
   check_data()
@@ -103,7 +103,7 @@ data %>%
 
 ## Split data into training and testing
 
-To prepare the dataset for time series cross-validation (TSCV), you can
+To prepare the data set for time series cross-validation (TSCV), you can
 use the function `split_data()`. This function splits the data into
 training and testing (i.e. partitioning into time slices) for time
 series cross-validation. You can choose between `stretch` and `slide`.
@@ -115,7 +115,7 @@ size for increments via `n_skip`.
 ``` r
 # Setup for time series cross validation
 n_init <- 2400   # size for training window
-n_ahead <- 24    # size for testing window (forecast horizon)
+n_ahead <- 24    # size for testing window (= forecast horizon)
 mode <- "slide"  # fixed window approach
 n_skip <- 23     # skip 23 observations
 n_lag <- 0       # no lag
@@ -165,73 +165,58 @@ test
 #> # ... with 25,526 more rows
 ```
 
-The function `summarise_split()` provides a summary table of the
-partitioning into training and testing with the corresponding start and
-end (as date and index) for each split. This is very useful to identify
-specific splits by date. For example, if a holiday falls into a specific
-testing slice or not.
-
-``` r
-# Summarize split into training and testing data
-data$index
-#> # A tibble: 266 x 2
-#>    train_index   test_index
-#>    <list>        <list>    
-#>  1 <int [2,400]> <int [24]>
-#>  2 <int [2,400]> <int [24]>
-#>  3 <int [2,400]> <int [24]>
-#>  4 <int [2,400]> <int [24]>
-#>  5 <int [2,400]> <int [24]>
-#>  6 <int [2,400]> <int [24]>
-#>  7 <int [2,400]> <int [24]>
-#>  8 <int [2,400]> <int [24]>
-#>  9 <int [2,400]> <int [24]>
-#> 10 <int [2,400]> <int [24]>
-#> # ... with 256 more rows
-```
-
 ## Training and forecasting
 
-The data are splitted into training and testing slices and we are ready
-to forecast. Due to the sample size and computation time, only very
-simple benchmark methods are used. The functions `SMEDIAN` and `SMEAN`
-are extensions to the `fable` package. The function `SMEAN` is exactly
-the same as running a regression against seasonal dummy variables
-(`TSLM(value ~ season())`). I just added this function for convenience.
-Further forecasting methods are available (e.g. `TBATS()` and `DSHW()`
-from package `forecast` or `ELM()` and `MLP()` from package `nnfor`).
+The data is split into training and test sets and we are ready for
+forecasting. Due to the sample size and computation time, only very
+simple benchmark methods are used:
+
+-   `SNAIVE`: Seasonal naive model with weekly seasonality (from package
+    `fable`)
+-   `STL-NAIVE`: STL-decomposition model and naive forecast. The series
+    is decomposed via STL and the seasonal adjusted series is predicted
+    via the naive approach. Afterwards, seasonal component is added to
+    the forecasts (from packages `fable` and `feasts`)
+-   `SNAIVE2`: Variation of the seasonal naive approach. Mondays,
+    Saturdays and Sundays are treated with a weekly lag. Tuesdays,
+    Wednesdays, Thursdays and Fridays are treated with a daily lag.
+-   `SMEDIAN`: Seasonal median model.
+
+The functions `SMEDIAN()` and `SNAIVE2()` are extensions to the `fable`
+package.
 
 ``` r
 # Model training
 train <- train %>%
   filter(split %in% c(1:100))
 
-models <- train %>%
+mdls <- train %>%
   model(
-    sNaive = SNAIVE(Value ~ lag("week")),
-    sMean = SMEAN(Value ~ lag("week")),
-    sMedian = SMEDIAN(Value ~ lag("week")),
-    "STL-Naive" = decomposition_model(STL(Value), NAIVE(season_adjust)))
+    "SNAIVE" = SNAIVE(Value ~ lag("week")),
+    "STL-NAIVE" = decomposition_model(STL(Value), NAIVE(season_adjust)),
+    "SNAIVE2" = SNAIVE2(Value),
+    "SMEDIAN" = SMEDIAN(Value ~ lag("week"))
+    )
 
-models
+mdls
 #> # A mable: 400 x 8
 #> # Key:     Series, Unit, BZN, split [400]
-#>    Series Unit  BZN   split   sNaive   sMean   sMedian               `STL-Naive`
-#>    <chr>  <chr> <chr> <int>  <model> <model>   <model>                   <model>
-#>  1 Day-a~ [EUR~ DE        1 <SNAIVE> <SMEAN> <SMEDIAN> <STL decomposition model>
-#>  2 Day-a~ [EUR~ DE        2 <SNAIVE> <SMEAN> <SMEDIAN> <STL decomposition model>
-#>  3 Day-a~ [EUR~ DE        3 <SNAIVE> <SMEAN> <SMEDIAN> <STL decomposition model>
-#>  4 Day-a~ [EUR~ DE        4 <SNAIVE> <SMEAN> <SMEDIAN> <STL decomposition model>
-#>  5 Day-a~ [EUR~ DE        5 <SNAIVE> <SMEAN> <SMEDIAN> <STL decomposition model>
-#>  6 Day-a~ [EUR~ DE        6 <SNAIVE> <SMEAN> <SMEDIAN> <STL decomposition model>
-#>  7 Day-a~ [EUR~ DE        7 <SNAIVE> <SMEAN> <SMEDIAN> <STL decomposition model>
-#>  8 Day-a~ [EUR~ DE        8 <SNAIVE> <SMEAN> <SMEDIAN> <STL decomposition model>
-#>  9 Day-a~ [EUR~ DE        9 <SNAIVE> <SMEAN> <SMEDIAN> <STL decomposition model>
-#> 10 Day-a~ [EUR~ DE       10 <SNAIVE> <SMEAN> <SMEDIAN> <STL decomposition model>
-#> # ... with 390 more rows
+#>    Series       Unit    BZN   split   SNAIVE               `STL-NAIVE`   SNAIVE2
+#>    <chr>        <chr>   <chr> <int>  <model>                   <model>   <model>
+#>  1 Day-ahead P~ [EUR/M~ DE        1 <SNAIVE> <STL decomposition model> <SNAIVE2>
+#>  2 Day-ahead P~ [EUR/M~ DE        2 <SNAIVE> <STL decomposition model> <SNAIVE2>
+#>  3 Day-ahead P~ [EUR/M~ DE        3 <SNAIVE> <STL decomposition model> <SNAIVE2>
+#>  4 Day-ahead P~ [EUR/M~ DE        4 <SNAIVE> <STL decomposition model> <SNAIVE2>
+#>  5 Day-ahead P~ [EUR/M~ DE        5 <SNAIVE> <STL decomposition model> <SNAIVE2>
+#>  6 Day-ahead P~ [EUR/M~ DE        6 <SNAIVE> <STL decomposition model> <SNAIVE2>
+#>  7 Day-ahead P~ [EUR/M~ DE        7 <SNAIVE> <STL decomposition model> <SNAIVE2>
+#>  8 Day-ahead P~ [EUR/M~ DE        8 <SNAIVE> <STL decomposition model> <SNAIVE2>
+#>  9 Day-ahead P~ [EUR/M~ DE        9 <SNAIVE> <STL decomposition model> <SNAIVE2>
+#> 10 Day-ahead P~ [EUR/M~ DE       10 <SNAIVE> <STL decomposition model> <SNAIVE2>
+#> # ... with 390 more rows, and 1 more variable: SMEDIAN <model>
 
 # Forecasting
-fcst <- models %>%
+fcst <- mdls %>%
   forecast(h = n_ahead)
 
 fcst
@@ -239,23 +224,24 @@ fcst
 #> # Key:     Series, Unit, BZN, split, .model [1,600]
 #>    Series        Unit    BZN   split .model Time                     Value .mean
 #>    <chr>         <chr>   <chr> <int> <chr>  <dttm>                  <dist> <dbl>
-#>  1 Day-ahead Pr~ [EUR/M~ DE        1 sNaive 2019-04-11 00:00:00 N(33, 367)  33  
-#>  2 Day-ahead Pr~ [EUR/M~ DE        1 sNaive 2019-04-11 01:00:00 N(33, 367)  32.6
-#>  3 Day-ahead Pr~ [EUR/M~ DE        1 sNaive 2019-04-11 02:00:00 N(34, 367)  34.1
-#>  4 Day-ahead Pr~ [EUR/M~ DE        1 sNaive 2019-04-11 03:00:00 N(37, 367)  36.9
-#>  5 Day-ahead Pr~ [EUR/M~ DE        1 sNaive 2019-04-11 04:00:00 N(45, 367)  44.7
-#>  6 Day-ahead Pr~ [EUR/M~ DE        1 sNaive 2019-04-11 05:00:00 N(54, 367)  53.6
-#>  7 Day-ahead Pr~ [EUR/M~ DE        1 sNaive 2019-04-11 06:00:00 N(60, 367)  59.9
-#>  8 Day-ahead Pr~ [EUR/M~ DE        1 sNaive 2019-04-11 07:00:00 N(47, 367)  46.9
-#>  9 Day-ahead Pr~ [EUR/M~ DE        1 sNaive 2019-04-11 08:00:00 N(48, 367)  48  
-#> 10 Day-ahead Pr~ [EUR/M~ DE        1 sNaive 2019-04-11 09:00:00 N(47, 367)  47  
+#>  1 Day-ahead Pr~ [EUR/M~ DE        1 SNAIVE 2019-04-11 00:00:00 N(33, 367)  33  
+#>  2 Day-ahead Pr~ [EUR/M~ DE        1 SNAIVE 2019-04-11 01:00:00 N(33, 367)  32.6
+#>  3 Day-ahead Pr~ [EUR/M~ DE        1 SNAIVE 2019-04-11 02:00:00 N(34, 367)  34.1
+#>  4 Day-ahead Pr~ [EUR/M~ DE        1 SNAIVE 2019-04-11 03:00:00 N(37, 367)  36.9
+#>  5 Day-ahead Pr~ [EUR/M~ DE        1 SNAIVE 2019-04-11 04:00:00 N(45, 367)  44.7
+#>  6 Day-ahead Pr~ [EUR/M~ DE        1 SNAIVE 2019-04-11 05:00:00 N(54, 367)  53.6
+#>  7 Day-ahead Pr~ [EUR/M~ DE        1 SNAIVE 2019-04-11 06:00:00 N(60, 367)  59.9
+#>  8 Day-ahead Pr~ [EUR/M~ DE        1 SNAIVE 2019-04-11 07:00:00 N(47, 367)  46.9
+#>  9 Day-ahead Pr~ [EUR/M~ DE        1 SNAIVE 2019-04-11 08:00:00 N(48, 367)  48  
+#> 10 Day-ahead Pr~ [EUR/M~ DE        1 SNAIVE 2019-04-11 09:00:00 N(47, 367)  47  
 #> # ... with 38,390 more rows
 
+# Visualize forecasts
 plot_forecast(
   fcst = fcst,
   data = bind_rows(train, test),
-  include = 48,
-  split = c(10, 11),
+  include = 48,                   # include the last two days of historical values
+  split = c(10, 11),              # only split 10 and 11 are shown
   title = "Day-ahead electricity spot price forecast",
   subtitle = "Rolling forecasts for splits 10 and 11",
   ylab = "[EUR/MWh]",
@@ -292,31 +278,32 @@ metrics_horizon <- error_metrics(
   by = "horizon")
 
 metrics_horizon <- metrics_horizon %>%
-  filter(metric %in% c("MAE", "MASE"))
+  filter(metric == "MAE")
 
 metrics_horizon
-#> # A tibble: 768 x 8
-#>    Series           Unit      BZN   .model dimension     n metric value
-#>    <chr>            <chr>     <chr> <chr>  <chr>     <int> <chr>  <dbl>
-#>  1 Day-ahead Prices [EUR/MWh] DE    sMean  horizon       1 MAE     5.57
-#>  2 Day-ahead Prices [EUR/MWh] DE    sMean  horizon       2 MAE     5.80
-#>  3 Day-ahead Prices [EUR/MWh] DE    sMean  horizon       3 MAE     5.94
-#>  4 Day-ahead Prices [EUR/MWh] DE    sMean  horizon       4 MAE     5.84
-#>  5 Day-ahead Prices [EUR/MWh] DE    sMean  horizon       5 MAE     7.36
-#>  6 Day-ahead Prices [EUR/MWh] DE    sMean  horizon       6 MAE     7.69
-#>  7 Day-ahead Prices [EUR/MWh] DE    sMean  horizon       7 MAE     7.42
-#>  8 Day-ahead Prices [EUR/MWh] DE    sMean  horizon       8 MAE     7.45
-#>  9 Day-ahead Prices [EUR/MWh] DE    sMean  horizon       9 MAE     7.89
-#> 10 Day-ahead Prices [EUR/MWh] DE    sMean  horizon      10 MAE     9.13
-#> # ... with 758 more rows
+#> # A tibble: 384 x 8
+#>    Series           Unit      BZN   .model  dimension     n metric value
+#>    <chr>            <chr>     <chr> <chr>   <chr>     <int> <chr>  <dbl>
+#>  1 Day-ahead Prices [EUR/MWh] DE    SMEDIAN horizon       1 MAE     5.42
+#>  2 Day-ahead Prices [EUR/MWh] DE    SMEDIAN horizon       2 MAE     5.57
+#>  3 Day-ahead Prices [EUR/MWh] DE    SMEDIAN horizon       3 MAE     5.70
+#>  4 Day-ahead Prices [EUR/MWh] DE    SMEDIAN horizon       4 MAE     5.77
+#>  5 Day-ahead Prices [EUR/MWh] DE    SMEDIAN horizon       5 MAE     7.23
+#>  6 Day-ahead Prices [EUR/MWh] DE    SMEDIAN horizon       6 MAE     7.51
+#>  7 Day-ahead Prices [EUR/MWh] DE    SMEDIAN horizon       7 MAE     7.45
+#>  8 Day-ahead Prices [EUR/MWh] DE    SMEDIAN horizon       8 MAE     7.54
+#>  9 Day-ahead Prices [EUR/MWh] DE    SMEDIAN horizon       9 MAE     8.12
+#> 10 Day-ahead Prices [EUR/MWh] DE    SMEDIAN horizon      10 MAE     8.76
+#> # ... with 374 more rows
 
 # Visualize results
 metrics_horizon %>%
   plot_error_metrics(
     title = "Evaluation of forecast accuracy by forecast horizon",
-    subtitle = "Mean absolute scaled error (MASE)",
+    subtitle = "Mean absolute error (MAE)",
     xlab = "Forecast horizon (n-step-ahead)",
-    caption = "Data: ENTSO-E Transparency, own calculation")
+    caption = "Data: ENTSO-E Transparency, own calculation"
+    )
 ```
 
 <img src="man/figures/README-accuracy_horizon-1.svg" width="100%" />
@@ -330,34 +317,36 @@ metrics_split <- error_metrics(
   test = test,
   train = train,
   period = 168,
-  by = "split")
+  by = "split"
+  )
 
 metrics_split <- metrics_split %>%
-  filter(metric %in% c("MAE", "MASE"))
+  filter(metric == "MAE")
 
 metrics_split
-#> # A tibble: 3,200 x 8
-#>    Series           Unit      BZN   .model dimension     n metric value
-#>    <chr>            <chr>     <chr> <chr>  <chr>     <int> <chr>  <dbl>
-#>  1 Day-ahead Prices [EUR/MWh] DE    sMean  split         1 MAE     5.40
-#>  2 Day-ahead Prices [EUR/MWh] DE    sMean  split         2 MAE     4.75
-#>  3 Day-ahead Prices [EUR/MWh] DE    sMean  split         3 MAE     5.44
-#>  4 Day-ahead Prices [EUR/MWh] DE    sMean  split         4 MAE     5.99
-#>  5 Day-ahead Prices [EUR/MWh] DE    sMean  split         5 MAE     7.04
-#>  6 Day-ahead Prices [EUR/MWh] DE    sMean  split         6 MAE     5.17
-#>  7 Day-ahead Prices [EUR/MWh] DE    sMean  split         7 MAE     5.19
-#>  8 Day-ahead Prices [EUR/MWh] DE    sMean  split         8 MAE     8.01
-#>  9 Day-ahead Prices [EUR/MWh] DE    sMean  split         9 MAE    11.7 
-#> 10 Day-ahead Prices [EUR/MWh] DE    sMean  split        10 MAE     5.44
-#> # ... with 3,190 more rows
+#> # A tibble: 1,600 x 8
+#>    Series           Unit      BZN   .model  dimension     n metric value
+#>    <chr>            <chr>     <chr> <chr>   <chr>     <int> <chr>  <dbl>
+#>  1 Day-ahead Prices [EUR/MWh] DE    SMEDIAN split         1 MAE     2.80
+#>  2 Day-ahead Prices [EUR/MWh] DE    SMEDIAN split         2 MAE     3.74
+#>  3 Day-ahead Prices [EUR/MWh] DE    SMEDIAN split         3 MAE     2.70
+#>  4 Day-ahead Prices [EUR/MWh] DE    SMEDIAN split         4 MAE     2.53
+#>  5 Day-ahead Prices [EUR/MWh] DE    SMEDIAN split         5 MAE     4.54
+#>  6 Day-ahead Prices [EUR/MWh] DE    SMEDIAN split         6 MAE     3.78
+#>  7 Day-ahead Prices [EUR/MWh] DE    SMEDIAN split         7 MAE     4.38
+#>  8 Day-ahead Prices [EUR/MWh] DE    SMEDIAN split         8 MAE     4.87
+#>  9 Day-ahead Prices [EUR/MWh] DE    SMEDIAN split         9 MAE    11.5 
+#> 10 Day-ahead Prices [EUR/MWh] DE    SMEDIAN split        10 MAE     5.02
+#> # ... with 1,590 more rows
 
 # Visualize results
 metrics_split %>%
   plot_error_metrics(
     title = "Evaluation of forecast accuracy by split",
-    subtitle = "Mean absolute scaled error (MASE)",
+    subtitle = "Mean absolute error (MASE)",
     xlab = "Split",
-    caption = "Data: ENTSO-E Transparency, own calculation")
+    caption = "Data: ENTSO-E Transparency, own calculation"
+    )
 ```
 
 <img src="man/figures/README-accuracy_split-1.svg" width="100%" />

@@ -47,7 +47,7 @@ Sys.setlocale("LC_TIME", "C")
 
 ## Data preparation
 
-The dataset `elec_price` is a hourly `tsibble` with day-ahead electricity spot prices in [EUR/MWh] from the ENTSO-E Transparency Platform. The dataset contains time series data from 2019-01-01 to 2019-12-31 for 8 european bidding zones (BZN): 
+The data set `elec_price` is a hourly `tsibble` with day-ahead electricity spot prices in [EUR/MWh] from the ENTSO-E Transparency Platform. The data set contains time series data from 2019-01-01 to 2019-12-31 for 8 european bidding zones (BZN): 
 
 * DE: Germany (including Luxembourg)
 * DK: Denmark
@@ -58,10 +58,11 @@ The dataset `elec_price` is a hourly `tsibble` with day-ahead electricity spot p
 * NO1: Norway 1 (Oslo)
 * SE1: Sweden 1 (Lulea)
 
-In this vignette, we will use only four time series to demonstrate the functionality of the package (the data set is filtered to the bidding zones Germany, France, Norway 1 and Sweden 1). You can use the function `clean_data()` to prepare the dataset for further usage. The function checks whether the input data are a valid tsibble or not (regular spaced in time and ordered). Furthermore, implicit missing values are turned into explicit missing values (existing missing values are left untouched). If the data are provided in wide format, they are gathered into long format. You can use the function `plot_line()` to visualize the four time series.
+In this vignette, we will use only four time series to demonstrate the functionality of the package (the data set is filtered to the bidding zones Germany, France, Norway and Sweden). You can use the function `check_data()` to prepare the data set for further usage. The function checks whether the input data are a valid tsibble or not (regular spaced in time and ordered). Furthermore, implicit missing values are turned into explicit missing values (existing missing values are left untouched). If the data is provided in wide format, they are gathered into long format. You can use the function `plot_line()` to visualize the four time series.
 
 ```{r clean_data}
-# Prepare dataset
+
+# Prepare data set
 data <- elec_price %>%
   filter(BZN %in% c("DE", "FR", "NO1", "SE1")) %>%
   check_data()
@@ -79,17 +80,19 @@ data %>%
     xlab = "Time",
     ylab = "[EUR/MWh]",
     caption = "Data: ENTSO-E Transparency")
+
 ```
 
 
 ## Split data into training and testing
 
-To prepare the dataset for time series cross-validation (TSCV), you can use the function `split_data()`. This function splits the data into training and testing (i.e. partitioning into time slices) for time series cross-validation. You can choose between `stretch` and `slide`. The first is an expanding window approach, while the latter is a fixed window approach. Furthermore, you can define the (initial) window size for training and testing via `n_init` and `n_ahead`, as well as the step size for increments via `n_skip`.
+To prepare the data set for time series cross-validation (TSCV), you can use the function `split_data()`. This function splits the data into training and testing (i.e. partitioning into time slices) for time series cross-validation. You can choose between `stretch` and `slide`. The first is an expanding window approach, while the latter is a fixed window approach. Furthermore, you can define the (initial) window size for training and testing via `n_init` and `n_ahead`, as well as the step size for increments via `n_skip`.
 
 ```{r split_data}
+
 # Setup for time series cross validation
 n_init <- 2400   # size for training window
-n_ahead <- 24    # size for testing window (forecast horizon)
+n_ahead <- 24    # size for testing window (= forecast horizon)
 mode <- "slide"  # fixed window approach
 n_skip <- 23     # skip 23 observations
 n_lag <- 0       # no lag
@@ -111,47 +114,52 @@ test
 ```
 
 
-The function `summarise_split()` provides a summary table of the partitioning into training and testing with the corresponding start and end (as date and index) for each split. This is very useful to identify specific splits by date. For example, if a holiday falls into a specific testing slice or not. 
-
-```{r summarise_split}
-# Summarize split into training and testing data
-data$index
-```
 
 ## Training and forecasting
 
-The data are splitted into training and testing slices and we are ready to forecast. Due to the sample size and computation time, only very simple benchmark methods are used. The functions `SMEDIAN` and `SMEAN` are extensions to the `fable` package. The function `SMEAN` is exactly the same as running a regression against seasonal dummy variables (`TSLM(value ~ season())`). I just added this function for convenience. Further forecasting methods are available (e.g. `TBATS()` and `DSHW()` from package `forecast` or `ELM()` and `MLP()` from package `nnfor`).
+The data is split into training and test sets and we are ready for forecasting. Due to the sample size and computation time, only very simple benchmark methods are used: 
+
+* `SNAIVE`: Seasonal naive model with weekly seasonality (from package `fable`)
+* `STL-NAIVE`: STL-decomposition model and naive forecast. The series is decomposed via STL and the seasonal adjusted series is predicted via the naive approach. Afterwards, seasonal component is added to the forecasts (from packages `fable` and `feasts`)
+* `SNAIVE2`: Variation of the seasonal naive approach. Mondays, Saturdays and Sundays are treated with a weekly lag. Tuesdays, Wednesdays, Thursdays and Fridays are treated with a daily lag.
+* `SMEDIAN`: Seasonal median model.
+
+The functions `SMEDIAN()` and `SNAIVE2()` are extensions to the `fable` package.
 
 ```{r train_models}
+
 # Model training
 train <- train %>%
   filter(split %in% c(1:100))
 
-models <- train %>%
+mdls <- train %>%
   model(
-    sNaive = SNAIVE(Value ~ lag("week")),
-    sMean = SMEAN(Value ~ lag("week")),
-    sMedian = SMEDIAN(Value ~ lag("week")),
-    "STL-Naive" = decomposition_model(STL(Value), NAIVE(season_adjust)))
+    "SNAIVE" = SNAIVE(Value ~ lag("week")),
+    "STL-NAIVE" = decomposition_model(STL(Value), NAIVE(season_adjust)),
+    "SNAIVE2" = SNAIVE2(Value),
+    "SMEDIAN" = SMEDIAN(Value ~ lag("week"))
+    )
 
-models
+mdls
 
 # Forecasting
-fcst <- models %>%
+fcst <- mdls %>%
   forecast(h = n_ahead)
 
 fcst
 
+# Visualize forecasts
 plot_forecast(
   fcst = fcst,
   data = bind_rows(train, test),
-  include = 48,
-  split = c(10, 11),
+  include = 48,                   # include the last two days of historical values
+  split = c(10, 11),              # only split 10 and 11 are shown
   title = "Day-ahead electricity spot price forecast",
   subtitle = "Rolling forecasts for splits 10 and 11",
   ylab = "[EUR/MWh]",
   caption = "Data: ENTSO-E Transparency, own calculation"
   )
+
 ```
 
 
@@ -170,7 +178,9 @@ To evaluate the forecast accuracy, the function `error_metrics()` is used. You c
 
 
 ### Forecast accuracy by forecast horizon
+
 ```{r accuracy_horizon}
+
 # Estimate error metrics
 metrics_horizon <- error_metrics(
   fcst = fcst,
@@ -180,7 +190,7 @@ metrics_horizon <- error_metrics(
   by = "horizon")
 
 metrics_horizon <- metrics_horizon %>%
-  filter(metric %in% c("MAE", "MASE"))
+  filter(metric == "MAE")
 
 metrics_horizon
 
@@ -188,24 +198,29 @@ metrics_horizon
 metrics_horizon %>%
   plot_error_metrics(
     title = "Evaluation of forecast accuracy by forecast horizon",
-    subtitle = "Mean absolute scaled error (MASE)",
+    subtitle = "Mean absolute error (MAE)",
     xlab = "Forecast horizon (n-step-ahead)",
-    caption = "Data: ENTSO-E Transparency, own calculation")
+    caption = "Data: ENTSO-E Transparency, own calculation"
+    )
+
 ```
 
 
 ### Forecast accuracy by split
+
 ```{r accuracy_split}
+
 # Estimate error metrics
 metrics_split <- error_metrics(
   fcst = fcst,
   test = test,
   train = train,
   period = 168,
-  by = "split")
+  by = "split"
+  )
 
 metrics_split <- metrics_split %>%
-  filter(metric %in% c("MAE", "MASE"))
+  filter(metric == "MAE")
 
 metrics_split
 
@@ -213,7 +228,9 @@ metrics_split
 metrics_split %>%
   plot_error_metrics(
     title = "Evaluation of forecast accuracy by split",
-    subtitle = "Mean absolute scaled error (MASE)",
+    subtitle = "Mean absolute error (MASE)",
     xlab = "Split",
-    caption = "Data: ENTSO-E Transparency, own calculation")
+    caption = "Data: ENTSO-E Transparency, own calculation"
+    )
+
 ```
