@@ -1,7 +1,7 @@
 ---
 title: "Visualization of Time Series Data"
 author: "Alexander Häußer"
-date: "`r Sys.Date()`"
+date: "`r format(Sys.Date(), '%B %Y')`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Visualization of Time Series Data}
@@ -28,24 +28,32 @@ devtools::install_github("ahaeusser/tscv")
 ```
 
 ```{r packages, message = FALSE, warning = FALSE}
+
 # Load relevant packages
 library(tscv)
 library(tidyverse)
 library(tsibble)
+
+```
+
+```{r abbreviations, echo=FALSE, warning=FALSE, message=FALSE, results='hide'}
 Sys.setlocale("LC_TIME", "C")
 ```
+
 
 ## Data
 
 ```{r data}
-data <- elec_price
 
+data <- elec_price
 data
+
 ```
 
 ## Line plot
 
 ```{r plot_line}
+
 data %>%
   plot_line(
     x = Time,
@@ -55,10 +63,11 @@ data %>%
     subtitle = "2019-01-01 to 2019-12-31",
     xlab = "Time",
     ylab = "[EUR/MWh]",
-    caption = "Data: ENTSO-E Transparency")
+    caption = "Data: ENTSO-E Transparency"
+    )
 
 start <- "2019-03-01"
-end <- "2019-03-30"
+end <- "2019-03-31"
 
 data <- data %>%
   filter_index(start ~ end)
@@ -68,61 +77,70 @@ data %>%
     x = Time,
     y = Value,
     color = BZN,
-    facet = BZN,
+    facet_var = BZN,
     title = "Day-ahead Electricity Spot Price",
-    subtitle = "2019-03-01 to 2019-03-30",
+    subtitle = "2019-03-01 to 2019-03-31",
     xlab = "Time",
     ylab = "[EUR/MWh]",
-    caption = "Data: ENTSO-E Transparency")
+    caption = "Data: ENTSO-E Transparency"
+    )
 ```
 
 ## Distributions (histogram, density, QQ plot)
 
 ```{r plot_histogram}
-data %>%
-  plot_histogram(
-    x = Value,
-    color = BZN,
-    title = "Day-ahead Electricity Spot Price",
-    subtitle = "2019-03-01 to 2019-03-30",
-    xlab = "Time",
-    ylab = "[EUR/MWh]",
-    caption = "Data: ENTSO-E Transparency")
 
 data %>%
   plot_histogram(
     x = Value,
     color = BZN,
-    facet = BZN,
     title = "Day-ahead Electricity Spot Price",
-    subtitle = "2019-03-01 to 2019-03-30",
+    subtitle = "2019-03-01 to 2019-03-31",
     xlab = "Time",
     ylab = "[EUR/MWh]",
-    caption = "Data: ENTSO-E Transparency")
+    caption = "Data: ENTSO-E Transparency"
+    )
+
+data %>%
+  plot_histogram(
+    x = Value,
+    color = BZN,
+    facet_var = BZN,
+    title = "Day-ahead Electricity Spot Price",
+    subtitle = "2019-03-01 to 2019-03-31",
+    xlab = "Time",
+    ylab = "[EUR/MWh]",
+    caption = "Data: ENTSO-E Transparency"
+    )
+
 ```
 
 
 ```{r plot_density}
-data %>%
-  plot_density(
-    x = Value,
-    color = BZN,
-    title = "Day-ahead Electricity Spot Price",
-    subtitle = "2019-03-01 to 2019-03-30",
-    xlab = "Time",
-    ylab = "[EUR/MWh]",
-    caption = "Data: ENTSO-E Transparency")
 
 data %>%
   plot_density(
     x = Value,
     color = BZN,
-    facet = BZN,
     title = "Day-ahead Electricity Spot Price",
-    subtitle = "2019-03-01 to 2019-03-30",
+    subtitle = "2019-03-01 to 2019-03-31",
     xlab = "Time",
     ylab = "[EUR/MWh]",
-    caption = "Data: ENTSO-E Transparency")
+    caption = "Data: ENTSO-E Transparency"
+    )
+
+data %>%
+  plot_density(
+    x = Value,
+    color = BZN,
+    facet_var = BZN,
+    title = "Day-ahead Electricity Spot Price",
+    subtitle = "2019-03-01 to 2019-03-31",
+    xlab = "Time",
+    ylab = "[EUR/MWh]",
+    caption = "Data: ENTSO-E Transparency"
+    )
+
 ```
 
 
@@ -132,41 +150,22 @@ data %>%
     x = Value,
     color = BZN,
     title = "Day-ahead Electricity Spot Price",
-    subtitle = "2019-03-01 to 2019-03-30",
+    subtitle = "2019-03-01 to 2019-03-31",
     xlab = "Time",
     ylab = "[EUR/MWh]",
-    caption = "Data: ENTSO-E Transparency")
+    caption = "Data: ENTSO-E Transparency"
+    )
 
 data %>%
   plot_qq(
     x = Value,
     color = BZN,
-    facet = BZN,
+    facet_var = BZN,
     title = "Day-ahead Electricity Spot Price",
-    subtitle = "2019-03-01 to 2019-03-30",
+    subtitle = "2019-03-01 to 2019-03-31",
     xlab = "Time",
     ylab = "[EUR/MWh]",
-    caption = "Data: ENTSO-E Transparency")
-```
-
-## Autocorrelation and Partial Autocorrelation
-
-```{r plot_corr}
-data %>%
-  plot_acf(
-    title = "Day-ahead Electricity Spot Price",
-    subtitle = "2019-03-01 to 2019-03-30",
-    xlab = "Time",
-    ylab = "[EUR/MWh]",
-    caption = "Data: ENTSO-E Transparency")
-
-data %>%
-  plot_pacf(
-    title = "Day-ahead Electricity Spot Price",
-    subtitle = "2019-03-01 to 2019-03-30",
-    xlab = "Time",
-    ylab = "[EUR/MWh]",
-    caption = "Data: ENTSO-E Transparency")
-
+    caption = "Data: ENTSO-E Transparency"
+    )
 ```
 
