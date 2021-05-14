@@ -3,75 +3,127 @@ template:
     bootswatch: flatly
 
 reference:
+
+- title: Time Series Cross-Validation
+  desc: >
+    Functions and utilities for time series cross-validation
+  contents:
+    - split_data
+    - errors
+    - pct_errors
+    - error_metrics
+
+- title: Data visualization
+  desc: >
+    Functions and utilities for data visualization
+  contents:
+    - plot_line
+    - plot_bar
+    - plot_point
+    - plot_histogram
+    - plot_density
+    - plot_qq
+    - plot_forecast
+    - plot_error_metrics
+    - theme_tscv
+    - theme_tscv_dark
+    - scale_color_tscv
+    - scale_fill_tscv
+
 - title: Forecasting
 
 - subtitle: DSHW
   desc: >
-    The DSHW model and its supported methods.
+    The DSHW model and its supported methods
   contents:
     - DSHW
     - forecast.DSHW
     - fitted.DSHW
     - residuals.DSHW
+    - model_sum.DSHW
+    - train_dshw
 
 - subtitle: ELM
   desc: >
-    The ELM model and its supported methods.
+    The ELM model and its supported methods
   contents:
     - ELM
     - forecast.ELM
     - fitted.ELM
     - residuals.ELM
+    - model_sum.ELM
+    - train_elm
 
 - subtitle: MLP
   desc: >
-    The MLP model and its supported methods.
+    The MLP model and its supported methods
   contents:
     - MLP
     - forecast.MLP
     - fitted.MLP
     - residuals.MLP
+    - model_sum.MLP
+    - train_mlp
 
 - subtitle: SMEAN
   desc: >
-    The SMEAN model and its supported methods.
+    The SMEAN model and its supported methods
   contents:
     - SMEAN
     - forecast.SMEAN
     - fitted.SMEAN
     - residuals.SMEAN
+    - model_sum.SMEAN
+    - train_smean
 
 - subtitle: SMEDIAN
   desc: >
-    The SMEDIAN model and its supported methods.
+    The SMEDIAN model and its supported methods
   contents:
     - SMEDIAN
     - forecast.SMEDIAN
     - fitted.SMEDIAN
     - residuals.SMEDIAN
+    - model_sum.SMEDIAN
+    - train_smedian
 
 - subtitle: SNAIVE2
   desc: >
-    The SNAIVE2 model and its supported methods.
+    The SNAIVE2 model and its supported methods
   contents:
     - SNAIVE2
     - forecast.SNAIVE2
     - fitted.SNAIVE2
     - residuals.SNAIVE2
+    - model_sum.SNAIVE2
+    - train_snaive2
 
 - subtitle: TBATS
   desc: >
-    The TBATS model and its supported methods.
+    The TBATS model and its supported methods
   contents:
     - TBATS
     - forecast.TBATS
     - fitted.TBATS
     - residuals.TBATS
+    - model_sum.TBATS
+    - train_tbats
 
-- title: Data visualization
+- title: Miscellaneous
   desc: >
-    Plotting functions.
+    Functions and utilities for data preparation, etc.
   contents:
-    - plot_line
-    - plot_histogram
-    - plot_density
+    - estimate_mode
+    - estimate_kurtosis
+    - estimate_skewness
+    - interpolate_missing
+    - smooth_outlier
+    - check_data
+    - lst_to_env
+
+- title: Data sets
+  desc: >
+    Example data sets
+  contents:
+    - elec_load
+    - elec_price
