@@ -6,6 +6,7 @@
 #' @param data A \code{data.frame}, \code{tibble} or \code{tsibble} in long format.
 #' @param x Unquoted column within \code{.data}.
 #' @param y Unquoted column within \code{.data} containing numeric values.
+#' @param position Character value. Possible values are \code{"stack} or \code{"dodge}.
 #' @param facet_var Unquoted column within \code{.data} (facet).
 #' @param facet_scale Character value defining axis scaling. Possible values are \code{"free"}, \code{"fixed"}, \code{"free_x"} and \code{"free_y"}.
 #' @param facet_nrow Integer value. The number of rows.
@@ -31,6 +32,7 @@
 plot_bar <- function(data,
                      x,
                      y,
+                     position = "dodge",
                      facet_var = NULL,
                      facet_scale = "free",
                      facet_nrow = NULL,
@@ -57,6 +59,7 @@ plot_bar <- function(data,
   if (quo_is_null(enquo(color))) {
     p <- p + geom_bar(
       stat = "identity",
+      position = position,
       aes(
         x = {{x}},
         y = {{y}}),
@@ -67,6 +70,7 @@ plot_bar <- function(data,
   } else {
     p <- p + geom_bar(
       stat = "identity",
+      position = position,
       aes(
         x = {{x}},
         y = {{y}},

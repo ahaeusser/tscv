@@ -8,6 +8,7 @@ plot_bar(
   data,
   x,
   y,
+  position = "dodge",
   facet_var = NULL,
   facet_scale = "free",
   facet_nrow = NULL,
@@ -34,6 +35,8 @@ plot_bar(
 \item{x}{Unquoted column within \code{.data}.}
 
 \item{y}{Unquoted column within \code{.data} containing numeric values.}
+
+\item{position}{Character value. Possible values are \code{"stack} or \code{"dodge}.}
 
 \item{facet_var}{Unquoted column within \code{.data} (facet).}
 
