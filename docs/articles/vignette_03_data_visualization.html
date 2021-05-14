@@ -88,7 +88,7 @@
       <h1 data-toc-skip>Visualization of Time Series Data</h1>
                         <h4 class="author">Alexander Häußer</h4>
             
-            <h4 class="date">April 2021</h4>
+            <h4 class="date">Mai 2021</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/ahaeusser/tscv/blob/master/vignettes/vignette_03_data_visualization.Rmd"><code>vignettes/vignette_03_data_visualization.Rmd</code></a></small>
       <div class="hidden name"><code>vignette_03_data_visualization.Rmd</code></div>
@@ -102,8 +102,7 @@
 <code class="sourceCode R"><span class="co"># install.packages("devtools")</span>
 <span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">"ahaeusser/tscv"</span><span class="op">)</span></code></pre></div>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R">
-<span class="co"># Load relevant packages</span>
+<code class="sourceCode R"><span class="co"># Load relevant packages</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ahaeusser/tscv">tscv</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tsibble.tidyverts.org">tsibble</a></span><span class="op">)</span></code></pre></div>
@@ -111,9 +110,7 @@
 <h2 class="hasAnchor">
 <a href="#data" class="anchor"></a>Data</h2>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R">
-<span class="va">data</span> <span class="op">&lt;-</span> <span class="va">elec_price</span>
-<span class="va">data</span>
+<code class="sourceCode R"><span class="va">elec_price</span>
 <span class="co">#&gt; # A tsibble: 70,080 x 5 [1h] &lt;UTC&gt;</span>
 <span class="co">#&gt; # Key:       Series, Unit, BZN [8]</span>
 <span class="co">#&gt;    Time                Series           Unit      BZN    Value</span>
@@ -130,12 +127,13 @@
 <span class="co">#&gt; 10 2019-01-01 09:00:00 Day-ahead Prices [EUR/MWh] DE     -4.93</span>
 <span class="co">#&gt; # ... with 70,070 more rows</span></code></pre></div>
 </div>
-<div id="line-plot" class="section level2">
+<div id="line-charts" class="section level2">
 <h2 class="hasAnchor">
-<a href="#line-plot" class="anchor"></a>Line plot</h2>
+<a href="#line-charts" class="anchor"></a>Line charts</h2>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R">
-<span class="va">data</span> <span class="op">%&gt;%</span>
+<code class="sourceCode R"><span class="co"># Example 1 -------------------------------------------------------------------</span>
+
+<span class="va">elec_price</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/plot_line.html">plot_line</a></span><span class="op">(</span>
     x <span class="op">=</span> <span class="va">Time</span>,
     y <span class="op">=</span> <span class="va">Value</span>,
@@ -149,111 +147,186 @@
 <p><img src="vignette_03_data_visualization_files/figure-html/plot_line-1.png" width="672"></p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
+<span class="co"># Example 2 -------------------------------------------------------------------</span>
+
 <span class="va">start</span> <span class="op">&lt;-</span> <span class="st">"2019-03-01"</span>
 <span class="va">end</span> <span class="op">&lt;-</span> <span class="st">"2019-03-31"</span>
 
-<span class="va">data</span> <span class="op">&lt;-</span> <span class="va">data</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://tsibble.tidyverts.org/reference/filter_index.html">filter_index</a></span><span class="op">(</span><span class="va">start</span> <span class="op">~</span> <span class="va">end</span><span class="op">)</span>
-
-<span class="va">data</span> <span class="op">%&gt;%</span>
+<span class="va">elec_price</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://tsibble.tidyverts.org/reference/filter_index.html">filter_index</a></span><span class="op">(</span><span class="va">start</span> <span class="op">~</span> <span class="va">end</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/plot_line.html">plot_line</a></span><span class="op">(</span>
     x <span class="op">=</span> <span class="va">Time</span>,
     y <span class="op">=</span> <span class="va">Value</span>,
     color <span class="op">=</span> <span class="va">BZN</span>,
     facet_var <span class="op">=</span> <span class="va">BZN</span>,
     title <span class="op">=</span> <span class="st">"Day-ahead Electricity Spot Price"</span>,
-    subtitle <span class="op">=</span> <span class="st">"2019-03-01 to 2019-03-31"</span>,
+    subtitle <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"From "</span>, <span class="va">start</span>, <span class="st">" to "</span>, <span class="va">end</span><span class="op">)</span>,
     xlab <span class="op">=</span> <span class="st">"Time"</span>,
     ylab <span class="op">=</span> <span class="st">"[EUR/MWh]"</span>,
     caption <span class="op">=</span> <span class="st">"Data: ENTSO-E Transparency"</span>
     <span class="op">)</span></code></pre></div>
 <p><img src="vignette_03_data_visualization_files/figure-html/plot_line-2.png" width="672"></p>
-</div>
-<div id="distributions-histogram-density-qq-plot" class="section level2">
-<h2 class="hasAnchor">
-<a href="#distributions-histogram-density-qq-plot" class="anchor"></a>Distributions (histogram, density, QQ plot)</h2>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
-<span class="va">data</span> <span class="op">%&gt;%</span>
+<span class="co"># Example 3 -------------------------------------------------------------------</span>
+
+<span class="va">start</span> <span class="op">&lt;-</span> <span class="st">"2019-03-01 00:00"</span>
+<span class="va">end</span> <span class="op">&lt;-</span> <span class="st">"2019-03-01 24:00"</span>
+
+<span class="va">elec_price</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://tsibble.tidyverts.org/reference/filter_index.html">filter_index</a></span><span class="op">(</span><span class="va">start</span> <span class="op">~</span> <span class="va">end</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">BZN</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"DE"</span>, <span class="st">"FI"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="../reference/plot_line.html">plot_line</a></span><span class="op">(</span>
+    x <span class="op">=</span> <span class="va">Time</span>,
+    y <span class="op">=</span> <span class="va">Value</span>,
+    color <span class="op">=</span> <span class="va">BZN</span>,
+    title <span class="op">=</span> <span class="st">"Day-ahead Electricity Spot Price"</span>,
+    subtitle <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"From "</span>, <span class="va">start</span>, <span class="st">" to "</span>, <span class="va">end</span><span class="op">)</span>,
+    xlab <span class="op">=</span> <span class="st">"Time"</span>,
+    ylab <span class="op">=</span> <span class="st">"[EUR/MWh]"</span>,
+    caption <span class="op">=</span> <span class="st">"Data: ENTSO-E Transparency"</span>
+<span class="op">)</span></code></pre></div>
+<p><img src="vignette_03_data_visualization_files/figure-html/plot_line-3.png" width="672"></p>
+</div>
+<div id="bar-charts" class="section level2">
+<h2 class="hasAnchor">
+<a href="#bar-charts" class="anchor"></a>Bar charts</h2>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">start</span> <span class="op">&lt;-</span> <span class="st">"2019-03-01 00:00"</span>
+<span class="va">end</span> <span class="op">&lt;-</span> <span class="st">"2019-03-01 24:00"</span>
+
+<span class="va">elec_price</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://tsibble.tidyverts.org/reference/filter_index.html">filter_index</a></span><span class="op">(</span><span class="va">start</span> <span class="op">~</span> <span class="va">end</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">BZN</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"DE"</span>, <span class="st">"FI"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">group_by</span><span class="op">(</span><span class="va">BZN</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">mutate</span><span class="op">(</span>Value <span class="op">=</span> <span class="op">(</span><span class="op">(</span><span class="va">Value</span> <span class="op">-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/lead-lag.html">lag</a></span><span class="op">(</span><span class="va">Value</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="va">Value</span><span class="op">)</span> <span class="op">*</span> <span class="fl">100</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">ungroup</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="../reference/plot_bar.html">plot_bar</a></span><span class="op">(</span>
+    x <span class="op">=</span> <span class="va">Time</span>,
+    y <span class="op">=</span> <span class="va">Value</span>,
+    color <span class="op">=</span> <span class="va">BZN</span>,
+    position <span class="op">=</span> <span class="st">"dodge"</span>,
+    title <span class="op">=</span> <span class="st">"Growth Rate (%)"</span>,
+    subtitle <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"From "</span>, <span class="va">start</span>, <span class="st">" to "</span>, <span class="va">end</span><span class="op">)</span>,
+    xlab <span class="op">=</span> <span class="st">"Time"</span>,
+    ylab <span class="op">=</span> <span class="st">"[%]"</span>,
+    caption <span class="op">=</span> <span class="st">"Data: ENTSO-E Transparency"</span>
+<span class="op">)</span>
+<span class="co">#&gt; Warning: Removed 2 rows containing missing values (geom_bar).</span></code></pre></div>
+<p><img src="vignette_03_data_visualization_files/figure-html/plot_bar-1.png" width="672"></p>
+</div>
+<div id="distributions" class="section level2">
+<h2 class="hasAnchor">
+<a href="#distributions" class="anchor"></a>Distributions</h2>
+<div id="histograms" class="section level3">
+<h3 class="hasAnchor">
+<a href="#histograms" class="anchor"></a>Histograms</h3>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Example 1 -------------------------------------------------------------------</span>
+
+<span class="va">start</span> <span class="op">&lt;-</span> <span class="st">"2019-03-01"</span>
+<span class="va">end</span> <span class="op">&lt;-</span> <span class="st">"2019-03-31"</span>
+
+<span class="va">elec_price</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://tsibble.tidyverts.org/reference/filter_index.html">filter_index</a></span><span class="op">(</span><span class="va">start</span> <span class="op">~</span> <span class="va">end</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/plot_histogram.html">plot_histogram</a></span><span class="op">(</span>
     x <span class="op">=</span> <span class="va">Value</span>,
     color <span class="op">=</span> <span class="va">BZN</span>,
     title <span class="op">=</span> <span class="st">"Day-ahead Electricity Spot Price"</span>,
-    subtitle <span class="op">=</span> <span class="st">"2019-03-01 to 2019-03-31"</span>,
-    xlab <span class="op">=</span> <span class="st">"Time"</span>,
-    ylab <span class="op">=</span> <span class="st">"[EUR/MWh]"</span>,
+    subtitle <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"From "</span>, <span class="va">start</span>, <span class="st">" to "</span>, <span class="va">end</span><span class="op">)</span>,
+    xlab <span class="op">=</span> <span class="st">"[EUR/MWh]"</span>,
+    ylab <span class="op">=</span> <span class="st">"Frequency"</span>,
     caption <span class="op">=</span> <span class="st">"Data: ENTSO-E Transparency"</span>
     <span class="op">)</span>
 <span class="co">#&gt; `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</span></code></pre></div>
 <p><img src="vignette_03_data_visualization_files/figure-html/plot_histogram-1.png" width="672"></p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
-<span class="va">data</span> <span class="op">%&gt;%</span>
+<span class="co"># Example 2 -------------------------------------------------------------------</span>
+
+<span class="va">elec_price</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://tsibble.tidyverts.org/reference/filter_index.html">filter_index</a></span><span class="op">(</span><span class="va">start</span> <span class="op">~</span> <span class="va">end</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/plot_histogram.html">plot_histogram</a></span><span class="op">(</span>
     x <span class="op">=</span> <span class="va">Value</span>,
     color <span class="op">=</span> <span class="va">BZN</span>,
     facet_var <span class="op">=</span> <span class="va">BZN</span>,
     title <span class="op">=</span> <span class="st">"Day-ahead Electricity Spot Price"</span>,
-    subtitle <span class="op">=</span> <span class="st">"2019-03-01 to 2019-03-31"</span>,
-    xlab <span class="op">=</span> <span class="st">"Time"</span>,
-    ylab <span class="op">=</span> <span class="st">"[EUR/MWh]"</span>,
+    subtitle <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"From "</span>, <span class="va">start</span>, <span class="st">" to "</span>, <span class="va">end</span><span class="op">)</span>,
+    xlab <span class="op">=</span> <span class="st">"[EUR/MWh]"</span>,
+    ylab <span class="op">=</span> <span class="st">"Frequency"</span>,
     caption <span class="op">=</span> <span class="st">"Data: ENTSO-E Transparency"</span>
     <span class="op">)</span>
 <span class="co">#&gt; `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</span></code></pre></div>
 <p><img src="vignette_03_data_visualization_files/figure-html/plot_histogram-2.png" width="672"></p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R">
-<span class="va">data</span> <span class="op">%&gt;%</span>
+</div>
+<div id="density" class="section level3">
+<h3 class="hasAnchor">
+<a href="#density" class="anchor"></a>Density</h3>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Example 1 -------------------------------------------------------------------</span>
+<span class="va">elec_price</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://tsibble.tidyverts.org/reference/filter_index.html">filter_index</a></span><span class="op">(</span><span class="va">start</span> <span class="op">~</span> <span class="va">end</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/plot_density.html">plot_density</a></span><span class="op">(</span>
     x <span class="op">=</span> <span class="va">Value</span>,
     color <span class="op">=</span> <span class="va">BZN</span>,
     title <span class="op">=</span> <span class="st">"Day-ahead Electricity Spot Price"</span>,
     subtitle <span class="op">=</span> <span class="st">"2019-03-01 to 2019-03-31"</span>,
-    xlab <span class="op">=</span> <span class="st">"Time"</span>,
-    ylab <span class="op">=</span> <span class="st">"[EUR/MWh]"</span>,
+    xlab <span class="op">=</span> <span class="st">"[EUR/MWh]"</span>,
+    ylab <span class="op">=</span> <span class="st">"Density"</span>,
     caption <span class="op">=</span> <span class="st">"Data: ENTSO-E Transparency"</span>
     <span class="op">)</span></code></pre></div>
 <p><img src="vignette_03_data_visualization_files/figure-html/plot_density-1.png" width="672"></p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
-<span class="va">data</span> <span class="op">%&gt;%</span>
+<span class="co"># Example 2 -------------------------------------------------------------------</span>
+<span class="va">elec_price</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://tsibble.tidyverts.org/reference/filter_index.html">filter_index</a></span><span class="op">(</span><span class="va">start</span> <span class="op">~</span> <span class="va">end</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/plot_density.html">plot_density</a></span><span class="op">(</span>
     x <span class="op">=</span> <span class="va">Value</span>,
     color <span class="op">=</span> <span class="va">BZN</span>,
     facet_var <span class="op">=</span> <span class="va">BZN</span>,
     title <span class="op">=</span> <span class="st">"Day-ahead Electricity Spot Price"</span>,
     subtitle <span class="op">=</span> <span class="st">"2019-03-01 to 2019-03-31"</span>,
-    xlab <span class="op">=</span> <span class="st">"Time"</span>,
-    ylab <span class="op">=</span> <span class="st">"[EUR/MWh]"</span>,
+    xlab <span class="op">=</span> <span class="st">"[EUR/MWh]"</span>,
+    ylab <span class="op">=</span> <span class="st">"Density"</span>,
     caption <span class="op">=</span> <span class="st">"Data: ENTSO-E Transparency"</span>
     <span class="op">)</span></code></pre></div>
 <p><img src="vignette_03_data_visualization_files/figure-html/plot_density-2.png" width="672"></p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">data</span> <span class="op">%&gt;%</span>
+</div>
+<div id="qq-plot" class="section level3">
+<h3 class="hasAnchor">
+<a href="#qq-plot" class="anchor"></a>QQ-Plot</h3>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Example 1 -------------------------------------------------------------------</span>
+<span class="va">elec_price</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://tsibble.tidyverts.org/reference/filter_index.html">filter_index</a></span><span class="op">(</span><span class="va">start</span> <span class="op">~</span> <span class="va">end</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/plot_qq.html">plot_qq</a></span><span class="op">(</span>
     x <span class="op">=</span> <span class="va">Value</span>,
     color <span class="op">=</span> <span class="va">BZN</span>,
     title <span class="op">=</span> <span class="st">"Day-ahead Electricity Spot Price"</span>,
     subtitle <span class="op">=</span> <span class="st">"2019-03-01 to 2019-03-31"</span>,
-    xlab <span class="op">=</span> <span class="st">"Time"</span>,
-    ylab <span class="op">=</span> <span class="st">"[EUR/MWh]"</span>,
+    xlab <span class="op">=</span> <span class="st">"Theoretical Quantile"</span>,
+    ylab <span class="op">=</span> <span class="st">"Sample Quantile"</span>,
     caption <span class="op">=</span> <span class="st">"Data: ENTSO-E Transparency"</span>
     <span class="op">)</span></code></pre></div>
 <p><img src="vignette_03_data_visualization_files/figure-html/plot_qq-1.png" width="672"></p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
-<span class="va">data</span> <span class="op">%&gt;%</span>
+<span class="co"># Example 2 -------------------------------------------------------------------</span>
+<span class="va">elec_price</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://tsibble.tidyverts.org/reference/filter_index.html">filter_index</a></span><span class="op">(</span><span class="va">start</span> <span class="op">~</span> <span class="va">end</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/plot_qq.html">plot_qq</a></span><span class="op">(</span>
     x <span class="op">=</span> <span class="va">Value</span>,
     color <span class="op">=</span> <span class="va">BZN</span>,
     facet_var <span class="op">=</span> <span class="va">BZN</span>,
     title <span class="op">=</span> <span class="st">"Day-ahead Electricity Spot Price"</span>,
     subtitle <span class="op">=</span> <span class="st">"2019-03-01 to 2019-03-31"</span>,
-    xlab <span class="op">=</span> <span class="st">"Time"</span>,
-    ylab <span class="op">=</span> <span class="st">"[EUR/MWh]"</span>,
+    xlab <span class="op">=</span> <span class="st">"Theoretical Quantile"</span>,
+    ylab <span class="op">=</span> <span class="st">"Sample Quantile"</span>,
     caption <span class="op">=</span> <span class="st">"Data: ENTSO-E Transparency"</span>
     <span class="op">)</span></code></pre></div>
 <p><img src="vignette_03_data_visualization_files/figure-html/plot_qq-2.png" width="672"></p>
+</div>
 </div>
   </div>
 

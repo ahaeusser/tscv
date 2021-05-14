@@ -139,6 +139,128 @@
     <tbody>
       <tr>
         <th colspan="2">
+          <h2 id="section-time-series-cross-validation" class="hasAnchor"><a href="#section-time-series-cross-validation" class="anchor"></a>Time Series Cross-Validation</h2>
+          <p class="section-desc"><p>Functions and utilities for time series cross-validation</p></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
+        
+        <td>
+          <p><code><a href="split_data.html">split_data()</a></code> </p>
+        </td>
+        <td><p>Split the data into training and testing</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="errors.html">errors()</a></code> </p>
+        </td>
+        <td><p>Calculate forecast errors</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="pct_errors.html">pct_errors()</a></code> </p>
+        </td>
+        <td><p>Calculate percentage forecast errors</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="error_metrics.html">error_metrics()</a></code> </p>
+        </td>
+        <td><p>Estimate accuracy metrics to evaluate point forecast</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-data-visualization" class="hasAnchor"><a href="#section-data-visualization" class="anchor"></a>Data visualization</h2>
+          <p class="section-desc"><p>Functions and utilities for data visualization</p></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
+        
+        <td>
+          <p><code><a href="plot_line.html">plot_line()</a></code> </p>
+        </td>
+        <td><p>Plot data as line chart</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plot_bar.html">plot_bar()</a></code> </p>
+        </td>
+        <td><p>Plot data as bar chart</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plot_point.html">plot_point()</a></code> </p>
+        </td>
+        <td><p>Plot data as scatterplot</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plot_histogram.html">plot_histogram()</a></code> </p>
+        </td>
+        <td><p>Plot data as histogram</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plot_density.html">plot_density()</a></code> </p>
+        </td>
+        <td><p>Plot the density via Kernel Density Estimator</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plot_qq.html">plot_qq()</a></code> </p>
+        </td>
+        <td><p>Quantile-Quantile plot</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plot_forecast.html">plot_forecast()</a></code> </p>
+        </td>
+        <td><p>Plot the actual and fitted values and forecasts</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plot_error_metrics.html">plot_error_metrics()</a></code> </p>
+        </td>
+        <td><p>Plot forecast accuracy metrics</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="theme_tscv.html">theme_tscv()</a></code> </p>
+        </td>
+        <td><p>Custom ggplot2 theme for tscv package</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="theme_tscv_dark.html">theme_tscv_dark()</a></code> </p>
+        </td>
+        <td><p>Dark ggplot2 theme for tscv package</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="scale_color_tscv.html">scale_color_tscv()</a></code> </p>
+        </td>
+        <td><p>Color scale constructor for tscv colors.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="scale_fill_tscv.html">scale_fill_tscv()</a></code> </p>
+        </td>
+        <td><p>Fill scale constructor for tscv colors.</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
           <h2 id="section-forecasting" class="hasAnchor"><a href="#section-forecasting" class="anchor"></a>Forecasting</h2>
           <p class="section-desc"></p>
         </th>
@@ -150,7 +272,7 @@
       <tr>
         <th colspan="2">
           <h3 id="section-dshw" class="hasAnchor"><a href="#section-dshw" class="anchor"></a>DSHW</h3>
-          <p class="section-desc"><p>The DSHW model and its supported methods.</p></p>
+          <p class="section-desc"><p>The DSHW model and its supported methods</p></p>
         </th>
       </tr>
       
@@ -181,13 +303,25 @@
           <p><code><a href="residuals.DSHW.html">residuals(<i>&lt;DSHW&gt;</i>)</a></code> </p>
         </td>
         <td><p>Extract residuals from a trained DSHW model</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="model_sum.DSHW.html">model_sum(<i>&lt;DSHW&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Provide a succinct summary of a trained DSHW model</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="train_dshw.html">train_dshw()</a></code> </p>
+        </td>
+        <td><p>Double Seasonal Holt-Winters model</p></td>
       </tr>
     </tbody><tbody>
       
       <tr>
         <th colspan="2">
           <h3 id="section-elm" class="hasAnchor"><a href="#section-elm" class="anchor"></a>ELM</h3>
-          <p class="section-desc"><p>The ELM model and its supported methods.</p></p>
+          <p class="section-desc"><p>The ELM model and its supported methods</p></p>
         </th>
       </tr>
       
@@ -218,13 +352,25 @@
           <p><code><a href="residuals.ELM.html">residuals(<i>&lt;ELM&gt;</i>)</a></code> </p>
         </td>
         <td><p>Extract residuals from a trained ELM model</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="model_sum.ELM.html">model_sum(<i>&lt;ELM&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Provide a succinct summary of a trained ELM model</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="train_elm.html">train_elm()</a></code> </p>
+        </td>
+        <td><p>Extreme Learning Machine (ELM)</p></td>
       </tr>
     </tbody><tbody>
       
       <tr>
         <th colspan="2">
           <h3 id="section-mlp" class="hasAnchor"><a href="#section-mlp" class="anchor"></a>MLP</h3>
-          <p class="section-desc"><p>The MLP model and its supported methods.</p></p>
+          <p class="section-desc"><p>The MLP model and its supported methods</p></p>
         </th>
       </tr>
       
@@ -255,13 +401,25 @@
           <p><code><a href="residuals.MLP.html">residuals(<i>&lt;MLP&gt;</i>)</a></code> </p>
         </td>
         <td><p>Extract residuals from a trained MLP model</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="model_sum.MLP.html">model_sum(<i>&lt;MLP&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Provide a succinct summary of a trained MLP model</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="train_mlp.html">train_mlp()</a></code> </p>
+        </td>
+        <td><p>Multilayer Perceptron (MLP)</p></td>
       </tr>
     </tbody><tbody>
       
       <tr>
         <th colspan="2">
           <h3 id="section-smean" class="hasAnchor"><a href="#section-smean" class="anchor"></a>SMEAN</h3>
-          <p class="section-desc"><p>The SMEAN model and its supported methods.</p></p>
+          <p class="section-desc"><p>The SMEAN model and its supported methods</p></p>
         </th>
       </tr>
       
@@ -292,13 +450,25 @@
           <p><code><a href="residuals.SMEAN.html">residuals(<i>&lt;SMEAN&gt;</i>)</a></code> </p>
         </td>
         <td><p>Extract residuals from a trained seasonal mean model</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="model_sum.SMEAN.html">model_sum(<i>&lt;SMEAN&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Provide a succinct summary of a trained seasonal mean model</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="train_smean.html">train_smean()</a></code> </p>
+        </td>
+        <td><p>Seasonal mean model</p></td>
       </tr>
     </tbody><tbody>
       
       <tr>
         <th colspan="2">
           <h3 id="section-smedian" class="hasAnchor"><a href="#section-smedian" class="anchor"></a>SMEDIAN</h3>
-          <p class="section-desc"><p>The SMEDIAN model and its supported methods.</p></p>
+          <p class="section-desc"><p>The SMEDIAN model and its supported methods</p></p>
         </th>
       </tr>
       
@@ -329,13 +499,25 @@
           <p><code><a href="residuals.SMEDIAN.html">residuals(<i>&lt;SMEDIAN&gt;</i>)</a></code> </p>
         </td>
         <td><p>Extract residuals from a trained seasonal median model</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="model_sum.SMEDIAN.html">model_sum(<i>&lt;SMEDIAN&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Provide a succinct summary of a trained seasonal median model</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="train_smedian.html">train_smedian()</a></code> </p>
+        </td>
+        <td><p>Seasonal median model</p></td>
       </tr>
     </tbody><tbody>
       
       <tr>
         <th colspan="2">
           <h3 id="section-snaive-" class="hasAnchor"><a href="#section-snaive-" class="anchor"></a>SNAIVE2</h3>
-          <p class="section-desc"><p>The SNAIVE2 model and its supported methods.</p></p>
+          <p class="section-desc"><p>The SNAIVE2 model and its supported methods</p></p>
         </th>
       </tr>
       
@@ -366,13 +548,25 @@
           <p><code><a href="residuals.SNAIVE2.html">residuals(<i>&lt;SNAIVE2&gt;</i>)</a></code> </p>
         </td>
         <td><p>Extract residuals from a trained seasonal naive model</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="model_sum.SNAIVE2.html">model_sum(<i>&lt;SNAIVE2&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Provide a succinct summary of a trained seasonal naive model</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="train_snaive2.html">train_snaive2()</a></code> </p>
+        </td>
+        <td><p>Seasonal naive model</p></td>
       </tr>
     </tbody><tbody>
       
       <tr>
         <th colspan="2">
           <h3 id="section-tbats" class="hasAnchor"><a href="#section-tbats" class="anchor"></a>TBATS</h3>
-          <p class="section-desc"><p>The TBATS model and its supported methods.</p></p>
+          <p class="section-desc"><p>The TBATS model and its supported methods</p></p>
         </th>
       </tr>
       
@@ -403,12 +597,24 @@
           <p><code><a href="residuals.TBATS.html">residuals(<i>&lt;TBATS&gt;</i>)</a></code> </p>
         </td>
         <td><p>Extract residuals from a trained TBATS model</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="model_sum.TBATS.html">model_sum(<i>&lt;TBATS&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Provide a succinct summary of a trained TBATS model</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="train_tbats.html">train_tbats()</a></code> </p>
+        </td>
+        <td><p>TBATS model</p></td>
       </tr>
     </tbody><tbody>
       <tr>
         <th colspan="2">
-          <h2 id="section-data-visualization" class="hasAnchor"><a href="#section-data-visualization" class="anchor"></a>Data visualization</h2>
-          <p class="section-desc"><p>Plotting functions.</p></p>
+          <h2 id="section-miscellaneous" class="hasAnchor"><a href="#section-miscellaneous" class="anchor"></a>Miscellaneous</h2>
+          <p class="section-desc"><p>Functions and utilities for data preparation, etc.</p></p>
         </th>
       </tr>
       
@@ -419,21 +625,70 @@
       <tr>
         
         <td>
-          <p><code><a href="plot_line.html">plot_line()</a></code> </p>
+          <p><code><a href="estimate_mode.html">estimate_mode()</a></code> </p>
         </td>
-        <td><p>Plot data as line chart</p></td>
+        <td><p>Estimate mode of a distribution based on Kernel Density Estimation</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="plot_histogram.html">plot_histogram()</a></code> </p>
+          <p><code><a href="estimate_kurtosis.html">estimate_kurtosis()</a></code> </p>
         </td>
-        <td><p>Plot data as histogram</p></td>
+        <td><p>Estimate kurtosis</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="plot_density.html">plot_density()</a></code> </p>
+          <p><code><a href="estimate_skewness.html">estimate_skewness()</a></code> </p>
         </td>
-        <td><p>Plot the density via Kernel Density Estimator</p></td>
+        <td><p>Estimate skewness</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="interpolate_missing.html">interpolate_missing()</a></code> </p>
+        </td>
+        <td><p>Interpolate missing values</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="smooth_outlier.html">smooth_outlier()</a></code> </p>
+        </td>
+        <td><p>Identify and replace outliers</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="check_data.html">check_data()</a></code> </p>
+        </td>
+        <td><p>Check, convert and shape the input data</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="lst_to_env.html">lst_to_env()</a></code> </p>
+        </td>
+        <td><p>Assign objects within a list to an environment</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-data-sets" class="hasAnchor"><a href="#section-data-sets" class="anchor"></a>Data sets</h2>
+          <p class="section-desc"><p>Example data sets</p></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
+        
+        <td>
+          <p><code><a href="elec_load.html">elec_load</a></code> </p>
+        </td>
+        <td><p>Hourly electricity load and load forecasts</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="elec_price.html">elec_price</a></code> </p>
+        </td>
+        <td><p>Hourly day-ahead electricity spot prices</p></td>
       </tr>
     </tbody>
     </table>
