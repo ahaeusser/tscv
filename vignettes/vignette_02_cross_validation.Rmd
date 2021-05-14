@@ -80,7 +80,7 @@ data %>%
     color = BZN,
     facet_var = BZN,
     title = "Day-ahead Electricity Spot Price",
-    subtitle = "2019-03-01 to 2019-03-15",
+    subtitle = "2019-01-01 to 2019-12-31",
     xlab = "Time",
     ylab = "[EUR/MWh]",
     caption = "Data: ENTSO-E Transparency")
@@ -126,9 +126,9 @@ The data is split into training and test sets and we are ready for forecasting. 
 * `SNAIVE`: Seasonal naive model with weekly seasonality (from package `fable`)
 * `STL-NAIVE`: STL-decomposition model and naive forecast. The series is decomposed via STL and the seasonal adjusted series is predicted via the naive approach. Afterwards, seasonal component is added to the forecasts (from packages `fable` and `feasts`)
 * `SNAIVE2`: Variation of the seasonal naive approach. Mondays, Saturdays and Sundays are treated with a weekly lag. Tuesdays, Wednesdays, Thursdays and Fridays are treated with a daily lag.
-* `SMEDIAN`: Seasonal median model.
+* `SMEDIAN`: Seasonal median model
 
-The functions `SMEDIAN()` and `SNAIVE2()` are extensions to the `fable` package.
+The functions `SMEDIAN()` and `SNAIVE2()` are extensions to the `fable` package
 
 ```{r train_models}
 

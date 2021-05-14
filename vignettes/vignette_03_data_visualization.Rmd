@@ -28,33 +28,28 @@ devtools::install_github("ahaeusser/tscv")
 ```
 
 ```{r packages, message = FALSE, warning = FALSE}
-
 # Load relevant packages
 library(tscv)
 library(tidyverse)
 library(tsibble)
-
 ```
 
 ```{r abbreviations, echo=FALSE, warning=FALSE, message=FALSE, results='hide'}
 Sys.setlocale("LC_TIME", "C")
 ```
 
-
 ## Data
 
 ```{r data}
-
-data <- elec_price
-data
-
+elec_price
 ```
 
-## Line plot
+## Line charts
 
 ```{r plot_line}
+# Example 1 -------------------------------------------------------------------
 
-data %>%
+elec_price %>%
   plot_line(
     x = Time,
     y = Value,
@@ -66,105 +61,168 @@ data %>%
     caption = "Data: ENTSO-E Transparency"
     )
 
+# Example 2 -------------------------------------------------------------------
+
 start <- "2019-03-01"
 end <- "2019-03-31"
 
-data <- data %>%
-  filter_index(start ~ end)
-
-data %>%
+elec_price %>%
+  filter_index(start ~ end) %>%
   plot_line(
     x = Time,
     y = Value,
     color = BZN,
     facet_var = BZN,
     title = "Day-ahead Electricity Spot Price",
-    subtitle = "2019-03-01 to 2019-03-31",
+    subtitle = paste0("From ", start, " to ", end),
     xlab = "Time",
     ylab = "[EUR/MWh]",
     caption = "Data: ENTSO-E Transparency"
     )
+
+# Example 3 -------------------------------------------------------------------
+
+start <- "2019-03-01 00:00"
+end <- "2019-03-01 24:00"
+
+elec_price %>%
+  filter_index(start ~ end) %>%
+  filter(BZN %in% c("DE", "FI")) %>%
+  plot_line(
+    x = Time,
+    y = Value,
+    color = BZN,
+    title = "Day-ahead Electricity Spot Price",
+    subtitle = paste0("From ", start, " to ", end),
+    xlab = "Time",
+    ylab = "[EUR/MWh]",
+    caption = "Data: ENTSO-E Transparency"
+)
 ```
 
-## Distributions (histogram, density, QQ plot)
+## Bar charts
+
+```{r plot_bar}
+start <- "2019-03-01 00:00"
+end <- "2019-03-01 24:00"
+
+elec_price %>%
+  filter_index(start ~ end) %>%
+  filter(BZN %in% c("DE", "FI")) %>%
+  group_by(BZN) %>%
+  mutate(Value = ((Value - dplyr::lag(Value, 1)) / Value) * 100) %>%
+  ungroup() %>%
+  plot_bar(
+    x = Time,
+    y = Value,
+    color = BZN,
+    position = "dodge",
+    title = "Growth Rate (%)",
+    subtitle = paste0("From ", start, " to ", end),
+    xlab = "Time",
+    ylab = "[%]",
+    caption = "Data: ENTSO-E Transparency"
+)
+```
+
+
+## Distributions
+
+### Histograms
 
 ```{r plot_histogram}
+# Example 1 -------------------------------------------------------------------
 
-data %>%
+start <- "2019-03-01"
+end <- "2019-03-31"
+
+elec_price %>%
+  filter_index(start ~ end) %>%
   plot_histogram(
     x = Value,
     color = BZN,
     title = "Day-ahead Electricity Spot Price",
-    subtitle = "2019-03-01 to 2019-03-31",
-    xlab = "Time",
-    ylab = "[EUR/MWh]",
+    subtitle = paste0("From ", start, " to ", end),
+    xlab = "[EUR/MWh]",
+    ylab = "Frequency",
     caption = "Data: ENTSO-E Transparency"
     )
 
-data %>%
+# Example 2 -------------------------------------------------------------------
+
+elec_price %>%
+  filter_index(start ~ end) %>%
   plot_histogram(
     x = Value,
     color = BZN,
     facet_var = BZN,
     title = "Day-ahead Electricity Spot Price",
-    subtitle = "2019-03-01 to 2019-03-31",
-    xlab = "Time",
-    ylab = "[EUR/MWh]",
+    subtitle = paste0("From ", start, " to ", end),
+    xlab = "[EUR/MWh]",
+    ylab = "Frequency",
     caption = "Data: ENTSO-E Transparency"
     )
-
 ```
 
+### Density
 
 ```{r plot_density}
-
-data %>%
+# Example 1 -------------------------------------------------------------------
+elec_price %>%
+  filter_index(start ~ end) %>%
   plot_density(
     x = Value,
     color = BZN,
     title = "Day-ahead Electricity Spot Price",
     subtitle = "2019-03-01 to 2019-03-31",
-    xlab = "Time",
-    ylab = "[EUR/MWh]",
+    xlab = "[EUR/MWh]",
+    ylab = "Density",
     caption = "Data: ENTSO-E Transparency"
     )
 
-data %>%
+# Example 2 -------------------------------------------------------------------
+elec_price %>%
+  filter_index(start ~ end) %>%
   plot_density(
     x = Value,
     color = BZN,
     facet_var = BZN,
     title = "Day-ahead Electricity Spot Price",
     subtitle = "2019-03-01 to 2019-03-31",
-    xlab = "Time",
-    ylab = "[EUR/MWh]",
+    xlab = "[EUR/MWh]",
+    ylab = "Density",
     caption = "Data: ENTSO-E Transparency"
     )
-
 ```
 
 
+### QQ-Plot
+
 ```{r plot_qq}
-data %>%
+# Example 1 -------------------------------------------------------------------
+elec_price %>%
+  filter_index(start ~ end) %>%
   plot_qq(
     x = Value,
     color = BZN,
     title = "Day-ahead Electricity Spot Price",
     subtitle = "2019-03-01 to 2019-03-31",
-    xlab = "Time",
-    ylab = "[EUR/MWh]",
+    xlab = "Theoretical Quantile",
+    ylab = "Sample Quantile",
     caption = "Data: ENTSO-E Transparency"
     )
 
-data %>%
+# Example 2 -------------------------------------------------------------------
+elec_price %>%
+  filter_index(start ~ end) %>%
   plot_qq(
     x = Value,
     color = BZN,
     facet_var = BZN,
     title = "Day-ahead Electricity Spot Price",
     subtitle = "2019-03-01 to 2019-03-31",
-    xlab = "Time",
-    ylab = "[EUR/MWh]",
+    xlab = "Theoretical Quantile",
+    ylab = "Sample Quantile",
     caption = "Data: ENTSO-E Transparency"
     )
 ```
