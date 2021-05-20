@@ -5,12 +5,14 @@
 #'
 #' @param .data Input data as tsibble.
 #' @param specials Specials as list defined in \code{specials_mlp}.
+#' @param n_seed Integer value. The seed for the random number generator (for reproducibility).
 #' @param ... Further arguments passed to \code{nnfor::mlp()}.
 #'
 #' @return An object of class \code{MLP}.
 
 train_mlp <- function(.data,
                       specials,
+                      n_seed = 42,
                       ...){
 
   if(length(tsibble::measured_vars(.data)) > 1){
@@ -25,6 +27,7 @@ train_mlp <- function(.data,
   }
 
   # Train model
+  set.seed(n_seed)
   mdl <- nnfor::mlp(y = model_data, ...)
 
   # Extract length of actual values and fitted values

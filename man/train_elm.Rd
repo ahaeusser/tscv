@@ -4,12 +4,14 @@
 \alias{train_elm}
 \title{Extreme Learning Machine (ELM)}
 \usage{
-train_elm(.data, specials, ...)
+train_elm(.data, specials, n_seed = 42, ...)
 }
 \arguments{
 \item{.data}{Input data as tsibble.}
 
 \item{specials}{Specials as list defined in \code{specials_elm}.}
+
+\item{n_seed}{Integer value. The seed for the random number generator (for reproducibility).}
 
 \item{...}{Further arguments passed to \code{nnfor::elm()}.}
 }

@@ -4,12 +4,14 @@
 \alias{train_mlp}
 \title{Multilayer Perceptron (MLP)}
 \usage{
-train_mlp(.data, specials, ...)
+train_mlp(.data, specials, n_seed = 42, ...)
 }
 \arguments{
 \item{.data}{Input data as tsibble.}
 
 \item{specials}{Specials as list defined in \code{specials_mlp}.}
+
+\item{n_seed}{Integer value. The seed for the random number generator (for reproducibility).}
 
 \item{...}{Further arguments passed to \code{nnfor::mlp()}.}
 }

@@ -5,12 +5,14 @@
 #'
 #' @param .data Input data as tsibble.
 #' @param specials Specials as list defined in \code{specials_elm}.
+#' @param n_seed Integer value. The seed for the random number generator (for reproducibility).
 #' @param ... Further arguments passed to \code{nnfor::elm()}.
 #'
 #' @return An object of class \code{ELM}.
 
 train_elm <- function(.data,
                       specials,
+                      n_seed = 42,
                       ...){
 
   if(length(tsibble::measured_vars(.data)) > 1){
@@ -25,6 +27,7 @@ train_elm <- function(.data,
   }
 
   # Train model
+  set.seed(n_seed)
   mdl <- nnfor::elm(y = model_data, ...)
 
   # Extract length of actual values and fitted values
