@@ -130,6 +130,7 @@ interpolate_missing <- function(x,
 
   # Interpolate missing values
   x <- forecast::na.interp(x = x, ...)
+  x <- as.numeric(x)
 
   return(x)
 }
@@ -164,6 +165,7 @@ smooth_outlier <- function(x,
 
   # Replace outliers
   x[xs$index] <- xs$replacements
+  x <- as.numeric(x)
 
   return(x)
 }
