@@ -22,11 +22,17 @@ train_expert <- function(.data,
   name_output <- measured_vars(.data)
   name_index <- index_var(.data)
 
-  # Create lagged features
+
+  # Prepare data set (convert to tibble and add date-time columns)
   data <- .data %>%
     append_row(n = min(periods)) %>%
+    as_tibble() %>%
     mutate(ymd = date(!!sym(name_index))) %>%
-    mutate(hour = hour(!!sym(name_index))) %>%
+    mutate(wday = wday(!!sym(name_index), label = TRUE)) %>%
+    mutate(hour = hour(!!sym(name_index)))
+
+  # Create lagged features
+  data <- data %>%
     mutate("lag(1)" = dplyr::lag(!!sym(name_output), n = 1 * min(periods))) %>%  # (d-1)
     mutate("lag(2)" = dplyr::lag(!!sym(name_output), n = 2 * min(periods))) %>%  # (d-2)
     mutate("lag(7)" = dplyr::lag(!!sym(name_output), n = 7 * min(periods)))      # (d-7)
@@ -38,36 +44,69 @@ train_expert <- function(.data,
   # Create minimum and maximum of previous day
   data <- data %>%
     group_by(ymd) %>%
-    mutate("min(1)" = min(.data$`lag(1)`, na.rm = TRUE)) %>%              # min(d-1)
-    mutate("max(1)" = max(.data$`lag(1)`, na.rm = TRUE)) %>%              # max(d-1)
+    mutate("min(1)" = min(.data$`lag(1)`, na.rm = TRUE)) %>%  # min(d-1)
+    mutate("max(1)" = max(.data$`lag(1)`, na.rm = TRUE)) %>%  # max(d-1)
     ungroup()
+
+  # Create "midnight" feature
+  data <- data %>%
+    mutate(midnight = ifelse(hour == 0, `lag(1)`, NA_real_)) %>%
+    fill(midnight, .direction = "down")
+
+  # Create "midnight" feature
+  # Special treatment for h == 0
+  data <- data %>%
+    mutate(midnight = ifelse(hour == 0, `lag(1)`, NA_real_)) %>%
+    fill(midnight, .direction = "down")
+
+  # Create day-of-week dummy variables
+  data <- data %>%
+    mutate("mon" = ifelse(wday == "Mon", 1, 0)) %>%
+    mutate("sat" = ifelse(wday == "Sat", 1, 0)) %>%
+    mutate("sun" = ifelse(wday == "Sun", 1, 0))
 
   # Row indices for training and forecasting
   idx_total <- 1:nrow(data)
   idx_test <- tail(idx_total, n = min(periods))
   idx_train <- idx_total[-idx_test]
 
+  # Remove "helper" variables
+  data <- data %>%
+    select(-c(!!sym(name_index), ymd, wday))
 
-  # Prepare training and testing data .........................................
+
+  # Prepare training data .......................................................
   data_train <- data %>%
-    slice(idx_train)
-
-  data_train <- data_train %>%
+    slice(idx_train) %>%
     group_by(hour) %>%
-    group_split()
+    group_split(.keep = FALSE) %>%
+    as.list()
+
+  # Prepare testing data ........................................................
+  # (for out-of-sample forecasts)
 
   data_test <- data %>%
-    slice(idx_test)
-
-  data_test <- data_test %>%
+    slice(idx_test) %>%
     group_by(hour) %>%
-    group_split()
+    group_split(.keep = FALSE) %>%
+    as.list()
 
-  # Train models
+  # Special treatment: predictor "midnight" is excluded when hour == 0
+  data_train[[1]]["midnight"] <- NULL
+  data_test[[1]]["midnight"] <- NULL
+
+
+  # Train linear models via OLS
   models_fit <- map(
     .x = data_train,
-    .f = ~lm(Value ~ `lag(1)` + `lag(2)` + `lag(7)` + `min(1)` + `max(1)`, .)
+    .f = ~lm(
+      formula = Value ~ .,
+      data = .
+    )
   )
+
+  # models_fit[[.x]]$residuals
+  # models_fit[[.x]]$fitted.values
 
   # Extract fitted values and residuals
   fitted <- NULL
@@ -134,7 +173,7 @@ forecast.EXPERT <- function(object,
 
   # Forecast model
   fcst_point <- map_dbl(
-    .x = 1:min(object[["periods"]]),
+    .x = 1:length(object[["model"]]),
     .f = ~{
       predict(
         object = object[["model"]][[.x]],
