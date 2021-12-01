@@ -106,73 +106,6 @@ estimate_skewness <- function(x, na_rm = TRUE) {
 
 
 
-#' @title Interpolate missing values
-#'
-#' @description The function \code{interpolate_missing()} is a wrapper
-#'   for \code{forecast::na.interp()}, working with numeric vectors. For
-#'   non-seasonal time series, linear interpolation is used and for
-#'   seasonal time series, the series is decomposed via STL and the
-#'   seasonally adjusted series is linearly interpolated and the seasonal
-#'   component is added back.
-#'
-#' @param x Numeric vector.
-#' @param period Numeric vector. The seasonal periods of the time series.
-#' @param ... Further arguments passed to \code{forecast::msts()} or \code{forecast::na.interp()}.
-#'
-#' @return Numeric vector.
-#' @export
-
-interpolate_missing <- function(x,
-                                period,
-                                ...) {
-  # Create msts object
-  x <- msts(data = x, seasonal.periods = period)
-
-  # Interpolate missing values
-  x <- forecast::na.interp(x = x, ...)
-  x <- as.numeric(x)
-
-  return(x)
-}
-
-
-
-#' @title Identify and replace outliers
-#'
-#' @description The function \code{smooth_outlier()} is a wrapper
-#'   for \code{forecast::tsoutliers()}, working with numeric vectors. For
-#'   non-seasonal time series, the supsmu method is used. For seasonal
-#'   time series, the series is decomposed via STL and the IQR method is
-#'   used on the remainder component. Values outside the range are
-#'   linear interpolated on the remainder and the series is reconstructed
-#'   with the corrected remainder component.
-#'
-#' @param x Numeric vector.
-#' @param period Numeric vector. The seasonal periods of the time series.
-#' @param ... Further arguments passed to \code{forecast::msts()} or \code{forecast::tsoutliers()}.
-#'
-#' @return Numeric vector.
-#' @export
-
-smooth_outlier <- function(x,
-                           period,
-                           ...) {
-  # Create msts object
-  x <- msts(data = x, seasonal.periods = period)
-
-  # Identify outliers
-  xs <- forecast::tsoutliers(x = x, ...)
-
-  # Replace outliers
-  x[xs$index] <- xs$replacements
-  x <- as.numeric(x)
-
-  return(x)
-}
-
-
-
-
 #' @title Assign objects within a list to an environment
 #'
 #' @description \code{lst_to_env} is a helper function that assigns
@@ -247,4 +180,28 @@ create_name <- function(primary,
   }
 
   paste0(time_stamp, primary, extension)
+}
+
+
+
+#' @title ...
+#'
+#' @description ...
+#'
+#' @param x ...
+#' @param n ...
+#'
+#' @return ...
+#' @export
+
+make_names <- function(x, n) {
+  x <- paste0(
+    x,"(",
+    formatC(
+      x = 1:n,
+      width = nchar(n),
+      flag = "0"),
+    ")")
+
+  return(x)
 }
