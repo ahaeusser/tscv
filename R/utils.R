@@ -1,41 +1,4 @@
 
-#' @title Return target variables
-#'
-#' @description \code{target_vars()} returns a character vector with the target variables, i.e.
-#'    key variables without "helper variables" like \code{.split}, \code{.id}, \code{.sample}, etc.
-#'
-#' @param .data A \code{tsibble} or \code{fable}.
-#'
-#' @return target A character vector.
-#' @export
-
-target_vars <- function(.data) {
-  keys <- key_vars(.data)
-  drop <- c("split", "id", "sample", "horizon", ".model", ".mean", ".distribution")
-  target <- keys[!keys %in% drop]
-  return(target)
-}
-
-
-#' @title Return value variable
-#'
-#' @description \code{value_var()} returns a character with the value variable, i.e.
-#'    measured variables without "helper variables" like \code{.split}, \code{.id}, \code{.sample}, etc.
-#'
-#' @param .data A \code{tsibble} or \code{fable}.
-#'
-#' @return value A character vector.
-#' @export
-
-value_var <- function(.data) {
-  value <- measured_vars(.data)
-  drop <- c("split", "id", "sample", "horizon", ".model", ".mean", ".distribution")
-  value <- value[!value %in% drop]
-  return(value)
-}
-
-
-
 #' @title Estimate mode of a distribution based on Kernel Density Estimation
 #'
 #' @description The function estimates the mode of a distribution based on Kernel Density Estimation.
@@ -60,6 +23,7 @@ estimate_mode <- function(x,
 
   return(mode)
 }
+
 
 
 #' @title Estimate kurtosis
@@ -152,7 +116,6 @@ lst_to_env <- function(x,
 
 
 
-
 #' @title Create a name for a folder or file
 #'
 #' @description The function creates a name for a folder or file.
@@ -167,10 +130,10 @@ lst_to_env <- function(x,
 #' @return Character value.
 #' @export
 
-create_name <- function(primary,
-                        extension = NULL,
-                        add_time = TRUE,
-                        time_format = "%Y%m%d_%H%M%S") {
+name_file <- function(primary,
+                      extension = NULL,
+                      add_time = TRUE,
+                      time_format = "%Y%m%d_%H%M%S") {
 
   if (add_time == TRUE) {
     time_stamp <- format(Sys.time(), format = time_format)
@@ -184,17 +147,18 @@ create_name <- function(primary,
 
 
 
-#' @title ...
+#' @title Helper function to create numbered names.
 #'
-#' @description ...
+#' @description Creates a character vector in the form
+#'   \code{c("x(1)", x(2), ..., x(n))}.
 #'
-#' @param x ...
-#' @param n ...
+#' @param x Character value.
+#' @param n Integer value.
 #'
-#' @return ...
+#' @return x Character vector.
 #' @export
 
-make_names <- function(x, n) {
+name_number <- function(x, n) {
   x <- paste0(
     x,"(",
     formatC(
