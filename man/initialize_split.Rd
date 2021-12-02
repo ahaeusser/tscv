@@ -5,20 +5,20 @@
 \title{Initialize a plan for train-test split}
 \usage{
 initialize_split(
-  main,
+  main_frame,
   context,
   type = c("first", "last", "prob"),
   value = NULL
 )
 }
 \arguments{
-\item{context}{A \code{list} with \code{series_id}, \code{value_id} and \code{index_id}.}
+\item{main_frame}{A \code{tibble} containing the time series data.}
 
-\item{type}{Character value. The type for the initial split.}
+\item{context}{A named \code{list} with the identifiers for \code{seried_id}, \code{value_id} and \code{index_id}.}
 
-\item{value}{Numeric value.}
+\item{type}{The type for the initial split. Possible values are \code{"first"}, \code{"last"}, \code{"prob"}.}
 
-\item{data}{A \code{tibble} containing the actual values.}
+\item{value}{Numeric value specifying the split.}
 }
 \value{
 A \code{tibble}

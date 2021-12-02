@@ -9,8 +9,7 @@ make_future(fable, context)
 \arguments{
 \item{fable}{A \code{fable} created via \code{fabletools::forecast()}.}
 
-\item{context}{A named \code{list} with the identifiers for \code{seried_id},
-\code{value_id} and \code{index_id}.}
+\item{context}{A named \code{list} with the identifiers for \code{seried_id}, \code{value_id} and \code{index_id}.}
 }
 \value{
 future_frame is a \code{tibble} with the forecasts.

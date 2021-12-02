@@ -11,8 +11,7 @@ make_errors(future_frame, main_frame, context)
 
 \item{main_frame}{A \code{tibble} containing the actual values.}
 
-\item{context}{A named \code{list} with the identifiers for \code{seried_id},
-\code{value_id} and \code{index_id}.}
+\item{context}{A named \code{list} with the identifiers for \code{seried_id}, \code{value_id} and \code{index_id}.}
 }
 \value{
 error_frame is a \code{tibble} with forecast errors and

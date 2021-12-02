@@ -15,23 +15,29 @@ split_index(
 )
 }
 \arguments{
-\item{n_total}{Integer value. The total number of observations.}
+\item{n_total}{The total number of observations of the time series.}
 
-\item{n_init}{Integer value. The number of periods for the initial training window (must be positive).}
+\item{n_init}{The number of periods for the initial training window (must be positive).}
 
-\item{n_ahead}{Integer value. The forecast horizon (n-steps-ahead, must be positive).}
+\item{n_ahead}{The forecast horizon (n-steps-ahead, must be positive).}
 
-\item{n_skip}{Integer value. The number of periods to skip between windows (must be zero or positive integer).}
+\item{n_skip}{The number of periods to skip between windows (must be zero or positive integer).}
 
-\item{n_lag}{Integer value. A value to include a lag between the training and testing set. This is useful if lagged predictors will be used during training and testing.}
+\item{n_lag}{A value to include a lag between the training and testing set. This is useful if lagged predictors will be used during training and testing.}
 
 \item{mode}{Character value. Define the setup of the training window for time series cross validation. \code{stretch} is equivalent to an expanding window approach and \code{slide} is a fixed window approach.}
 
-\item{exceed}{Logical value.}
+\item{exceed}{Logical value. If \code{TRUE}, out-of-sample splits exceeding the sample size are created.}
 }
 \value{
-...
+A \code{list} containing the indices for train and test as integer vectors.
 }
 \description{
-...
+The function creates the split indices for train and test samples
+  (i.e. partitioning into time slices) for time series cross-validation. The
+  user can choose between \code{stretch} and \code{slide}. The first is an
+  expanding window approach, while the latter is a fixed window approach.
+  The user can define the window sizes for training and testing via
+  \code{n_init} and \code{n_ahead}, as well as the step size for increments
+  via \code{n_step}.
 }

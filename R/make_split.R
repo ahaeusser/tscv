@@ -4,22 +4,22 @@
 #' @description The function creates the initial split into training and
 #'   testing data.
 #'
-#' @param data A \code{tibble} containing the actual values.
-#' @param context A \code{list} with \code{series_id}, \code{value_id} and \code{index_id}.
-#' @param type Character value. The type for the initial split.
-#' @param value Numeric value.
+#' @param main_frame A \code{tibble} containing the time series data.
+#' @param context A named \code{list} with the identifiers for \code{seried_id}, \code{value_id} and \code{index_id}.
+#' @param type The type for the initial split. Possible values are \code{"first"}, \code{"last"}, \code{"prob"}.
+#' @param value Numeric value specifying the split.
 #'
 #' @return A \code{tibble}
 #' @export
 
-initialize_split <- function(main,
+initialize_split <- function(main_frame,
                              context,
                              type = c("first", "last", "prob"),
                              value = NULL) {
 
   series_id <- context[["series_id"]]
 
-  data <- main %>%
+  data <- main_frame %>%
     select(!!sym(series_id)) %>%
     group_by(!!sym(series_id)) %>%
     summarise(n_total = n()) %>%
@@ -48,20 +48,25 @@ initialize_split <- function(main,
 
 
 
-
 #' @title Create indices for train and test splits.
 #'
-#' @description ...
+#' @description The function creates the split indices for train and test samples
+#'   (i.e. partitioning into time slices) for time series cross-validation. The
+#'   user can choose between \code{stretch} and \code{slide}. The first is an
+#'   expanding window approach, while the latter is a fixed window approach.
+#'   The user can define the window sizes for training and testing via
+#'   \code{n_init} and \code{n_ahead}, as well as the step size for increments
+#'   via \code{n_step}.
 #'
-#' @param n_total Integer value. The total number of observations.
-#' @param n_init Integer value. The number of periods for the initial training window (must be positive).
-#' @param n_ahead Integer value. The forecast horizon (n-steps-ahead, must be positive).
-#' @param n_skip Integer value. The number of periods to skip between windows (must be zero or positive integer).
-#' @param n_lag Integer value. A value to include a lag between the training and testing set. This is useful if lagged predictors will be used during training and testing.
+#' @param n_total The total number of observations of the time series.
+#' @param n_init The number of periods for the initial training window (must be positive).
+#' @param n_ahead The forecast horizon (n-steps-ahead, must be positive).
+#' @param n_skip The number of periods to skip between windows (must be zero or positive integer).
+#' @param n_lag A value to include a lag between the training and testing set. This is useful if lagged predictors will be used during training and testing.
 #' @param mode Character value. Define the setup of the training window for time series cross validation. \code{stretch} is equivalent to an expanding window approach and \code{slide} is a fixed window approach.
-#' @param exceed Logical value.
+#' @param exceed Logical value. If \code{TRUE}, out-of-sample splits exceeding the sample size are created.
 #'
-#' @return ...
+#' @return A \code{list} containing the indices for train and test as integer vectors.
 #' @export
 
 split_index <- function(n_total,
@@ -112,22 +117,22 @@ split_index <- function(n_total,
 
 
 
-#' @title ...
+#' @title Expand the split_frame
 #'
-#' @description ...
+#' @description The function expands the \code{split_frame}
 #'
-#' @param plan ...
-#' @param context ...
+#' @param split_frame A tibble
+#' @param context A named \code{list} with the identifiers for \code{seried_id}, \code{value_id} and \code{index_id}.
 #'
-#' @return ...
+#' @return split_frame is a tibble containing the train and test splits per time series.
 #' @export
 
-expand_split <- function(plan,
+expand_split <- function(split_frame,
                          context) {
 
   series_id <- context[["series_id"]]
 
-  plan <- plan %>%
+  split_frame <- split_frame %>%
     select(c(!!sym(series_id), n_splits, train, test)) %>%
     group_by(!!sym(series_id)) %>%
     mutate(split = list(1:n_splits)) %>%
@@ -135,29 +140,35 @@ expand_split <- function(plan,
     unnest(cols = c(split, train, test)) %>%
     select(c(!!sym(series_id), split, train, test))
 
-  return(plan)
+  return(split_frame)
 }
 
 
 
-#' @title ...
+#' @title Create a split_frame for train and test splits per time series.
 #'
-#' @description ...
+#' @description The function creates the split indices for train and test samples
+#'   (i.e. partitioning into time slices) for time series cross-validation. The
+#'   user can choose between \code{stretch} and \code{slide}. The first is an
+#'   expanding window approach, while the latter is a fixed window approach.
+#'   The user can define the window sizes for training and testing via
+#'   \code{n_init} and \code{n_ahead}, as well as the step size for increments
+#'   via \code{n_step}.
 #'
-#' @param data ...
-#' @param context ...
-#' @param type ...
-#' @param value ...
-#' @param n_ahead ...
-#' @param n_skip ...
-#' @param n_lag ...
-#' @param mode ...
-#' @param exceed ...
+#' @param main_frame A \code{tibble} containing the time series data.
+#' @param context A named \code{list} with the identifiers for \code{seried_id}, \code{value_id} and \code{index_id}.
+#' @param type The type for the initial split. Possible values are \code{"first"}, \code{"last"}, \code{"prob"}.
+#' @param value Numeric value specifying the split.
+#' @param n_ahead The forecast horizon (n-steps-ahead, must be positive).
+#' @param n_skip The number of periods to skip between windows (must be zero or positive integer).
+#' @param n_lag A value to include a lag between the training and testing set. This is useful if lagged predictors will be used during training and testing.
+#' @param mode Character value. Define the setup of the training window for time series cross validation. \code{stretch} is equivalent to an expanding window approach and \code{slide} is a fixed window approach.
+#' @param exceed Logical value. If \code{TRUE}, out-of-sample splits exceeding the sample size are created.
 #'
-#' @return
+#' @return A \code{list} containing the indices for train and test as integer vectors.
 #' @export
 
-make_split <- function(main,
+make_split <- function(main_frame,
                        context,
                        type,
                        value,
@@ -169,7 +180,7 @@ make_split <- function(main,
 
   # Create initial split
   split_frame <- initialize_split(
-    main = main,
+    main_frame = main_frame,
     context = context,
     type = type,
     value = value
@@ -201,10 +212,9 @@ make_split <- function(main,
 
   # Expand split_frame and return output
   split_frame <- expand_split(
-    plan = split_frame,
+    split_frame = split_frame,
     context = context
   )
 
   return(split_frame)
 }
-

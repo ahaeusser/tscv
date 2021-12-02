@@ -7,10 +7,8 @@
 #'   integer.
 #'
 #' @param main_frame A \code{tibble} containing the time series data.
-#' @param split_frame A \code{tibble} containing the splits into train and test.
-#'   The result of a call to \code{make_split()}.
-#' @param context A named \code{list} with the identifiers for \code{seried_id},
-#'   \code{value_id} and \code{index_id}.
+#' @param split_frame A \code{tibble} containing the splits into train and test. The result of a call to \code{make_split()}.
+#' @param context A named \code{list} with the identifiers for \code{seried_id}, \code{value_id} and \code{index_id}.
 #'
 #' @return train_frame is a \code{tibble} containing the train data.
 #' @export
@@ -42,8 +40,7 @@ slice_train <- function(main_frame,
 #'   integer.
 #'
 #' @param main_frame A \code{tibble} containing the time series data.
-#' @param split_frame A \code{tibble} containing the splits into train and test.
-#'   The result of a call to \code{make_split()}.
+#' @param split_frame A \code{tibble} containing the splits into train and test. The result of a call to \code{make_split()}.
 #' @param context A named \code{list} with the identifiers for \code{seried_id},
 #'   \code{value_id} and \code{index_id}.
 #'

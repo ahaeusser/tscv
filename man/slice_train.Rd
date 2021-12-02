@@ -9,11 +9,9 @@ slice_train(main_frame, split_frame, context)
 \arguments{
 \item{main_frame}{A \code{tibble} containing the time series data.}
 
-\item{split_frame}{A \code{tibble} containing the splits into train and test.
-The result of a call to \code{make_split()}.}
+\item{split_frame}{A \code{tibble} containing the splits into train and test. The result of a call to \code{make_split()}.}
 
-\item{context}{A named \code{list} with the identifiers for \code{seried_id},
-\code{value_id} and \code{index_id}.}
+\item{context}{A named \code{list} with the identifiers for \code{seried_id}, \code{value_id} and \code{index_id}.}
 }
 \value{
 train_frame is a \code{tibble} containing the train data.
