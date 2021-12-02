@@ -130,7 +130,7 @@ lst_to_env <- function(x,
 #' @return Character value.
 #' @export
 
-name_file <- function(primary,
+file_name <- function(primary,
                       extension = NULL,
                       add_time = TRUE,
                       time_format = "%Y%m%d_%H%M%S") {
@@ -147,7 +147,7 @@ name_file <- function(primary,
 
 
 
-#' @title Helper function to create numbered names.
+#' @title Helper function to create numbered strings.
 #'
 #' @description Creates a character vector in the form
 #'   \code{c("x(1)", x(2), ..., x(n))}.
@@ -158,7 +158,7 @@ name_file <- function(primary,
 #' @return x Character vector.
 #' @export
 
-name_number <- function(x, n) {
+number_string <- function(x, n) {
   x <- paste0(
     x,"(",
     formatC(
