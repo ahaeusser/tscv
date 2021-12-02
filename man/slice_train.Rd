@@ -2,20 +2,25 @@
 % Please edit documentation in R/slice_data.R
 \name{slice_train}
 \alias{slice_train}
-\title{...}
+\title{Slice the train data from the complete data}
 \usage{
-slice_train(main, split, context)
+slice_train(main_frame, split_frame, context)
 }
 \arguments{
-\item{main}{...}
+\item{main_frame}{A \code{tibble} containing the time series data.}
 
-\item{split}{...}
+\item{split_frame}{A \code{tibble} containing the splits into train and test.
+The result of a call to \code{make_split()}.}
 
-\item{context}{...}
+\item{context}{A named \code{list} with the identifiers for \code{seried_id},
+\code{value_id} and \code{index_id}.}
 }
 \value{
-...
+train_frame is a \code{tibble} containing the train data.
 }
 \description{
-...
+\code{slice_train} creates the train data from the
+  complete data set \code{main_frame} according to \code{split_frame}. Same
+  columns as \code{main_frame}, but the number of the split is added as
+  integer.
 }

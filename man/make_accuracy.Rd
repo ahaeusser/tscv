@@ -4,25 +4,24 @@
 \alias{make_accuracy}
 \title{Estimate accuracy metrics to evaluate point forecast}
 \usage{
-make_accuracy(future, main, dimension = "split", benchmark = NULL)
+make_accuracy(future_frame, main_frame, dimension = "split", benchmark = NULL)
 }
 \arguments{
-\item{future}{A \code{tibble} containing the forecasts for the models, splits, etc.}
+\item{future_frame}{A \code{tibble} containing the forecasts for the models, splits, etc.}
 
-\item{main}{A \code{tibble} containing the actual values.}
+\item{main_frame}{A \code{tibble} containing the actual values.}
 
 \item{dimension}{Character value. The forecast accuracy is estimated by \code{split} or \code{horizon}.}
 
 \item{benchmark}{Character value. The forecast model used as benchmark for the relative mean absolute error (rMAE).}
 }
 \value{
-A \code{tibble} containing the accuracy metrics for all series
-   models etc.
+accuracy_frame is \code{tibble} containing the accuracy metrics.
 }
 \description{
-This function estimates several accuracy metrics to evaluate
+The function estimates several accuracy metrics to evaluate
   the accuracy of point forecasts. Either along the forecast horizon or
-  along the train-test-splits. By default, the following accuracy metrics
+  along the test-splits. By default, the following accuracy metrics
   are provided:
 
    \itemize{

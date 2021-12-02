@@ -2,18 +2,30 @@
 % Please edit documentation in R/make_future.R
 \name{make_future}
 \alias{make_future}
-\title{...}
+\title{Convert the forecasts from a \code{fable} to a \code{future_frame}}
 \usage{
 make_future(fable, context)
 }
 \arguments{
-\item{fable}{...}
+\item{fable}{A \code{fable} created via \code{fabletools::forecast()}.}
 
-\item{context}{...}
+\item{context}{A named \code{list} with the identifiers for \code{seried_id},
+\code{value_id} and \code{index_id}.}
 }
 \value{
-...
+future_frame is a \code{tibble} with the forecasts.
 }
 \description{
-...
+\code{make_future} converts the forecasts from a \code{fable}
+  to a \code{future_frame}. A \code{future_frame} is a tibble with a
+  standardized format and contains the columns:
+
+   \itemize{
+      \item{\code{index_id}: Date-time index as specified in \code{context}}.
+      \item{\code{series_id}: Unique identifier for the time series as specified in \code{context}}.
+      \item{\code{model}: Character value. The forecasting model.}
+      \item{\code{split}: Integer value. The number of the train data split.}
+      \item{\code{horizon}: The forecast horizon as integer.}
+      \item{\code{point}: The point forecast as numeric value.}
+      }
 }

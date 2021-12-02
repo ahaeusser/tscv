@@ -1,9 +1,9 @@
 
 #' @title Estimate accuracy metrics to evaluate point forecast
 #'
-#' @description This function estimates several accuracy metrics to evaluate
+#' @description The function estimates several accuracy metrics to evaluate
 #'   the accuracy of point forecasts. Either along the forecast horizon or
-#'   along the train-test-splits. By default, the following accuracy metrics
+#'   along the test-splits. By default, the following accuracy metrics
 #'   are provided:
 #'
 #'    \itemize{
@@ -17,17 +17,16 @@
 #'       \item{\code{rMAE}: relative mean absolute error}
 #'       }
 #'
-#' @param future A \code{tibble} containing the forecasts for the models, splits, etc.
-#' @param main A \code{tibble} containing the actual values.
+#' @param future_frame A \code{tibble} containing the forecasts for the models, splits, etc.
+#' @param main_frame A \code{tibble} containing the actual values.
 #' @param dimension Character value. The forecast accuracy is estimated by \code{split} or \code{horizon}.
 #' @param benchmark Character value. The forecast model used as benchmark for the relative mean absolute error (rMAE).
 #'
-#' @return A \code{tibble} containing the accuracy metrics for all series
-#'    models etc.
+#' @return accuracy_frame is \code{tibble} containing the accuracy metrics.
 #' @export
 
-make_accuracy <- function(future,
-                          main,
+make_accuracy <- function(future_frame,
+                          main_frame,
                           dimension = "split",
                           benchmark = NULL) {
 
@@ -36,20 +35,20 @@ make_accuracy <- function(future,
   index_id <- context[["index_id"]]
 
   # Prepare test data
-  main <- rename(
-    .data = main,
+  main_frame <- rename(
+    .data = main_frame,
     actual = !!sym(value_id)
   )
 
-  # Join main_frame (test data) and future_frame (forecasts)
+  # Join main_frame (test data) and future_frame_frame (forecasts)
   data <- left_join(
-    x = future,
-    y = main,
+    x = future_frame,
+    y = main_frame,
     by = c(series_id, index_id)) %>%
     select(c(!!sym(series_id), "model", "split", "horizon", "point", "actual"))
 
   # Estimate common accuracy metrics
-  metrics <- data %>%
+  accuracy_frame <- data %>%
     group_by(!!sym(series_id), .data$model, !!sym(dimension)) %>%
     summarise(
       ME = me_vec(truth = .data$actual, estimate = .data$point),
@@ -62,11 +61,11 @@ make_accuracy <- function(future,
       .groups = "drop") %>%
     arrange(!!sym(series_id), .data$model, !!sym(dimension))
 
-  column_all <- names(metrics)
+  column_all <- names(accuracy_frame)
   column_drop <- c(series_id, "model", dimension)
   set_metrics <- column_all[!column_all %in% column_drop]
 
-  metrics <- metrics %>%
+  accuracy_frame <- accuracy_frame %>%
     pivot_longer(
       cols = all_of(set_metrics),
       names_to = "metric",
@@ -76,9 +75,9 @@ make_accuracy <- function(future,
 
   if (!is.null(benchmark)) {
 
-    set_models <- unique(metrics$model)
+    set_models <- unique(accuracy_frame$model)
 
-    mae_benchmark <- metrics %>%
+    mae_benchmark <- accuracy_frame %>%
       filter(metric == "MAE") %>%
       filter(model == benchmark) %>%
       pivot_wider(
@@ -95,23 +94,22 @@ make_accuracy <- function(future,
     )
 
     metrics_rmae <- left_join(
-      x = filter(metrics, metric == "MAE"),
+      x = filter(accuracy_frame, metric == "MAE"),
       y = mae_benchmark,
       by = c(series_id, dimension, "metric", "model")) %>%
       mutate(value = value / !!sym(benchmark)) %>%
       mutate(metric = "rMAE") %>%
       select(-!!sym(benchmark))
 
-    metrics <- bind_rows(
-      metrics,
+    accuracy_frame <- bind_rows(
+      accuracy_frame,
       metrics_rmae) %>%
       arrange(!!sym(series_id), .data$model, .data$metric)
-
   }
 
-  metrics <- metrics %>%
+  accuracy_frame <- accuracy_frame %>%
     mutate(dimension = dimension, .after = "model") %>%
     rename(n = !!sym(dimension))
 
-  return(metrics)
+  return(accuracy_frame)
 }
