@@ -1,21 +1,22 @@
+
 #' @title Hourly day-ahead electricity spot prices
 #'
-#' @description Hourly tsibble with day-ahead electricity spot prices from
-#'   the ENTSO-E Transparency Platform. The dataset contains time series data
-#'   from 2019-01-01 00:00:00 to 2019-12-31 23:00:00 for 8 bidding zones
-#'   within europe (DE, DK1, ES, FI, FR, NL, NO1, SE1).
+#' @description Hourly tibble with day-ahead electricity spot prices from
+#'   the ENTSO-E Transparency Platform. The data set contains time series data
+#'   from 2019-01-01 00:00:00 to 2020-12-31 23:00:00 for 8 bidding zones
+#'   within Europe (DE, DK1, ES, FI, FR, NL, NO1, SE1).
 #'
 #' @docType data
 #'
 #' @usage data(elec_price)
 #'
-#' @format A time series object of class \code{tsibble} with 70.080 rows and 5 columns:
+#' @format A time series object of class \code{tibble} with 140.352 rows and 5 columns:
 #'    \itemize{
-#'       \item{\code{Time}: Date and time (index variable)}
-#'       \item{\code{Series}: Time series name (key variable)}
-#'       \item{\code{Unit}: Measured unit (key variable)}
-#'       \item{\code{BZN}: Bidding zone (key variable)}
-#'       \item{\code{Value}: Measurement variable}
+#'       \item{\code{time}: Date and time index}
+#'       \item{\code{item}: Time series name}
+#'       \item{\code{unit}: Measured unit}
+#'       \item{\code{bidding_zone}: Bidding zone}
+#'       \item{\code{value}: Measurement variable}
 #'       }
 #'
 #' @keywords datasets
@@ -27,27 +28,25 @@
 "elec_price"
 
 
-
-
-#' @title Hourly electricity load and load forecasts
+#' @title Hourly electricity load (actual values and forecasts)
 #'
-#' @description Hourly tsibble with electricity loads and load forecasts
-#'   from the ENTSO-E Transparency Platform. The dataset contains time series data
+#' @description Hourly tibble with actual electricity loads and load forecasts
+#'   from the ENTSO-E Transparency Platform. The data set contains time series data
 #'   from 2019-01-01 00:00:00 to 2019-12-31 23:00:00 for 8 bidding zones within
-#'   europe (DE, DK1, ES, FI, FR, NL, NO1, SE1). The original data are on a
+#'   Europe (DE, DK1, ES, FI, FR, NL, NO1, SE1). The original data are on a
 #'   quarter-hourly basis (15-minutes interval), but aggregated to hourly data.
 #'
 #' @docType data
 #'
 #' @usage data(elec_load)
 #'
-#' @format A time series object of class \code{tsibble} with 122.640 rows and 5 columns:
+#' @format A time series object of class \code{tibble} with 140.160 rows and 5 columns:
 #'    \itemize{
-#'       \item{\code{Time}: Date and time (index variable)}
-#'       \item{\code{Series}: Time series name (key variable)}
-#'       \item{\code{Unit}: Measured unit (key variable)}
-#'       \item{\code{BZN}: Bidding zone (key variable)}
-#'       \item{\code{Value}: Measurement variable}
+#'       \item{\code{time}: Date and time index}
+#'       \item{\code{item}: Time series name}
+#'       \item{\code{unit}: Measured unit}
+#'       \item{\code{bidding_zone}: Bidding zone}
+#'       \item{\code{value}: Measurement variable}
 #'       }
 #'
 #' @keywords datasets
@@ -57,35 +56,6 @@
 #' @examples
 #' data(elec_load)
 "elec_load"
-
-
-
-
-#' @title Hourly weather data
-#'
-#' @description Hourly \code{tsibble} with air temperature and humidity from
-#'   the DWD ("Deutscher Wetterdienst"). The dataset contains time series data
-#'   from 2019-01-01 00:00:00 to 2019-12-31 23:00:00 for Germany.
-#'
-#' @docType data
-#'
-#' @usage data(weather)
-#'
-#' @format A time series object of class \code{tsibble} with 17.520 rows and 3 columns:
-#'    \itemize{
-#'       \item{\code{Time}: Date and time (index variable)}
-#'       \item{\code{Series}: Time series name (key variable)}
-#'       \item{\code{Value}: Measurement variable}
-#'       }
-#'
-#' @keywords datasets
-#'
-#' @source \href{https://cdc.dwd.de/portal/}{CDC - Climate Data Center}
-#'
-#' @examples
-#' data(weather)
-"weather"
-
 
 
 #' @title Monthly time series data from the M4 Competition
@@ -114,7 +84,6 @@
 "M4_monthly_data"
 
 
-
 #' @title Quarterly time series data from the M4 Competition
 #'
 #' @description The dataset contains 30 selected time series on a quarterly basis
@@ -139,4 +108,3 @@
 #' @examples
 #' data(M4_quarterly_data)
 "M4_quarterly_data"
-

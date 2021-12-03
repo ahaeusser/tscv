@@ -3,15 +3,15 @@
 \docType{data}
 \name{elec_load}
 \alias{elec_load}
-\title{Hourly electricity load and load forecasts}
+\title{Hourly electricity load (actual values and forecasts)}
 \format{
-A time series object of class \code{tsibble} with 122.640 rows and 5 columns:
+A time series object of class \code{tibble} with 140.160 rows and 5 columns:
    \itemize{
-      \item{\code{Time}: Date and time (index variable)}
-      \item{\code{Series}: Time series name (key variable)}
-      \item{\code{Unit}: Measured unit (key variable)}
-      \item{\code{BZN}: Bidding zone (key variable)}
-      \item{\code{Value}: Measurement variable}
+      \item{\code{time}: Date and time index}
+      \item{\code{item}: Time series name}
+      \item{\code{unit}: Measured unit}
+      \item{\code{bidding_zone}: Bidding zone}
+      \item{\code{value}: Measurement variable}
       }
 }
 \source{
@@ -21,10 +21,10 @@ A time series object of class \code{tsibble} with 122.640 rows and 5 columns:
 data(elec_load)
 }
 \description{
-Hourly tsibble with electricity loads and load forecasts
-  from the ENTSO-E Transparency Platform. The dataset contains time series data
+Hourly tibble with actual electricity loads and load forecasts
+  from the ENTSO-E Transparency Platform. The data set contains time series data
   from 2019-01-01 00:00:00 to 2019-12-31 23:00:00 for 8 bidding zones within
-  europe (DE, DK1, ES, FI, FR, NL, NO1, SE1). The original data are on a
+  Europe (DE, DK1, ES, FI, FR, NL, NO1, SE1). The original data are on a
   quarter-hourly basis (15-minutes interval), but aggregated to hourly data.
 }
 \examples{

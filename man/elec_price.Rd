@@ -5,13 +5,13 @@
 \alias{elec_price}
 \title{Hourly day-ahead electricity spot prices}
 \format{
-A time series object of class \code{tsibble} with 70.080 rows and 5 columns:
+A time series object of class \code{tibble} with 140.352 rows and 5 columns:
    \itemize{
-      \item{\code{Time}: Date and time (index variable)}
-      \item{\code{Series}: Time series name (key variable)}
-      \item{\code{Unit}: Measured unit (key variable)}
-      \item{\code{BZN}: Bidding zone (key variable)}
-      \item{\code{Value}: Measurement variable}
+      \item{\code{time}: Date and time index}
+      \item{\code{item}: Time series name}
+      \item{\code{unit}: Measured unit}
+      \item{\code{bidding_zone}: Bidding zone}
+      \item{\code{value}: Measurement variable}
       }
 }
 \source{
@@ -21,10 +21,10 @@ A time series object of class \code{tsibble} with 70.080 rows and 5 columns:
 data(elec_price)
 }
 \description{
-Hourly tsibble with day-ahead electricity spot prices from
-  the ENTSO-E Transparency Platform. The dataset contains time series data
-  from 2019-01-01 00:00:00 to 2019-12-31 23:00:00 for 8 bidding zones
-  within europe (DE, DK1, ES, FI, FR, NL, NO1, SE1).
+Hourly tibble with day-ahead electricity spot prices from
+  the ENTSO-E Transparency Platform. The data set contains time series data
+  from 2019-01-01 00:00:00 to 2020-12-31 23:00:00 for 8 bidding zones
+  within Europe (DE, DK1, ES, FI, FR, NL, NO1, SE1).
 }
 \examples{
 data(elec_price)
