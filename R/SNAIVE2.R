@@ -21,7 +21,7 @@ train_snaive2 <- function(.data,
   lag_day <- periods["day"]
   lag_week <- periods["week"]
 
-  mdl <- .data %>%
+  model_fit <- .data %>%
     mutate(day_of_week = wday(
       x = !!sym(index_var(.data)),
       week_start = getOption("lubridate.week.start", 1))) %>%
@@ -31,26 +31,25 @@ train_snaive2 <- function(.data,
       dplyr::lag(!!sym(measured_vars(.data)), n = lag_week))) %>%
     mutate(resid = !!sym(measured_vars(.data)) - fitted)
 
-  fitted <- mdl[["fitted"]]
-  resid <- mdl[["resid"]]
+  fitted <- model_fit[["fitted"]]
+  resid <- model_fit[["resid"]]
   sigma <- sd(resid, na.rm = TRUE)
+
+  model_spec <- list(
+    data = .data,
+    lag_day = lag_day,
+    lag_week = lag_week
+  )
 
   structure(
     list(
-      model = list(
-        data = .data,
-        lag_day = lag_day,
-        lag_week = lag_week
-        ),
-      est = list(
-        .fitted = fitted,
-        .resid = resid
-        ),
-      sigma = sigma
-      ),
+      model = model_spec,
+      fitted = fitted,
+      resid = resid,
+      sigma = sigma),
     class = "SNAIVE2"
   )
-  }
+}
 
 
 #' @title Forecast a trained seasonal naive model
@@ -98,9 +97,6 @@ forecast.SNAIVE2 <- function(object,
 }
 
 
-
-
-
 specials_snaive2 <- new_specials()
 
 
@@ -127,8 +123,6 @@ SNAIVE2 <- function(formula, ...){
 }
 
 
-
-
 #' @title Extract fitted values from a trained seasonal naive model
 #'
 #' @description Extract fitted values from a trained seasonal naive model.
@@ -140,7 +134,7 @@ SNAIVE2 <- function(formula, ...){
 #' @export
 
 fitted.SNAIVE2 <- function(object, ...){
-  object$est[[".fitted"]]
+  object[["fitted"]]
 }
 
 
@@ -155,7 +149,7 @@ fitted.SNAIVE2 <- function(object, ...){
 #' @export
 
 residuals.SNAIVE2 <- function(object, ...){
-  object$est[[".resid"]]
+  object[["resid"]]
 }
 
 

@@ -28,20 +28,19 @@ train_dshw <- function(.data,
   }
 
   # Train model
-  mdl <- forecast::dshw(y = model_data, ...)
+  model_fit <- forecast::dshw(y = model_data, ...)
 
   # Extract fitted values and residuals
-  fitted <- mdl$fitted
-  resid <- mdl$residuals
+  fitted <- model_fit$fitted
+  resid <- model_fit$residuals
   sigma <- sd(resid, na.rm = TRUE)
 
   # Return model
   structure(
     list(
-      model = mdl,
-      est = list(
-        .fitted = fitted,
-        .resid = resid),
+      model = model_fit,
+      fitted = fitted,
+      resid = resid,
       sigma = sigma),
     class = "DSHW")
 }
@@ -91,11 +90,14 @@ forecast.DSHW <- function(object,
                           specials = NULL,
                           ...){
   # Forecast model
-  fcst <- forecast(object$model, h = nrow(new_data))
+  fcst <- forecast::forecast(
+    object$model,
+    h = nrow(new_data)
+    )
 
-  # Extract point forecast and simulations
+  # Extract point forecast
   point <- as.numeric(fcst$mean)
-  sd <- as.numeric(object$sigma)
+  sd <- rep(NA_real_, nrow(new_data))
 
   # Return forecasts
   dist_normal(point, sd)
@@ -113,7 +115,7 @@ forecast.DSHW <- function(object,
 #' @export
 
 fitted.DSHW <- function(object, ...){
-  object$est[[".fitted"]]
+  object[["fitted"]]
 }
 
 
@@ -128,7 +130,7 @@ fitted.DSHW <- function(object, ...){
 #' @export
 
 residuals.DSHW <- function(object, ...){
-  object$est[[".resid"]]
+  object[["resid"]]
 }
 
 

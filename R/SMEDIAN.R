@@ -39,14 +39,12 @@ train_smedian <- function(.data,
 
   structure(
     list(
-      est = list(
-        .fitted = fitted,
-        .resid = resid),
+      fitted = fitted,
+      resid = resid,
       smedian = smedian,
       sigma = sigma,
       last_period = last(index),
-      lag = lag
-    ),
+      lag = lag),
     class = "SMEDIAN"
   )
 }
@@ -135,7 +133,7 @@ forecast.SMEDIAN <- function(object,
 #' @export
 
 fitted.SMEDIAN <- function(object, ...){
-  object$est[[".fitted"]]
+  object[["fitted"]]
 }
 
 
@@ -150,7 +148,7 @@ fitted.SMEDIAN <- function(object, ...){
 #' @export
 
 residuals.SMEDIAN <- function(object, ...){
-  object$est[[".resid"]]
+  object[["resid"]]
 }
 
 

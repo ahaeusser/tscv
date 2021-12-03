@@ -28,28 +28,28 @@ train_mlp <- function(.data,
 
   # Train model
   set.seed(n_seed)
-  mdl <- nnfor::mlp(y = model_data, ...)
+  model_fit <- nnfor::mlp(y = model_data, ...)
 
   # Extract length of actual values and fitted values
-  n_total <- length(mdl$y)
-  n_fitted <- length(mdl$fitted)
+  n_total <- length(model_fit$y)
+  n_fitted <- length(model_fit$fitted)
 
   # Fill NAs in front of fitted values (adjust to equal length of actual values)
-  fitted <- c(rep(NA_real_, n_total - n_fitted), mdl$fitted)
-  resid <- mdl$y - fitted
+  fitted <- c(rep(NA_real_, n_total - n_fitted), model_fit$fitted)
+  resid <- model_fit$y - fitted
 
   # Return model
   structure(
     list(
-      model = mdl,
-      est = list(
-        .fitted = fitted,
-        .resid = resid)),
+      model = model_fit,
+      fitted = fitted,
+      resid = resid),
     class = "MLP")
 }
 
 
 specials_mlp <- new_specials()
+
 
 #' @title Automatic training of MLPs
 #'
@@ -92,11 +92,14 @@ forecast.MLP <- function(object,
                          specials = NULL,
                          ...){
   # Forecast model
-  fcst <- forecast(object$model, h = nrow(new_data))
+  fcst <- forecast::forecast(
+    object$model,
+    h = nrow(new_data)
+    )
 
-  # Extract point forecast and simulations
+  # Extract point forecast
   point <- as.numeric(fcst$mean)
-  sd <- as.numeric(rowSds(fcst$all.mean))
+  sd <- rep(NA_real_, nrow(new_data))
 
   # Return forecasts
   dist_normal(point, sd)
@@ -114,7 +117,7 @@ forecast.MLP <- function(object,
 #' @export
 
 fitted.MLP <- function(object, ...){
-  object$est[[".fitted"]]
+  object[["fitted"]]
 }
 
 
@@ -129,7 +132,7 @@ fitted.MLP <- function(object, ...){
 #' @export
 
 residuals.MLP <- function(object, ...){
-  object$est[[".resid"]]
+  object[["resid"]]
 }
 
 
