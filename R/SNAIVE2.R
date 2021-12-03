@@ -26,7 +26,7 @@ train_snaive2 <- function(.data,
       x = !!sym(index_var(.data)),
       week_start = getOption("lubridate.week.start", 1))) %>%
     mutate(fitted = ifelse(
-      day_of_week %in% c(2, 3, 4, 5),
+      .data$day_of_week %in% c(2, 3, 4, 5),
       dplyr::lag(!!sym(measured_vars(.data)), n = lag_day),
       dplyr::lag(!!sym(measured_vars(.data)), n = lag_week))) %>%
     mutate(resid = !!sym(measured_vars(.data)) - fitted)
@@ -84,7 +84,7 @@ forecast.SNAIVE2 <- function(object,
       x = !!sym(index_var(data)),
       week_start = getOption("lubridate.week.start", 1))) %>%
     mutate(point = ifelse(
-      day_of_week %in% c(2, 3, 4, 5),
+      .data$day_of_week %in% c(2, 3, 4, 5),
       dplyr::lag(!!sym(measured_vars(data)), n = lag_day),
       dplyr::lag(!!sym(measured_vars(data)), n = lag_week))) %>%
     slice_tail(n = n_ahead)

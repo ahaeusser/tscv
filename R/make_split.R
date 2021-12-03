@@ -34,13 +34,13 @@ initialize_split <- function(main_frame,
   # Case 2: Use the last value observations for testing
   if (type == "last") {
     data <- data %>%
-      mutate(n_init = n_total - value - 1)
+      mutate(n_init = .data$n_total - value - 1)
   }
 
   # Case 3: Use value pct. of observations for training
   if (type == "prob") {
     data <- data %>%
-      mutate(n_init = floor(value * n_total))
+      mutate(n_init = floor(value * .data$n_total))
   }
 
   return(data)
@@ -133,12 +133,12 @@ expand_split <- function(split_frame,
   series_id <- context[["series_id"]]
 
   split_frame <- split_frame %>%
-    select(c(!!sym(series_id), n_splits, train, test)) %>%
+    select(c(!!sym(series_id), .data$n_splits, .data$train, .data$test)) %>%
     group_by(!!sym(series_id)) %>%
-    mutate(split = list(1:n_splits)) %>%
+    mutate(split = list(1:.data$n_splits)) %>%
     ungroup() %>%
-    unnest(cols = c(split, train, test)) %>%
-    select(c(!!sym(series_id), split, train, test))
+    unnest(cols = c(.data$split, .data$train, .data$test)) %>%
+    select(c(!!sym(series_id), .data$split, .data$train, .data$test))
 
   return(split_frame)
 }

@@ -27,20 +27,20 @@ make_future <- function(fable,
   value_id <- context[["value_id"]]
   index_id <- context[["index_id"]]
 
-  future_frame <- fable%>%
+  future_frame <- fable %>%
     group_by_key() %>%
     mutate(horizon = 1:n()) %>%
     ungroup() %>%
     as_tibble() %>%
     select(-!!sym(value_id)) %>%
-    rename(point = .mean) %>%
-    rename(model = .model) %>%
+    rename(point = .data$.mean) %>%
+    rename(model = .data$.model) %>%
     select(
       !!sym(index_id),
       !!sym(series_id),
-      model,
-      split,
-      horizon,
+      .data$model,
+      .data$split,
+      .data$horizon,
       everything())
 
   return(future_frame)
