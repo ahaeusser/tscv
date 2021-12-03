@@ -161,6 +161,6 @@ residuals.SMEDIAN <- function(object, ...){
 #' @return Model summary as character value.
 #' @export
 
-model_sum.SMEDIAN <- function(x){
+model_sum.SMEDIAN <- function(object){
   "SMEDIAN"
 }

@@ -4,7 +4,7 @@
 \alias{model_sum.MEDIAN}
 \title{Provide a succinct summary of a trained median model}
 \usage{
-\method{model_sum}{MEDIAN}(x)
+\method{model_sum}{MEDIAN}(object)
 }
 \arguments{
 \item{object}{An object of class \code{MEDIAN}.}

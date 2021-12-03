@@ -176,6 +176,6 @@ residuals.MEDIAN <- function(object, ...){
 #' @return Model summary as character value.
 #' @export
 
-model_sum.MEDIAN <- function(x){
+model_sum.MEDIAN <- function(object){
   "MEDIAN"
 }
