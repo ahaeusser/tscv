@@ -19,6 +19,7 @@
 #'
 #' @param future_frame A \code{tibble} containing the forecasts for the models, splits, etc.
 #' @param main_frame A \code{tibble} containing the actual values.
+#' @param context A named \code{list} with the identifiers for \code{seried_id}, \code{value_id} and \code{index_id}.
 #' @param dimension Character value. The forecast accuracy is estimated by \code{split} or \code{horizon}.
 #' @param benchmark Character value. The forecast model used as benchmark for the relative mean absolute error (rMAE).
 #'
@@ -27,6 +28,7 @@
 
 make_accuracy <- function(future_frame,
                           main_frame,
+                          context,
                           dimension = "split",
                           benchmark = NULL) {
 
@@ -35,10 +37,8 @@ make_accuracy <- function(future_frame,
   index_id <- context[["index_id"]]
 
   # Prepare test data
-  main_frame <- rename(
-    .data = main_frame,
-    actual = !!sym(value_id)
-  )
+  main_frame <- main_frame %>%
+    rename(actual = !!sym(value_id))
 
   # Join main_frame (test data) and future_frame_frame (forecasts)
   data <- left_join(
@@ -78,11 +78,11 @@ make_accuracy <- function(future_frame,
     set_models <- unique(accuracy_frame$model)
 
     mae_benchmark <- accuracy_frame %>%
-      filter(metric == "MAE") %>%
-      filter(model == benchmark) %>%
+      filter(.data$metric == "MAE") %>%
+      filter(.data$model == benchmark) %>%
       pivot_wider(
-        names_from = model,
-        values_from = value
+        names_from = .data$model,
+        values_from = .data$value
       )
 
     mae_benchmark <- map_dfr(
@@ -94,10 +94,10 @@ make_accuracy <- function(future_frame,
     )
 
     metrics_rmae <- left_join(
-      x = filter(accuracy_frame, metric == "MAE"),
+      x = filter(accuracy_frame, .data$metric == "MAE"),
       y = mae_benchmark,
       by = c(series_id, dimension, "metric", "model")) %>%
-      mutate(value = value / !!sym(benchmark)) %>%
+      mutate(value = .data$value / !!sym(benchmark)) %>%
       mutate(metric = "rMAE") %>%
       select(-!!sym(benchmark))
 

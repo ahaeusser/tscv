@@ -4,12 +4,20 @@
 \alias{make_accuracy}
 \title{Estimate accuracy metrics to evaluate point forecast}
 \usage{
-make_accuracy(future_frame, main_frame, dimension = "split", benchmark = NULL)
+make_accuracy(
+  future_frame,
+  main_frame,
+  context,
+  dimension = "split",
+  benchmark = NULL
+)
 }
 \arguments{
 \item{future_frame}{A \code{tibble} containing the forecasts for the models, splits, etc.}
 
 \item{main_frame}{A \code{tibble} containing the actual values.}
+
+\item{context}{A named \code{list} with the identifiers for \code{seried_id}, \code{value_id} and \code{index_id}.}
 
 \item{dimension}{Character value. The forecast accuracy is estimated by \code{split} or \code{horizon}.}
 
