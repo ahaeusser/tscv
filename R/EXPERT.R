@@ -19,23 +19,22 @@ train_expert <- function(.data,
 
   # Create features ...........................................................
 
-  name_output <- measured_vars(.data)
-  name_index <- index_var(.data)
-
+  series_id <- measured_vars(.data)
+  index_id <- index_var(.data)
 
   # Prepare data set (convert to tibble and add date-time columns)
   data <- .data %>%
     append_row(n = min(periods)) %>%
     as_tibble() %>%
-    mutate(ymd = date(!!sym(name_index))) %>%
-    mutate(wday = wday(!!sym(name_index), label = TRUE)) %>%
-    mutate(hour = hour(!!sym(name_index)))
+    mutate(ymd = date(!!sym(index_id))) %>%
+    mutate(wday = wday(!!sym(index_id))) %>%
+    mutate(hour = hour(!!sym(index_id)))
 
   # Create lagged features
   data <- data %>%
-    mutate("lag(1)" = dplyr::lag(!!sym(name_output), n = 1 * min(periods))) %>%  # (d-1)
-    mutate("lag(2)" = dplyr::lag(!!sym(name_output), n = 2 * min(periods))) %>%  # (d-2)
-    mutate("lag(7)" = dplyr::lag(!!sym(name_output), n = 7 * min(periods)))      # (d-7)
+    mutate("lag(1)" = dplyr::lag(!!sym(series_id), n = 1 * min(periods))) %>%  # (d-1)
+    mutate("lag(2)" = dplyr::lag(!!sym(series_id), n = 2 * min(periods))) %>%  # (d-2)
+    mutate("lag(7)" = dplyr::lag(!!sym(series_id), n = 7 * min(periods)))      # (d-7)
 
   # Drop leading missing values
   data <- data %>%
@@ -60,10 +59,11 @@ train_expert <- function(.data,
     fill(midnight, .direction = "down")
 
   # Create day-of-week dummy variables
+  # Sun = 1, Mon = 2, ..., Sat = 7
   data <- data %>%
-    mutate("mon" = ifelse(wday == "Mon", 1, 0)) %>%
-    mutate("sat" = ifelse(wday == "Sat", 1, 0)) %>%
-    mutate("sun" = ifelse(wday == "Sun", 1, 0))
+    mutate("mon" = ifelse(wday == 2, 1, 0)) %>%
+    mutate("sat" = ifelse(wday == 7, 1, 0)) %>%
+    mutate("sun" = ifelse(wday == 1, 1, 0))
 
   # Row indices for training and forecasting
   idx_total <- 1:nrow(data)
@@ -72,8 +72,7 @@ train_expert <- function(.data,
 
   # Remove "helper" variables
   data <- data %>%
-    select(-c(!!sym(name_index), ymd, wday))
-
+    select(-c(!!sym(index_id), ymd, wday))
 
   # Prepare training data .......................................................
   data_train <- data %>%
@@ -91,16 +90,19 @@ train_expert <- function(.data,
     group_split(.keep = FALSE) %>%
     as.list()
 
-  # Special treatment: predictor "midnight" is excluded when hour == 0
+  # Special treatment:
+  # Predictor "midnight" is excluded when hour == 0 due to multicollinearity
+
   data_train[[1]]["midnight"] <- NULL
   data_test[[1]]["midnight"] <- NULL
 
-
   # Train linear models via OLS
+  formula <- as.formula(paste0(series_id, "~ ."))
+
   models_fit <- map(
     .x = data_train,
     .f = ~lm(
-      formula = Value ~ .,
+      formula = formula,
       data = .
     )
   )
@@ -118,14 +120,12 @@ train_expert <- function(.data,
     list(
       model = models_fit,
       test = data_test,
-      est = list(
-        .fitted = fitted,
-        .resid = resid),
+      fitted = fitted,
+      resid = resid,
       sigma = sigma,
       periods = periods),
     class = "EXPERT")
 }
-
 
 
 specials_expert <- new_specials()
@@ -172,7 +172,7 @@ forecast.EXPERT <- function(object,
                             ...){
 
   # Forecast model
-  fcst_point <- map_dbl(
+  point <- map_dbl(
     .x = 1:length(object[["model"]]),
     .f = ~{
       predict(
@@ -182,14 +182,11 @@ forecast.EXPERT <- function(object,
     }
   )
 
-  fcst_std <- rep(NA, length(fcst_point))
+  sd <- rep(NA_real_, length(point))
 
   # Return forecasts
-  dist_normal(fcst_point, fcst_std)
+  dist_normal(point, sd)
 }
-
-
-
 
 
 #' @title Extract fitted values from a trained EXPERT model
@@ -203,7 +200,7 @@ forecast.EXPERT <- function(object,
 #' @export
 
 fitted.EXPERT <- function(object, ...){
-  object$est[[".fitted"]]
+  object[["fitted"]]
 }
 
 
@@ -218,7 +215,7 @@ fitted.EXPERT <- function(object, ...){
 #' @export
 
 residuals.EXPERT <- function(object, ...){
-  object$est[[".resid"]]
+  object[["resid"]]
 }
 
 
@@ -234,5 +231,3 @@ residuals.EXPERT <- function(object, ...){
 model_sum.EXPERT <- function(object){
   "EXPERT"
 }
-
-
