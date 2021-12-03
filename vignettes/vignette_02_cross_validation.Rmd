@@ -66,24 +66,43 @@ In this vignette, we will use only four time series to demonstrate the functiona
 
 ```{r clean_data}
 
+series_id = "bidding_zone"
+value_id = "value"
+index_id = "time"
+
+context <- list(
+  series_id = series_id,
+  value_id = value_id,
+  index_id = index_id
+)
+
 # Prepare data set
-data <- elec_price %>%
-  filter(BZN %in% c("DE", "FR", "NO1", "SE1")) %>%
-  check_data()
+main_frame <- elec_price %>%
+  filter(bidding_zone %in% c("DE", "NO1"))
 
-data
+main_frame
 
-data %>%
+main_frame %>%
   plot_line(
-    x = Time,
-    y = Value,
-    color = BZN,
-    facet_var = BZN,
+    x = time,
+    y = value,
+    color = bidding_zone,
+    facet_var = bidding_zone,
     title = "Day-ahead Electricity Spot Price",
-    subtitle = "2019-01-01 to 2019-12-31",
+    subtitle = "2019-01-01 to 2020-12-31",
     xlab = "Time",
     ylab = "[EUR/MWh]",
     caption = "Data: ENTSO-E Transparency")
+
+summarise_data(
+  .data = main_frame,
+  context = context
+)
+
+summarise_stats(
+  .data = main_frame,
+  context = context
+)
 
 ```
 
@@ -95,25 +114,31 @@ To prepare the data set for time series cross-validation (TSCV), you can use the
 ```{r split_data}
 
 # Setup for time series cross validation
-n_init <- 2400   # size for training window
-n_ahead <- 24    # size for testing window (= forecast horizon)
-mode <- "slide"  # fixed window approach
-n_skip <- 23     # skip 23 observations
-n_lag <- 0       # no lag
+type = "first"
+value = 2400      # size for training window
+n_ahead = 24      # size for testing window (= forecast horizon)
+n_skip = 23       # skip 23 observations
+n_lag = 0         # no lag
+mode = "slide"    # fixed window approach
+exceed = FALSE    # only pseudo out-of-sample forecast
 
-data <- data %>%
-  split_data(
-    n_init = n_init,
-    n_ahead = n_ahead,
-    mode = mode,
-    n_skip = n_skip,
-    n_lag = n_lag)
+split_frame <- make_split(
+  main_frame = main_frame,
+  context = context,
+  type = type,
+  value = value,
+  n_ahead = n_ahead,
+  n_skip = n_skip,
+  n_lag = n_lag,
+  mode = mode,
+  exceed = exceed
+)
 
-train <- data$train
-train
+# Only the first 10 splits are used
+split_frame <- split_frame %>%
+  filter(split %in% c(1:10))
 
-test <- data$test
-test
+split_frame
 
 ```
 
@@ -132,37 +157,37 @@ The functions `SMEDIAN()` and `SNAIVE2()` are extensions to the `fable` package
 
 ```{r train_models}
 
-# Model training
-train <- train %>%
-  filter(split %in% c(1:100))
 
-mdls <- train %>%
+train_frame <- slice_train(
+  main_frame = main_frame,
+  split_frame = split_frame,
+  context = context)
+
+train_frame
+
+train_frame <- train_frame %>%
+  as_tsibble(
+    index = time,
+    key = c(bidding_zone, split))
+
+train_frame
+
+# Model training
+model_frame <- train_frame %>%
   model(
-    "SNAIVE" = SNAIVE(Value ~ lag("week")),
-    "STL-NAIVE" = decomposition_model(STL(Value), NAIVE(season_adjust)),
-    "SNAIVE2" = SNAIVE2(Value),
-    "SMEDIAN" = SMEDIAN(Value ~ lag("week"))
+    "SNAIVE" = SNAIVE(value ~ lag("week")),
+    "STL-NAIVE" = decomposition_model(STL(value), NAIVE(season_adjust)),
+    "SNAIVE2" = SNAIVE2(value),
+    "SMEDIAN" = SMEDIAN(value ~ lag("week"))
     )
 
-mdls
+model_frame
 
 # Forecasting
-fcst <- mdls %>%
+future_frame <- model_frame %>%
   forecast(h = n_ahead)
 
-fcst
-
-# Visualize forecasts
-plot_forecast(
-  fcst = fcst,
-  data = bind_rows(train, test),
-  include = 48,                   # include the last two days of historical values
-  split = c(10, 11),              # only split 10 and 11 are shown
-  title = "Day-ahead electricity spot price forecast",
-  subtitle = "Rolling forecasts for splits 10 and 11",
-  ylab = "[EUR/MWh]",
-  caption = "Data: ENTSO-E Transparency, own calculation"
-  )
+future_frame
 
 ```
 
@@ -185,27 +210,27 @@ To evaluate the forecast accuracy, the function `error_metrics()` is used. You c
 
 ```{r accuracy_horizon}
 
-# Estimate error metrics
-metrics_horizon <- error_metrics(
-  fcst = fcst,
-  test = test,
-  train = train,
-  period = 168,
-  by = "horizon")
-
-metrics_horizon <- metrics_horizon %>%
-  filter(metric == "MAE")
-
-metrics_horizon
-
-# Visualize results
-metrics_horizon %>%
-  plot_error_metrics(
-    title = "Evaluation of forecast accuracy by forecast horizon",
-    subtitle = "Mean absolute error (MAE)",
-    xlab = "Forecast horizon (n-step-ahead)",
-    caption = "Data: ENTSO-E Transparency, own calculation"
-    )
+# # Estimate error metrics
+# metrics_horizon <- error_metrics(
+#   fcst = fcst,
+#   test = test,
+#   train = train,
+#   period = 168,
+#   by = "horizon")
+# 
+# metrics_horizon <- metrics_horizon %>%
+#   filter(metric == "MAE")
+# 
+# metrics_horizon
+# 
+# # Visualize results
+# metrics_horizon %>%
+#   plot_error_metrics(
+#     title = "Evaluation of forecast accuracy by forecast horizon",
+#     subtitle = "Mean absolute error (MAE)",
+#     xlab = "Forecast horizon (n-step-ahead)",
+#     caption = "Data: ENTSO-E Transparency, own calculation"
+#     )
 
 ```
 
@@ -214,28 +239,28 @@ metrics_horizon %>%
 
 ```{r accuracy_split}
 
-# Estimate error metrics
-metrics_split <- error_metrics(
-  fcst = fcst,
-  test = test,
-  train = train,
-  period = 168,
-  by = "split"
-  )
-
-metrics_split <- metrics_split %>%
-  filter(metric == "MAE")
-
-metrics_split
-
-# Visualize results
-metrics_split %>%
-  plot_error_metrics(
-    title = "Evaluation of forecast accuracy by split",
-    subtitle = "Mean absolute error (MAE)",
-    xlab = "Split",
-    caption = "Data: ENTSO-E Transparency, own calculation"
-    )
+# # Estimate error metrics
+# metrics_split <- error_metrics(
+#   fcst = fcst,
+#   test = test,
+#   train = train,
+#   period = 168,
+#   by = "split"
+#   )
+# 
+# metrics_split <- metrics_split %>%
+#   filter(metric == "MAE")
+# 
+# metrics_split
+# 
+# # Visualize results
+# metrics_split %>%
+#   plot_error_metrics(
+#     title = "Evaluation of forecast accuracy by split",
+#     subtitle = "Mean absolute error (MAE)",
+#     xlab = "Split",
+#     caption = "Data: ENTSO-E Transparency, own calculation"
+#     )
 
 ```
 
