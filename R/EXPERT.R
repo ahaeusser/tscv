@@ -42,28 +42,23 @@ train_expert <- function(.data,
 
   # Create minimum and maximum of previous day
   data <- data %>%
-    group_by(ymd) %>%
+    group_by(.data$ymd) %>%
     mutate("min(1)" = min(.data$`lag(1)`, na.rm = TRUE)) %>%  # min(d-1)
     mutate("max(1)" = max(.data$`lag(1)`, na.rm = TRUE)) %>%  # max(d-1)
     ungroup()
 
   # Create "midnight" feature
-  data <- data %>%
-    mutate(midnight = ifelse(hour == 0, `lag(1)`, NA_real_)) %>%
-    fill(midnight, .direction = "down")
-
-  # Create "midnight" feature
   # Special treatment for h == 0
   data <- data %>%
-    mutate(midnight = ifelse(hour == 0, `lag(1)`, NA_real_)) %>%
-    fill(midnight, .direction = "down")
+    mutate(midnight = ifelse(hour == 0, .data$`lag(1)`, NA_real_)) %>%
+    fill(.data$midnight, .direction = "down")
 
   # Create day-of-week dummy variables
   # Sun = 1, Mon = 2, ..., Sat = 7
   data <- data %>%
-    mutate("mon" = ifelse(wday == 2, 1, 0)) %>%
-    mutate("sat" = ifelse(wday == 7, 1, 0)) %>%
-    mutate("sun" = ifelse(wday == 1, 1, 0))
+    mutate("mon" = ifelse(.data$wday == 2, 1, 0)) %>%
+    mutate("sat" = ifelse(.data$wday == 7, 1, 0)) %>%
+    mutate("sun" = ifelse(.data$wday == 1, 1, 0))
 
   # Row indices for training and forecasting
   idx_total <- 1:nrow(data)
@@ -72,12 +67,12 @@ train_expert <- function(.data,
 
   # Remove "helper" variables
   data <- data %>%
-    select(-c(!!sym(index_id), ymd, wday))
+    select(-c(!!sym(index_id), .data$ymd, .data$wday))
 
   # Prepare training data .......................................................
   data_train <- data %>%
     slice(idx_train) %>%
-    group_by(hour) %>%
+    group_by(.data$hour) %>%
     group_split(.keep = FALSE) %>%
     as.list()
 
@@ -86,7 +81,7 @@ train_expert <- function(.data,
 
   data_test <- data %>%
     slice(idx_test) %>%
-    group_by(hour) %>%
+    group_by(.data$hour) %>%
     group_split(.keep = FALSE) %>%
     as.list()
 
