@@ -1,6 +1,4 @@
 
-
-
 #' @title Estimate the sample autocorrelation of a numeric vector
 #'
 #' @description \code{acf_vec} estimates the sample autocorrelation function
@@ -48,6 +46,7 @@ pacf_vec <- function(x, lag_max = 24, ...) {
 #' @param .data A \code{tibble} containing the time series data.
 #' @param context A named \code{list} with the identifiers for \code{seried_id}, \code{value_id} and \code{index_id}.
 #' @param lag_max Maximum lag as integer.
+#' @param level Numeric value. The confidence level to check significance.
 #' @param ... Further arguments passed to \code{stats::acf()}.
 #'
 #' @return data A \code{tibble} with a column for the unique identifier of the
@@ -57,6 +56,7 @@ pacf_vec <- function(x, lag_max = 24, ...) {
 estimate_acf <- function(.data,
                          context,
                          lag_max = 24,
+                         level = 0.9,
                          ...) {
 
   series_id <- context[["series_id"]]
@@ -69,8 +69,9 @@ estimate_acf <- function(.data,
       type = "ACF",
       lag = 1:lag_max,
       value = acf_vec(x = !!sym(value_id), lag_max = lag_max, ...),
-      .groups = "drop"
-    )
+      sign = qnorm((1 - level) / 2) / sqrt(n()),
+      .groups = "drop") %>%
+    mutate(sign = ifelse(abs(.data$value) > abs(.data$sign), TRUE, FALSE))
 
   return(data)
 }
@@ -84,6 +85,7 @@ estimate_acf <- function(.data,
 #' @param .data A \code{tibble} containing the time series data.
 #' @param context A named \code{list} with the identifiers for \code{seried_id}, \code{value_id} and \code{index_id}.
 #' @param lag_max Maximum lag as integer.
+#' @param level Numeric value. The confidence level to check significance.
 #' @param ... Further arguments passed to \code{stats::pacf()}.
 #'
 #' @return data A \code{tibble} with a column for the unique identifier of the
@@ -93,6 +95,7 @@ estimate_acf <- function(.data,
 estimate_pacf <- function(.data,
                           context,
                           lag_max = 24,
+                          level = 0.9,
                           ...) {
 
   series_id <- context[["series_id"]]
@@ -105,8 +108,9 @@ estimate_pacf <- function(.data,
       type = "PACF",
       lag = 1:lag_max,
       value = pacf_vec(x = !!sym(value_id), lag_max = lag_max, ...),
-      .groups = "drop"
-    )
+      sign = qnorm((1 - level) / 2) / sqrt(n()),
+      .groups = "drop") %>%
+    mutate(sign = ifelse(abs(.data$value) > abs(.data$sign), TRUE, FALSE))
 
   return(data)
 }

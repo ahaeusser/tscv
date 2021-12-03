@@ -4,7 +4,7 @@
 \alias{estimate_acf}
 \title{Estimate the sample autocorrelation}
 \usage{
-estimate_acf(.data, context, lag_max = 24, ...)
+estimate_acf(.data, context, lag_max = 24, level = 0.9, ...)
 }
 \arguments{
 \item{.data}{A \code{tibble} containing the time series data.}
@@ -12,6 +12,8 @@ estimate_acf(.data, context, lag_max = 24, ...)
 \item{context}{A named \code{list} with the identifiers for \code{seried_id}, \code{value_id} and \code{index_id}.}
 
 \item{lag_max}{Maximum lag as integer.}
+
+\item{level}{Numeric value. The confidence level to check significance.}
 
 \item{...}{Further arguments passed to \code{stats::acf()}.}
 }
