@@ -4,6 +4,7 @@
 #' @description The function estimates the mode of a distribution based on Kernel Density Estimation.
 #'
 #' @param x Numeric vector.
+#' @param na_rm Logical value. If \code{TRUE}, missing values are dropped.
 #' @param ... Further arguments passed to \code{stats::densitiy()}.
 #'
 #' @return mode Numeric value. The mode of the distribution.

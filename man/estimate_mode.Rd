@@ -9,6 +9,8 @@ estimate_mode(x, na_rm = TRUE, ...)
 \arguments{
 \item{x}{Numeric vector.}
 
+\item{na_rm}{Logical value. If \code{TRUE}, missing values are dropped.}
+
 \item{...}{Further arguments passed to \code{stats::densitiy()}.}
 }
 \value{
