@@ -4,10 +4,12 @@
 \alias{summarise_stats}
 \title{Summary statistics for time series data}
 \usage{
-summarise_stats(.data)
+summarise_stats(.data, context)
 }
 \arguments{
-\item{.data}{A valid \code{tsibble} in long format with one measurement variable.}
+\item{.data}{A \code{tibble} in long format containing time series data.}
+
+\item{context}{A named \code{list} with the identifiers for \code{seried_id}, \code{value_id} and \code{index_id}.}
 }
 \value{
 data A tibble containing the summary statistics.

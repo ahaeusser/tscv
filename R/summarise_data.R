@@ -11,26 +11,26 @@
 #'       \item{\code{complete_rate}: Percentage rate of complete values}
 #'       }
 #'
-#' @param .data A valid \code{tsibble} in long format with one measurement variable.
+#' @param .data A \code{tibble} in long format containing time series data.
+#' @param context A named \code{list} with the identifiers for \code{seried_id}, \code{value_id} and \code{index_id}.
 #'
 #' @return data A tibble containing the summary statistics.
 #' @export
 
-summarise_data <- function(.data) {
+summarise_data <- function(.data, context) {
 
-  dttm <- index_var(.data)
-  keys <- key_vars(.data)
-  value <- value_var(.data)
+  series_id <- context[["series_id"]]
+  value_id <- context[["value_id"]]
+  index_id <- context[["index_id"]]
 
   data <- .data %>%
-    as_tibble() %>%
-    group_by(!!!syms(keys)) %>%
+    group_by(!!!syms(series_id)) %>%
     summarise(
-      start = first(!!sym(dttm)),
-      end = last(!!sym(dttm)),
+      start = first(!!sym(index_id)),
+      end = last(!!sym(index_id)),
       n_obs = n(),
-      n_missing = sum(is.na(!!sym(value))),
-      complete_rate = round((1 - (n_missing / n_obs)) * 100, 2)) %>%
+      n_missing = sum(is.na(!!sym(value_id))),
+      complete_rate = round((1 - (.data$n_missing / .data$n_obs)) * 100, 2)) %>%
     ungroup()
 
   return(data)

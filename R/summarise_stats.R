@@ -17,30 +17,30 @@
 #'       \item{\code{kurtosis}: Kurtosis}
 #'       }
 #'
-#' @param .data A valid \code{tsibble} in long format with one measurement variable.
+#' @param .data A \code{tibble} in long format containing time series data.
+#' @param context A named \code{list} with the identifiers for \code{seried_id}, \code{value_id} and \code{index_id}.
 #'
 #' @return data A tibble containing the summary statistics.
 #' @export
 
-summarise_stats <- function(.data) {
+summarise_stats <- function(.data, context) {
 
-  keys <- key_vars(.data)
-  value <- value_var(.data)
+  series_id <- context[["series_id"]]
+  value_id <- context[["value_id"]]
 
   data <- .data %>%
-    as_tibble() %>%
-    group_by(!!!syms(keys)) %>%
+    group_by(!!sym(series_id)) %>%
     summarise(
-      mean = mean(!!sym(value), na.rm = TRUE),
-      median = median(!!sym(value), na.rm = TRUE),
-      mode = estimate_mode(!!sym(value), na_rm = TRUE),
-      sd = sd(!!sym(value), na.rm = TRUE),
-      p0 = quantile(!!sym(value), probs = 0, na.rm = TRUE),
-      p25 = quantile(!!sym(value), probs = 0.25, na.rm = TRUE),
-      p75 = quantile(!!sym(value), probs = 0.75, na.rm = TRUE),
-      p100 = quantile(!!sym(value), probs = 1, na.rm = TRUE),
-      skewness = estimate_skewness(!!sym(value), na_rm = TRUE),
-      kurtosis = estimate_kurtosis(!!sym(value), na_rm = TRUE)) %>%
+      mean = mean(!!sym(value_id), na.rm = TRUE),
+      median = median(!!sym(value_id), na.rm = TRUE),
+      mode = estimate_mode(!!sym(value_id), na_rm = TRUE),
+      sd = sd(!!sym(value_id), na.rm = TRUE),
+      p0 = quantile(!!sym(value_id), probs = 0, na.rm = TRUE),
+      p25 = quantile(!!sym(value_id), probs = 0.25, na.rm = TRUE),
+      p75 = quantile(!!sym(value_id), probs = 0.75, na.rm = TRUE),
+      p100 = quantile(!!sym(value_id), probs = 1, na.rm = TRUE),
+      skewness = estimate_skewness(!!sym(value_id), na_rm = TRUE),
+      kurtosis = estimate_kurtosis(!!sym(value_id), na_rm = TRUE)) %>%
     ungroup()
 
   return(data)
