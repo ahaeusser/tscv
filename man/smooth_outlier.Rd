@@ -4,12 +4,12 @@
 \alias{smooth_outlier}
 \title{Identify and replace outliers}
 \usage{
-smooth_outlier(x, period, ...)
+smooth_outlier(x, periods, ...)
 }
 \arguments{
 \item{x}{Numeric vector.}
 
-\item{period}{Numeric vector. The seasonal periods of the time series.}
+\item{periods}{Numeric vector. The seasonal periods of the time series.}
 
 \item{...}{Further arguments passed to \code{forecast::msts()} or \code{forecast::tsoutliers()}.}
 }

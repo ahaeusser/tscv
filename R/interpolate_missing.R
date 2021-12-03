@@ -9,17 +9,17 @@
 #'   component is added back.
 #'
 #' @param x Numeric vector.
-#' @param period Numeric vector. The seasonal periods of the time series.
+#' @param periods Numeric vector. The seasonal periods of the time series.
 #' @param ... Further arguments passed to \code{forecast::msts()} or \code{forecast::na.interp()}.
 #'
 #' @return Numeric vector.
 #' @export
 
 interpolate_missing <- function(x,
-                                period,
+                                periods,
                                 ...) {
   # Create msts object
-  x <- msts(data = x, seasonal.periods = period)
+  x <- msts(data = x, seasonal.periods = periods)
 
   # Interpolate missing values
   x <- forecast::na.interp(x = x, ...)

@@ -10,17 +10,17 @@
 #'   with the corrected remainder component.
 #'
 #' @param x Numeric vector.
-#' @param period Numeric vector. The seasonal periods of the time series.
+#' @param periods Numeric vector. The seasonal periods of the time series.
 #' @param ... Further arguments passed to \code{forecast::msts()} or \code{forecast::tsoutliers()}.
 #'
 #' @return Numeric vector.
 #' @export
 
 smooth_outlier <- function(x,
-                           period,
+                           periods,
                            ...) {
   # Create msts object
-  x <- msts(data = x, seasonal.periods = period)
+  x <- msts(data = x, seasonal.periods = periods)
 
   # Identify outliers
   xs <- forecast::tsoutliers(x = x, ...)

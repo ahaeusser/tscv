@@ -4,12 +4,12 @@
 \alias{interpolate_missing}
 \title{Interpolate missing values}
 \usage{
-interpolate_missing(x, period, ...)
+interpolate_missing(x, periods, ...)
 }
 \arguments{
 \item{x}{Numeric vector.}
 
-\item{period}{Numeric vector. The seasonal periods of the time series.}
+\item{periods}{Numeric vector. The seasonal periods of the time series.}
 
 \item{...}{Further arguments passed to \code{forecast::msts()} or \code{forecast::na.interp()}.}
 }
