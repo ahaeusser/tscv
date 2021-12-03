@@ -22,6 +22,7 @@ Imports:
     grDevices,
     tidyr,
     tibble,
+    slider,
     lubridate,
     purrr,
     future,
