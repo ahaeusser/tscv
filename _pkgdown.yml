@@ -8,10 +8,12 @@ reference:
   desc: >
     Functions and utilities for time series cross-validation
   contents:
-    - split_data
-    - errors
-    - pct_errors
-    - error_metrics
+    - make_accuracy
+    - make_errors
+    - make_future
+    - make_split
+    - slice_train
+    - slice_test
 
 - title: Data visualization
   desc: >
@@ -23,12 +25,12 @@ reference:
     - plot_histogram
     - plot_density
     - plot_qq
-    - plot_forecast
-    - plot_error_metrics
     - theme_tscv
     - theme_tscv_dark
     - scale_color_tscv
     - scale_fill_tscv
+    - tscv_cols
+    - tscv_pal
 
 - title: Forecasting
 
@@ -87,6 +89,17 @@ reference:
     - model_sum.SMEDIAN
     - train_smedian
 
+- subtitle: MEDIAN
+  desc: >
+    The MEDIAN model and its supported methods
+  contents:
+    - MEDIAN
+    - forecast.MEDIAN
+    - fitted.MEDIAN
+    - residuals.MEDIAN
+    - model_sum.MEDIAN
+    - train_median
+
 - subtitle: SNAIVE2
   desc: >
     The SNAIVE2 model and its supported methods
@@ -109,6 +122,17 @@ reference:
     - model_sum.TBATS
     - train_tbats
 
+- subtitle: EXPERT
+  desc: >
+    The EXPERT model and its supported methods
+  contents:
+    - EXPERT
+    - forecast.EXPERT
+    - fitted.EXPERT
+    - residuals.EXPERT
+    - model_sum.EXPERT
+    - train_expert
+
 - title: Miscellaneous
   desc: >
     Functions and utilities for data preparation, etc.
@@ -116,10 +140,23 @@ reference:
     - estimate_mode
     - estimate_kurtosis
     - estimate_skewness
+    - acf_vec
+    - estimate_acf
+    - pacf_vec
+    - estimate_pacf
     - interpolate_missing
     - smooth_outlier
-    - check_data
     - lst_to_env
+    - check_data
+    - summarise_data
+    - summarise_stats
+    - summarise_split
+    - initialize_split
+    - split_index
+    - expand_split
+    - file_name
+    - number_string
+    - '%out%'
 
 - title: Data sets
   desc: >
@@ -127,3 +164,5 @@ reference:
   contents:
     - elec_load
     - elec_price
+    - M4_monthly_data
+    - M4_quarterly_data
