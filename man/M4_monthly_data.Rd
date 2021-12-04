@@ -5,12 +5,12 @@
 \alias{M4_monthly_data}
 \title{Monthly time series data from the M4 Competition}
 \format{
-A time series object of class \code{tsibble} with 7881 rows and 4 columns:
+A time series object of class \code{tibble} with 7881 rows and 4 columns:
    \itemize{
-      \item{\code{date_time}: Date and time (index variable)}
-      \item{\code{series_id}: Time series ID from M4 forecasting competition (key variable)}
-      \item{\code{category}: Category from M4 forecasting competition (key variable)}
-      \item{\code{value}: Time series value (measurement variable)}
+      \item{\code{index}: Date and time index}
+      \item{\code{series}: Time series ID from M4 forecasting competition}
+      \item{\code{category}: Category from M4 forecasting competition}
+      \item{\code{value}: Measurement variable}
       }
 }
 \source{
@@ -20,7 +20,7 @@ A time series object of class \code{tsibble} with 7881 rows and 4 columns:
 data(M4_monthly_data)
 }
 \description{
-The dataset contains 30 selected time series on a monthly basis
+The data set contains 30 selected time series on a monthly basis
    from the M4 Competition.
 }
 \examples{
