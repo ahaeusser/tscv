@@ -7,8 +7,11 @@
 #'    \itemize{
 #'       \item{\code{start}: Start date (or date-time)}
 #'       \item{\code{end}: End date (or date-time)}
+#'       \item{\code{n_obs}: Number of observations per time series}
 #'       \item{\code{n_missing}: Number of missing values (NAs)}
-#'       \item{\code{complete_rate}: Percentage rate of complete values}
+#'       \item{\code{pct_missing}: Percentage rate of missing values}
+#'       \item{\code{n_zeros}: Number of zero values}
+#'       \item{\code{pct_zeros}: Percentage rate of zero values}
 #'       }
 #'
 #' @param .data A \code{tibble} in long format containing time series data.
@@ -30,7 +33,9 @@ summarise_data <- function(.data, context) {
       end = last(!!sym(index_id)),
       n_obs = n(),
       n_missing = sum(is.na(!!sym(value_id))),
-      complete_rate = round((1 - (.data$n_missing / .data$n_obs)) * 100, 2)) %>%
+      pct_missing = round((.data$n_missing / .data$n_obs) * 100, 2),
+      n_zeros = sum(!!sym(value_id) == 0, na.rm = TRUE),
+      pct_zeros = round((.data$n_zeros / .data$n_obs) * 100, 2)) %>%
     ungroup()
 
   return(data)

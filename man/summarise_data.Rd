@@ -21,7 +21,10 @@ This function calculates several summary statistics for time series data.
    \itemize{
       \item{\code{start}: Start date (or date-time)}
       \item{\code{end}: End date (or date-time)}
+      \item{\code{n_obs}: Number of observations per time series}
       \item{\code{n_missing}: Number of missing values (NAs)}
-      \item{\code{complete_rate}: Percentage rate of complete values}
+      \item{\code{pct_missing}: Percentage rate of missing values}
+      \item{\code{n_zeros}: Number of zero values}
+      \item{\code{pct_zeros}: Percentage rate of zero values}
       }
 }
