@@ -51,7 +51,7 @@ Sys.setlocale("LC_TIME", "C")
 
 ## Data preparation
 
-The data set `elec_price` is a hourly `tsibble` with day-ahead electricity spot prices in [EUR/MWh] from the ENTSO-E Transparency Platform. The data set contains time series data from 2019-01-01 to 2019-12-31 for 8 european bidding zones (BZN): 
+The data set `elec_price` is a `tibble` with day-ahead electricity spot prices in [EUR/MWh] from the ENTSO-E Transparency Platform. The data set contains hourly time series data from 2019-01-01 to 2020-12-31 for 8 European bidding zones (BZN): 
 
 * DE: Germany (including Luxembourg)
 * DK: Denmark
@@ -62,58 +62,84 @@ The data set `elec_price` is a hourly `tsibble` with day-ahead electricity spot 
 * NO1: Norway 1 (Oslo)
 * SE1: Sweden 1 (Lulea)
 
-In this vignette, we will use only four time series to demonstrate the functionality of the package (the data set is filtered to the bidding zones Germany, France, Norway and Sweden). You can use the function `check_data()` to prepare the data set for further usage. The function checks whether the input data are a valid tsibble or not (regular spaced in time and ordered). Furthermore, implicit missing values are turned into explicit missing values (existing missing values are left untouched). If the data is provided in wide format, they are gathered into long format. You can use the function `plot_line()` to visualize the four time series.
+In this vignette, we will use only four time series to demonstrate the functionality of the package (the data set is filtered to the bidding zones Germany, France, Norway and Sweden). You can use the function `plot_line()` to visualize the four time series. The function `summarise_data()` is used to explore the structure (start date, end date, number of observations and the number missing and zero values). The function `summarise_stats()` calculates descriptive statistics for each time series.
 
 ```{r clean_data}
 
+series_id = "bidding_zone"
+value_id = "value"
+index_id = "time"
+
+context <- list(
+  series_id = series_id,
+  value_id = value_id,
+  index_id = index_id
+)
+
 # Prepare data set
-data <- elec_price %>%
-  filter(BZN %in% c("DE", "FR", "NO1", "SE1")) %>%
-  check_data()
+main_frame <- elec_price %>%
+  filter(bidding_zone %in% c("DE", "FR", "NO1", "SE1"))
 
-data
+main_frame
 
-data %>%
+main_frame %>%
   plot_line(
-    x = Time,
-    y = Value,
-    color = BZN,
-    facet_var = BZN,
+    x = time,
+    y = value,
+    color = bidding_zone,
+    facet_var = bidding_zone,
     title = "Day-ahead Electricity Spot Price",
-    subtitle = "2019-03-01 to 2019-03-15",
+    subtitle = "2019-01-01 to 2020-12-31",
     xlab = "Time",
     ylab = "[EUR/MWh]",
-    caption = "Data: ENTSO-E Transparency")
+    caption = "Data: ENTSO-E Transparency"
+    )
+
+summarise_data(
+  .data = main_frame,
+  context = context
+)
+
+summarise_stats(
+  .data = main_frame,
+  context = context
+)
 
 ```
 
 
 ## Split data into training and testing
 
-To prepare the data set for time series cross-validation (TSCV), you can use the function `split_data()`. This function splits the data into training and testing (i.e. partitioning into time slices) for time series cross-validation. You can choose between `stretch` and `slide`. The first is an expanding window approach, while the latter is a fixed window approach. Furthermore, you can define the (initial) window size for training and testing via `n_init` and `n_ahead`, as well as the step size for increments via `n_skip`.
+To prepare the data set for time series cross-validation (TSCV), you can use the function `make_split()`. This function splits the data into several slices for training and testing (i.e. partitioning into time slices) for time series cross-validation. You can choose between `stretch` and `slide`. The first is an expanding window approach, while the latter is a fixed window approach. Furthermore, we define the (initial) window size for training and testing via `n_init` and `n_ahead`, as well as the step size for increments via `n_skip`. Further options for splitting the data are available via `type` (see function reference for more details). 
 
 ```{r split_data}
 
 # Setup for time series cross validation
-n_init <- 2400   # size for training window
-n_ahead <- 24    # size for testing window (= forecast horizon)
-mode <- "slide"  # fixed window approach
-n_skip <- 23     # skip 23 observations
-n_lag <- 0       # no lag
+type = "first"
+value = 2400      # size for training window
+n_ahead = 24      # size for testing window (= forecast horizon)
+n_skip = 23       # skip 23 observations
+n_lag = 0         # no lag
+mode = "slide"    # fixed window approach
+exceed = FALSE    # only pseudo out-of-sample forecast
 
-data <- data %>%
-  split_data(
-    n_init = n_init,
-    n_ahead = n_ahead,
-    mode = mode,
-    n_skip = n_skip,
-    n_lag = n_lag)
+split_frame <- make_split(
+  main_frame = main_frame,
+  context = context,
+  type = type,
+  value = value,
+  n_ahead = n_ahead,
+  n_skip = n_skip,
+  n_lag = n_lag,
+  mode = mode,
+  exceed = exceed
+)
 
-train <- data$train
-train
+# For illustration, only the first 50 splits are used
+split_frame <- split_frame %>%
+  filter(split %in% c(1:50))
 
-test <- data$test
-test
+split_frame
 
 ```
 
@@ -121,55 +147,67 @@ test
 
 ## Training and forecasting
 
-The data is split into training and test sets and we are ready for forecasting. Due to the sample size and computation time, only very simple benchmark methods are used: 
+The training and test splits are prepared within `split_frame` and we are ready for forecasting. The function `slice_train()` slices the data `main_frame` according to the splits within `split_frame`. As we are using forecasting methods from the packages `fable` and `fabletools`, we have to convert the data set `main_frame` from a `tibble` to a `tsibble`. Due to the sample size and computation time, only very simple benchmark methods are used: 
 
 * `SNAIVE`: Seasonal naive model with weekly seasonality (from package `fable`)
 * `STL-NAIVE`: STL-decomposition model and naive forecast. The series is decomposed via STL and the seasonal adjusted series is predicted via the naive approach. Afterwards, seasonal component is added to the forecasts (from packages `fable` and `feasts`)
 * `SNAIVE2`: Variation of the seasonal naive approach. Mondays, Saturdays and Sundays are treated with a weekly lag. Tuesdays, Wednesdays, Thursdays and Fridays are treated with a daily lag.
-* `SMEDIAN`: Seasonal median model.
+* `SMEDIAN`: Seasonal median model
 
-The functions `SMEDIAN()` and `SNAIVE2()` are extensions to the `fable` package.
+The functions `SMEDIAN()` and `SNAIVE2()` are extensions to the `fable` package
 
 ```{r train_models}
 
-# Model training
-train <- train %>%
-  filter(split %in% c(1:100))
+# Slice training data from main_frame according to split_frame
+train_frame <- slice_train(
+  main_frame = main_frame,
+  split_frame = split_frame,
+  context = context
+  )
 
-mdls <- train %>%
-  model(
-    "SNAIVE" = SNAIVE(Value ~ lag("week")),
-    "STL-NAIVE" = decomposition_model(STL(Value), NAIVE(season_adjust)),
-    "SNAIVE2" = SNAIVE2(Value),
-    "SMEDIAN" = SMEDIAN(Value ~ lag("week"))
+train_frame
+
+# Convert tibble to tsibble
+train_frame <- train_frame %>%
+  as_tsibble(
+    index = time,
+    key = c(bidding_zone, split)
     )
 
-mdls
+train_frame
 
-# Forecasting
-fcst <- mdls %>%
+# Model training via fabletools::model()
+model_frame <- train_frame %>%
+  model(
+    "SNAIVE" = SNAIVE(value ~ lag("week")),
+    "STL-NAIVE" = decomposition_model(STL(value), NAIVE(season_adjust)),
+    "SNAIVE2" = SNAIVE2(value),
+    "SMEDIAN" = SMEDIAN(value ~ lag("week"))
+    )
+
+model_frame
+
+# Forecasting via fabletools::forecast()
+fable_frame <- model_frame %>%
   forecast(h = n_ahead)
 
-fcst
+fable_frame
 
-# Visualize forecasts
-plot_forecast(
-  fcst = fcst,
-  data = bind_rows(train, test),
-  include = 48,                   # include the last two days of historical values
-  split = c(10, 11),              # only split 10 and 11 are shown
-  title = "Day-ahead electricity spot price forecast",
-  subtitle = "Rolling forecasts for splits 10 and 11",
-  ylab = "[EUR/MWh]",
-  caption = "Data: ENTSO-E Transparency, own calculation"
+# Convert fable_frame (fable) to future_frame (tibble)
+future_frame <- make_future(
+  fable = fable_frame,
+  context = context
   )
+
+future_frame
+
 
 ```
 
 
 ## Evaluation of forecast accuracy
 
-To evaluate the forecast accuracy, the function `error_metrics()` is used. You can define whether to evaluate the accuracy by `horizon` or by `split`. Several accuracy metrics are available:
+To evaluate the forecast accuracy, the function `make_accuracy()` is used. You can define whether to evaluate the accuracy by `horizon` or by `split`. Several accuracy metrics are available:
 
 * `ME`: mean error
 * `MAE`: mean absolute error
@@ -178,29 +216,32 @@ To evaluate the forecast accuracy, the function `error_metrics()` is used. You c
 * `MAPE`: mean absolute percentage error
 * `sMAPE`: scaled mean absolute percentage error
 * `MPE`: mean percentage error
-* `MASE`: mean absolute scale error
+* `rMAE`: relative mean absolute error (relative to some user-defined benchmark method)
 
 
 ### Forecast accuracy by forecast horizon
 
 ```{r accuracy_horizon}
 
-# Estimate error metrics
-metrics_horizon <- error_metrics(
-  fcst = fcst,
-  test = test,
-  train = train,
-  period = 168,
-  by = "horizon")
+# Estimate accuracy metrics by forecast horizon
+accuracy_horizon <- make_accuracy(
+  future_frame = future_frame,
+  main_frame = main_frame,
+  context = context,
+  dimension = "horizon"
+)
 
-metrics_horizon <- metrics_horizon %>%
-  filter(metric == "MAE")
-
-metrics_horizon
+accuracy_horizon
 
 # Visualize results
-metrics_horizon %>%
-  plot_error_metrics(
+accuracy_horizon %>%
+  filter(metric == "MAE") %>%
+  plot_line(
+    x = n,
+    y = value,
+    facet_var = bidding_zone,
+    facet_nrow = 1,
+    color = model,
     title = "Evaluation of forecast accuracy by forecast horizon",
     subtitle = "Mean absolute error (MAE)",
     xlab = "Forecast horizon (n-step-ahead)",
@@ -214,23 +255,25 @@ metrics_horizon %>%
 
 ```{r accuracy_split}
 
-# Estimate error metrics
-metrics_split <- error_metrics(
-  fcst = fcst,
-  test = test,
-  train = train,
-  period = 168,
-  by = "split"
-  )
+# Estimate accuracy metrics by forecast horizon
+accuracy_split <- make_accuracy(
+  future_frame = future_frame,
+  main_frame = main_frame,
+  context = context,
+  dimension = "split"
+)
 
-metrics_split <- metrics_split %>%
-  filter(metric == "MAE")
-
-metrics_split
+accuracy_split
 
 # Visualize results
-metrics_split %>%
-  plot_error_metrics(
+accuracy_split %>%
+  filter(metric == "MAE") %>%
+  plot_line(
+    x = n,
+    y = value,
+    facet_var = bidding_zone,
+    facet_nrow = 1,
+    color = model,
     title = "Evaluation of forecast accuracy by split",
     subtitle = "Mean absolute error (MAE)",
     xlab = "Split",
