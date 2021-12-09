@@ -15,6 +15,9 @@
 #' @importFrom grDevices colorRampPalette
 #' @importFrom tidytext scale_x_reordered
 #' @importFrom utils tail
+#' @importFrom glue glue
+#' @importFrom rstudioapi versionInfo
+#' @importFrom devtools session_info
 #' @rawNamespace import(ggplot2, except = stat_qq_line)
 #' @importFrom qqplotr stat_qq_point stat_qq_line stat_qq_band
 #' @import tsibble

@@ -34,12 +34,17 @@ Imports:
     qqplotr,
     scales,
     distributional,
-    tidytext
+    tidytext,
+    glue,
+    rstudioapi,
+    devtools
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.2
 Suggests: 
     knitr,
     rmarkdown,
-    tidyverse
+    tidyverse,
+    fable,
+    feasts
 VignetteBuilder: knitr
