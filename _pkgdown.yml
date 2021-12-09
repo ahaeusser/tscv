@@ -12,6 +12,7 @@ reference:
     - make_errors
     - make_future
     - make_split
+    - make_tsibble
     - slice_train
     - slice_test
 
@@ -157,6 +158,8 @@ reference:
     - file_name
     - number_string
     - '%out%'
+    - log_header
+    - log_time
 
 - title: Data sets
   desc: >
