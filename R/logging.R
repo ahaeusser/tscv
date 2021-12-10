@@ -102,7 +102,7 @@ log_time <- function(text,
     "{header} \n",
     " start    {start} \n",
     " end      {end} \n",
-    " duration {time} {unit} \n",
+    " time     {time} [{unit}] \n",
     "\n"
   )
   return(x)
