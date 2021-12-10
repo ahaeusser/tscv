@@ -18,6 +18,7 @@
 #' @importFrom glue glue
 #' @importFrom rstudioapi versionInfo
 #' @importFrom devtools session_info
+#' @importFrom crayon bold italic
 #' @rawNamespace import(ggplot2, except = stat_qq_line)
 #' @importFrom qqplotr stat_qq_point stat_qq_line stat_qq_band
 #' @import tsibble
