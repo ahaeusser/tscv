@@ -9,7 +9,7 @@
 #' @importFrom magrittr "%>%"
 #' @importFrom distributional dist_normal
 #' @importFrom nnfor elm mlp
-#' @importFrom forecast msts dshw tbats forecast na.interp
+#' @importFrom forecast msts dshw tbats na.interp
 #' @importFrom scales pretty_breaks
 #' @importFrom stats approx quantile qnorm median mad sd as.ts acf pacf time density lm as.formula
 #' @importFrom grDevices colorRampPalette
@@ -22,7 +22,7 @@
 #' @rawNamespace import(ggplot2, except = stat_qq_line)
 #' @importFrom qqplotr stat_qq_point stat_qq_line stat_qq_band
 #' @import tsibble
-#' @rawNamespace import(fabletools, except = forecast)
+#' @import fabletools
 #' @import purrr
 globalVariables(".")
 NULL
