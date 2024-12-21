@@ -64,7 +64,7 @@ The data set `elec_price` is a `tibble` with day-ahead electricity spot prices i
 
 In this vignette, we will use only four time series to demonstrate the functionality of the package (the data set is filtered to the bidding zones Germany, France, Norway and Sweden). You can use the function `plot_line()` to visualize the four time series. The function `summarise_data()` is used to explore the structure (start date, end date, number of observations and the number missing and zero values). The function `summarise_stats()` calculates descriptive statistics for each time series.
 
-```{r clean_data}
+```{r clean_data, fig.alt = "Plot raw data"}
 
 series_id = "bidding_zone"
 value_id = "value"
@@ -221,7 +221,7 @@ To evaluate the forecast accuracy, the function `make_accuracy()` is used. You c
 
 ### Forecast accuracy by forecast horizon
 
-```{r accuracy_horizon}
+```{r accuracy_horizon, fig.alt = "Plot accuracy by horizon"}
 
 # Estimate accuracy metrics by forecast horizon
 accuracy_horizon <- make_accuracy(
@@ -253,7 +253,7 @@ accuracy_horizon %>%
 
 ### Forecast accuracy by split
 
-```{r accuracy_split}
+```{r accuracy_split, fig.alt = "Plot accuracy by split"}
 
 # Estimate accuracy metrics by forecast horizon
 accuracy_split <- make_accuracy(

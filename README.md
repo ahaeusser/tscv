@@ -111,7 +111,7 @@ main_frame %>%
     )
 ```
 
-<img src="man/figures/README-clean_data-1.svg" width="100%" />
+<img src="man/figures/README-clean_data-1.svg" alt="Plot raw data" width="100%" />
 
 ``` r
 
@@ -403,7 +403,7 @@ accuracy_horizon %>%
     )
 ```
 
-<img src="man/figures/README-accuracy_horizon-1.svg" width="100%" />
+<img src="man/figures/README-accuracy_horizon-1.svg" alt="Plot accuracy by horizon" width="100%" />
 
 ### Forecast accuracy by split
 
@@ -449,4 +449,4 @@ accuracy_split %>%
     )
 ```
 
-<img src="man/figures/README-accuracy_split-1.svg" width="100%" />
+<img src="man/figures/README-accuracy_split-1.svg" alt="Plot accuracy by split" width="100%" />

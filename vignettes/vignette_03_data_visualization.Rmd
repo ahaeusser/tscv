@@ -60,7 +60,7 @@ main_frame
 
 ## Line charts
 
-```{r plot_line}
+```{r plot_line, fig.alt = "plot_line"}
 
 # Example 1 -------------------------------------------------------------------
 
@@ -95,7 +95,7 @@ main_frame %>%
 
 ## Bar charts
 
-```{r plot_bar}
+```{r plot_bar, fig.alt = "plot_bar"}
 # Estimate sample partial autocorrelation function
 corr_pacf <- estimate_pacf(
   .data = main_frame,
@@ -127,7 +127,7 @@ corr_pacf %>%
 
 ### Histograms
 
-```{r plot_histogram}
+```{r plot_histogram, fig.alt = "plot_histogram"}
 # Example 1 -------------------------------------------------------------------
 
 main_frame %>%
@@ -157,7 +157,7 @@ main_frame %>%
 
 ### Density
 
-```{r plot_density}
+```{r plot_density, fig.alt = "plot_density"}
 # Example 1 -------------------------------------------------------------------
 main_frame %>%
   plot_density(
@@ -186,7 +186,7 @@ main_frame %>%
 
 ### QQ-Plot
 
-```{r plot_qq}
+```{r plot_qq, fig.alt = "plot_qq"}
 # Example 1 -------------------------------------------------------------------
 main_frame %>%
   plot_qq(
