@@ -137,8 +137,8 @@ plot_qq <- function(data,
   # Adjust annotations
   p <- p + labs(title = title)
   p <- p + labs(subtitle = subtitle)
-  p <- p + labs(x = if_else(is_empty(xlab), "Theoretical quantile", xlab))
-  p <- p + labs(y = if_else(is_empty(ylab), "Sample quantile", ylab))
+  p <- p + labs(x = xlab)
+  p <- p + labs(y = ylab)
   p <- p + labs(caption = caption)
 
   # Adjust ggplot2 theme

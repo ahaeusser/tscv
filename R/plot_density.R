@@ -90,8 +90,8 @@ plot_density <- function(data,
   # Adjust annotations
   p <- p + labs(title = title)
   p <- p + labs(subtitle = subtitle)
-  p <- p + labs(x = if_else(is_empty(xlab), as_name(enquo(x)), xlab))
-  p <- p + labs(y = if_else(is_empty(ylab), "Density", ylab))
+  p <- p + labs(x = xlab)
+  p <- p + labs(y = ylab)
   p <- p + labs(caption = caption)
 
   # Adjust ggplot2 theme
