@@ -33,7 +33,8 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/vignette_01_introduction.html">Introduction</a></li>
+<li><a class="dropdown-item" href="../articles/tscv-m4-monthly.html">Time Series Cross Validation with M4 Monthly Data</a></li>
+    <li><a class="dropdown-item" href="../articles/vignette_01_introduction.html">Introduction</a></li>
     <li><a class="dropdown-item" href="../articles/vignette_02_cross_validation.html">Time Series Cross Validation</a></li>
     <li><a class="dropdown-item" href="../articles/vignette_03_data_visualization.html">Visualization of Time Series Data</a></li>
   </ul>
@@ -61,7 +62,7 @@
                         <h4 data-toc-skip class="author">Alexander
 Häußer</h4>
             
-            <h4 data-toc-skip class="date">Juni 2025</h4>
+            <h4 data-toc-skip class="date">April 2026</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/ahaeusser/tscv/blob/HEAD/vignettes/vignette_03_data_visualization.Rmd" class="external-link"><code>vignettes/vignette_03_data_visualization.Rmd</code></a></small>
       <div class="d-none name"><code>vignette_03_data_visualization.Rmd</code></div>
@@ -130,8 +131,29 @@ Häußer</h4>
 <span>    xlab <span class="op">=</span> <span class="st">"Time"</span>,</span>
 <span>    ylab <span class="op">=</span> <span class="st">"[EUR/MWh]"</span>,</span>
 <span>    caption <span class="op">=</span> <span class="st">"Data: ENTSO-E Transparency"</span></span>
-<span>    <span class="op">)</span></span></code></pre></div>
-<p><img src="vignette_03_data_visualization_files/figure-html/plot_line-1.png" alt="plot_line" width="672"></p>
+<span>    <span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Please use `linewidth` instead.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> The deprecated feature was likely used in the <span style="color: #0000BB;">tscv</span> package.</span></span>
+<span><span class="co">#&gt;   Please report the issue at <span style="color: #0000BB; font-style: italic;">&lt;https://github.com/ahaeusser/tscv/issues&gt;</span>.</span></span>
+<span><span class="co">#&gt; <span style="color: #555555;">This warning is displayed once per session.</span></span></span>
+<span><span class="co">#&gt; <span style="color: #555555;">Call `lifecycle::last_lifecycle_warnings()` to see where this warning was</span></span></span>
+<span><span class="co">#&gt; <span style="color: #555555;">generated.</span></span></span>
+<span><span class="co">#&gt; Warning: The `size` argument of `element_line()` is deprecated as of ggplot2 3.4.0.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Please use the `linewidth` argument instead.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> The deprecated feature was likely used in the <span style="color: #0000BB;">tscv</span> package.</span></span>
+<span><span class="co">#&gt;   Please report the issue at <span style="color: #0000BB; font-style: italic;">&lt;https://github.com/ahaeusser/tscv/issues&gt;</span>.</span></span>
+<span><span class="co">#&gt; <span style="color: #555555;">This warning is displayed once per session.</span></span></span>
+<span><span class="co">#&gt; <span style="color: #555555;">Call `lifecycle::last_lifecycle_warnings()` to see where this warning was</span></span></span>
+<span><span class="co">#&gt; <span style="color: #555555;">generated.</span></span></span>
+<span><span class="co">#&gt; Warning: The `size` argument of `element_rect()` is deprecated as of ggplot2 3.4.0.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Please use the `linewidth` argument instead.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> The deprecated feature was likely used in the <span style="color: #0000BB;">tscv</span> package.</span></span>
+<span><span class="co">#&gt;   Please report the issue at <span style="color: #0000BB; font-style: italic;">&lt;https://github.com/ahaeusser/tscv/issues&gt;</span>.</span></span>
+<span><span class="co">#&gt; <span style="color: #555555;">This warning is displayed once per session.</span></span></span>
+<span><span class="co">#&gt; <span style="color: #555555;">Call `lifecycle::last_lifecycle_warnings()` to see where this warning was</span></span></span>
+<span><span class="co">#&gt; <span style="color: #555555;">generated.</span></span></span></code></pre></div>
+<p><img src="vignette_03_data_visualization_files/figure-html/plot_line-1.png" class="r-plt" alt="plot_line" width="672"></p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># Example 2 -------------------------------------------------------------------</span></span>
@@ -147,59 +169,34 @@ Häußer</h4>
 <span>    ylab <span class="op">=</span> <span class="st">"[EUR/MWh]"</span>,</span>
 <span>    caption <span class="op">=</span> <span class="st">"Data: ENTSO-E Transparency"</span></span>
 <span>    <span class="op">)</span></span></code></pre></div>
-<p><img src="vignette_03_data_visualization_files/figure-html/plot_line-2.png" alt="plot_line" width="672"></p>
+<p><img src="vignette_03_data_visualization_files/figure-html/plot_line-2.png" class="r-plt" alt="plot_line" width="672"></p>
 </div>
 <div class="section level2">
 <h2 id="bar-charts">Bar charts<a class="anchor" aria-label="anchor" href="#bar-charts"></a>
 </h2>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Estimate sample partial autocorrelation function</span></span>
-<span><span class="va">corr_pacf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/estimate_pacf.html">estimate_pacf</a></span><span class="op">(</span></span>
-<span>  .data <span class="op">=</span> <span class="va">main_frame</span>,</span>
-<span>  context <span class="op">=</span> <span class="va">context</span>,</span>
-<span>  lag_max <span class="op">=</span> <span class="fl">30</span></span>
-<span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Returning more (or less) than 1 row per `summarise()` group was deprecated in</span></span>
-<span><span class="co">#&gt; dplyr 1.1.0.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Please use `reframe()` instead.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> When switching from `summarise()` to `reframe()`, remember that `reframe()`</span></span>
-<span><span class="co">#&gt;   always returns an ungrouped data frame and adjust accordingly.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> The deprecated feature was likely used in the <span style="color: #0000BB;">tscv</span> package.</span></span>
-<span><span class="co">#&gt;   Please report the issue at <span style="color: #0000BB; font-style: italic;">&lt;https://github.com/ahaeusser/tscv/issues&gt;</span>.</span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">This warning is displayed once every 8 hours.</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">Call `lifecycle::last_lifecycle_warnings()` to see where this warning was</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">generated.</span></span></span>
-<span></span>
-<span><span class="va">corr_pacf</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 120 × 5</span></span></span>
-<span><span class="co">#&gt;    bidding_zone type    lag    value sign </span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> DE           PACF      1  0.948   TRUE </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> DE           PACF      2 -<span style="color: #BB0000;">0.437</span>   TRUE </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> DE           PACF      3  0.005<span style="text-decoration: underline;">39</span> FALSE</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> DE           PACF      4  0.073<span style="text-decoration: underline;">5</span>  TRUE </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> DE           PACF      5  0.073<span style="text-decoration: underline;">5</span>  TRUE </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> DE           PACF      6  0.089<span style="text-decoration: underline;">8</span>  TRUE </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> DE           PACF      7  0.119   TRUE </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> DE           PACF      8  0.078<span style="text-decoration: underline;">6</span>  TRUE </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> DE           PACF      9  0.082<span style="text-decoration: underline;">0</span>  TRUE </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> DE           PACF     10  0.046<span style="text-decoration: underline;">9</span>  TRUE </span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 110 more rows</span></span></span>
-<span></span>
-<span><span class="co"># Visualize PACF as correlogram</span></span>
-<span><span class="va">corr_pacf</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="../reference/plot_bar.html">plot_bar</a></span><span class="op">(</span></span>
-<span>    x <span class="op">=</span> <span class="va">lag</span>,</span>
-<span>    y <span class="op">=</span> <span class="va">value</span>,</span>
-<span>    color <span class="op">=</span> <span class="va">sign</span>,</span>
-<span>    facet_var <span class="op">=</span> <span class="va">bidding_zone</span>,</span>
-<span>    position <span class="op">=</span> <span class="st">"dodge"</span>,</span>
-<span>    title <span class="op">=</span> <span class="st">"Sample autocorrelation function"</span>,</span>
-<span>    xlab <span class="op">=</span> <span class="st">"Lag"</span>,</span>
-<span>    ylab <span class="op">=</span> <span class="st">"Correlation"</span>,</span>
-<span>    caption <span class="op">=</span> <span class="st">"Data: ENTSO-E Transparency"</span></span>
-<span>  <span class="op">)</span></span></code></pre></div>
-<p><img src="vignette_03_data_visualization_files/figure-html/plot_bar-1.png" alt="plot_bar" width="672"></p>
+<code class="sourceCode R"><span><span class="co"># # Estimate sample partial autocorrelation function</span></span>
+<span><span class="co"># corr_pacf &lt;- estimate_pacf(</span></span>
+<span><span class="co">#   .data = main_frame,</span></span>
+<span><span class="co">#   context = context,</span></span>
+<span><span class="co">#   lag_max = 30</span></span>
+<span><span class="co"># )</span></span>
+<span><span class="co"># </span></span>
+<span><span class="co"># corr_pacf</span></span>
+<span><span class="co"># </span></span>
+<span><span class="co"># # Visualize PACF as correlogram</span></span>
+<span><span class="co"># corr_pacf %&gt;%</span></span>
+<span><span class="co">#   plot_bar(</span></span>
+<span><span class="co">#     x = lag,</span></span>
+<span><span class="co">#     y = value,</span></span>
+<span><span class="co">#     color = sign,</span></span>
+<span><span class="co">#     facet_var = bidding_zone,</span></span>
+<span><span class="co">#     position = "dodge",</span></span>
+<span><span class="co">#     title = "Sample autocorrelation function",</span></span>
+<span><span class="co">#     xlab = "Lag",</span></span>
+<span><span class="co">#     ylab = "Correlation",</span></span>
+<span><span class="co">#     caption = "Data: ENTSO-E Transparency"</span></span>
+<span><span class="co">#   )</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="distributions">Distributions<a class="anchor" aria-label="anchor" href="#distributions"></a>
@@ -219,8 +216,9 @@ Häußer</h4>
 <span>    ylab <span class="op">=</span> <span class="st">"Frequency"</span>,</span>
 <span>    caption <span class="op">=</span> <span class="st">"Data: ENTSO-E Transparency"</span></span>
 <span>    <span class="op">)</span></span>
-<span><span class="co">#&gt; `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</span></span></code></pre></div>
-<p><img src="vignette_03_data_visualization_files/figure-html/plot_histogram-1.png" alt="plot_histogram" width="672"></p>
+<span><span class="co">#&gt; Warning in geom_histogram(aes(x = {: Ignoring unknown parameters: `size`</span></span>
+<span><span class="co">#&gt; `stat_bin()` using `bins = 30`. Pick better value `binwidth`.</span></span></code></pre></div>
+<p><img src="vignette_03_data_visualization_files/figure-html/plot_histogram-1.png" class="r-plt" alt="plot_histogram" width="672"></p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># Example 2 -------------------------------------------------------------------</span></span>
@@ -236,8 +234,9 @@ Häußer</h4>
 <span>    ylab <span class="op">=</span> <span class="st">"Frequency"</span>,</span>
 <span>    caption <span class="op">=</span> <span class="st">"Data: ENTSO-E Transparency"</span></span>
 <span>    <span class="op">)</span></span>
-<span><span class="co">#&gt; `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</span></span></code></pre></div>
-<p><img src="vignette_03_data_visualization_files/figure-html/plot_histogram-2.png" alt="plot_histogram" width="672"></p>
+<span><span class="co">#&gt; Warning in geom_histogram(aes(x = {: Ignoring unknown parameters: `size`</span></span>
+<span><span class="co">#&gt; `stat_bin()` using `bins = 30`. Pick better value `binwidth`.</span></span></code></pre></div>
+<p><img src="vignette_03_data_visualization_files/figure-html/plot_histogram-2.png" class="r-plt" alt="plot_histogram" width="672"></p>
 </div>
 <div class="section level3">
 <h3 id="density">Density<a class="anchor" aria-label="anchor" href="#density"></a>
@@ -253,7 +252,7 @@ Häußer</h4>
 <span>    ylab <span class="op">=</span> <span class="st">"Density"</span>,</span>
 <span>    caption <span class="op">=</span> <span class="st">"Data: ENTSO-E Transparency"</span></span>
 <span>    <span class="op">)</span></span></code></pre></div>
-<p><img src="vignette_03_data_visualization_files/figure-html/plot_density-1.png" alt="plot_density" width="672"></p>
+<p><img src="vignette_03_data_visualization_files/figure-html/plot_density-1.png" class="r-plt" alt="plot_density" width="672"></p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># Example 2 -------------------------------------------------------------------</span></span>
@@ -268,7 +267,7 @@ Häußer</h4>
 <span>    ylab <span class="op">=</span> <span class="st">"Density"</span>,</span>
 <span>    caption <span class="op">=</span> <span class="st">"Data: ENTSO-E Transparency"</span></span>
 <span>    <span class="op">)</span></span></code></pre></div>
-<p><img src="vignette_03_data_visualization_files/figure-html/plot_density-2.png" alt="plot_density" width="672"></p>
+<p><img src="vignette_03_data_visualization_files/figure-html/plot_density-2.png" class="r-plt" alt="plot_density" width="672"></p>
 </div>
 <div class="section level3">
 <h3 id="qq-plot">QQ-Plot<a class="anchor" aria-label="anchor" href="#qq-plot"></a>
@@ -284,7 +283,7 @@ Häußer</h4>
 <span>    ylab <span class="op">=</span> <span class="st">"Sample Quantile"</span>,</span>
 <span>    caption <span class="op">=</span> <span class="st">"Data: ENTSO-E Transparency"</span></span>
 <span>    <span class="op">)</span></span></code></pre></div>
-<p><img src="vignette_03_data_visualization_files/figure-html/plot_qq-1.png" alt="plot_qq" width="672"></p>
+<p><img src="vignette_03_data_visualization_files/figure-html/plot_qq-1.png" class="r-plt" alt="plot_qq" width="672"></p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># Example 2 -------------------------------------------------------------------</span></span>
@@ -298,7 +297,7 @@ Häußer</h4>
 <span>    ylab <span class="op">=</span> <span class="st">"Sample Quantile"</span>,</span>
 <span>    caption <span class="op">=</span> <span class="st">"Data: ENTSO-E Transparency"</span></span>
 <span>    <span class="op">)</span></span></code></pre></div>
-<p><img src="vignette_03_data_visualization_files/figure-html/plot_qq-2.png" alt="plot_qq" width="672"></p>
+<p><img src="vignette_03_data_visualization_files/figure-html/plot_qq-2.png" class="r-plt" alt="plot_qq" width="672"></p>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
@@ -312,7 +311,7 @@ Häußer</h4>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>

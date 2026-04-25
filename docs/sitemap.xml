@@ -1,6 +1,7 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>https://ahaeusser.github.io/tscv/404.html</loc></url>
 <url><loc>https://ahaeusser.github.io/tscv/articles/index.html</loc></url>
+<url><loc>https://ahaeusser.github.io/tscv/articles/tscv-m4-monthly.html</loc></url>
 <url><loc>https://ahaeusser.github.io/tscv/articles/vignette_01_introduction.html</loc></url>
 <url><loc>https://ahaeusser.github.io/tscv/articles/vignette_02_cross_validation.html</loc></url>
 <url><loc>https://ahaeusser.github.io/tscv/articles/vignette_03_data_visualization.html</loc></url>

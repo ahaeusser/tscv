@@ -6,7 +6,7 @@
 <!-- badges: start -->
 
 [![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 [![Licence](https://img.shields.io/badge/licence-GPL--3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 <!-- badges: end -->
 
@@ -15,9 +15,6 @@ series analysis and forecasting as well as time series cross-validation.
 This is mainly a set of wrapper and helper functions as well as some
 extensions for the packages `tsibble`, `fable` and `fabletools` that I
 find useful for research in the area of time series forecasting.
-
-***Disclaimer:*** The `tscv` package is highly experimental and it is
-very likely that there will be (substantial) changes in the near future.
 
 ## Installation
 
@@ -109,6 +106,27 @@ main_frame %>%
     ylab = "[EUR/MWh]",
     caption = "Data: ENTSO-E Transparency"
     )
+#> Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+#> ℹ Please use `linewidth` instead.
+#> ℹ The deprecated feature was likely used in the tscv package.
+#>   Please report the issue at <https://github.com/ahaeusser/tscv/issues>.
+#> This warning is displayed once per session.
+#> Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+#> generated.
+#> Warning: The `size` argument of `element_line()` is deprecated as of ggplot2 3.4.0.
+#> ℹ Please use the `linewidth` argument instead.
+#> ℹ The deprecated feature was likely used in the tscv package.
+#>   Please report the issue at <https://github.com/ahaeusser/tscv/issues>.
+#> This warning is displayed once per session.
+#> Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+#> generated.
+#> Warning: The `size` argument of `element_rect()` is deprecated as of ggplot2 3.4.0.
+#> ℹ Please use the `linewidth` argument instead.
+#> ℹ The deprecated feature was likely used in the tscv package.
+#>   Please report the issue at <https://github.com/ahaeusser/tscv/issues>.
+#> This warning is displayed once per session.
+#> Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+#> generated.
 ```
 
 <img src="man/figures/README-clean_data-1.svg" alt="Plot raw data" width="100%" />
@@ -450,3 +468,7 @@ accuracy_split %>%
 ```
 
 <img src="man/figures/README-accuracy_split-1.svg" alt="Plot accuracy by split" width="100%" />
+
+## Links
+
+- [Website](https://ahaeusser.github.io/tscv/)

@@ -35,7 +35,8 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="articles/vignette_01_introduction.html">Introduction</a></li>
+<li><a class="dropdown-item" href="articles/tscv-m4-monthly.html">Time Series Cross Validation with M4 Monthly Data</a></li>
+    <li><a class="dropdown-item" href="articles/vignette_01_introduction.html">Introduction</a></li>
     <li><a class="dropdown-item" href="articles/vignette_02_cross_validation.html">Time Series Cross Validation</a></li>
     <li><a class="dropdown-item" href="articles/vignette_03_data_visualization.html">Visualization of Time Series Data</a></li>
   </ul>
@@ -59,7 +60,6 @@
 <!-- badges: start -->
 
 <p>The package <code>tscv</code> provides a collection of functions and tools for time series analysis and forecasting as well as time series cross-validation. This is mainly a set of wrapper and helper functions as well as some extensions for the packages <code>tsibble</code>, <code>fable</code> and <code>fabletools</code> that I find useful for research in the area of time series forecasting.</p>
-<p><strong><em>Disclaimer:</em></strong> The <code>tscv</code> package is highly experimental and it is very likely that there will be (substantial) changes in the near future.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
@@ -137,7 +137,28 @@
 <span>    xlab <span class="op">=</span> <span class="st">"Time"</span>,</span>
 <span>    ylab <span class="op">=</span> <span class="st">"[EUR/MWh]"</span>,</span>
 <span>    caption <span class="op">=</span> <span class="st">"Data: ENTSO-E Transparency"</span></span>
-<span>    <span class="op">)</span></span></code></pre></div>
+<span>    <span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.</span></span>
+<span><span class="co">#&gt; ℹ Please use `linewidth` instead.</span></span>
+<span><span class="co">#&gt; ℹ The deprecated feature was likely used in the tscv package.</span></span>
+<span><span class="co">#&gt;   Please report the issue at &lt;https://github.com/ahaeusser/tscv/issues&gt;.</span></span>
+<span><span class="co">#&gt; This warning is displayed once per session.</span></span>
+<span><span class="co">#&gt; Call `lifecycle::last_lifecycle_warnings()` to see where this warning was</span></span>
+<span><span class="co">#&gt; generated.</span></span>
+<span><span class="co">#&gt; Warning: The `size` argument of `element_line()` is deprecated as of ggplot2 3.4.0.</span></span>
+<span><span class="co">#&gt; ℹ Please use the `linewidth` argument instead.</span></span>
+<span><span class="co">#&gt; ℹ The deprecated feature was likely used in the tscv package.</span></span>
+<span><span class="co">#&gt;   Please report the issue at &lt;https://github.com/ahaeusser/tscv/issues&gt;.</span></span>
+<span><span class="co">#&gt; This warning is displayed once per session.</span></span>
+<span><span class="co">#&gt; Call `lifecycle::last_lifecycle_warnings()` to see where this warning was</span></span>
+<span><span class="co">#&gt; generated.</span></span>
+<span><span class="co">#&gt; Warning: The `size` argument of `element_rect()` is deprecated as of ggplot2 3.4.0.</span></span>
+<span><span class="co">#&gt; ℹ Please use the `linewidth` argument instead.</span></span>
+<span><span class="co">#&gt; ℹ The deprecated feature was likely used in the tscv package.</span></span>
+<span><span class="co">#&gt;   Please report the issue at &lt;https://github.com/ahaeusser/tscv/issues&gt;.</span></span>
+<span><span class="co">#&gt; This warning is displayed once per session.</span></span>
+<span><span class="co">#&gt; Call `lifecycle::last_lifecycle_warnings()` to see where this warning was</span></span>
+<span><span class="co">#&gt; generated.</span></span></code></pre></div>
 <p><img src="reference/figures/README-clean_data-1.svg" alt="Plot raw data" width="100%"></p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
@@ -461,6 +482,13 @@
 <p><img src="reference/figures/README-accuracy_split-1.svg" alt="Plot accuracy by split" width="100%"></p>
 </div>
 </div>
+<div class="section level2">
+<h2 id="links">Links<a class="anchor" aria-label="anchor" href="#links"></a>
+</h2>
+<ul>
+<li><a href="https://ahaeusser.github.io/tscv/">Website</a></li>
+</ul>
+</div>
 </div>
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
@@ -488,14 +516,14 @@
 <div class="developers">
 <h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
-<li>Alexander Häußer <br><small class="roles"> Author, maintainer </small>   </li>
+<li>Alexander Häußer <br><small class="roles"> Author, maintainer, copyright holder </small> <a href="https://orcid.org/0009-0000-5419-8479" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
 </ul>
 </div>
 
 <div class="dev-status">
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://www.tidyverse.org/lifecycle/#experimental" class="external-link"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a></li>
+<li><a href="https://lifecycle.r-lib.org/articles/stages.html#stable" class="external-link"><img src="https://img.shields.io/badge/lifecycle-stable-brightgreen.svg" alt="Lifecycle: stable"></a></li>
 <li><a href="https://www.gnu.org/licenses/gpl-3.0.en.html" class="external-link"><img src="https://img.shields.io/badge/licence-GPL--3-blue.svg" alt="Licence"></a></li>
 </ul>
 </div>
@@ -509,7 +537,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>

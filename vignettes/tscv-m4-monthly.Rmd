@@ -1,0 +1,274 @@
+---
+title: "Time Series Cross Validation with M4 Monthly Data"
+author: "Alexander Häußer"
+date: "`r format(Sys.Date(), '%B %Y')`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Time Series Cross Validation with M4 Monthly Data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  dev = "png",
+  fig.height = 5,
+  fig.width = 7
+)
+```
+
+The package `tscv` provides a collection of functions and tools for time series analysis and forecasting as well as time series cross-validation. This is mainly a set of wrapper and helper functions as well as some extensions for the packages `tsibble`, `fable` and `fabletools` that I find useful for research in the area of time series forecasting.
+
+***Disclaimer:*** The `tscv` package is highly experimental and it is very likely that there will be (substantial) changes in the near future.
+
+## Installation
+
+You can install the development version from [GitHub](https://github.com/) with:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("ahaeusser/tscv")
+```
+
+## Example
+
+```{r packages, message = FALSE, warning = FALSE}
+# Load relevant packages
+library(tscv)
+library(tidyverse)
+library(tsibble)
+library(fable)
+library(feasts)
+```
+
+```{r abbreviations, echo=FALSE, warning=FALSE, message=FALSE, results='hide'}
+Sys.setlocale("LC_TIME", "C")
+```
+
+## Data preparation
+
+The data set `M4_monthly_data` is a `tibble` with selected monthly time series from the M4 forecasting competition. It contains the following columns:
+
+* `index`: monthly time index
+* `series`: time series ID from the M4 forecasting competition
+* `category`: category from the M4 forecasting competition
+* `value`: measurement variable
+
+In this vignette, we use two monthly time series, `M10960` and `M23100`, to demonstrate time series cross-validation with a fixed window approach and an 18-month-ahead forecast horizon. You can use the function `plot_line()` to visualize the two time series. The function `summarise_data()` is used to explore the structure (start date, end date, number of observations and the number missing and zero values). The function `summarise_stats()` calculates descriptive statistics for each time series.
+
+```{r clean_data, fig.alt = "Plot raw M4 monthly data"}
+
+series_id = "series"
+value_id = "value"
+index_id = "index"
+
+context <- list(
+  series_id = series_id,
+  value_id = value_id,
+  index_id = index_id
+)
+
+# Prepare data set
+main_frame <- M4_monthly_data |>
+  filter(series %in% c("M10960", "M23100"))
+
+main_frame
+
+main_frame |>
+  plot_line(
+    x = index,
+    y = value,
+    color = series,
+    facet_var = series,
+    title = "M4 Monthly Time Series",
+    subtitle = "Series M10960 and M23100",
+    xlab = "Time",
+    ylab = "Value",
+    caption = "Data: M4 Competition"
+    )
+
+summarise_data(
+  .data = main_frame,
+  context = context
+)
+
+summarise_stats(
+  .data = main_frame,
+  context = context
+)
+
+```
+
+## Split data into training and testing
+
+To prepare the data set for time series cross-validation (TSCV), you can use the function `make_split()`. This function splits the data into several slices for training and testing (i.e. partitioning into time slices) for time series cross-validation. You can choose between `stretch` and `slide`. The first is an expanding window approach, while the latter is a fixed window approach. Furthermore, we define the (initial) window size for training and testing via `n_init` and `n_ahead`, as well as the step size for increments via `n_skip`. Further options for splitting the data are available via `type` (see function reference for more details).
+
+In this vignette, we use a fixed window approach with a 120-month training window and an 18-month testing window. The value `n_skip = 17` creates non-overlapping 18-month test windows.
+
+```{r split_data}
+
+# Setup for time series cross validation
+type = "first"
+value = 120       # size for training window (= 10 years of monthly observations)
+n_ahead = 18      # size for testing window (= forecast horizon, 18 months ahead)
+n_skip = 17       # skip 17 observations to obtain non-overlapping test windows
+n_lag = 0         # no lag
+mode = "slide"    # fixed window approach
+exceed = FALSE    # only pseudo out-of-sample forecast
+
+split_frame <- make_split(
+  main_frame = main_frame,
+  context = context,
+  type = type,
+  value = value,
+  n_ahead = n_ahead,
+  n_skip = n_skip,
+  n_lag = n_lag,
+  mode = mode,
+  exceed = exceed
+)
+
+split_frame
+
+```
+
+## Training and forecasting
+
+The training and test splits are prepared within `split_frame` and we are ready for forecasting. The function `slice_train()` slices the data `main_frame` according to the splits within `split_frame`. As we are using forecasting methods from the packages `fable` and `fabletools`, we have to convert the data set `main_frame` from a `tibble` to a `tsibble`.
+
+For the monthly M4 data, we use simple benchmark and automatic forecasting methods:
+
+* `NAIVE`: naive random walk model
+* `SNAIVE`: seasonal naive model with yearly seasonality
+* `STL-NAIVE`: STL-decomposition model and naive forecast. The series is decomposed via STL and the seasonally adjusted series is predicted via the naive approach. Afterwards, the seasonal component is added to the forecasts
+* `ETS`: exponential smoothing state space model
+* `ARIMA`: automatic ARIMA model
+* `SMEDIAN`: seasonal median model with yearly seasonality
+
+The function `SMEDIAN()` is an extension to the `fable` package.
+
+```{r train_models}
+
+# Slice training data from main_frame according to split_frame
+train_frame <- slice_train(
+  main_frame = main_frame,
+  split_frame = split_frame,
+  context = context
+  )
+
+train_frame
+
+# Convert tibble to tsibble
+train_frame <- train_frame |>
+  as_tsibble(
+    index = index,
+    key = c(series, split)
+    )
+
+train_frame
+
+# Model training via fabletools::model()
+model_frame <- train_frame |>
+  model(
+    "NAIVE" = NAIVE(value),
+    "SNAIVE" = SNAIVE(value ~ lag("year")),
+    "STL-NAIVE" = decomposition_model(STL(value), NAIVE(season_adjust)),
+    "ETS" = ETS(value),
+    "ARIMA" = ARIMA(value),
+    "SMEDIAN" = SMEDIAN(value ~ lag("year"))
+    )
+
+model_frame
+
+# Forecasting via fabletools::forecast()
+fable_frame <- model_frame |>
+  forecast(h = n_ahead)
+
+fable_frame
+
+# Convert fable_frame (fable) to future_frame (tibble)
+future_frame <- make_future(
+  fable = fable_frame,
+  context = context
+  )
+
+future_frame
+
+```
+
+## Evaluation of forecast accuracy
+
+To evaluate the forecast accuracy, the function `make_accuracy()` is used. You can define whether to evaluate the accuracy by `horizon` or by `split`. Several accuracy metrics are available:
+
+* `ME`: mean error
+* `MAE`: mean absolute error
+* `MSE`: mean squared error
+* `RMSE`: root mean squared error
+* `MAPE`: mean absolute percentage error
+* `sMAPE`: scaled mean absolute percentage error
+* `MPE`: mean percentage error
+* `rMAE`: relative mean absolute error (relative to some user-defined benchmark method)
+
+### Forecast accuracy by forecast horizon
+
+```{r accuracy_horizon, fig.alt = "Plot accuracy by horizon"}
+
+# Estimate accuracy metrics by forecast horizon
+accuracy_horizon <- make_accuracy(
+  future_frame = future_frame,
+  main_frame = main_frame,
+  context = context,
+  dimension = "horizon"
+)
+
+accuracy_horizon
+
+# Visualize results
+accuracy_horizon |>
+  filter(metric == "MAE") |>
+  plot_line(
+    x = n,
+    y = value,
+    facet_var = series,
+    facet_nrow = 1,
+    color = model,
+    title = "Evaluation of forecast accuracy by forecast horizon",
+    subtitle = "Mean absolute error (MAE)",
+    xlab = "Forecast horizon (n-step-ahead)",
+    caption = "Data: M4 Competition, own calculation"
+    )
+
+```
+
+### Forecast accuracy by split
+
+```{r accuracy_split, fig.alt = "Plot accuracy by split"}
+
+# Estimate accuracy metrics by split
+accuracy_split <- make_accuracy(
+  future_frame = future_frame,
+  main_frame = main_frame,
+  context = context,
+  dimension = "split"
+)
+
+accuracy_split
+
+# Visualize results
+accuracy_split |>
+  filter(metric == "MAE") |>
+  plot_line(
+    x = n,
+    y = value,
+    facet_var = series,
+    facet_nrow = 1,
+    color = model,
+    title = "Evaluation of forecast accuracy by split",
+    subtitle = "Mean absolute error (MAE)",
+    xlab = "Split",
+    caption = "Data: M4 Competition, own calculation"
+    )
+
+```

@@ -96,30 +96,28 @@ main_frame %>%
 ## Bar charts
 
 ```{r plot_bar, fig.alt = "plot_bar"}
-# Estimate sample partial autocorrelation function
-corr_pacf <- estimate_pacf(
-  .data = main_frame,
-  context = context,
-  lag_max = 30
-)
-
-corr_pacf
-
-# Visualize PACF as correlogram
-corr_pacf %>%
-  plot_bar(
-    x = lag,
-    y = value,
-    color = sign,
-    facet_var = bidding_zone,
-    position = "dodge",
-    title = "Sample autocorrelation function",
-    xlab = "Lag",
-    ylab = "Correlation",
-    caption = "Data: ENTSO-E Transparency"
-  )
-
-
+# # Estimate sample partial autocorrelation function
+# corr_pacf <- estimate_pacf(
+#   .data = main_frame,
+#   context = context,
+#   lag_max = 30
+# )
+# 
+# corr_pacf
+# 
+# # Visualize PACF as correlogram
+# corr_pacf %>%
+#   plot_bar(
+#     x = lag,
+#     y = value,
+#     color = sign,
+#     facet_var = bidding_zone,
+#     position = "dodge",
+#     title = "Sample autocorrelation function",
+#     xlab = "Lag",
+#     ylab = "Correlation",
+#     caption = "Data: ENTSO-E Transparency"
+#   )
 ```
 
 
