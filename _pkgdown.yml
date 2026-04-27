@@ -51,28 +51,6 @@ reference:
     - model_sum.DSHW
     - train_dshw
 
-- subtitle: ELM
-  desc: >
-    The ELM model and its supported methods
-  contents:
-    - ELM
-    - forecast.ELM
-    - fitted.ELM
-    - residuals.ELM
-    - model_sum.ELM
-    - train_elm
-
-- subtitle: MLP
-  desc: >
-    The MLP model and its supported methods
-  contents:
-    - MLP
-    - forecast.MLP
-    - fitted.MLP
-    - residuals.MLP
-    - model_sum.MLP
-    - train_mlp
-
 - subtitle: SMEAN
   desc: >
     The SMEAN model and its supported methods
@@ -127,17 +105,6 @@ reference:
     - residuals.TBATS
     - model_sum.TBATS
     - train_tbats
-
-- subtitle: EXPERT
-  desc: >
-    The EXPERT model and its supported methods
-  contents:
-    - EXPERT
-    - forecast.EXPERT
-    - fitted.EXPERT
-    - residuals.EXPERT
-    - model_sum.EXPERT
-    - train_expert
 
 - title: Miscellaneous
   desc: >

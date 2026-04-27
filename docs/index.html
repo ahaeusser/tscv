@@ -35,10 +35,9 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="articles/tscv-m4-monthly.html">Time Series Cross Validation with M4 Monthly Data</a></li>
-    <li><a class="dropdown-item" href="articles/vignette_01_introduction.html">Introduction</a></li>
-    <li><a class="dropdown-item" href="articles/vignette_02_cross_validation.html">Time Series Cross Validation</a></li>
-    <li><a class="dropdown-item" href="articles/vignette_03_data_visualization.html">Visualization of Time Series Data</a></li>
+<li><a class="dropdown-item" href="articles/vignette_01_monthly_expanding.html">Expanding window approach</a></li>
+    <li><a class="dropdown-item" href="articles/vignette_02_hourly_fixed.html">Fixed window approach</a></li>
+    <li><a class="dropdown-item" href="articles/vignette_03_data_visualization.html">Visualization of time series data</a></li>
   </ul>
 </li>
       </ul>
@@ -59,168 +58,212 @@
 </h1></div>
 <!-- badges: start -->
 
-<p>The package <code>tscv</code> provides a collection of functions and tools for time series analysis and forecasting as well as time series cross-validation. This is mainly a set of wrapper and helper functions as well as some extensions for the packages <code>tsibble</code>, <code>fable</code> and <code>fabletools</code> that I find useful for research in the area of time series forecasting.</p>
+<p>The package <code>tscv</code> provides helper functions for time series analysis, forecasting and time series cross-validation. It is mainly designed to work with the tidy forecasting ecosystem, especially the packages <code>tsibble</code>, <code>fable</code>, <code>fabletools</code> and <code>feasts</code>.</p>
+<p>The package contains tools for:</p>
+<ul>
+<li>creating <strong>rolling-origin</strong> resampling schemes for time series cross-validation</li>
+<li>slicing <strong>training and test samples</strong> from time-indexed data</li>
+<li>converting forecasts into a common format for evaluation</li>
+<li>calculating <strong>forecast accuracy measures</strong>
+</li>
+<li>
+<strong>visualizing time series data</strong>, forecast errors and distributional properties</li>
+<li>fitting <strong>additional benchmark and forecasting models</strong> compatible with <code>fable</code>
+</li>
+<li>working with example time series data sets</li>
+</ul>
+<p>The main focus of the package is to simplify repeated forecasting experiments across several time series, models, forecast horizons and rolling-origin splits.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>You can install the development version from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
+<p>You can install the development version from GitHub with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"ahaeusser/tscv"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
+<h2 id="basic-workflow">Basic workflow<a class="anchor" aria-label="anchor" href="#basic-workflow"></a>
+</h2>
+<p>A typical workflow with <code>tscv</code> consists of the following steps:</p>
+<ol style="list-style-type: decimal">
+<li>Prepare the data in long format.</li>
+<li>Define a <code>context</code> object identifying the series, value and index columns.</li>
+<li>Create rolling-origin splits using <code><a href="reference/make_split.html">make_split()</a></code>.</li>
+<li>Slice the training and test data using <code><a href="reference/slice_train.html">slice_train()</a></code> and <code><a href="reference/slice_test.html">slice_test()</a></code>.</li>
+<li>Estimate forecasting models using <code>fable</code> or the additional models provided by <code>tscv</code>.</li>
+<li>Convert forecasts with <code><a href="reference/make_future.html">make_future()</a></code>.</li>
+<li>Evaluate forecast accuracy with <code><a href="reference/make_accuracy.html">make_accuracy()</a></code>.</li>
+<li>Visualize the data, forecasts or accuracy measures.</li>
+</ol>
+<p>For example, the <code>context</code> object defines the column names used by many functions:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">context</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>  series_id <span class="op">=</span> <span class="st">"bidding_zone"</span>,</span>
+<span>  value_id <span class="op">=</span> <span class="st">"value"</span>,</span>
+<span>  index_id <span class="op">=</span> <span class="st">"time"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>This makes the package flexible with respect to different data sets, as long as the data is provided in a tidy long format.</p>
+</div>
+<div class="section level2">
+<h2 id="function-overview">Function overview<a class="anchor" aria-label="anchor" href="#function-overview"></a>
+</h2>
+<p>The following table summarizes the main functions in <code>tscv</code> by topic.</p>
+<table class="table">
+<colgroup>
+<col width="33%">
+<col width="33%">
+<col width="33%">
+</colgroup>
+<thead><tr>
+<th align="left"><strong>Topic</strong></th>
+<th align="left"><strong>Function(s)</strong></th>
+<th align="left"><strong>Description</strong></th>
+</tr></thead>
+<tbody>
+<tr>
+<td align="left"><strong>Time series cross-validation</strong></td>
+<td align="left">
+<code><a href="reference/make_split.html">make_split()</a></code>, <code><a href="reference/slice_train.html">slice_train()</a></code>, <code><a href="reference/slice_test.html">slice_test()</a></code>
+</td>
+<td align="left">Create rolling-origin splits and extract training/test samples</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">
+<code><a href="reference/make_future.html">make_future()</a></code>, <code><a href="reference/make_errors.html">make_errors()</a></code>, <code><a href="reference/make_accuracy.html">make_accuracy()</a></code>
+</td>
+<td align="left">Convert forecasts and evaluate forecast accuracy</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"><code><a href="reference/make_tsibble.html">make_tsibble()</a></code></td>
+<td align="left">Convert data to a <code>tsibble</code> using the package context</td>
+</tr>
+<tr>
+<td align="left"><strong>Data summaries</strong></td>
+<td align="left">
+<code><a href="reference/check_data.html">check_data()</a></code>, <code><a href="reference/summarise_data.html">summarise_data()</a></code>, <code><a href="reference/summarise_stats.html">summarise_stats()</a></code>
+</td>
+<td align="left">Check and summarize time series data</td>
+</tr>
+<tr>
+<td align="left"><strong>Autocorrelation analysis</strong></td>
+<td align="left">
+<code><a href="reference/acf_vec.html">acf_vec()</a></code>, <code><a href="reference/pacf_vec.html">pacf_vec()</a></code>, <code><a href="reference/estimate_acf.html">estimate_acf()</a></code>, <code><a href="reference/estimate_pacf.html">estimate_pacf()</a></code>
+</td>
+<td align="left">Estimate ACF and PACF values</td>
+</tr>
+<tr>
+<td align="left"><strong>Distributional statistics</strong></td>
+<td align="left">
+<code><a href="reference/estimate_mode.html">estimate_mode()</a></code>, <code><a href="reference/estimate_skewness.html">estimate_skewness()</a></code>, <code><a href="reference/estimate_kurtosis.html">estimate_kurtosis()</a></code>
+</td>
+<td align="left">Estimate descriptive distributional statistics</td>
+</tr>
+<tr>
+<td align="left"><strong>Data preprocessing</strong></td>
+<td align="left">
+<code><a href="reference/interpolate_missing.html">interpolate_missing()</a></code>, <code><a href="reference/smooth_outlier.html">smooth_outlier()</a></code>
+</td>
+<td align="left">Handle missing values and outliers</td>
+</tr>
+<tr>
+<td align="left"><strong>Visualization</strong></td>
+<td align="left">
+<code><a href="reference/plot_line.html">plot_line()</a></code>, <code><a href="reference/plot_point.html">plot_point()</a></code>, <code><a href="reference/plot_bar.html">plot_bar()</a></code>, <code><a href="reference/plot_histogram.html">plot_histogram()</a></code>, <code><a href="reference/plot_density.html">plot_density()</a></code>, <code><a href="reference/plot_qq.html">plot_qq()</a></code>
+</td>
+<td align="left">Create common exploratory plots</td>
+</tr>
+<tr>
+<td align="left"><strong>Themes and scales</strong></td>
+<td align="left">
+<code><a href="reference/theme_tscv.html">theme_tscv()</a></code>, <code><a href="reference/theme_tscv_dark.html">theme_tscv_dark()</a></code>, <code><a href="reference/scale_color_tscv.html">scale_color_tscv()</a></code>, <code><a href="reference/scale_fill_tscv.html">scale_fill_tscv()</a></code>, <code><a href="reference/tscv_cols.html">tscv_cols()</a></code>, <code><a href="reference/tscv_pal.html">tscv_pal()</a></code>
+</td>
+<td align="left">Apply <code>tscv</code> themes and colour palettes</td>
+</tr>
+<tr>
+<td align="left"><strong>Benchmark models</strong></td>
+<td align="left">
+<code><a href="reference/SMEAN.html">SMEAN()</a></code>, <code><a href="reference/SMEDIAN.html">SMEDIAN()</a></code>, <code><a href="reference/MEDIAN.html">MEDIAN()</a></code>, <code><a href="reference/SNAIVE2.html">SNAIVE2()</a></code>
+</td>
+<td align="left">Additional benchmark models compatible with <code>fable</code>
+</td>
+</tr>
+<tr>
+<td align="left"><strong>Additional forecasting models</strong></td>
+<td align="left">
+<code><a href="reference/DSHW.html">DSHW()</a></code>, <code><a href="reference/TBATS.html">TBATS()</a></code>
+</td>
+<td align="left">Additional forecasting models compatible with <code>fable</code>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section level2">
+<h2 id="data-sets">Data sets<a class="anchor" aria-label="anchor" href="#data-sets"></a>
+</h2>
+<p>The package includes example data sets that can be used for testing, examples and vignettes.</p>
+<table class="table">
+<colgroup>
+<col width="50%">
+<col width="50%">
+</colgroup>
+<thead><tr>
+<th align="left"><strong>Data set</strong></th>
+<th align="left"><strong>Description</strong></th>
+</tr></thead>
+<tbody>
+<tr>
+<td align="left"><code>elec_price</code></td>
+<td align="left">Hourly day-ahead electricity spot prices for selected European bidding zones</td>
+</tr>
+<tr>
+<td align="left"><code>elec_load</code></td>
+<td align="left">Electricity load data</td>
+</tr>
+<tr>
+<td align="left"><code>M4_monthly_data</code></td>
+<td align="left">Selected monthly time series from the M4 forecasting competition</td>
+</tr>
+<tr>
+<td align="left"><code>M4_quarterly_data</code></td>
+<td align="left">Selected quarterly time series from the M4 forecasting competition</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section level2">
 <h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
 </h2>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Load relevant packages</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ahaeusser/tscv" class="external-link">tscv</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tsibble.tidyverts.org" class="external-link">tsibble</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://fable.tidyverts.org" class="external-link">fable</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://feasts.tidyverts.org/" class="external-link">feasts</a></span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="data-preparation">Data preparation<a class="anchor" aria-label="anchor" href="#data-preparation"></a>
-</h2>
-<p>The data set <code>elec_price</code> is a <code>tibble</code> with day-ahead electricity spot prices in [EUR/MWh] from the ENTSO-E Transparency Platform. The data set contains hourly time series data from 2019-01-01 to 2020-12-31 for 8 European bidding zones (BZN):</p>
-<ul>
-<li>DE: Germany (including Luxembourg)</li>
-<li>DK: Denmark</li>
-<li>ES: Spain</li>
-<li>FI: Finland</li>
-<li>FR: France</li>
-<li>NL: Netherlands</li>
-<li>NO1: Norway 1 (Oslo)</li>
-<li>SE1: Sweden 1 (Lulea)</li>
-</ul>
-<p>In this vignette, we will use only four time series to demonstrate the functionality of the package (the data set is filtered to the bidding zones Germany, France, Norway and Sweden). You can use the function <code><a href="reference/plot_line.html">plot_line()</a></code> to visualize the four time series. The function <code><a href="reference/summarise_data.html">summarise_data()</a></code> is used to explore the structure (start date, end date, number of observations and the number missing and zero values). The function <code><a href="reference/summarise_stats.html">summarise_stats()</a></code> calculates descriptive statistics for each time series.</p>
+<p>The following minimal example shows how to create time series cross-validation splits for selected electricity price series.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="va">series_id</span> <span class="op">=</span> <span class="st">"bidding_zone"</span></span>
-<span><span class="va">value_id</span> <span class="op">=</span> <span class="st">"value"</span></span>
-<span><span class="va">index_id</span> <span class="op">=</span> <span class="st">"time"</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ahaeusser/tscv" class="external-link">tscv</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">context</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>  series_id <span class="op">=</span> <span class="va">series_id</span>,</span>
-<span>  value_id <span class="op">=</span> <span class="va">value_id</span>,</span>
-<span>  index_id <span class="op">=</span> <span class="va">index_id</span></span>
+<span>  series_id <span class="op">=</span> <span class="st">"bidding_zone"</span>,</span>
+<span>  value_id <span class="op">=</span> <span class="st">"value"</span>,</span>
+<span>  index_id <span class="op">=</span> <span class="st">"time"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Prepare data set</span></span>
 <span><span class="va">main_frame</span> <span class="op">&lt;-</span> <span class="va">elec_price</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">bidding_zone</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"DE"</span>, <span class="st">"FR"</span>, <span class="st">"NO1"</span>, <span class="st">"SE1"</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">main_frame</span></span>
-<span><span class="co">#&gt; # A tibble: 70,176 × 5</span></span>
-<span><span class="co">#&gt;    time                item            unit      bidding_zone  value</span></span>
-<span><span class="co">#&gt;    &lt;dttm&gt;              &lt;chr&gt;           &lt;chr&gt;     &lt;chr&gt;         &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1 2019-01-01 00:00:00 Day-ahead Price [EUR/MWh] DE            10.1 </span></span>
-<span><span class="co">#&gt;  2 2019-01-01 01:00:00 Day-ahead Price [EUR/MWh] DE            -4.08</span></span>
-<span><span class="co">#&gt;  3 2019-01-01 02:00:00 Day-ahead Price [EUR/MWh] DE            -9.91</span></span>
-<span><span class="co">#&gt;  4 2019-01-01 03:00:00 Day-ahead Price [EUR/MWh] DE            -7.41</span></span>
-<span><span class="co">#&gt;  5 2019-01-01 04:00:00 Day-ahead Price [EUR/MWh] DE           -12.6 </span></span>
-<span><span class="co">#&gt;  6 2019-01-01 05:00:00 Day-ahead Price [EUR/MWh] DE           -17.2 </span></span>
-<span><span class="co">#&gt;  7 2019-01-01 06:00:00 Day-ahead Price [EUR/MWh] DE           -15.1 </span></span>
-<span><span class="co">#&gt;  8 2019-01-01 07:00:00 Day-ahead Price [EUR/MWh] DE            -4.93</span></span>
-<span><span class="co">#&gt;  9 2019-01-01 08:00:00 Day-ahead Price [EUR/MWh] DE            -6.33</span></span>
-<span><span class="co">#&gt; 10 2019-01-01 09:00:00 Day-ahead Price [EUR/MWh] DE            -4.93</span></span>
-<span><span class="co">#&gt; # ℹ 70,166 more rows</span></span>
-<span></span>
-<span><span class="va">main_frame</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="reference/plot_line.html">plot_line</a></span><span class="op">(</span></span>
-<span>    x <span class="op">=</span> <span class="va">time</span>,</span>
-<span>    y <span class="op">=</span> <span class="va">value</span>,</span>
-<span>    color <span class="op">=</span> <span class="va">bidding_zone</span>,</span>
-<span>    facet_var <span class="op">=</span> <span class="va">bidding_zone</span>,</span>
-<span>    title <span class="op">=</span> <span class="st">"Day-ahead Electricity Spot Price"</span>,</span>
-<span>    subtitle <span class="op">=</span> <span class="st">"2019-01-01 to 2020-12-31"</span>,</span>
-<span>    xlab <span class="op">=</span> <span class="st">"Time"</span>,</span>
-<span>    ylab <span class="op">=</span> <span class="st">"[EUR/MWh]"</span>,</span>
-<span>    caption <span class="op">=</span> <span class="st">"Data: ENTSO-E Transparency"</span></span>
-<span>    <span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.</span></span>
-<span><span class="co">#&gt; ℹ Please use `linewidth` instead.</span></span>
-<span><span class="co">#&gt; ℹ The deprecated feature was likely used in the tscv package.</span></span>
-<span><span class="co">#&gt;   Please report the issue at &lt;https://github.com/ahaeusser/tscv/issues&gt;.</span></span>
-<span><span class="co">#&gt; This warning is displayed once per session.</span></span>
-<span><span class="co">#&gt; Call `lifecycle::last_lifecycle_warnings()` to see where this warning was</span></span>
-<span><span class="co">#&gt; generated.</span></span>
-<span><span class="co">#&gt; Warning: The `size` argument of `element_line()` is deprecated as of ggplot2 3.4.0.</span></span>
-<span><span class="co">#&gt; ℹ Please use the `linewidth` argument instead.</span></span>
-<span><span class="co">#&gt; ℹ The deprecated feature was likely used in the tscv package.</span></span>
-<span><span class="co">#&gt;   Please report the issue at &lt;https://github.com/ahaeusser/tscv/issues&gt;.</span></span>
-<span><span class="co">#&gt; This warning is displayed once per session.</span></span>
-<span><span class="co">#&gt; Call `lifecycle::last_lifecycle_warnings()` to see where this warning was</span></span>
-<span><span class="co">#&gt; generated.</span></span>
-<span><span class="co">#&gt; Warning: The `size` argument of `element_rect()` is deprecated as of ggplot2 3.4.0.</span></span>
-<span><span class="co">#&gt; ℹ Please use the `linewidth` argument instead.</span></span>
-<span><span class="co">#&gt; ℹ The deprecated feature was likely used in the tscv package.</span></span>
-<span><span class="co">#&gt;   Please report the issue at &lt;https://github.com/ahaeusser/tscv/issues&gt;.</span></span>
-<span><span class="co">#&gt; This warning is displayed once per session.</span></span>
-<span><span class="co">#&gt; Call `lifecycle::last_lifecycle_warnings()` to see where this warning was</span></span>
-<span><span class="co">#&gt; generated.</span></span></code></pre></div>
-<p><img src="reference/figures/README-clean_data-1.svg" alt="Plot raw data" width="100%"></p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="fu"><a href="reference/summarise_data.html">summarise_data</a></span><span class="op">(</span></span>
-<span>  .data <span class="op">=</span> <span class="va">main_frame</span>,</span>
-<span>  context <span class="op">=</span> <span class="va">context</span></span>
-<span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 4 × 8</span></span>
-<span><span class="co">#&gt;   bidding_zone start               end                 n_obs n_missing</span></span>
-<span><span class="co">#&gt;   &lt;chr&gt;        &lt;dttm&gt;              &lt;dttm&gt;              &lt;int&gt;     &lt;int&gt;</span></span>
-<span><span class="co">#&gt; 1 DE           2019-01-01 00:00:00 2020-12-31 23:00:00 17544         0</span></span>
-<span><span class="co">#&gt; 2 FR           2019-01-01 00:00:00 2020-12-31 23:00:00 17544         0</span></span>
-<span><span class="co">#&gt; 3 NO1          2019-01-01 00:00:00 2020-12-31 23:00:00 17544         0</span></span>
-<span><span class="co">#&gt; 4 SE1          2019-01-01 00:00:00 2020-12-31 23:00:00 17544         0</span></span>
-<span><span class="co">#&gt; # ℹ 3 more variables: pct_missing &lt;dbl&gt;, n_zeros &lt;int&gt;, pct_zeros &lt;dbl&gt;</span></span>
-<span></span>
-<span><span class="fu"><a href="reference/summarise_stats.html">summarise_stats</a></span><span class="op">(</span></span>
-<span>  .data <span class="op">=</span> <span class="va">main_frame</span>,</span>
-<span>  context <span class="op">=</span> <span class="va">context</span></span>
-<span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 4 × 11</span></span>
-<span><span class="co">#&gt;   bidding_zone  mean median  mode    sd     p0   p25   p75  p100 skewness</span></span>
-<span><span class="co">#&gt;   &lt;chr&gt;        &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 DE            34.1   35.1 35.9   16.9 -90.0  26.3   43.8  200.   -0.776</span></span>
-<span><span class="co">#&gt; 2 FR            35.8   36   37.2   15.5 -75.8  26.6   44.9  200.    0.323</span></span>
-<span><span class="co">#&gt; 3 NO1           24.3   26.9  2.66  17.1  -1.73  6.95  38.8  109.    0.189</span></span>
-<span><span class="co">#&gt; 4 SE1           26.1   27.9 37.9   15.9  -1.73 11.4   38.5  189.    0.378</span></span>
-<span><span class="co">#&gt; # ℹ 1 more variable: kurtosis &lt;dbl&gt;</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="split-data-into-training-and-testing">Split data into training and testing<a class="anchor" aria-label="anchor" href="#split-data-into-training-and-testing"></a>
-</h2>
-<p>To prepare the data set for time series cross-validation (TSCV), you can use the function <code><a href="reference/make_split.html">make_split()</a></code>. This function splits the data into several slices for training and testing (i.e. partitioning into time slices) for time series cross-validation. You can choose between <code>stretch</code> and <code>slide</code>. The first is an expanding window approach, while the latter is a fixed window approach. Furthermore, we define the (initial) window size for training and testing via <code>n_init</code> and <code>n_ahead</code>, as well as the step size for increments via <code>n_skip</code>. Further options for splitting the data are available via <code>type</code> (see function reference for more details).</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="co"># Setup for time series cross validation</span></span>
-<span><span class="va">type</span> <span class="op">=</span> <span class="st">"first"</span></span>
-<span><span class="va">value</span> <span class="op">=</span> <span class="fl">2400</span>      <span class="co"># size for training window</span></span>
-<span><span class="va">n_ahead</span> <span class="op">=</span> <span class="fl">24</span>      <span class="co"># size for testing window (= forecast horizon)</span></span>
-<span><span class="va">n_skip</span> <span class="op">=</span> <span class="fl">23</span>       <span class="co"># skip 23 observations</span></span>
-<span><span class="va">n_lag</span> <span class="op">=</span> <span class="fl">0</span>         <span class="co"># no lag</span></span>
-<span><span class="va">mode</span> <span class="op">=</span> <span class="st">"slide"</span>    <span class="co"># fixed window approach</span></span>
-<span><span class="va">exceed</span> <span class="op">=</span> <span class="cn">FALSE</span>    <span class="co"># only pseudo out-of-sample forecast</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">bidding_zone</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"DE"</span>, <span class="st">"FR"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">split_frame</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/make_split.html">make_split</a></span><span class="op">(</span></span>
 <span>  main_frame <span class="op">=</span> <span class="va">main_frame</span>,</span>
 <span>  context <span class="op">=</span> <span class="va">context</span>,</span>
-<span>  type <span class="op">=</span> <span class="va">type</span>,</span>
-<span>  value <span class="op">=</span> <span class="va">value</span>,</span>
-<span>  n_ahead <span class="op">=</span> <span class="va">n_ahead</span>,</span>
-<span>  n_skip <span class="op">=</span> <span class="va">n_skip</span>,</span>
-<span>  n_lag <span class="op">=</span> <span class="va">n_lag</span>,</span>
-<span>  mode <span class="op">=</span> <span class="va">mode</span>,</span>
-<span>  exceed <span class="op">=</span> <span class="va">exceed</span></span>
+<span>  type <span class="op">=</span> <span class="st">"first"</span>,</span>
+<span>  value <span class="op">=</span> <span class="fl">2400</span>,</span>
+<span>  n_ahead <span class="op">=</span> <span class="fl">24</span>,</span>
+<span>  n_skip <span class="op">=</span> <span class="fl">23</span>,</span>
+<span>  n_lag <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  mode <span class="op">=</span> <span class="st">"slide"</span>,</span>
+<span>  exceed <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># For illustration, only the first 50 splits are used</span></span>
-<span><span class="va">split_frame</span> <span class="op">&lt;-</span> <span class="va">split_frame</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">split</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">50</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
 <span><span class="va">split_frame</span></span>
-<span><span class="co">#&gt; # A tibble: 200 × 4</span></span>
+<span><span class="co">#&gt; # A tibble: 1,262 × 4</span></span>
 <span><span class="co">#&gt;    bidding_zone split train         test      </span></span>
 <span><span class="co">#&gt;    &lt;chr&gt;        &lt;int&gt; &lt;list&gt;        &lt;list&gt;    </span></span>
 <span><span class="co">#&gt;  1 DE               1 &lt;int [2,400]&gt; &lt;int [24]&gt;</span></span>
@@ -233,260 +276,25 @@
 <span><span class="co">#&gt;  8 DE               8 &lt;int [2,400]&gt; &lt;int [24]&gt;</span></span>
 <span><span class="co">#&gt;  9 DE               9 &lt;int [2,400]&gt; &lt;int [24]&gt;</span></span>
 <span><span class="co">#&gt; 10 DE              10 &lt;int [2,400]&gt; &lt;int [24]&gt;</span></span>
-<span><span class="co">#&gt; # ℹ 190 more rows</span></span></code></pre></div>
+<span><span class="co">#&gt; # ℹ 1,252 more rows</span></span></code></pre></div>
+<p>The resulting object contains one row per time series and split. The <code>train</code> and <code>test</code> columns are list-columns containing the row positions used for training and testing.</p>
 </div>
 <div class="section level2">
-<h2 id="training-and-forecasting">Training and forecasting<a class="anchor" aria-label="anchor" href="#training-and-forecasting"></a>
+<h2 id="vignettes">Vignettes<a class="anchor" aria-label="anchor" href="#vignettes"></a>
 </h2>
-<p>The training and test splits are prepared within <code>split_frame</code> and we are ready for forecasting. The function <code><a href="reference/slice_train.html">slice_train()</a></code> slices the data <code>main_frame</code> according to the splits within <code>split_frame</code>. As we are using forecasting methods from the packages <code>fable</code> and <code>fabletools</code>, we have to convert the data set <code>main_frame</code> from a <code>tibble</code> to a <code>tsibble</code>. Due to the sample size and computation time, only very simple benchmark methods are used:</p>
+<p>The package vignettes provide more detailed examples:</p>
 <ul>
-<li>
-<code>SNAIVE</code>: Seasonal naive model with weekly seasonality (from package <code>fable</code>)</li>
-<li>
-<code>STL-NAIVE</code>: STL-decomposition model and naive forecast. The series is decomposed via STL and the seasonal adjusted series is predicted via the naive approach. Afterwards, seasonal component is added to the forecasts (from packages <code>fable</code> and <code>feasts</code>)</li>
-<li>
-<code>SNAIVE2</code>: Variation of the seasonal naive approach. Mondays, Saturdays and Sundays are treated with a weekly lag. Tuesdays, Wednesdays, Thursdays and Fridays are treated with a daily lag.</li>
-<li>
-<code>SMEDIAN</code>: Seasonal median model</li>
+<li>fixed window time series cross-validation</li>
+<li>expanding window time series cross-validation</li>
+<li>visualization of time series data</li>
 </ul>
-<p>The functions <code><a href="reference/SMEDIAN.html">SMEDIAN()</a></code> and <code><a href="reference/SNAIVE2.html">SNAIVE2()</a></code> are extensions to the <code>fable</code> package</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="co"># Slice training data from main_frame according to split_frame</span></span>
-<span><span class="va">train_frame</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/slice_train.html">slice_train</a></span><span class="op">(</span></span>
-<span>  main_frame <span class="op">=</span> <span class="va">main_frame</span>,</span>
-<span>  split_frame <span class="op">=</span> <span class="va">split_frame</span>,</span>
-<span>  context <span class="op">=</span> <span class="va">context</span></span>
-<span>  <span class="op">)</span></span>
-<span></span>
-<span><span class="va">train_frame</span></span>
-<span><span class="co">#&gt; # A tibble: 480,000 × 6</span></span>
-<span><span class="co">#&gt;    time                item            unit      bidding_zone  value split</span></span>
-<span><span class="co">#&gt;    &lt;dttm&gt;              &lt;chr&gt;           &lt;chr&gt;     &lt;chr&gt;         &lt;dbl&gt; &lt;int&gt;</span></span>
-<span><span class="co">#&gt;  1 2019-01-01 00:00:00 Day-ahead Price [EUR/MWh] DE            10.1      1</span></span>
-<span><span class="co">#&gt;  2 2019-01-01 01:00:00 Day-ahead Price [EUR/MWh] DE            -4.08     1</span></span>
-<span><span class="co">#&gt;  3 2019-01-01 02:00:00 Day-ahead Price [EUR/MWh] DE            -9.91     1</span></span>
-<span><span class="co">#&gt;  4 2019-01-01 03:00:00 Day-ahead Price [EUR/MWh] DE            -7.41     1</span></span>
-<span><span class="co">#&gt;  5 2019-01-01 04:00:00 Day-ahead Price [EUR/MWh] DE           -12.6      1</span></span>
-<span><span class="co">#&gt;  6 2019-01-01 05:00:00 Day-ahead Price [EUR/MWh] DE           -17.2      1</span></span>
-<span><span class="co">#&gt;  7 2019-01-01 06:00:00 Day-ahead Price [EUR/MWh] DE           -15.1      1</span></span>
-<span><span class="co">#&gt;  8 2019-01-01 07:00:00 Day-ahead Price [EUR/MWh] DE            -4.93     1</span></span>
-<span><span class="co">#&gt;  9 2019-01-01 08:00:00 Day-ahead Price [EUR/MWh] DE            -6.33     1</span></span>
-<span><span class="co">#&gt; 10 2019-01-01 09:00:00 Day-ahead Price [EUR/MWh] DE            -4.93     1</span></span>
-<span><span class="co">#&gt; # ℹ 479,990 more rows</span></span>
-<span></span>
-<span><span class="co"># Convert tibble to tsibble</span></span>
-<span><span class="va">train_frame</span> <span class="op">&lt;-</span> <span class="va">train_frame</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://tsibble.tidyverts.org/reference/as-tsibble.html" class="external-link">as_tsibble</a></span><span class="op">(</span></span>
-<span>    index <span class="op">=</span> <span class="va">time</span>,</span>
-<span>    key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">bidding_zone</span>, <span class="va">split</span><span class="op">)</span></span>
-<span>    <span class="op">)</span></span>
-<span></span>
-<span><span class="va">train_frame</span></span>
-<span><span class="co">#&gt; # A tsibble: 480,000 x 6 [1h] &lt;UTC&gt;</span></span>
-<span><span class="co">#&gt; # Key:       bidding_zone, split [200]</span></span>
-<span><span class="co">#&gt;    time                item            unit      bidding_zone  value split</span></span>
-<span><span class="co">#&gt;    &lt;dttm&gt;              &lt;chr&gt;           &lt;chr&gt;     &lt;chr&gt;         &lt;dbl&gt; &lt;int&gt;</span></span>
-<span><span class="co">#&gt;  1 2019-01-01 00:00:00 Day-ahead Price [EUR/MWh] DE            10.1      1</span></span>
-<span><span class="co">#&gt;  2 2019-01-01 01:00:00 Day-ahead Price [EUR/MWh] DE            -4.08     1</span></span>
-<span><span class="co">#&gt;  3 2019-01-01 02:00:00 Day-ahead Price [EUR/MWh] DE            -9.91     1</span></span>
-<span><span class="co">#&gt;  4 2019-01-01 03:00:00 Day-ahead Price [EUR/MWh] DE            -7.41     1</span></span>
-<span><span class="co">#&gt;  5 2019-01-01 04:00:00 Day-ahead Price [EUR/MWh] DE           -12.6      1</span></span>
-<span><span class="co">#&gt;  6 2019-01-01 05:00:00 Day-ahead Price [EUR/MWh] DE           -17.2      1</span></span>
-<span><span class="co">#&gt;  7 2019-01-01 06:00:00 Day-ahead Price [EUR/MWh] DE           -15.1      1</span></span>
-<span><span class="co">#&gt;  8 2019-01-01 07:00:00 Day-ahead Price [EUR/MWh] DE            -4.93     1</span></span>
-<span><span class="co">#&gt;  9 2019-01-01 08:00:00 Day-ahead Price [EUR/MWh] DE            -6.33     1</span></span>
-<span><span class="co">#&gt; 10 2019-01-01 09:00:00 Day-ahead Price [EUR/MWh] DE            -4.93     1</span></span>
-<span><span class="co">#&gt; # ℹ 479,990 more rows</span></span>
-<span></span>
-<span><span class="co"># Model training via fabletools::model()</span></span>
-<span><span class="va">model_frame</span> <span class="op">&lt;-</span> <span class="va">train_frame</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://fabletools.tidyverts.org/reference/model.html" class="external-link">model</a></span><span class="op">(</span></span>
-<span>    <span class="st">"SNAIVE"</span> <span class="op">=</span> <span class="fu"><a href="https://fable.tidyverts.org/reference/RW.html" class="external-link">SNAIVE</a></span><span class="op">(</span><span class="va">value</span> <span class="op">~</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/lead-lag.html" class="external-link">lag</a></span><span class="op">(</span><span class="st">"week"</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>    <span class="st">"STL-NAIVE"</span> <span class="op">=</span> <span class="fu"><a href="https://fabletools.tidyverts.org/reference/decomposition_model.html" class="external-link">decomposition_model</a></span><span class="op">(</span><span class="fu"><a href="https://feasts.tidyverts.org/reference/STL.html" class="external-link">STL</a></span><span class="op">(</span><span class="va">value</span><span class="op">)</span>, <span class="fu"><a href="https://fable.tidyverts.org/reference/RW.html" class="external-link">NAIVE</a></span><span class="op">(</span><span class="va">season_adjust</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>    <span class="st">"SNAIVE2"</span> <span class="op">=</span> <span class="fu"><a href="reference/SNAIVE2.html">SNAIVE2</a></span><span class="op">(</span><span class="va">value</span><span class="op">)</span>,</span>
-<span>    <span class="st">"SMEDIAN"</span> <span class="op">=</span> <span class="fu"><a href="reference/SMEDIAN.html">SMEDIAN</a></span><span class="op">(</span><span class="va">value</span> <span class="op">~</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/lead-lag.html" class="external-link">lag</a></span><span class="op">(</span><span class="st">"week"</span><span class="op">)</span><span class="op">)</span></span>
-<span>    <span class="op">)</span></span>
-<span></span>
-<span><span class="va">model_frame</span></span>
-<span><span class="co">#&gt; # A mable: 200 x 6</span></span>
-<span><span class="co">#&gt; # Key:     bidding_zone, split [200]</span></span>
-<span><span class="co">#&gt;    bidding_zone split   SNAIVE               `STL-NAIVE`   SNAIVE2   SMEDIAN</span></span>
-<span><span class="co">#&gt;    &lt;chr&gt;        &lt;int&gt;  &lt;model&gt;                   &lt;model&gt;   &lt;model&gt;   &lt;model&gt;</span></span>
-<span><span class="co">#&gt;  1 DE               1 &lt;SNAIVE&gt; &lt;STL decomposition model&gt; &lt;SNAIVE2&gt; &lt;SMEDIAN&gt;</span></span>
-<span><span class="co">#&gt;  2 DE               2 &lt;SNAIVE&gt; &lt;STL decomposition model&gt; &lt;SNAIVE2&gt; &lt;SMEDIAN&gt;</span></span>
-<span><span class="co">#&gt;  3 DE               3 &lt;SNAIVE&gt; &lt;STL decomposition model&gt; &lt;SNAIVE2&gt; &lt;SMEDIAN&gt;</span></span>
-<span><span class="co">#&gt;  4 DE               4 &lt;SNAIVE&gt; &lt;STL decomposition model&gt; &lt;SNAIVE2&gt; &lt;SMEDIAN&gt;</span></span>
-<span><span class="co">#&gt;  5 DE               5 &lt;SNAIVE&gt; &lt;STL decomposition model&gt; &lt;SNAIVE2&gt; &lt;SMEDIAN&gt;</span></span>
-<span><span class="co">#&gt;  6 DE               6 &lt;SNAIVE&gt; &lt;STL decomposition model&gt; &lt;SNAIVE2&gt; &lt;SMEDIAN&gt;</span></span>
-<span><span class="co">#&gt;  7 DE               7 &lt;SNAIVE&gt; &lt;STL decomposition model&gt; &lt;SNAIVE2&gt; &lt;SMEDIAN&gt;</span></span>
-<span><span class="co">#&gt;  8 DE               8 &lt;SNAIVE&gt; &lt;STL decomposition model&gt; &lt;SNAIVE2&gt; &lt;SMEDIAN&gt;</span></span>
-<span><span class="co">#&gt;  9 DE               9 &lt;SNAIVE&gt; &lt;STL decomposition model&gt; &lt;SNAIVE2&gt; &lt;SMEDIAN&gt;</span></span>
-<span><span class="co">#&gt; 10 DE              10 &lt;SNAIVE&gt; &lt;STL decomposition model&gt; &lt;SNAIVE2&gt; &lt;SMEDIAN&gt;</span></span>
-<span><span class="co">#&gt; # ℹ 190 more rows</span></span>
-<span></span>
-<span><span class="co"># Forecasting via fabletools::forecast()</span></span>
-<span><span class="va">fable_frame</span> <span class="op">&lt;-</span> <span class="va">model_frame</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://generics.r-lib.org/reference/forecast.html" class="external-link">forecast</a></span><span class="op">(</span>h <span class="op">=</span> <span class="va">n_ahead</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">fable_frame</span></span>
-<span><span class="co">#&gt; # A fable: 19,200 x 6 [1h] &lt;UTC&gt;</span></span>
-<span><span class="co">#&gt; # Key:     bidding_zone, split, .model [800]</span></span>
-<span><span class="co">#&gt;    bidding_zone split .model time               </span></span>
-<span><span class="co">#&gt;    &lt;chr&gt;        &lt;int&gt; &lt;chr&gt;  &lt;dttm&gt;             </span></span>
-<span><span class="co">#&gt;  1 DE               1 SNAIVE 2019-04-11 00:00:00</span></span>
-<span><span class="co">#&gt;  2 DE               1 SNAIVE 2019-04-11 01:00:00</span></span>
-<span><span class="co">#&gt;  3 DE               1 SNAIVE 2019-04-11 02:00:00</span></span>
-<span><span class="co">#&gt;  4 DE               1 SNAIVE 2019-04-11 03:00:00</span></span>
-<span><span class="co">#&gt;  5 DE               1 SNAIVE 2019-04-11 04:00:00</span></span>
-<span><span class="co">#&gt;  6 DE               1 SNAIVE 2019-04-11 05:00:00</span></span>
-<span><span class="co">#&gt;  7 DE               1 SNAIVE 2019-04-11 06:00:00</span></span>
-<span><span class="co">#&gt;  8 DE               1 SNAIVE 2019-04-11 07:00:00</span></span>
-<span><span class="co">#&gt;  9 DE               1 SNAIVE 2019-04-11 08:00:00</span></span>
-<span><span class="co">#&gt; 10 DE               1 SNAIVE 2019-04-11 09:00:00</span></span>
-<span><span class="co">#&gt; # ℹ 19,190 more rows</span></span>
-<span><span class="co">#&gt; # ℹ 2 more variables: value &lt;dist&gt;, .mean &lt;dbl&gt;</span></span>
-<span></span>
-<span><span class="co"># Convert fable_frame (fable) to future_frame (tibble)</span></span>
-<span><span class="va">future_frame</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/make_future.html">make_future</a></span><span class="op">(</span></span>
-<span>  fable <span class="op">=</span> <span class="va">fable_frame</span>,</span>
-<span>  context <span class="op">=</span> <span class="va">context</span></span>
-<span>  <span class="op">)</span></span>
-<span></span>
-<span><span class="va">future_frame</span></span>
-<span><span class="co">#&gt; # A tibble: 19,200 × 6</span></span>
-<span><span class="co">#&gt;    time                bidding_zone model  split horizon point</span></span>
-<span><span class="co">#&gt;    &lt;dttm&gt;              &lt;chr&gt;        &lt;chr&gt;  &lt;int&gt;   &lt;int&gt; &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1 2019-04-11 00:00:00 DE           SNAIVE     1       1  33  </span></span>
-<span><span class="co">#&gt;  2 2019-04-11 01:00:00 DE           SNAIVE     1       2  32.6</span></span>
-<span><span class="co">#&gt;  3 2019-04-11 02:00:00 DE           SNAIVE     1       3  34.1</span></span>
-<span><span class="co">#&gt;  4 2019-04-11 03:00:00 DE           SNAIVE     1       4  36.9</span></span>
-<span><span class="co">#&gt;  5 2019-04-11 04:00:00 DE           SNAIVE     1       5  44.7</span></span>
-<span><span class="co">#&gt;  6 2019-04-11 05:00:00 DE           SNAIVE     1       6  53.6</span></span>
-<span><span class="co">#&gt;  7 2019-04-11 06:00:00 DE           SNAIVE     1       7  59.9</span></span>
-<span><span class="co">#&gt;  8 2019-04-11 07:00:00 DE           SNAIVE     1       8  46.9</span></span>
-<span><span class="co">#&gt;  9 2019-04-11 08:00:00 DE           SNAIVE     1       9  48  </span></span>
-<span><span class="co">#&gt; 10 2019-04-11 09:00:00 DE           SNAIVE     1      10  47  </span></span>
-<span><span class="co">#&gt; # ℹ 19,190 more rows</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="evaluation-of-forecast-accuracy">Evaluation of forecast accuracy<a class="anchor" aria-label="anchor" href="#evaluation-of-forecast-accuracy"></a>
-</h2>
-<p>To evaluate the forecast accuracy, the function <code><a href="reference/make_accuracy.html">make_accuracy()</a></code> is used. You can define whether to evaluate the accuracy by <code>horizon</code> or by <code>split</code>. Several accuracy metrics are available:</p>
-<ul>
-<li>
-<code>ME</code>: mean error</li>
-<li>
-<code>MAE</code>: mean absolute error</li>
-<li>
-<code>MSE</code>: mean squared error</li>
-<li>
-<code>RMSE</code>: root mean squared error</li>
-<li>
-<code>MAPE</code>: mean absolute percentage error</li>
-<li>
-<code>sMAPE</code>: scaled mean absolute percentage error</li>
-<li>
-<code>MPE</code>: mean percentage error</li>
-<li>
-<code>rMAE</code>: relative mean absolute error (relative to some user-defined benchmark method)</li>
-</ul>
-<div class="section level3">
-<h3 id="forecast-accuracy-by-forecast-horizon">Forecast accuracy by forecast horizon<a class="anchor" aria-label="anchor" href="#forecast-accuracy-by-forecast-horizon"></a>
-</h3>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="co"># Estimate accuracy metrics by forecast horizon</span></span>
-<span><span class="va">accuracy_horizon</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/make_accuracy.html">make_accuracy</a></span><span class="op">(</span></span>
-<span>  future_frame <span class="op">=</span> <span class="va">future_frame</span>,</span>
-<span>  main_frame <span class="op">=</span> <span class="va">main_frame</span>,</span>
-<span>  context <span class="op">=</span> <span class="va">context</span>,</span>
-<span>  dimension <span class="op">=</span> <span class="st">"horizon"</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">accuracy_horizon</span></span>
-<span><span class="co">#&gt; # A tibble: 2,688 × 6</span></span>
-<span><span class="co">#&gt;    bidding_zone model   dimension     n metric value</span></span>
-<span><span class="co">#&gt;    &lt;chr&gt;        &lt;chr&gt;   &lt;chr&gt;     &lt;int&gt; &lt;chr&gt;  &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1 DE           SMEDIAN horizon       1 MAE     4.84</span></span>
-<span><span class="co">#&gt;  2 DE           SMEDIAN horizon       2 MAE     5.05</span></span>
-<span><span class="co">#&gt;  3 DE           SMEDIAN horizon       3 MAE     4.85</span></span>
-<span><span class="co">#&gt;  4 DE           SMEDIAN horizon       4 MAE     4.50</span></span>
-<span><span class="co">#&gt;  5 DE           SMEDIAN horizon       5 MAE     6.73</span></span>
-<span><span class="co">#&gt;  6 DE           SMEDIAN horizon       6 MAE     6.66</span></span>
-<span><span class="co">#&gt;  7 DE           SMEDIAN horizon       7 MAE     6.40</span></span>
-<span><span class="co">#&gt;  8 DE           SMEDIAN horizon       8 MAE     6.73</span></span>
-<span><span class="co">#&gt;  9 DE           SMEDIAN horizon       9 MAE     7.38</span></span>
-<span><span class="co">#&gt; 10 DE           SMEDIAN horizon      10 MAE     9.06</span></span>
-<span><span class="co">#&gt; # ℹ 2,678 more rows</span></span>
-<span></span>
-<span><span class="co"># Visualize results</span></span>
-<span><span class="va">accuracy_horizon</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">metric</span> <span class="op">==</span> <span class="st">"MAE"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="reference/plot_line.html">plot_line</a></span><span class="op">(</span></span>
-<span>    x <span class="op">=</span> <span class="va">n</span>,</span>
-<span>    y <span class="op">=</span> <span class="va">value</span>,</span>
-<span>    facet_var <span class="op">=</span> <span class="va">bidding_zone</span>,</span>
-<span>    facet_nrow <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>    color <span class="op">=</span> <span class="va">model</span>,</span>
-<span>    title <span class="op">=</span> <span class="st">"Evaluation of forecast accuracy by forecast horizon"</span>,</span>
-<span>    subtitle <span class="op">=</span> <span class="st">"Mean absolute error (MAE)"</span>,</span>
-<span>    xlab <span class="op">=</span> <span class="st">"Forecast horizon (n-step-ahead)"</span>,</span>
-<span>    caption <span class="op">=</span> <span class="st">"Data: ENTSO-E Transparency, own calculation"</span></span>
-<span>    <span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-accuracy_horizon-1.svg" alt="Plot accuracy by horizon" width="100%"></p>
-</div>
-<div class="section level3">
-<h3 id="forecast-accuracy-by-split">Forecast accuracy by split<a class="anchor" aria-label="anchor" href="#forecast-accuracy-by-split"></a>
-</h3>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="co"># Estimate accuracy metrics by forecast horizon</span></span>
-<span><span class="va">accuracy_split</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/make_accuracy.html">make_accuracy</a></span><span class="op">(</span></span>
-<span>  future_frame <span class="op">=</span> <span class="va">future_frame</span>,</span>
-<span>  main_frame <span class="op">=</span> <span class="va">main_frame</span>,</span>
-<span>  context <span class="op">=</span> <span class="va">context</span>,</span>
-<span>  dimension <span class="op">=</span> <span class="st">"split"</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">accuracy_split</span></span>
-<span><span class="co">#&gt; # A tibble: 5,600 × 6</span></span>
-<span><span class="co">#&gt;    bidding_zone model   dimension     n metric value</span></span>
-<span><span class="co">#&gt;    &lt;chr&gt;        &lt;chr&gt;   &lt;chr&gt;     &lt;int&gt; &lt;chr&gt;  &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1 DE           SMEDIAN split         1 MAE     2.80</span></span>
-<span><span class="co">#&gt;  2 DE           SMEDIAN split         2 MAE     3.74</span></span>
-<span><span class="co">#&gt;  3 DE           SMEDIAN split         3 MAE     2.70</span></span>
-<span><span class="co">#&gt;  4 DE           SMEDIAN split         4 MAE     2.53</span></span>
-<span><span class="co">#&gt;  5 DE           SMEDIAN split         5 MAE     4.54</span></span>
-<span><span class="co">#&gt;  6 DE           SMEDIAN split         6 MAE     3.78</span></span>
-<span><span class="co">#&gt;  7 DE           SMEDIAN split         7 MAE     4.38</span></span>
-<span><span class="co">#&gt;  8 DE           SMEDIAN split         8 MAE     4.87</span></span>
-<span><span class="co">#&gt;  9 DE           SMEDIAN split         9 MAE    11.5 </span></span>
-<span><span class="co">#&gt; 10 DE           SMEDIAN split        10 MAE     5.02</span></span>
-<span><span class="co">#&gt; # ℹ 5,590 more rows</span></span>
-<span></span>
-<span><span class="co"># Visualize results</span></span>
-<span><span class="va">accuracy_split</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">metric</span> <span class="op">==</span> <span class="st">"MAE"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="reference/plot_line.html">plot_line</a></span><span class="op">(</span></span>
-<span>    x <span class="op">=</span> <span class="va">n</span>,</span>
-<span>    y <span class="op">=</span> <span class="va">value</span>,</span>
-<span>    facet_var <span class="op">=</span> <span class="va">bidding_zone</span>,</span>
-<span>    facet_nrow <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>    color <span class="op">=</span> <span class="va">model</span>,</span>
-<span>    title <span class="op">=</span> <span class="st">"Evaluation of forecast accuracy by split"</span>,</span>
-<span>    subtitle <span class="op">=</span> <span class="st">"Mean absolute error (MAE)"</span>,</span>
-<span>    xlab <span class="op">=</span> <span class="st">"Split"</span>,</span>
-<span>    caption <span class="op">=</span> <span class="st">"Data: ENTSO-E Transparency, own calculation"</span></span>
-<span>    <span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-accuracy_split-1.svg" alt="Plot accuracy by split" width="100%"></p>
-</div>
 </div>
 <div class="section level2">
 <h2 id="links">Links<a class="anchor" aria-label="anchor" href="#links"></a>
 </h2>
 <ul>
 <li><a href="https://ahaeusser.github.io/tscv/">Website</a></li>
+<li><a href="https://github.com/ahaeusser/tscv" class="external-link">GitHub</a></li>
 </ul>
 </div>
 </div>

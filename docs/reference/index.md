@@ -75,40 +75,6 @@ The DSHW model and its supported methods
 - [`train_dshw()`](https://ahaeusser.github.io/tscv/reference/train_dshw.md)
   : Double Seasonal Holt-Winters model
 
-### ELM
-
-The ELM model and its supported methods
-
-- [`ELM()`](https://ahaeusser.github.io/tscv/reference/ELM.md) : Extreme
-  Learning Machine (ELM)
-- [`forecast(`*`<ELM>`*`)`](https://ahaeusser.github.io/tscv/reference/forecast.ELM.md)
-  : Forecast a trained ELM model
-- [`fitted(`*`<ELM>`*`)`](https://ahaeusser.github.io/tscv/reference/fitted.ELM.md)
-  : Extract fitted values from a trained ELM model
-- [`residuals(`*`<ELM>`*`)`](https://ahaeusser.github.io/tscv/reference/residuals.ELM.md)
-  : Extract residuals from a trained ELM model
-- [`model_sum(`*`<ELM>`*`)`](https://ahaeusser.github.io/tscv/reference/model_sum.ELM.md)
-  : Provide a succinct summary of a trained ELM model
-- [`train_elm()`](https://ahaeusser.github.io/tscv/reference/train_elm.md)
-  : Extreme Learning Machine (ELM)
-
-### MLP
-
-The MLP model and its supported methods
-
-- [`MLP()`](https://ahaeusser.github.io/tscv/reference/MLP.md) :
-  Automatic training of MLPs
-- [`forecast(`*`<MLP>`*`)`](https://ahaeusser.github.io/tscv/reference/forecast.MLP.md)
-  : Forecast a trained MLP model
-- [`fitted(`*`<MLP>`*`)`](https://ahaeusser.github.io/tscv/reference/fitted.MLP.md)
-  : Extract fitted values from a trained MLP model
-- [`residuals(`*`<MLP>`*`)`](https://ahaeusser.github.io/tscv/reference/residuals.MLP.md)
-  : Extract residuals from a trained MLP model
-- [`model_sum(`*`<MLP>`*`)`](https://ahaeusser.github.io/tscv/reference/model_sum.MLP.md)
-  : Provide a succinct summary of a trained MLP model
-- [`train_mlp()`](https://ahaeusser.github.io/tscv/reference/train_mlp.md)
-  : Multilayer Perceptron (MLP)
-
 ### SMEAN
 
 The SMEAN model and its supported methods
@@ -193,23 +159,6 @@ The TBATS model and its supported methods
   : Provide a succinct summary of a trained TBATS model
 - [`train_tbats()`](https://ahaeusser.github.io/tscv/reference/train_tbats.md)
   : TBATS model
-
-### EXPERT
-
-The EXPERT model and its supported methods
-
-- [`EXPERT()`](https://ahaeusser.github.io/tscv/reference/EXPERT.md) :
-  Automatic train a EXPERT model
-- [`forecast(`*`<EXPERT>`*`)`](https://ahaeusser.github.io/tscv/reference/forecast.EXPERT.md)
-  : Forecast a trained EXPERT model
-- [`fitted(`*`<EXPERT>`*`)`](https://ahaeusser.github.io/tscv/reference/fitted.EXPERT.md)
-  : Extract fitted values from a trained EXPERT model
-- [`residuals(`*`<EXPERT>`*`)`](https://ahaeusser.github.io/tscv/reference/residuals.EXPERT.md)
-  : Extract residuals from a trained EXPERT model
-- [`model_sum(`*`<EXPERT>`*`)`](https://ahaeusser.github.io/tscv/reference/model_sum.EXPERT.md)
-  : Provide a succinct summary of a trained EXPERT model
-- [`train_expert()`](https://ahaeusser.github.io/tscv/reference/train_expert.md)
-  : EXPERT model
 
 ## Miscellaneous
 

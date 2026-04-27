@@ -17,7 +17,7 @@ estimate_pacf(.data, context, lag_max = 24, level = 0.9, ...)
 
 - context:
 
-  A named `list` with the identifiers for `seried_id`, `value_id` and
+  A named `list` with the identifiers for `series_id`, `value_id` and
   `index_id`.
 
 - lag_max:
@@ -36,4 +36,4 @@ estimate_pacf(.data, context, lag_max = 24, level = 0.9, ...)
 ## Value
 
 data A `tibble` with a column for the unique identifier of the time
-series and the columns type, lag and value.
+series and the columns type, lag, value and sign.

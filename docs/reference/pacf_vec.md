@@ -1,6 +1,6 @@
 # Estimate the sample partial autocorrelation of a numeric vector
 
-`acf_vec` estimates the sample partial autocorrelation function of a
+`pacf_vec` estimates the sample partial autocorrelation function of a
 numeric vector.
 
 ## Usage
@@ -22,7 +22,7 @@ pacf_vec(x, lag_max = 24, ...)
 - ...:
 
   Further arguments passed to
-  [`stats::acf()`](https://rdrr.io/r/stats/acf.html).
+  [`stats::pacf()`](https://rdrr.io/r/stats/acf.html).
 
 ## Value
 

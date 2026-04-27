@@ -25,8 +25,8 @@ theme_tscv(
 
 - base_line_size:
 
-  Base size for "line" elements.
+  Base linewidth for "line" elements.
 
 - base_rect_size:
 
-  Base size for "rect" elements.
+  Base linewidth for "rect" elements.

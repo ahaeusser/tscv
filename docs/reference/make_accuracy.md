@@ -14,7 +14,7 @@ test-splits. By default, the following accuracy metrics are provided:
 
 - `MAPE`: mean absolute percentage error
 
-- `sMAPE`: scaled mean absolute percentage error
+- `sMAPE`: symmetric mean absolute percentage error
 
 - `MPE`: mean percentage error
 
