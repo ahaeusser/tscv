@@ -8,7 +8,6 @@
 #' @importFrom rlang is_empty quo_is_null as_name abort .data ":="
 #' @importFrom magrittr "%>%"
 #' @importFrom distributional dist_normal
-#' @importFrom nnfor elm mlp
 #' @importFrom forecast msts dshw tbats na.interp
 #' @importFrom scales pretty_breaks
 #' @importFrom stats approx quantile qnorm median mad sd as.ts acf pacf time density lm as.formula

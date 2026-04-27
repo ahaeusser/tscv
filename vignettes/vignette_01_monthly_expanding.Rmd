@@ -1,0 +1,342 @@
+---
+title: "Expanding window approach"
+author: "Alexander Häußer"
+date: "`r format(Sys.Date(), '%B %Y')`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Expanding window approach}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  dev = "png",
+  fig.height = 5,
+  fig.width = 7
+)
+```
+
+The package `tscv` provides helper functions for time series analysis, forecasting and time series cross-validation. It is mainly designed to work with the tidy forecasting ecosystem, especially the packages `tsibble`, `fable`, `fabletools` and `feasts`.
+
+In this vignette, we demonstrate an **expanding window approach** for time series cross-validation using monthly time series from the M4 forecasting competition.
+
+## Installation
+
+You can install the development version from [GitHub](https://github.com/) with:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("ahaeusser/tscv")
+```
+
+## Example
+
+```{r packages, message = FALSE, warning = FALSE}
+# Load relevant packages
+library(tscv)
+library(tidyverse)
+library(tsibble)
+library(fable)
+library(feasts)
+```
+
+```{r abbreviations, echo=FALSE, warning=FALSE, message=FALSE, results='hide'}
+Sys.setlocale("LC_TIME", "C")
+```
+
+## Data preparation
+
+The data set `M4_monthly_data` is a `tibble` with selected monthly time series from the M4 forecasting competition. It contains the following columns:
+
+* `index`: monthly time index
+* `series`: time series ID from the M4 forecasting competition
+* `category`: category from the M4 forecasting competition
+* `value`: measurement variable
+
+In this vignette, we use two monthly time series, `M23100` and `M14395`, to demonstrate time series cross-validation with an expanding window approach and an 18-month-ahead forecast horizon.
+
+The function `plot_line()` is used to visualize the time series. The function `summarise_data()` explores the structure of the data, including the start date, end date, number of observations, number of missing values and number of zero values. The function `summarise_stats()` calculates descriptive statistics for each time series.
+
+```{r clean_data, fig.alt = "Plot raw M4 monthly data"}
+series_id = "series"
+value_id = "value"
+index_id = "index"
+
+context <- list(
+  series_id = series_id,
+  value_id = value_id,
+  index_id = index_id
+)
+
+# Prepare data set
+main_frame <- M4_monthly_data |>
+  filter(series %in% c("M23100", "M14395"))
+
+main_frame
+
+main_frame |>
+  plot_line(
+    x = index,
+    y = value,
+    facet_var = series,
+    title = "M4 Monthly Time Series",
+    subtitle = "Series M23100 and M14395",
+    xlab = "Time",
+    ylab = "Value",
+    caption = "Data: M4 Forecasting Competition"
+  )
+
+summarise_data(
+  .data = main_frame,
+  context = context
+)
+
+summarise_stats(
+  .data = main_frame,
+  context = context
+)
+```
+
+## Split data into training and testing
+
+To prepare the data for time series cross-validation, we use the function `make_split()`. This function partitions the data into several training and testing slices.
+
+The argument `mode` controls the type of rolling-origin resampling:
+
+* `mode = "stretch"` creates an expanding window.
+* `mode = "slide"` creates a fixed window.
+
+In an expanding window approach, the training sample grows over time. The first split starts with an initial training window of fixed length. In later splits, additional observations are added to the training sample, while the forecast horizon remains unchanged.
+
+In this vignette, we use:
+
+* `value = 120`: the first training window contains 120 monthly observations, corresponding to 10 years of data
+* `n_ahead = 18`: each test set contains 18 observations, corresponding to an 18-month-ahead forecast horizon
+* `n_skip = 17`: after each split, the rolling origin is advanced by 18 months, which creates non-overlapping test windows
+* `mode = "stretch"`: the training window expands over time
+
+```{r split_data}
+# Setup for time series cross validation
+type = "first"
+value = 120       # initial training window (= 10 years of monthly observations)
+n_ahead = 18      # testing window (= forecast horizon, 18 months ahead)
+n_skip = 17       # skip 17 observations to obtain non-overlapping test windows
+n_lag = 0         # no lag
+mode = "stretch"  # expanding window approach
+exceed = FALSE    # only pseudo out-of-sample forecast
+
+split_frame <- make_split(
+  main_frame = main_frame,
+  context = context,
+  type = type,
+  value = value,
+  n_ahead = n_ahead,
+  n_skip = n_skip,
+  n_lag = n_lag,
+  mode = mode,
+  exceed = exceed
+)
+
+split_frame
+```
+
+The resulting object `split_frame` contains one row per time series and split. The columns `train` and `test` are list-columns containing the row positions used for the training and test samples.
+
+The output above shows that the first split uses 120 observations for training and 18 observations for testing. In the second split, the training window has expanded to 138 observations, while the test window remains fixed at 18 observations. The third split for series `M14395` uses 156 observations for training.
+
+The number of splits can differ across time series because the selected M4 series do not necessarily have the same number of observations. In the example above, `M14395` allows three valid 18-month test windows, while `M23100` allows two.
+
+## Training and forecasting
+
+The training and test samples are defined in `split_frame`. We now use `slice_train()` and `slice_test()` to extract the corresponding observations from `main_frame`.
+
+Since the forecasting models are estimated with functions from `fable` and `fabletools`, the training data is converted from a `tibble` to a `tsibble`.
+
+For the monthly M4 data, we estimate three forecasting models:
+
+* `SNAIVE`: seasonal naive model with yearly seasonality
+* `ETS`: exponential smoothing state space model
+* `ARIMA`: automatic ARIMA model
+
+These models are estimated separately for each time series and each split.
+
+```{r train_models}
+# Slice training data from main_frame according to split_frame
+train_frame <- slice_train(
+  main_frame = main_frame,
+  split_frame = split_frame,
+  context = context
+)
+
+train_frame
+
+# Slice test data from main_frame according to split_frame
+test_frame <- slice_test(
+  main_frame = main_frame,
+  split_frame = split_frame,
+  context = context
+)
+
+test_frame
+
+# Convert tibble to tsibble
+train_frame <- train_frame |>
+  as_tsibble(
+    index = index,
+    key = c(series, split)
+  )
+
+train_frame
+
+# Model training via fabletools::model()
+model_frame <- train_frame |>
+  model(
+    "SNAIVE" = SNAIVE(value ~ lag("year")),
+    "ETS" = ETS(value),
+    "ARIMA" = ARIMA(value)
+  )
+
+model_frame
+
+# Forecasting via fabletools::forecast()
+fable_frame <- model_frame |>
+  forecast(h = n_ahead)
+
+fable_frame
+
+# Convert fable_frame (fable) to future_frame (tibble)
+future_frame <- make_future(
+  fable = fable_frame,
+  context = context
+)
+
+future_frame
+```
+
+The object `model_frame` is a `mable`, that is, a model table. Each row corresponds to one combination of `series` and `split`, while each model is stored in a separate column.
+
+The model specification may change across splits because the models are re-estimated for each training sample. This is especially visible for the automatic `ETS()` and `ARIMA()` models. For example, the selected ARIMA specification for `M14395` differs between split 1, split 2 and split 3. This is expected, since each split uses a different training sample. The seasonal period `[12]` in the ARIMA output indicates yearly seasonality in monthly data.
+
+## Visualize rolling forecasts
+
+To visualize the rolling forecasts, we combine the observed values and the forecasts into one data set.
+
+The training and test observations are labelled as `ACTUAL`, while the forecasts keep their model names. The observed values are assigned `horizon = 0`, whereas the forecast values have horizons from 1 to 18.
+
+```{r plot_forecasts, fig.alt = "Plot forecasts"}
+# Combine actual values from train and test data
+actual_frame <- bind_rows(
+  train_frame,
+  test_frame
+)
+
+# Combine actual values and forecasts
+plot_frame <- bind_rows(
+  actual_frame |>
+    as_tibble() |>
+    transmute(
+      index,
+      series,
+      model = "ACTUAL",
+      split,
+      horizon = 0L,
+      point = value
+    ),
+  future_frame
+)
+
+plot_frame
+```
+
+The object `plot_frame` is useful for plotting actual observations and forecasts together. Since the data contains several rolling-origin splits, we facet the plots by `split`.
+
+```{r plot_forecasts_m23100, fig.alt = "Rolling forecasts for M23100"}
+plot_frame |>
+  filter(series == "M23100") |>
+  plot_line(
+    x = index,
+    y = point,
+    color = model,
+    facet_var = split,
+    title = "Rolling forecasts for M23100",
+    subtitle = "Expanding window approach with 18-month forecast horizon",
+    xlab = "Time",
+    ylab = "Value",
+    caption = "Data: M4 Forecasting Competition"
+  )
+```
+
+```{r plot_forecasts_m14395, fig.alt = "Rolling forecasts for M14395"}
+plot_frame |>
+  filter(series == "M14395") |>
+  plot_line(
+    x = index,
+    y = point,
+    color = model,
+    facet_var = split,
+    title = "Rolling forecasts for M14395",
+    subtitle = "Expanding window approach with 18-month forecast horizon",
+    xlab = "Time",
+    ylab = "Value",
+    caption = "Data: M4 Forecasting Competition"
+  )
+```
+
+The plots show how the forecasts evolve across different rolling-origin splits. In each facet, the training window ends at a different point in time. The models are then estimated using only the available training data for that split and produce forecasts for the following 18 months.
+
+Because we use an expanding window approach, later splits are based on larger training samples. This can lead to changes in the estimated model structure and in the resulting forecasts.
+
+## Forecast accuracy
+
+The rolling forecasts can be evaluated against the test observations using `make_accuracy()`. Accuracy can be summarized either by forecast horizon or by split.
+
+In this vignette, we focus on the symmetric mean absolute percentage error (`sMAPE`). The `sMAPE` is scale-independent and is therefore useful for comparing forecast accuracy across different time series.
+
+### Forecast accuracy by forecast horizon
+
+Accuracy by forecast horizon shows how forecast errors change as the forecast horizon increases from 1 to 18 months ahead.
+
+```{r accuracy_horizon}
+accuracy_horizon <- make_accuracy(
+  future_frame = future_frame,
+  main_frame = main_frame,
+  context = context,
+  dimension = "horizon"
+)
+
+accuracy_horizon |>
+  filter(metric == "sMAPE")
+```
+
+### Forecast accuracy by split
+
+Accuracy by split shows how forecast errors vary across rolling-origin splits.
+
+```{r accuracy_split}
+accuracy_split <- make_accuracy(
+  future_frame = future_frame,
+  main_frame = main_frame,
+  context = context,
+  dimension = "split"
+)
+
+accuracy_split |>
+  filter(metric == "sMAPE")
+```
+
+The two accuracy views answer different questions. Accuracy by horizon is useful for understanding whether forecast performance changes with the forecast horizon. Accuracy by split is useful for identifying whether some forecast origins are more difficult than others.
+
+## Summary
+
+This vignette demonstrated how to use `tscv` for time series cross-validation with an expanding window approach. The workflow consists of five main steps:
+
+1. Prepare the data and define the column context.
+2. Create rolling-origin splits using `make_split()`.
+3. Extract training and test samples using `slice_train()` and `slice_test()`.
+4. Estimate forecasting models and create forecasts.
+5. Visualize and evaluate the rolling forecasts.
+
+The expanding window approach is useful when the training sample should grow over time, which is often the case in real-world forecasting applications where all available historical information is used for model estimation.

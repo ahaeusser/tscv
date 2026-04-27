@@ -1,0 +1,334 @@
+---
+title: "Fixed window approach"
+author: "Alexander Häußer"
+date: "`r format(Sys.Date(), '%B %Y')`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Fixed window approach}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  dev = "png",
+  # fig.path = "figures/tscv-",
+  fig.height = 5,
+  fig.width = 7
+)
+```
+
+The package `tscv` provides helper functions for time series analysis, forecasting and time series cross-validation. It is mainly designed to work with the tidy forecasting ecosystem, especially the packages `tsibble`, `fable`, `fabletools` and `feasts`.
+
+In this vignette, we demonstrate a **fixed window approach** for time series cross-validation using hourly day-ahead electricity spot prices.
+
+## Installation
+
+You can install the development version from [GitHub](https://github.com/) with:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("ahaeusser/tscv")
+```
+
+## Example
+
+```{r packages, message = FALSE, warning = FALSE}
+# Load relevant packages
+library(tscv)
+library(tidyverse)
+library(tsibble)
+library(fable)
+library(feasts)
+```
+
+```{r abbreviations, echo=FALSE, warning=FALSE, message=FALSE, results='hide'}
+Sys.setlocale("LC_TIME", "C")
+```
+
+## Data preparation
+
+The data set `elec_price` is a `tibble` with day-ahead electricity spot prices in [EUR/MWh] from the ENTSO-E Transparency Platform. The data set contains hourly time series data from 2019-01-01 to 2020-12-31 for eight European bidding zones:
+
+* `DE`: Germany, including Luxembourg
+* `DK`: Denmark
+* `ES`: Spain
+* `FI`: Finland
+* `FR`: France
+* `NL`: Netherlands
+* `NO1`: Norway 1, Oslo
+* `SE1`: Sweden 1, Lulea
+
+In this vignette, we use four bidding zones to demonstrate the functionality of the package: Germany, France, Norway 1 and Sweden 1.
+
+The function `plot_line()` is used to visualize the time series. The function `summarise_data()` explores the structure of the data, including the start date, end date, number of observations, number of missing values and number of zero values. The function `summarise_stats()` calculates descriptive statistics for each time series.
+
+```{r clean_data, fig.alt = "Plot raw data"}
+
+series_id = "bidding_zone"
+value_id = "value"
+index_id = "time"
+
+context <- list(
+  series_id = series_id,
+  value_id = value_id,
+  index_id = index_id
+)
+
+# Prepare data set
+main_frame <- elec_price %>%
+  filter(bidding_zone %in% c("DE", "FR", "NO1", "SE1"))
+
+main_frame
+
+main_frame %>%
+  plot_line(
+    x = time,
+    y = value,
+    color = bidding_zone,
+    facet_var = bidding_zone,
+    title = "Day-ahead Electricity Spot Price",
+    subtitle = "2019-01-01 to 2020-12-31",
+    xlab = "Time",
+    ylab = "[EUR/MWh]",
+    caption = "Data: ENTSO-E Transparency"
+    )
+
+summarise_data(
+  .data = main_frame,
+  context = context
+)
+
+summarise_stats(
+  .data = main_frame,
+  context = context
+)
+
+```
+
+## Split data into training and testing
+
+To prepare the data for time series cross-validation, we use the function `make_split()`. This function partitions the data into several training and testing slices.
+
+The argument `mode` controls the type of rolling-origin resampling:
+
+* `mode = "stretch"` creates an expanding window.
+* `mode = "slide"` creates a fixed window.
+
+In a fixed window approach, the size of the training sample remains constant over time. After each split, the training window moves forward by a fixed number of observations. Older observations drop out of the training sample and newer observations are added. This is useful when the most recent observations are expected to be more relevant than older observations, or when the data-generating process may change over time.
+
+In this vignette, we use:
+
+* `value = 2400`: each training window contains 2,400 hourly observations
+* `n_ahead = 24`: each test set contains 24 observations, corresponding to a 24-hour-ahead forecast horizon
+* `n_skip = 23`: after each split, the rolling origin is advanced by 24 hours, which creates non-overlapping test windows
+* `mode = "slide"`: the training window slides forward while keeping a fixed size
+
+The argument `exceed = FALSE` ensures that only pseudo out-of-sample forecasts are generated. In other words, test windows are only created if the corresponding observations are available in the data.
+
+```{r split_data}
+
+# Setup for time series cross validation
+type = "first"
+value = 2400      # size for training window
+n_ahead = 24      # size for testing window (= forecast horizon)
+n_skip = 23       # skip 23 observations
+n_lag = 0         # no lag
+mode = "slide"    # fixed window approach
+exceed = FALSE    # only pseudo out-of-sample forecast
+
+split_frame <- make_split(
+  main_frame = main_frame,
+  context = context,
+  type = type,
+  value = value,
+  n_ahead = n_ahead,
+  n_skip = n_skip,
+  n_lag = n_lag,
+  mode = mode,
+  exceed = exceed
+)
+
+# For illustration, only the first 50 splits are used
+split_frame <- split_frame %>%
+  filter(split %in% c(1:50))
+
+split_frame
+
+```
+
+The resulting object `split_frame` contains one row per time series and split. The columns `train` and `test` are list-columns containing the row positions used for the training and test samples.
+
+Because `mode = "slide"` is used, each training set has the same length of 2,400 observations. The first split uses the first 2,400 observations for training and the following 24 observations for testing. The next split moves the training window forward by 24 hours. The training sample still contains 2,400 observations, but the oldest 24 observations are dropped and the next 24 observations are added.
+
+Only the first 50 splits are used in this vignette to keep the example computationally manageable.
+
+## Training and forecasting
+
+The training and test splits are prepared within `split_frame`, and we are now ready for forecasting. The function `slice_train()` extracts the training observations from `main_frame` according to the row positions stored in `split_frame`.
+
+Since the forecasting models are estimated with functions from `fable` and `fabletools`, the training data is converted from a `tibble` to a `tsibble`. The key consists of the bidding zone and the split number, so each model is estimated separately for each bidding zone and each rolling-origin split.
+
+Due to the sample size and computation time, this vignette uses simple benchmark methods:
+
+* `SNAIVE`: seasonal naive model with weekly seasonality
+* `STL-NAIVE`: STL decomposition model combined with a naive forecast of the seasonally adjusted series
+* `SNAIVE2`: variation of the seasonal naive approach; Mondays, Saturdays and Sundays are treated with a weekly lag, while Tuesdays, Wednesdays, Thursdays and Fridays are treated with a daily lag
+* `SMEDIAN`: seasonal median model
+
+The functions `SNAIVE2()` and `SMEDIAN()` are extensions to the `fable` package provided by `tscv`.
+
+```{r train_models}
+
+# Slice training data from main_frame according to split_frame
+train_frame <- slice_train(
+  main_frame = main_frame,
+  split_frame = split_frame,
+  context = context
+  )
+
+train_frame
+
+# Convert tibble to tsibble
+train_frame <- train_frame %>%
+  as_tsibble(
+    index = time,
+    key = c(bidding_zone, split)
+    )
+
+train_frame
+
+# Model training via fabletools::model()
+model_frame <- train_frame %>%
+  model(
+    "SNAIVE" = SNAIVE(value ~ lag("week")),
+    "STL-NAIVE" = decomposition_model(STL(value), NAIVE(season_adjust)),
+    "SNAIVE2" = SNAIVE2(value),
+    "SMEDIAN" = SMEDIAN(value ~ lag("week"))
+    )
+
+model_frame
+
+# Forecasting via fabletools::forecast()
+fable_frame <- model_frame %>%
+  forecast(h = n_ahead)
+
+fable_frame
+
+# Convert fable_frame (fable) to future_frame (tibble)
+future_frame <- make_future(
+  fable = fable_frame,
+  context = context
+  )
+
+future_frame
+
+
+```
+
+The object `model_frame` is a model table, or `mable`. Each row corresponds to one combination of bidding zone and split. Each model is stored in a separate column.
+
+The forecasts are created with `forecast(h = n_ahead)`, which produces 24 hourly forecasts for each model, bidding zone and split. The function `make_future()` converts the resulting `fable` object into a regular `tibble` that can be used by the evaluation functions in `tscv`.
+
+## Evaluation of forecast accuracy
+
+To evaluate forecast accuracy, we use the function `make_accuracy()`. This function compares the forecasts in `future_frame` with the observed values in `main_frame`.
+
+Accuracy can be evaluated along different dimensions:
+
+* `dimension = "horizon"` summarizes forecast errors by forecast horizon. This shows how forecast accuracy changes from 1-step-ahead to 24-step-ahead forecasts.
+* `dimension = "split"` summarizes forecast errors by rolling-origin split. This shows whether some forecast origins are more difficult than others.
+
+Several accuracy metrics are available:
+
+* `ME`: mean error
+* `MAE`: mean absolute error
+* `MSE`: mean squared error
+* `RMSE`: root mean squared error
+* `MAPE`: mean absolute percentage error
+* `sMAPE`: symmetric mean absolute percentage error
+* `MPE`: mean percentage error
+* `rMAE`: relative mean absolute error, relative to a user-defined benchmark method
+
+### Forecast accuracy by forecast horizon
+
+Accuracy by forecast horizon is useful for understanding how forecast performance changes as the forecast horizon increases. For example, short-term electricity price forecasts may be more accurate for the next few hours than for later hours of the following day.
+
+```{r accuracy_horizon, fig.alt = "Plot accuracy by horizon"}
+
+# Estimate accuracy metrics by forecast horizon
+accuracy_horizon <- make_accuracy(
+  future_frame = future_frame,
+  main_frame = main_frame,
+  context = context,
+  dimension = "horizon"
+)
+
+accuracy_horizon
+
+# Visualize results
+accuracy_horizon %>%
+  filter(metric == "MAE") %>%
+  plot_line(
+    x = n,
+    y = value,
+    facet_var = bidding_zone,
+    facet_nrow = 1,
+    color = model,
+    title = "Evaluation of forecast accuracy by forecast horizon",
+    subtitle = "Mean absolute error (MAE)",
+    xlab = "Forecast horizon (n-step-ahead)",
+    caption = "Data: ENTSO-E Transparency, own calculation"
+    )
+
+```
+
+The resulting plot compares the mean absolute error across forecast horizons for each bidding zone and model. Increasing values indicate that forecasts become less accurate further into the forecast horizon. Differences between models show which benchmark performs best at different horizons.
+
+### Forecast accuracy by split
+
+Accuracy by split is useful for identifying forecast origins where all models perform relatively well or poorly. This can reveal periods with unusual price behavior, such as strong volatility, negative prices or sudden price spikes.
+
+```{r accuracy_split, fig.alt = "Plot accuracy by split"}
+
+# Estimate accuracy metrics by forecast horizon
+accuracy_split <- make_accuracy(
+  future_frame = future_frame,
+  main_frame = main_frame,
+  context = context,
+  dimension = "split"
+)
+
+accuracy_split
+
+# Visualize results
+accuracy_split %>%
+  filter(metric == "MAE") %>%
+  plot_line(
+    x = n,
+    y = value,
+    facet_var = bidding_zone,
+    facet_nrow = 1,
+    color = model,
+    title = "Evaluation of forecast accuracy by split",
+    subtitle = "Mean absolute error (MAE)",
+    xlab = "Split",
+    caption = "Data: ENTSO-E Transparency, own calculation"
+    )
+
+```
+
+The resulting plot compares the mean absolute error across rolling-origin splits. Large error values for a particular split indicate that the corresponding 24-hour test window was difficult to forecast. Comparing models across splits helps assess whether forecast performance is stable over time.
+
+## Summary
+
+This vignette demonstrated how to use `tscv` for time series cross-validation with a fixed window approach. The workflow consists of four main steps:
+
+1. Prepare the data and define the column context.
+2. Create fixed rolling-origin splits using `make_split()`.
+3. Estimate forecasting models separately for each time series and split.
+4. Evaluate forecast accuracy by horizon and by split.
+
+The fixed window approach is useful when the training sample should represent a recent period of constant length. This can be particularly helpful for time series such as electricity prices, where seasonal patterns, volatility and market conditions may change over time.

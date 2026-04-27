@@ -21,266 +21,128 @@ knitr::opts_chunk$set(
 [![Licence](https://img.shields.io/badge/licence-GPL--3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 <!-- badges: end -->
 
-The package `tscv` provides a collection of functions and tools for time series analysis and forecasting as well as time series cross-validation. This is mainly a set of wrapper and helper functions as well as some extensions for the packages `tsibble`, `fable` and `fabletools` that I find useful for research in the area of time series forecasting.
+The package `tscv` provides helper functions for time series analysis, forecasting and time series cross-validation. It is mainly designed to work with the tidy forecasting ecosystem, especially the packages `tsibble`, `fable`, `fabletools` and `feasts`.
+
+The package contains tools for:
+
+- creating **rolling-origin** resampling schemes for time series cross-validation
+- slicing **training and test samples** from time-indexed data
+- converting forecasts into a common format for evaluation
+- calculating **forecast accuracy measures**
+- **visualizing time series data**, forecast errors and distributional properties
+- fitting **additional benchmark and forecasting models** compatible with `fable`
+- working with example time series data sets
+
+The main focus of the package is to simplify repeated forecasting experiments across several time series, models, forecast horizons and rolling-origin splits.
 
 ## Installation
 
-You can install the development version from [GitHub](https://github.com/) with:
+You can install the development version from GitHub with:
 
 ``` r
 # install.packages("devtools")
 devtools::install_github("ahaeusser/tscv")
 ```
+
+## Basic workflow
+
+A typical workflow with `tscv` consists of the following steps:
+
+1. Prepare the data in long format.
+2. Define a `context` object identifying the series, value and index columns.
+3. Create rolling-origin splits using `make_split()`.
+4. Slice the training and test data using `slice_train()` and `slice_test()`.
+5. Estimate forecasting models using `fable` or the additional models provided by `tscv`.
+6. Convert forecasts with `make_future()`.
+7. Evaluate forecast accuracy with `make_accuracy()`.
+8. Visualize the data, forecasts or accuracy measures.
+
+For example, the `context` object defines the column names used by many functions:
+
+``` r
+context <- list(
+  series_id = "bidding_zone",
+  value_id = "value",
+  index_id = "time"
+)
+```
+
+This makes the package flexible with respect to different data sets, as long as the data is provided in a tidy long format.
+
+## Function overview
+
+The following table summarizes the main functions in `tscv` by topic.
+
+| **Topic** | **Function(s)** | **Description** |
+|:---|:---|:---|
+| **Time series cross-validation** | `make_split()`, `slice_train()`, `slice_test()` | Create rolling-origin splits and extract training/test samples |
+|  | `make_future()`, `make_errors()`, `make_accuracy()` | Convert forecasts and evaluate forecast accuracy |
+|  | `make_tsibble()` | Convert data to a `tsibble` using the package context |
+| **Data summaries** | `check_data()`, `summarise_data()`, `summarise_stats()` | Check and summarize time series data |
+| **Autocorrelation analysis** | `acf_vec()`, `pacf_vec()`, `estimate_acf()`, `estimate_pacf()` | Estimate ACF and PACF values |
+| **Distributional statistics** | `estimate_mode()`, `estimate_skewness()`, `estimate_kurtosis()` | Estimate descriptive distributional statistics |
+| **Data preprocessing** | `interpolate_missing()`, `smooth_outlier()` | Handle missing values and outliers |
+| **Visualization** | `plot_line()`, `plot_point()`, `plot_bar()`, `plot_histogram()`, `plot_density()`, `plot_qq()` | Create common exploratory plots |
+| **Themes and scales** | `theme_tscv()`, `theme_tscv_dark()`, `scale_color_tscv()`, `scale_fill_tscv()`, `tscv_cols()`, `tscv_pal()` | Apply `tscv` themes and colour palettes |
+| **Benchmark models** | `SMEAN()`, `SMEDIAN()`, `MEDIAN()`, `SNAIVE2()` | Additional benchmark models compatible with `fable` |
+| **Additional forecasting models** | `DSHW()`, `TBATS()` | Additional forecasting models compatible with `fable` |
+
+
+
+## Data sets
+
+The package includes example data sets that can be used for testing, examples and vignettes.
+
+| **Data set** | **Description** |
+|:---|:---|
+| `elec_price` | Hourly day-ahead electricity spot prices for selected European bidding zones |
+| `elec_load` | Electricity load data |
+| `M4_monthly_data` | Selected monthly time series from the M4 forecasting competition |
+| `M4_quarterly_data` | Selected quarterly time series from the M4 forecasting competition |
+
 ## Example
 
-```{r packages, message = FALSE, warning = FALSE}
-# Load relevant packages
+The following minimal example shows how to create time series cross-validation splits for selected electricity price series.
+
+```{r example, message = FALSE, warning = FALSE}
 library(tscv)
 library(tidyverse)
-library(tsibble)
-library(fable)
-library(feasts)
-```
-
-```{r abbreviations, echo=FALSE, warning=FALSE, message=FALSE, results='hide'}
-Sys.setlocale("LC_TIME", "C")
-```
-
-
-## Data preparation
-
-The data set `elec_price` is a `tibble` with day-ahead electricity spot prices in [EUR/MWh] from the ENTSO-E Transparency Platform. The data set contains hourly time series data from 2019-01-01 to 2020-12-31 for 8 European bidding zones (BZN): 
-
-* DE: Germany (including Luxembourg)
-* DK: Denmark
-* ES: Spain
-* FI: Finland
-* FR: France
-* NL: Netherlands
-* NO1: Norway 1 (Oslo)
-* SE1: Sweden 1 (Lulea)
-
-In this vignette, we will use only four time series to demonstrate the functionality of the package (the data set is filtered to the bidding zones Germany, France, Norway and Sweden). You can use the function `plot_line()` to visualize the four time series. The function `summarise_data()` is used to explore the structure (start date, end date, number of observations and the number missing and zero values). The function `summarise_stats()` calculates descriptive statistics for each time series.
-
-```{r clean_data, fig.alt = "Plot raw data"}
-
-series_id = "bidding_zone"
-value_id = "value"
-index_id = "time"
 
 context <- list(
-  series_id = series_id,
-  value_id = value_id,
-  index_id = index_id
+  series_id = "bidding_zone",
+  value_id = "value",
+  index_id = "time"
 )
 
-# Prepare data set
 main_frame <- elec_price %>%
-  filter(bidding_zone %in% c("DE", "FR", "NO1", "SE1"))
-
-main_frame
-
-main_frame %>%
-  plot_line(
-    x = time,
-    y = value,
-    color = bidding_zone,
-    facet_var = bidding_zone,
-    title = "Day-ahead Electricity Spot Price",
-    subtitle = "2019-01-01 to 2020-12-31",
-    xlab = "Time",
-    ylab = "[EUR/MWh]",
-    caption = "Data: ENTSO-E Transparency"
-    )
-
-summarise_data(
-  .data = main_frame,
-  context = context
-)
-
-summarise_stats(
-  .data = main_frame,
-  context = context
-)
-
-```
-
-
-## Split data into training and testing
-
-To prepare the data set for time series cross-validation (TSCV), you can use the function `make_split()`. This function splits the data into several slices for training and testing (i.e. partitioning into time slices) for time series cross-validation. You can choose between `stretch` and `slide`. The first is an expanding window approach, while the latter is a fixed window approach. Furthermore, we define the (initial) window size for training and testing via `n_init` and `n_ahead`, as well as the step size for increments via `n_skip`. Further options for splitting the data are available via `type` (see function reference for more details). 
-
-```{r split_data}
-
-# Setup for time series cross validation
-type = "first"
-value = 2400      # size for training window
-n_ahead = 24      # size for testing window (= forecast horizon)
-n_skip = 23       # skip 23 observations
-n_lag = 0         # no lag
-mode = "slide"    # fixed window approach
-exceed = FALSE    # only pseudo out-of-sample forecast
+  filter(bidding_zone %in% c("DE", "FR"))
 
 split_frame <- make_split(
   main_frame = main_frame,
   context = context,
-  type = type,
-  value = value,
-  n_ahead = n_ahead,
-  n_skip = n_skip,
-  n_lag = n_lag,
-  mode = mode,
-  exceed = exceed
+  type = "first",
+  value = 2400,
+  n_ahead = 24,
+  n_skip = 23,
+  n_lag = 0,
+  mode = "slide",
+  exceed = FALSE
 )
-
-# For illustration, only the first 50 splits are used
-split_frame <- split_frame %>%
-  filter(split %in% c(1:50))
 
 split_frame
-
 ```
 
+The resulting object contains one row per time series and split. The `train` and `test` columns are list-columns containing the row positions used for training and testing.
 
+## Vignettes
 
-## Training and forecasting
+The package vignettes provide more detailed examples:
 
-The training and test splits are prepared within `split_frame` and we are ready for forecasting. The function `slice_train()` slices the data `main_frame` according to the splits within `split_frame`. As we are using forecasting methods from the packages `fable` and `fabletools`, we have to convert the data set `main_frame` from a `tibble` to a `tsibble`. Due to the sample size and computation time, only very simple benchmark methods are used: 
-
-* `SNAIVE`: Seasonal naive model with weekly seasonality (from package `fable`)
-* `STL-NAIVE`: STL-decomposition model and naive forecast. The series is decomposed via STL and the seasonal adjusted series is predicted via the naive approach. Afterwards, seasonal component is added to the forecasts (from packages `fable` and `feasts`)
-* `SNAIVE2`: Variation of the seasonal naive approach. Mondays, Saturdays and Sundays are treated with a weekly lag. Tuesdays, Wednesdays, Thursdays and Fridays are treated with a daily lag.
-* `SMEDIAN`: Seasonal median model
-
-The functions `SMEDIAN()` and `SNAIVE2()` are extensions to the `fable` package
-
-```{r train_models}
-
-# Slice training data from main_frame according to split_frame
-train_frame <- slice_train(
-  main_frame = main_frame,
-  split_frame = split_frame,
-  context = context
-  )
-
-train_frame
-
-# Convert tibble to tsibble
-train_frame <- train_frame %>%
-  as_tsibble(
-    index = time,
-    key = c(bidding_zone, split)
-    )
-
-train_frame
-
-# Model training via fabletools::model()
-model_frame <- train_frame %>%
-  model(
-    "SNAIVE" = SNAIVE(value ~ lag("week")),
-    "STL-NAIVE" = decomposition_model(STL(value), NAIVE(season_adjust)),
-    "SNAIVE2" = SNAIVE2(value),
-    "SMEDIAN" = SMEDIAN(value ~ lag("week"))
-    )
-
-model_frame
-
-# Forecasting via fabletools::forecast()
-fable_frame <- model_frame %>%
-  forecast(h = n_ahead)
-
-fable_frame
-
-# Convert fable_frame (fable) to future_frame (tibble)
-future_frame <- make_future(
-  fable = fable_frame,
-  context = context
-  )
-
-future_frame
-
-
-```
-
-
-## Evaluation of forecast accuracy
-
-To evaluate the forecast accuracy, the function `make_accuracy()` is used. You can define whether to evaluate the accuracy by `horizon` or by `split`. Several accuracy metrics are available:
-
-* `ME`: mean error
-* `MAE`: mean absolute error
-* `MSE`: mean squared error
-* `RMSE`: root mean squared error
-* `MAPE`: mean absolute percentage error
-* `sMAPE`: scaled mean absolute percentage error
-* `MPE`: mean percentage error
-* `rMAE`: relative mean absolute error (relative to some user-defined benchmark method)
-
-
-### Forecast accuracy by forecast horizon
-
-```{r accuracy_horizon, fig.alt = "Plot accuracy by horizon"}
-
-# Estimate accuracy metrics by forecast horizon
-accuracy_horizon <- make_accuracy(
-  future_frame = future_frame,
-  main_frame = main_frame,
-  context = context,
-  dimension = "horizon"
-)
-
-accuracy_horizon
-
-# Visualize results
-accuracy_horizon %>%
-  filter(metric == "MAE") %>%
-  plot_line(
-    x = n,
-    y = value,
-    facet_var = bidding_zone,
-    facet_nrow = 1,
-    color = model,
-    title = "Evaluation of forecast accuracy by forecast horizon",
-    subtitle = "Mean absolute error (MAE)",
-    xlab = "Forecast horizon (n-step-ahead)",
-    caption = "Data: ENTSO-E Transparency, own calculation"
-    )
-
-```
-
-
-### Forecast accuracy by split
-
-```{r accuracy_split, fig.alt = "Plot accuracy by split"}
-
-# Estimate accuracy metrics by forecast horizon
-accuracy_split <- make_accuracy(
-  future_frame = future_frame,
-  main_frame = main_frame,
-  context = context,
-  dimension = "split"
-)
-
-accuracy_split
-
-# Visualize results
-accuracy_split %>%
-  filter(metric == "MAE") %>%
-  plot_line(
-    x = n,
-    y = value,
-    facet_var = bidding_zone,
-    facet_nrow = 1,
-    color = model,
-    title = "Evaluation of forecast accuracy by split",
-    subtitle = "Mean absolute error (MAE)",
-    xlab = "Split",
-    caption = "Data: ENTSO-E Transparency, own calculation"
-    )
-
-```
-
+- fixed window time series cross-validation
+- expanding window time series cross-validation
+- visualization of time series data
 
 ## Links
 
 - [Website](https://ahaeusser.github.io/tscv/)
+- [GitHub](https://github.com/ahaeusser/tscv)

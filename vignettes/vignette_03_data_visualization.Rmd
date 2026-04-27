@@ -1,10 +1,10 @@
 ---
-title: "Visualization of Time Series Data"
+title: "Visualization of time series data"
 author: "Alexander Häußer"
 date: "`r format(Sys.Date(), '%B %Y')`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Visualization of Time Series Data}
+  %\VignetteIndexEntry{Visualization of time series data}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -20,12 +20,20 @@ knitr::opts_chunk$set(
 )
 ```
 
+The package `tscv` provides a set of helper functions for time series analysis, forecasting and time series cross-validation. In addition to functions for splitting data and evaluating forecasts, the package contains several visualization functions that are useful for exploratory time series analysis.
+
+This vignette demonstrates selected plotting functions from `tscv` using hourly day-ahead electricity spot prices.
+
+## Installation
+
 You can install the development version from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
 devtools::install_github("ahaeusser/tscv")
 ```
+
+## Example
 
 ```{r packages, message = FALSE, warning = FALSE}
 # Load relevant packages
@@ -38,7 +46,22 @@ library(tsibble)
 Sys.setlocale("LC_TIME", "C")
 ```
 
-## Data
+## Data preparation
+
+The data set `elec_price` is a `tibble` with day-ahead electricity spot prices in [EUR/MWh] from the ENTSO-E Transparency Platform. The data set contains hourly time series data from 2019-01-01 to 2020-12-31 for eight European bidding zones.
+
+In this vignette, we use four bidding zones:
+
+* `DE`: Germany, including Luxembourg
+* `FR`: France
+* `NO1`: Norway 1, Oslo
+* `SE1`: Sweden 1, Lulea
+
+The visualization functions in `tscv` work with data in long format. Therefore, we define a `context` object that identifies the relevant columns:
+
+* `series_id`: column identifying the individual time series
+* `value_id`: column containing the numeric measurement variable
+* `index_id`: column containing the time index
 
 ```{r data}
 series_id = "bidding_zone"
@@ -59,6 +82,10 @@ main_frame
 ```
 
 ## Line charts
+
+Line charts are the most common visualization for time series data. They show how the observed values change over time and are useful for detecting trends, seasonal patterns, level shifts, outliers and periods of high volatility.
+
+The function `plot_line()` creates line charts from data in long format. The first example creates a faceted plot, with one panel for each bidding zone.
 
 ```{r plot_line, fig.alt = "plot_line"}
 
@@ -93,37 +120,54 @@ main_frame %>%
 
 ```
 
+The faceted version is useful when the individual time series have different levels or volatility. The combined version is useful for comparing the bidding zones directly in a single panel.
+
 ## Bar charts
 
+Bar charts can be used to display summary values by category or lag. In this example, we use `plot_bar()` to visualize the sample partial autocorrelation function.
+
+The partial autocorrelation function measures the relationship between a time series and its lagged values after controlling for the intermediate lags. It is often used as an exploratory tool to identify relevant lag structures in time series models.
+
+First, we estimate the sample partial autocorrelation function using `estimate_pacf()`. The argument `lag_max = 30` computes the partial autocorrelation for lags 1 to 30.
+
 ```{r plot_bar, fig.alt = "plot_bar"}
-# # Estimate sample partial autocorrelation function
-# corr_pacf <- estimate_pacf(
-#   .data = main_frame,
-#   context = context,
-#   lag_max = 30
-# )
-# 
-# corr_pacf
-# 
-# # Visualize PACF as correlogram
-# corr_pacf %>%
-#   plot_bar(
-#     x = lag,
-#     y = value,
-#     color = sign,
-#     facet_var = bidding_zone,
-#     position = "dodge",
-#     title = "Sample autocorrelation function",
-#     xlab = "Lag",
-#     ylab = "Correlation",
-#     caption = "Data: ENTSO-E Transparency"
-#   )
+# Estimate sample partial autocorrelation function
+corr_pacf <- estimate_pacf(
+  .data = main_frame,
+  context = context,
+  lag_max = 30
+)
+
+corr_pacf
+
+# Visualize PACF as correlogram
+corr_pacf %>%
+  plot_bar(
+    x = lag,
+    y = value,
+    color = sign,
+    facet_var = bidding_zone,
+    position = "dodge",
+    title = "Sample autocorrelation function",
+    xlab = "Lag",
+    ylab = "Correlation",
+    caption = "Data: ENTSO-E Transparency"
+  )
 ```
 
+The resulting correlogram shows the estimated partial autocorrelation by lag and bidding zone. The variable `sign` indicates whether the absolute value of the estimated partial autocorrelation exceeds the approximate confidence bound used by `estimate_pacf()`.
 
 ## Distributions
 
+Distribution plots are useful for understanding the marginal distribution of the observed values. For electricity prices, this is particularly relevant because prices may show skewness, heavy tails, negative values or extreme spikes.
+
+The following examples use histograms, density plots and QQ-plots to explore the distribution of hourly electricity prices across bidding zones.
+
 ### Histograms
+
+Histograms show the frequency distribution of the observed values. They are useful for identifying the range, central tendency, skewness and outliers of a time series.
+
+The first example overlays the distributions of the four bidding zones in one plot.
 
 ```{r plot_histogram, fig.alt = "plot_histogram"}
 # Example 1 -------------------------------------------------------------------
@@ -153,7 +197,11 @@ main_frame %>%
     )
 ```
 
+The faceted histogram separates the bidding zones into individual panels. This makes it easier to inspect the distribution of each time series separately, especially when the distributions overlap in the combined plot.
+
 ### Density
+
+Density plots provide a smoothed version of the empirical distribution. Compared with histograms, they are often easier to use when comparing several distributions in one figure.
 
 ```{r plot_density, fig.alt = "plot_density"}
 # Example 1 -------------------------------------------------------------------
@@ -181,8 +229,13 @@ main_frame %>%
     )
 ```
 
+The combined density plot highlights differences between bidding zones in the location and spread of prices. The faceted version provides a clearer view of each individual distribution.
 
 ### QQ-Plot
+
+QQ-plots compare the empirical distribution of the observed values with a theoretical distribution, usually the normal distribution. They are useful for checking whether the data are approximately normally distributed.
+
+For electricity prices, deviations from normality are common because prices can be skewed and may contain extreme values.
 
 ```{r plot_qq, fig.alt = "plot_qq"}
 # Example 1 -------------------------------------------------------------------
@@ -209,3 +262,16 @@ main_frame %>%
     )
 ```
 
+If the observations were approximately normally distributed, the points in the QQ-plot would lie close to a straight line. Strong deviations from this pattern indicate skewness, heavy tails or outliers.
+
+## Summary
+
+This vignette demonstrated several visualization functions from `tscv`:
+
+* `plot_line()` for time series line charts
+* `plot_bar()` for bar charts, here used to visualize partial autocorrelations
+* `plot_histogram()` for histograms
+* `plot_density()` for density plots
+* `plot_qq()` for QQ-plots
+
+Together, these plots provide a useful starting point for exploratory time series analysis. Line charts help inspect the temporal structure of the data, while distribution plots and correlograms help identify features that may be relevant for modelling and forecasting.
