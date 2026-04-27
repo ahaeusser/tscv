@@ -58,7 +58,7 @@ plot_line <- function(data,
         x = {{x}},
         y = {{y}}),
       color = line_color,
-      size = line_size,
+      linewidth = line_size,
       linetype = line_type,
       alpha = line_alpha
     )
@@ -68,7 +68,7 @@ plot_line <- function(data,
         x = {{x}},
         y = {{y}},
         color = {{color}}),
-      size = line_size,
+      linewidth = line_size,
       linetype = line_type,
       alpha = line_alpha
     )

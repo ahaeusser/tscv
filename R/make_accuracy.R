@@ -12,7 +12,7 @@
 #'       \item{\code{MSE}: mean squared error}
 #'       \item{\code{RMSE}: root mean squared error}
 #'       \item{\code{MAPE}: mean absolute percentage error}
-#'       \item{\code{sMAPE}: scaled mean absolute percentage error}
+#'       \item{\code{sMAPE}: symmetric mean absolute percentage error}
 #'       \item{\code{MPE}: mean percentage error}
 #'       \item{\code{rMAE}: relative mean absolute error}
 #'       }

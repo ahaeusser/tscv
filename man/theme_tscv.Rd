@@ -16,9 +16,9 @@ theme_tscv(
 
 \item{base_family}{Base font family.}
 
-\item{base_line_size}{Base size for "line" elements.}
+\item{base_line_size}{Base linewidth for "line" elements.}
 
-\item{base_rect_size}{Base size for "rect" elements.}
+\item{base_rect_size}{Base linewidth for "rect" elements.}
 }
 \description{
 Custom ggplot2 theme for tscv package.

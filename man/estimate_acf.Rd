@@ -9,7 +9,7 @@ estimate_acf(.data, context, lag_max = 24, level = 0.9, ...)
 \arguments{
 \item{.data}{A \code{tibble} containing the time series data.}
 
-\item{context}{A named \code{list} with the identifiers for \code{seried_id}, \code{value_id} and \code{index_id}.}
+\item{context}{A named \code{list} with the identifiers for \code{series_id}, \code{value_id} and \code{index_id}.}
 
 \item{lag_max}{Maximum lag as integer.}
 
@@ -19,7 +19,7 @@ estimate_acf(.data, context, lag_max = 24, level = 0.9, ...)
 }
 \value{
 data A \code{tibble} with a column for the unique identifier of the
-  time series and the columns type, lag and value.
+  time series and the columns type, lag, value and sign.
 }
 \description{
 The function estimates the sample autocorrelation function of a

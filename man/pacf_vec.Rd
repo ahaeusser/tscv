@@ -11,12 +11,12 @@ pacf_vec(x, lag_max = 24, ...)
 
 \item{lag_max}{Maximum lag as integer.}
 
-\item{...}{Further arguments passed to \code{stats::acf()}.}
+\item{...}{Further arguments passed to \code{stats::pacf()}.}
 }
 \value{
 x Numeric vector.
 }
 \description{
-\code{acf_vec} estimates the sample partial autocorrelation
+\code{pacf_vec} estimates the sample partial autocorrelation
   function of a numeric vector.
 }

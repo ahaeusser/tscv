@@ -5,8 +5,8 @@
 #'
 #' @param base_size Base font size.
 #' @param base_family Base font family.
-#' @param base_line_size Base size for "line" elements.
-#' @param base_rect_size Base size for "rect" elements.
+#' @param base_line_size Base linewidth for "line" elements.
+#' @param base_rect_size Base linewidth for "rect" elements.
 #'
 #' @export
 
@@ -31,16 +31,16 @@ theme_tscv <- function(base_size = 11,
     # Elements in this first block aren't used directly, but are inherited by others
     line = ggplot2::element_line(
       colour     = "black",
-      size       = base_line_size,
+      linewidth  = base_line_size,
       linetype   = 1,
       lineend    = "butt"
-      ),
+    ),
     rect = ggplot2::element_rect(
       fill       = "white",
       colour     = "black",
-      size       = base_rect_size,
+      linewidth  = base_rect_size,
       linetype   = 1
-      ),
+    ),
     text = ggplot2::element_text(
       family     = base_family,
       face       = "plain",
@@ -98,15 +98,24 @@ theme_tscv <- function(base_size = 11,
 
     panel.background           = ggplot2::element_blank(),
     panel.border               = ggplot2::element_blank(),
-    panel.grid.major           = ggplot2::element_line(color = "grey92", size = 0.25),
-    panel.grid.minor           = ggplot2::element_line(color = "grey97", size = 0.1),
+    panel.grid.major           = ggplot2::element_line(color = "grey92", linewidth = 0.25),
+    panel.grid.minor           = ggplot2::element_line(color = "grey97", linewidth = 0.1),
     panel.spacing              = ggplot2::unit(half_line, "pt"),
     panel.spacing.x            = NULL,
     panel.spacing.y            = NULL,
     panel.ontop                = FALSE,
 
-    strip.background           = element_rect(colour = "grey97", fill = "grey97"),
-    strip.text                 = ggplot2::element_text(colour = "grey10", size = ggplot2::rel(0.8), margin = ggplot2::margin(0.8 * half_line, 0.8 * half_line, 0.8 * half_line, 0.8 * half_line)),
+    strip.background           = ggplot2::element_rect(colour = "grey97", fill = "grey97"),
+    strip.text                 = ggplot2::element_text(
+      colour = "grey10",
+      size = ggplot2::rel(0.8),
+      margin = ggplot2::margin(
+        0.8 * half_line,
+        0.8 * half_line,
+        0.8 * half_line,
+        0.8 * half_line
+      )
+    ),
     strip.text.x               = NULL,
     strip.text.y               = ggplot2::element_text(angle = -90),
     strip.placement            = "inside",
@@ -116,11 +125,29 @@ theme_tscv <- function(base_size = 11,
     strip.switch.pad.wrap      = ggplot2::unit(half_line / 2, "pt"),
 
     plot.background            = ggplot2::element_blank(),
-    plot.title                 = ggplot2::element_text(size = ggplot2::rel(1.2), hjust = 0, vjust = 1, margin = ggplot2::margin(b = half_line), face = "bold"),
-    plot.subtitle              = ggplot2::element_text(hjust = 0, vjust = 1, margin = ggplot2::margin(b = half_line), color = "grey40", face = "plain"),
-    plot.caption               = ggplot2::element_text(size = ggplot2::rel(0.6), hjust = 1, vjust = 1, margin = ggplot2::margin(t = half_line), color = "gray40"),
+    plot.title                 = ggplot2::element_text(
+      size = ggplot2::rel(1.2),
+      hjust = 0,
+      vjust = 1,
+      margin = ggplot2::margin(b = half_line),
+      face = "bold"
+    ),
+    plot.subtitle              = ggplot2::element_text(
+      hjust = 0,
+      vjust = 1,
+      margin = ggplot2::margin(b = half_line),
+      color = "grey40",
+      face = "plain"
+    ),
+    plot.caption               = ggplot2::element_text(
+      size = ggplot2::rel(0.6),
+      hjust = 1,
+      vjust = 1,
+      margin = ggplot2::margin(t = half_line),
+      color = "gray40"
+    ),
     plot.tag                   = ggplot2::element_text(size = ggplot2::rel(1.2), hjust = 0.5, vjust = 0.5),
-    plot.tag.position          = 'topleft',
+    plot.tag.position          = "topleft",
     plot.margin                = ggplot2::margin(half_line, half_line, half_line, half_line),
 
     complete                   = TRUE

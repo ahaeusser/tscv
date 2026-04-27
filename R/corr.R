@@ -13,7 +13,7 @@
 
 acf_vec <- function(x, lag_max = 24, ...) {
   # Estimate autocorrelation function and drop lag 0
-  x <- as.numeric(acf(x = x,  lag.max = lag_max, plot = FALSE, ...)$acf)
+  x <- as.numeric(acf(x = x, lag.max = lag_max, plot = FALSE, ...)$acf)
   x <- tail(x, -1)
   return(x)
 }
@@ -21,19 +21,19 @@ acf_vec <- function(x, lag_max = 24, ...) {
 
 #' @title Estimate the sample partial autocorrelation of a numeric vector
 #'
-#' @description \code{acf_vec} estimates the sample partial autocorrelation
+#' @description \code{pacf_vec} estimates the sample partial autocorrelation
 #'   function of a numeric vector.
 #'
 #' @param x Numeric vector.
 #' @param lag_max Maximum lag as integer.
-#' @param ... Further arguments passed to \code{stats::acf()}.
+#' @param ... Further arguments passed to \code{stats::pacf()}.
 #'
 #' @return x Numeric vector.
 #' @export
 
 pacf_vec <- function(x, lag_max = 24, ...) {
-  # Estimate autocorrelation function
-  x <- as.numeric(pacf(x = x,  lag.max = lag_max, plot = FALSE, ...)$acf)
+  # Estimate partial autocorrelation function
+  x <- as.numeric(pacf(x = x, lag.max = lag_max, plot = FALSE, ...)$acf)
   return(x)
 }
 
@@ -44,13 +44,13 @@ pacf_vec <- function(x, lag_max = 24, ...) {
 #'   \code{tibble} containing several time series.
 #'
 #' @param .data A \code{tibble} containing the time series data.
-#' @param context A named \code{list} with the identifiers for \code{seried_id}, \code{value_id} and \code{index_id}.
+#' @param context A named \code{list} with the identifiers for \code{series_id}, \code{value_id} and \code{index_id}.
 #' @param lag_max Maximum lag as integer.
 #' @param level Numeric value. The confidence level to check significance.
 #' @param ... Further arguments passed to \code{stats::acf()}.
 #'
 #' @return data A \code{tibble} with a column for the unique identifier of the
-#'   time series and the columns type, lag and value.
+#'   time series and the columns type, lag, value and sign.
 #' @export
 
 estimate_acf <- function(.data,
@@ -65,13 +65,13 @@ estimate_acf <- function(.data,
   data <- .data %>%
     select(!!sym(series_id), !!sym(value_id)) %>%
     group_by(!!sym(series_id)) %>%
-    summarise(
+    reframe(
       type = "ACF",
       lag = 1:lag_max,
       value = acf_vec(x = !!sym(value_id), lag_max = lag_max, ...),
-      sign = qnorm((1 - level) / 2) / sqrt(n()),
-      .groups = "drop") %>%
-    mutate(sign = ifelse(abs(.data$value) > abs(.data$sign), TRUE, FALSE))
+      bound = abs(qnorm((1 - level) / 2) / sqrt(n()))
+    ) %>%
+    mutate(sign = abs(.data$value) > .data$bound)
 
   return(data)
 }
@@ -83,13 +83,13 @@ estimate_acf <- function(.data,
 #'   function of a \code{tibble} containing several time series.
 #'
 #' @param .data A \code{tibble} containing the time series data.
-#' @param context A named \code{list} with the identifiers for \code{seried_id}, \code{value_id} and \code{index_id}.
+#' @param context A named \code{list} with the identifiers for \code{series_id}, \code{value_id} and \code{index_id}.
 #' @param lag_max Maximum lag as integer.
 #' @param level Numeric value. The confidence level to check significance.
 #' @param ... Further arguments passed to \code{stats::pacf()}.
 #'
 #' @return data A \code{tibble} with a column for the unique identifier of the
-#'   time series and the columns type, lag and value.
+#'   time series and the columns type, lag, value and sign.
 #' @export
 
 estimate_pacf <- function(.data,
@@ -104,13 +104,13 @@ estimate_pacf <- function(.data,
   data <- .data %>%
     select(!!sym(series_id), !!sym(value_id)) %>%
     group_by(!!sym(series_id)) %>%
-    summarise(
+    reframe(
       type = "PACF",
       lag = 1:lag_max,
       value = pacf_vec(x = !!sym(value_id), lag_max = lag_max, ...),
-      sign = qnorm((1 - level) / 2) / sqrt(n()),
-      .groups = "drop") %>%
-    mutate(sign = ifelse(abs(.data$value) > abs(.data$sign), TRUE, FALSE))
+      bound = abs(qnorm((1 - level) / 2) / sqrt(n()))
+    ) %>%
+    mutate(sign = abs(.data$value) > .data$bound)
 
   return(data)
 }
