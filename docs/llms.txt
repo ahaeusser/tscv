@@ -1,9 +1,9 @@
 # tscv
 
-The package `tscv` provides helper functions for time series analysis,
-forecasting and time series cross-validation. It is mainly designed to
-work with the tidy forecasting ecosystem, especially the packages
-`tsibble`, `fable`, `fabletools` and `feasts`.
+The package `tscv` provides helper functions for **time series
+analysis**, **forecasting** and **time series cross-validation**. It is
+mainly designed to work with the **tidy forecasting ecosystem**,
+especially the packages `tsibble`, `fable`, `fabletools` and `feasts`.
 
 The package contains tools for:
 

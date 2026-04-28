@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# tscv
+# tscv <img src="man/figures/logo.png" align="right" height="139" alt="" />
 
 <!-- badges: start -->
 
@@ -10,10 +10,10 @@ stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://
 [![Licence](https://img.shields.io/badge/licence-GPL--3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 <!-- badges: end -->
 
-The package `tscv` provides helper functions for time series analysis,
-forecasting and time series cross-validation. It is mainly designed to
-work with the tidy forecasting ecosystem, especially the packages
-`tsibble`, `fable`, `fabletools` and `feasts`.
+The package `tscv` provides helper functions for **time series
+analysis**, **forecasting** and **time series cross-validation**. It is
+mainly designed to work with the **tidy forecasting ecosystem**,
+especially the packages `tsibble`, `fable`, `fabletools` and `feasts`.
 
 The package contains tools for:
 
