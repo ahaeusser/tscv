@@ -8,6 +8,9 @@
 [![Lifecycle:
 stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 [![Licence](https://img.shields.io/badge/licence-GPL--3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
+[![R-CMD-check](https://github.com/ahaeusser/tscv/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/ahaeusser/tscv/actions/workflows/R-CMD-check.yaml)
+[![Codecov test
+coverage](https://codecov.io/gh/ahaeusser/tscv/graph/badge.svg)](https://app.codecov.io/gh/ahaeusser/tscv)
 <!-- badges: end -->
 
 The package `tscv` provides helper functions for **time series
