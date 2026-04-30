@@ -156,11 +156,11 @@ residuals.SMEDIAN <- function(object, ...){
 #'
 #' @description Provide a succinct summary of a trained seasonal median model.
 #'
-#' @param object An object of class \code{SMEDIAN}.
+#' @param x An object of class \code{SMEDIAN}.
 #'
 #' @return Model summary as character value.
 #' @export
 
-model_sum.SMEDIAN <- function(object){
+model_sum.SMEDIAN <- function(x){
   "SMEDIAN"
 }

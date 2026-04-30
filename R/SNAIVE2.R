@@ -157,11 +157,11 @@ residuals.SNAIVE2 <- function(object, ...){
 #'
 #' @description Provide a succinct summary of a trained seasonal naive model.
 #'
-#' @param object An object of class \code{SNAIVE2}.
+#' @param x An object of class \code{SNAIVE2}.
 #'
 #' @return Model summary as character value.
 #' @export
 
-model_sum.SNAIVE2 <- function(object){
+model_sum.SNAIVE2 <- function(x){
   "SNAIVE2"
 }

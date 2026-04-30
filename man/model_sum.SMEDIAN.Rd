@@ -4,10 +4,10 @@
 \alias{model_sum.SMEDIAN}
 \title{Provide a succinct summary of a trained seasonal median model}
 \usage{
-\method{model_sum}{SMEDIAN}(object)
+\method{model_sum}{SMEDIAN}(x)
 }
 \arguments{
-\item{object}{An object of class \code{SMEDIAN}.}
+\item{x}{An object of class \code{SMEDIAN}.}
 }
 \value{
 Model summary as character value.

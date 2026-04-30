@@ -4,10 +4,10 @@
 \alias{model_sum.DSHW}
 \title{Provide a succinct summary of a trained DSHW model}
 \usage{
-\method{model_sum}{DSHW}(object)
+\method{model_sum}{DSHW}(x)
 }
 \arguments{
-\item{object}{An object of class \code{DSHW}.}
+\item{x}{An object of class \code{DSHW}.}
 }
 \value{
 Model summary as character value.

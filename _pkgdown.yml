@@ -32,7 +32,6 @@ reference:
     - plot_point
     - plot_qq
     - theme_tscv
-    - theme_tscv_dark
     - scale_color_tscv
     - scale_fill_tscv
     - tscv_cols
@@ -130,9 +129,6 @@ reference:
     - file_name
     - number_string
     - '%out%'
-    - glue_header
-    - log_platform
-    - log_time
 
 - title: Data sets
   desc: >

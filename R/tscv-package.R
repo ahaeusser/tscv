@@ -1,5 +1,5 @@
 
-#' @importFrom dplyr filter as_tibble group_by group_split left_join pull select_if mutate n n_distinct rename slice slice_tail summarise all_of
+#' @importFrom dplyr filter as_tibble group_by group_split left_join pull select_if mutate n n_distinct rename slice slice_tail summarise all_of reframe
 #' @importFrom dplyr ungroup select bind_rows arrange group_by_if row_number distinct do full_join desc first last if_else starts_with lag everything
 #' @importFrom tidyr fill pivot_longer pivot_wider drop_na unnest gather spread
 #' @importFrom tibble add_column add_row
@@ -14,9 +14,6 @@
 #' @importFrom grDevices colorRampPalette
 #' @importFrom tidytext scale_x_reordered
 #' @importFrom utils tail
-#' @importFrom glue glue
-#' @importFrom rstudioapi versionInfo
-#' @importFrom devtools session_info
 #' @importFrom crayon bold italic
 #' @rawNamespace import(ggplot2, except = stat_qq_line)
 #' @importFrom qqplotr stat_qq_point stat_qq_line stat_qq_band

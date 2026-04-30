@@ -4,10 +4,10 @@
 \alias{model_sum.SMEAN}
 \title{Provide a succinct summary of a trained seasonal mean model}
 \usage{
-\method{model_sum}{SMEAN}(object)
+\method{model_sum}{SMEAN}(x)
 }
 \arguments{
-\item{object}{An object of class \code{SMEAN}.}
+\item{x}{An object of class \code{SMEAN}.}
 }
 \value{
 Model summary as character value.

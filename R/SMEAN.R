@@ -157,11 +157,11 @@ residuals.SMEAN <- function(object, ...){
 #'
 #' @description Provide a succinct summary of a trained seasonal mean model.
 #'
-#' @param object An object of class \code{SMEAN}.
+#' @param x An object of class \code{SMEAN}.
 #'
 #' @return Model summary as character value.
 #' @export
 
-model_sum.SMEAN <- function(object){
+model_sum.SMEAN <- function(x){
   "SMEAN"
 }

@@ -138,11 +138,11 @@ residuals.DSHW <- function(object, ...){
 #'
 #' @description Provide a succinct summary of a trained DSHW model.
 #'
-#' @param object An object of class \code{DSHW}.
+#' @param x An object of class \code{DSHW}.
 #'
 #' @return Model summary as character value.
 #' @export
 
-model_sum.DSHW <- function(object){
+model_sum.DSHW <- function(x){
   "DSHW"
 }

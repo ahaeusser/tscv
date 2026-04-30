@@ -45,8 +45,6 @@ Functions and utilities for data visualization
   Quantile-Quantile plot
 - [`theme_tscv()`](https://ahaeusser.github.io/tscv/reference/theme_tscv.md)
   : Custom ggplot2 theme for tscv package
-- [`theme_tscv_dark()`](https://ahaeusser.github.io/tscv/reference/theme_tscv_dark.md)
-  : Dark ggplot2 theme for tscv package
 - [`scale_color_tscv()`](https://ahaeusser.github.io/tscv/reference/scale_color_tscv.md)
   : Color scale constructor for tscv colors.
 - [`scale_fill_tscv()`](https://ahaeusser.github.io/tscv/reference/scale_fill_tscv.md)
@@ -204,12 +202,6 @@ Functions and utilities for data preparation, etc.
   : Helper function to create numbered strings.
 - [`` `%out%` ``](https://ahaeusser.github.io/tscv/reference/grapes-out-grapes.md)
   : Negated value matching
-- [`glue_header()`](https://ahaeusser.github.io/tscv/reference/glue_header.md)
-  : Create a header from text
-- [`log_platform()`](https://ahaeusser.github.io/tscv/reference/log_platform.md)
-  : Create platform info
-- [`log_time()`](https://ahaeusser.github.io/tscv/reference/log_time.md)
-  : Create string with elapsed time.
 
 ## Data sets
 

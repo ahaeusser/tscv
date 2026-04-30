@@ -6,12 +6,12 @@ Provide a succinct summary of a trained TBATS model.
 
 ``` r
 # S3 method for class 'TBATS'
-model_sum(object)
+model_sum(x)
 ```
 
 ## Arguments
 
-- object:
+- x:
 
   An object of class `TBATS`.
 

@@ -4,10 +4,10 @@
 \alias{model_sum.TBATS}
 \title{Provide a succinct summary of a trained TBATS model}
 \usage{
-\method{model_sum}{TBATS}(object)
+\method{model_sum}{TBATS}(x)
 }
 \arguments{
-\item{object}{An object of class \code{TBATS}.}
+\item{x}{An object of class \code{TBATS}.}
 }
 \value{
 Model summary as character value.

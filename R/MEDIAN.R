@@ -171,11 +171,11 @@ residuals.MEDIAN <- function(object, ...){
 #'
 #' @description Provide a succinct summary of a trained median model.
 #'
-#' @param object An object of class \code{MEDIAN}.
+#' @param x An object of class \code{MEDIAN}.
 #'
 #' @return Model summary as character value.
 #' @export
 
-model_sum.MEDIAN <- function(object){
+model_sum.MEDIAN <- function(x){
   "MEDIAN"
 }

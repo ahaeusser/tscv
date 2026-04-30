@@ -139,11 +139,11 @@ residuals.TBATS <- function(object, ...){
 #'
 #' @description Provide a succinct summary of a trained TBATS model.
 #'
-#' @param object An object of class \code{TBATS}.
+#' @param x An object of class \code{TBATS}.
 #'
 #' @return Model summary as character value.
 #' @export
 
-model_sum.TBATS <- function(object){
+model_sum.TBATS <- function(x){
   "TBATS"
 }

@@ -6,12 +6,12 @@ Provide a succinct summary of a trained median model.
 
 ``` r
 # S3 method for class 'MEDIAN'
-model_sum(object)
+model_sum(x)
 ```
 
 ## Arguments
 
-- object:
+- x:
 
   An object of class `MEDIAN`.
 

@@ -4,10 +4,10 @@
 \alias{model_sum.SNAIVE2}
 \title{Provide a succinct summary of a trained seasonal naive model}
 \usage{
-\method{model_sum}{SNAIVE2}(object)
+\method{model_sum}{SNAIVE2}(x)
 }
 \arguments{
-\item{object}{An object of class \code{SNAIVE2}.}
+\item{x}{An object of class \code{SNAIVE2}.}
 }
 \value{
 Model summary as character value.
