@@ -66,7 +66,7 @@
 </div>
 <!-- badges: start -->
 
-<p>The package <code>tscv</code> provides helper functions for <strong>time series analysis</strong>, <strong>forecasting</strong> and <strong>time series cross-validation</strong>. It is mainly designed to work with the <strong>tidy forecasting ecosystem</strong>, especially the packages <code>tsibble</code>, <code>fable</code>, <code>fabletools</code> and <code>feasts</code>.</p>
+<p>The package <code>tscv</code> provides helper functions for <strong>time series analysis</strong>, <strong>forecasting</strong>, and <strong>time series cross-validation</strong>. It is designed to work with the <strong>tidy forecasting ecosystem</strong>, especially <code>tsibble</code>, <code>fable</code>, <code>fabletools</code>, and <code>feasts</code>.</p>
 <p>The package contains tools for:</p>
 <ul>
 <li>creating <strong>rolling-origin</strong> resampling schemes for time series cross-validation</li>
@@ -75,12 +75,12 @@
 <li>calculating <strong>forecast accuracy measures</strong>
 </li>
 <li>
-<strong>visualizing time series data</strong>, forecast errors and distributional properties</li>
+<strong>visualizing time series data</strong>, forecast errors, and distributional properties</li>
 <li>fitting <strong>additional benchmark and forecasting models</strong> compatible with <code>fable</code>
 </li>
 <li>working with example time series data sets</li>
 </ul>
-<p>The main focus of the package is to simplify repeated forecasting experiments across several time series, models, forecast horizons and rolling-origin splits.</p>
+<p>The main focus of the package is to simplify repeated forecasting experiments across several time series, models, forecast horizons, and rolling-origin splits.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
@@ -90,27 +90,143 @@
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"ahaeusser/tscv"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="basic-workflow">Basic workflow<a class="anchor" aria-label="anchor" href="#basic-workflow"></a>
+<h2 id="workflow">Workflow<a class="anchor" aria-label="anchor" href="#workflow"></a>
 </h2>
 <p>A typical workflow with <code>tscv</code> consists of the following steps:</p>
 <ol style="list-style-type: decimal">
 <li>Prepare the data in long format.</li>
-<li>Define a <code>context</code> object identifying the series, value and index columns.</li>
+<li>Define a <code>context</code> object identifying the series, value, and index columns.</li>
 <li>Create rolling-origin splits using <code><a href="reference/make_split.html">make_split()</a></code>.</li>
 <li>Slice the training and test data using <code><a href="reference/slice_train.html">slice_train()</a></code> and <code><a href="reference/slice_test.html">slice_test()</a></code>.</li>
 <li>Estimate forecasting models using <code>fable</code> or the additional models provided by <code>tscv</code>.</li>
 <li>Convert forecasts with <code><a href="reference/make_future.html">make_future()</a></code>.</li>
 <li>Evaluate forecast accuracy with <code><a href="reference/make_accuracy.html">make_accuracy()</a></code>.</li>
-<li>Visualize the data, forecasts or accuracy measures.</li>
+<li>Visualize the data, forecasts, or accuracy measures.</li>
 </ol>
-<p>For example, the <code>context</code> object defines the column names used by many functions:</p>
+</div>
+<div class="section level2">
+<h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
+</h2>
+<p>The central idea of time series cross-validation is to evaluate forecasts repeatedly over time. Instead of relying on a single train-test split, <code>tscv</code> creates several rolling-origin splits. Each split contains a training window for model estimation and a test window for forecast evaluation.</p>
+<p>Two common rolling-origin schemes are <strong>fixed window</strong> and <strong>expanding window</strong> cross-validation.</p>
+<div class="section level3">
+<h3 id="fixed-window-cross-validation">Fixed window cross-validation<a class="anchor" aria-label="anchor" href="#fixed-window-cross-validation"></a>
+</h3>
+<p>In a fixed window setup, both the training window and the test window move forward through time. The length of the training sample stays constant. This is useful when recent observations are expected to be more informative than older observations, for example when the data-generating process changes over time.</p>
+<p>In the plot below, each row represents one split and each square represents one time point. Blue squares are used for training, dark squares are used for testing, and light squares are not used in that split.</p>
+<div class="figure">
+<img src="reference/figures/README-fixed-window-plot-1.svg" alt="Fixed window time series cross-validation scheme" width="100%"><p class="caption">
+Fixed window cross-validation: the training and test windows both move forward through time.
+</p>
+</div>
+<p>For example, the following code creates fixed window splits for two electricity price series. The first training window contains 2,400 observations and each test window contains the next 24 observations. Since the origin itself advances by one step, <code>n_skip = 23</code> moves the next split forward by 24 observations in total.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">context</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ahaeusser/tscv" class="external-link">tscv</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">context</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  series_id <span class="op">=</span> <span class="st">"bidding_zone"</span>,</span>
 <span>  value_id <span class="op">=</span> <span class="st">"value"</span>,</span>
 <span>  index_id <span class="op">=</span> <span class="st">"time"</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<p>This makes the package flexible with respect to different data sets, as long as the data is provided in a tidy long format.</p>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">main_frame</span> <span class="op">&lt;-</span> <span class="va">elec_price</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">bidding_zone</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"DE"</span>, <span class="st">"FR"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">fixed_split</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/make_split.html">make_split</a></span><span class="op">(</span></span>
+<span>  main_frame <span class="op">=</span> <span class="va">main_frame</span>,</span>
+<span>  context <span class="op">=</span> <span class="va">context</span>,</span>
+<span>  type <span class="op">=</span> <span class="st">"first"</span>,</span>
+<span>  value <span class="op">=</span> <span class="fl">2400</span>,</span>
+<span>  n_ahead <span class="op">=</span> <span class="fl">24</span>,</span>
+<span>  n_skip <span class="op">=</span> <span class="fl">23</span>,</span>
+<span>  n_lag <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  mode <span class="op">=</span> <span class="st">"slide"</span>,</span>
+<span>  exceed <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">fixed_split</span></span>
+<span><span class="co">#&gt; # A tibble: 1,262 × 4</span></span>
+<span><span class="co">#&gt;    bidding_zone split train         test      </span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;        &lt;int&gt; &lt;list&gt;        &lt;list&gt;    </span></span>
+<span><span class="co">#&gt;  1 DE               1 &lt;int [2,400]&gt; &lt;int [24]&gt;</span></span>
+<span><span class="co">#&gt;  2 DE               2 &lt;int [2,400]&gt; &lt;int [24]&gt;</span></span>
+<span><span class="co">#&gt;  3 DE               3 &lt;int [2,400]&gt; &lt;int [24]&gt;</span></span>
+<span><span class="co">#&gt;  4 DE               4 &lt;int [2,400]&gt; &lt;int [24]&gt;</span></span>
+<span><span class="co">#&gt;  5 DE               5 &lt;int [2,400]&gt; &lt;int [24]&gt;</span></span>
+<span><span class="co">#&gt;  6 DE               6 &lt;int [2,400]&gt; &lt;int [24]&gt;</span></span>
+<span><span class="co">#&gt;  7 DE               7 &lt;int [2,400]&gt; &lt;int [24]&gt;</span></span>
+<span><span class="co">#&gt;  8 DE               8 &lt;int [2,400]&gt; &lt;int [24]&gt;</span></span>
+<span><span class="co">#&gt;  9 DE               9 &lt;int [2,400]&gt; &lt;int [24]&gt;</span></span>
+<span><span class="co">#&gt; 10 DE              10 &lt;int [2,400]&gt; &lt;int [24]&gt;</span></span>
+<span><span class="co">#&gt; # ℹ 1,252 more rows</span></span></code></pre></div>
+<p>The resulting object contains one row per time series and split. The <code>train</code> and <code>test</code> columns are list-columns with the row positions used for model estimation and forecast evaluation.</p>
+</div>
+<div class="section level3">
+<h3 id="expanding-window-cross-validation">Expanding window cross-validation<a class="anchor" aria-label="anchor" href="#expanding-window-cross-validation"></a>
+</h3>
+<p>In an expanding window setup, the start of the training sample stays fixed while the end moves forward through time. The training sample therefore grows with each split. This is useful when all historical observations are considered informative and the goal is to mimic a forecasting process where more data becomes available over time.</p>
+<div class="figure">
+<img src="reference/figures/README-expanding-window-plot-1.svg" alt="Expanding window time series cross-validation scheme" width="100%"><p class="caption">
+Expanding window cross-validation: the training window grows while the test window moves forward.
+</p>
+</div>
+<p>The same setup can be changed to expanding window cross-validation by using <code>mode = "stretch"</code>.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">expanding_split</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/make_split.html">make_split</a></span><span class="op">(</span></span>
+<span>  main_frame <span class="op">=</span> <span class="va">main_frame</span>,</span>
+<span>  context <span class="op">=</span> <span class="va">context</span>,</span>
+<span>  type <span class="op">=</span> <span class="st">"first"</span>,</span>
+<span>  value <span class="op">=</span> <span class="fl">2400</span>,</span>
+<span>  n_ahead <span class="op">=</span> <span class="fl">24</span>,</span>
+<span>  n_skip <span class="op">=</span> <span class="fl">23</span>,</span>
+<span>  n_lag <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  mode <span class="op">=</span> <span class="st">"stretch"</span>,</span>
+<span>  exceed <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">expanding_split</span></span>
+<span><span class="co">#&gt; # A tibble: 1,262 × 4</span></span>
+<span><span class="co">#&gt;    bidding_zone split train         test      </span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;        &lt;int&gt; &lt;list&gt;        &lt;list&gt;    </span></span>
+<span><span class="co">#&gt;  1 DE               1 &lt;int [2,400]&gt; &lt;int [24]&gt;</span></span>
+<span><span class="co">#&gt;  2 DE               2 &lt;int [2,424]&gt; &lt;int [24]&gt;</span></span>
+<span><span class="co">#&gt;  3 DE               3 &lt;int [2,448]&gt; &lt;int [24]&gt;</span></span>
+<span><span class="co">#&gt;  4 DE               4 &lt;int [2,472]&gt; &lt;int [24]&gt;</span></span>
+<span><span class="co">#&gt;  5 DE               5 &lt;int [2,496]&gt; &lt;int [24]&gt;</span></span>
+<span><span class="co">#&gt;  6 DE               6 &lt;int [2,520]&gt; &lt;int [24]&gt;</span></span>
+<span><span class="co">#&gt;  7 DE               7 &lt;int [2,544]&gt; &lt;int [24]&gt;</span></span>
+<span><span class="co">#&gt;  8 DE               8 &lt;int [2,568]&gt; &lt;int [24]&gt;</span></span>
+<span><span class="co">#&gt;  9 DE               9 &lt;int [2,592]&gt; &lt;int [24]&gt;</span></span>
+<span><span class="co">#&gt; 10 DE              10 &lt;int [2,616]&gt; &lt;int [24]&gt;</span></span>
+<span><span class="co">#&gt; # ℹ 1,252 more rows</span></span></code></pre></div>
+<p>Both approaches use the same forecast horizon and rolling-origin structure. The difference is how the training sample is updated:</p>
+<table class="table">
+<colgroup>
+<col width="33%">
+<col width="33%">
+<col width="33%">
+</colgroup>
+<thead><tr>
+<th align="left">Approach</th>
+<th align="left">Training window</th>
+<th align="left">Typical use case</th>
+</tr></thead>
+<tbody>
+<tr>
+<td align="left">Fixed window</td>
+<td align="left">Moves forward with constant length</td>
+<td align="left">Recent observations are most relevant</td>
+</tr>
+<tr>
+<td align="left">Expanding window</td>
+<td align="left">Starts at the same point and grows over time</td>
+<td align="left">All historical observations remain useful</td>
+</tr>
+</tbody>
+</table>
+<p>After the splits have been created, they can be passed to the remaining <code>tscv</code> workflow: slice the training and test samples, estimate forecasting models, convert forecasts, and evaluate forecast accuracy.</p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="function-overview">Function overview<a class="anchor" aria-label="anchor" href="#function-overview"></a>
@@ -211,7 +327,7 @@
 <div class="section level2">
 <h2 id="data-sets">Data sets<a class="anchor" aria-label="anchor" href="#data-sets"></a>
 </h2>
-<p>The package includes example data sets that can be used for testing, examples and vignettes.</p>
+<p>The package includes example data sets that can be used for testing, examples, and vignettes.</p>
 <table class="table">
 <colgroup>
 <col width="50%">
@@ -240,52 +356,6 @@
 </tr>
 </tbody>
 </table>
-</div>
-<div class="section level2">
-<h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
-</h2>
-<p>The following minimal example shows how to create time series cross-validation splits for selected electricity price series.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ahaeusser/tscv" class="external-link">tscv</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">context</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>  series_id <span class="op">=</span> <span class="st">"bidding_zone"</span>,</span>
-<span>  value_id <span class="op">=</span> <span class="st">"value"</span>,</span>
-<span>  index_id <span class="op">=</span> <span class="st">"time"</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">main_frame</span> <span class="op">&lt;-</span> <span class="va">elec_price</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">bidding_zone</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"DE"</span>, <span class="st">"FR"</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">split_frame</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/make_split.html">make_split</a></span><span class="op">(</span></span>
-<span>  main_frame <span class="op">=</span> <span class="va">main_frame</span>,</span>
-<span>  context <span class="op">=</span> <span class="va">context</span>,</span>
-<span>  type <span class="op">=</span> <span class="st">"first"</span>,</span>
-<span>  value <span class="op">=</span> <span class="fl">2400</span>,</span>
-<span>  n_ahead <span class="op">=</span> <span class="fl">24</span>,</span>
-<span>  n_skip <span class="op">=</span> <span class="fl">23</span>,</span>
-<span>  n_lag <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>  mode <span class="op">=</span> <span class="st">"slide"</span>,</span>
-<span>  exceed <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">split_frame</span></span>
-<span><span class="co">#&gt; # A tibble: 1,262 × 4</span></span>
-<span><span class="co">#&gt;    bidding_zone split train         test      </span></span>
-<span><span class="co">#&gt;    &lt;chr&gt;        &lt;int&gt; &lt;list&gt;        &lt;list&gt;    </span></span>
-<span><span class="co">#&gt;  1 DE               1 &lt;int [2,400]&gt; &lt;int [24]&gt;</span></span>
-<span><span class="co">#&gt;  2 DE               2 &lt;int [2,400]&gt; &lt;int [24]&gt;</span></span>
-<span><span class="co">#&gt;  3 DE               3 &lt;int [2,400]&gt; &lt;int [24]&gt;</span></span>
-<span><span class="co">#&gt;  4 DE               4 &lt;int [2,400]&gt; &lt;int [24]&gt;</span></span>
-<span><span class="co">#&gt;  5 DE               5 &lt;int [2,400]&gt; &lt;int [24]&gt;</span></span>
-<span><span class="co">#&gt;  6 DE               6 &lt;int [2,400]&gt; &lt;int [24]&gt;</span></span>
-<span><span class="co">#&gt;  7 DE               7 &lt;int [2,400]&gt; &lt;int [24]&gt;</span></span>
-<span><span class="co">#&gt;  8 DE               8 &lt;int [2,400]&gt; &lt;int [24]&gt;</span></span>
-<span><span class="co">#&gt;  9 DE               9 &lt;int [2,400]&gt; &lt;int [24]&gt;</span></span>
-<span><span class="co">#&gt; 10 DE              10 &lt;int [2,400]&gt; &lt;int [24]&gt;</span></span>
-<span><span class="co">#&gt; # ℹ 1,252 more rows</span></span></code></pre></div>
-<p>The resulting object contains one row per time series and split. The <code>train</code> and <code>test</code> columns are list-columns containing the row positions used for training and testing.</p>
 </div>
 <div class="section level2">
 <h2 id="vignettes">Vignettes<a class="anchor" aria-label="anchor" href="#vignettes"></a>
@@ -340,7 +410,7 @@
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
 <li><a href="https://lifecycle.r-lib.org/articles/stages.html#stable" class="external-link"><img src="https://img.shields.io/badge/lifecycle-stable-brightgreen.svg" alt="Lifecycle: stable"></a></li>
-<li><a href="https://www.gnu.org/licenses/gpl-3.0.en.html" class="external-link"><img src="https://img.shields.io/badge/licence-GPL--3-blue.svg" alt="Licence"></a></li>
+<li><a href="https://www.gnu.org/licenses/gpl-3.0.en.html" class="external-link"><img src="https://img.shields.io/badge/license-GPL--3-blue.svg" alt="License"></a></li>
 <li><a href="https://github.com/ahaeusser/tscv/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/ahaeusser/tscv/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
 <li><a href="https://app.codecov.io/gh/ahaeusser/tscv" class="external-link"><img src="https://codecov.io/gh/ahaeusser/tscv/graph/badge.svg" alt="Codecov test coverage"></a></li>
 </ul>
