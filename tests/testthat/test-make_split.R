@@ -1,323 +1,366 @@
 
-test_that("initialize_split() calculates initial training size by first observations", {
-  main_frame <- tibble::tibble(
-    id = c(rep("a", 10), rep("b", 8)),
-    time = c(1:10, 1:8),
-    value = rnorm(18)
+make_context <- function() {
+  list(
+    series_id = "bidding_zone",
+    value_id = "value",
+    index_id = "time"
   )
+}
 
-  context <- list(
-    series_id = "id",
-    index_id = "time",
-    value_id = "value"
-  )
 
-  result <- initialize_split(
+make_price_frame <- function(n_per_series = 120) {
+  elec_price |>
+    dplyr::filter(bidding_zone %in% c("DE", "FR")) |>
+    dplyr::group_by(bidding_zone) |>
+    dplyr::slice_head(n = n_per_series) |>
+    dplyr::ungroup()
+}
+
+
+get_split <- function(split_frame, series, split_id) {
+  split_frame |>
+    dplyr::filter(
+      bidding_zone == series,
+      split == split_id
+    )
+}
+
+
+expect_split_frame <- function(x, n_series, n_splits) {
+  expect_s3_class(x, "tbl_df")
+  expect_named(x, c("bidding_zone", "split", "train", "test"))
+
+  expect_equal(nrow(x), n_series * n_splits)
+  expect_equal(sort(unique(x$bidding_zone)), c("DE", "FR"))
+  expect_equal(sort(unique(x$split)), seq_len(n_splits))
+
+  expect_true(is.list(x$train))
+  expect_true(is.list(x$test))
+}
+
+
+test_that("make_split creates fixed-window splits with type = first", {
+  skip_if_not_installed("dplyr")
+
+  context <- make_context()
+  main_frame <- make_price_frame(n_per_series = 120)
+
+  fixed_split <- make_split(
     main_frame = main_frame,
     context = context,
     type = "first",
-    value = 5
-  )
-
-  expect_s3_class(result, "tbl_df")
-  expect_equal(nrow(result), 2)
-  expect_equal(result$n_total, c(10, 8))
-  expect_equal(result$n_init, c(5, 5))
-})
-
-
-test_that("initialize_split() calculates initial training size by last test observations", {
-  main_frame <- tibble::tibble(
-    id = c(rep("a", 10), rep("b", 8)),
-    time = c(1:10, 1:8),
-    value = rnorm(18)
-  )
-
-  context <- list(series_id = "id")
-
-  result <- initialize_split(
-    main_frame = main_frame,
-    context = context,
-    type = "last",
-    value = 2
-  )
-
-  expect_equal(result$n_total, c(10, 8))
-  expect_equal(result$n_init, c(7, 5))
-})
-
-
-test_that("initialize_split() calculates initial training size by probability", {
-  main_frame <- tibble::tibble(
-    id = c(rep("a", 10), rep("b", 9)),
-    time = c(1:10, 1:9),
-    value = rnorm(19)
-  )
-
-  context <- list(series_id = "id")
-
-  result <- initialize_split(
-    main_frame = main_frame,
-    context = context,
-    type = "prob",
-    value = 0.6
-  )
-
-  expect_equal(result$n_total, c(10, 9))
-  expect_equal(result$n_init, c(6, 5))
-})
-
-
-test_that("split_index() creates sliding-window train and test indices", {
-  result <- split_index(
-    n_total = 10,
-    n_init = 4,
-    n_ahead = 2,
-    n_skip = 0,
+    value = 48,
+    n_ahead = 24,
+    n_skip = 23,
     n_lag = 0,
     mode = "slide",
     exceed = FALSE
   )
 
-  expect_type(result, "list")
-  expect_named(result, c("train", "test"))
+  expect_split_frame(fixed_split, n_series = 2, n_splits = 3)
 
-  expect_equal(length(result$train), 5)
-  expect_equal(length(result$test), 5)
+  de_1 <- get_split(fixed_split, "DE", 1)
+  de_2 <- get_split(fixed_split, "DE", 2)
+  de_3 <- get_split(fixed_split, "DE", 3)
 
-  expect_equal(result$train[[1]], 1:4)
-  expect_equal(result$test[[1]], 5:6)
+  expect_equal(de_1$train[[1]], 1:48)
+  expect_equal(de_1$test[[1]], 49:72)
 
-  expect_equal(result$train[[2]], 2:5)
-  expect_equal(result$test[[2]], 6:7)
+  expect_equal(de_2$train[[1]], 25:72)
+  expect_equal(de_2$test[[1]], 73:96)
 
-  expect_equal(result$train[[5]], 5:8)
-  expect_equal(result$test[[5]], 9:10)
+  expect_equal(de_3$train[[1]], 49:96)
+  expect_equal(de_3$test[[1]], 97:120)
 })
 
 
-test_that("split_index() creates stretching-window train and test indices", {
-  result <- split_index(
-    n_total = 10,
-    n_init = 4,
-    n_ahead = 2,
-    n_skip = 0,
+test_that("make_split creates expanding-window splits with type = first", {
+  skip_if_not_installed("dplyr")
+
+  context <- make_context()
+  main_frame <- make_price_frame(n_per_series = 120)
+
+  expanding_split <- make_split(
+    main_frame = main_frame,
+    context = context,
+    type = "first",
+    value = 48,
+    n_ahead = 24,
+    n_skip = 23,
     n_lag = 0,
     mode = "stretch",
     exceed = FALSE
   )
 
-  expect_equal(length(result$train), 5)
+  expect_split_frame(expanding_split, n_series = 2, n_splits = 3)
 
-  expect_equal(result$train[[1]], 1:4)
-  expect_equal(result$test[[1]], 5:6)
+  de_1 <- get_split(expanding_split, "DE", 1)
+  de_2 <- get_split(expanding_split, "DE", 2)
+  de_3 <- get_split(expanding_split, "DE", 3)
 
-  expect_equal(result$train[[2]], 1:5)
-  expect_equal(result$test[[2]], 6:7)
+  expect_equal(de_1$train[[1]], 1:48)
+  expect_equal(de_1$test[[1]], 49:72)
 
-  expect_equal(result$train[[5]], 1:8)
-  expect_equal(result$test[[5]], 9:10)
+  expect_equal(de_2$train[[1]], 1:72)
+  expect_equal(de_2$test[[1]], 73:96)
+
+  expect_equal(de_3$train[[1]], 1:96)
+  expect_equal(de_3$test[[1]], 97:120)
 })
 
 
-test_that("split_index() respects n_skip", {
-  result <- split_index(
-    n_total = 12,
-    n_init = 4,
-    n_ahead = 2,
-    n_skip = 1,
+test_that("make_split supports type = last", {
+  skip_if_not_installed("dplyr")
+
+  context <- make_context()
+  main_frame <- make_price_frame(n_per_series = 120)
+
+  split_frame <- make_split(
+    main_frame = main_frame,
+    context = context,
+    type = "last",
+    value = 24,
+    n_ahead = 12,
+    n_skip = 11,
     n_lag = 0,
     mode = "slide",
     exceed = FALSE
   )
 
-  expect_equal(length(result$train), 4)
+  expect_split_frame(split_frame, n_series = 2, n_splits = 2)
 
-  expect_equal(result$train[[1]], 1:4)
-  expect_equal(result$test[[1]], 5:6)
+  de_1 <- get_split(split_frame, "DE", 1)
+  de_2 <- get_split(split_frame, "DE", 2)
 
-  expect_equal(result$train[[2]], 3:6)
-  expect_equal(result$test[[2]], 7:8)
+  # n_init = n_total - value - 1 = 120 - 24 - 1 = 95
+  expect_equal(de_1$train[[1]], 1:95)
+  expect_equal(de_1$test[[1]], 96:107)
 
-  expect_equal(result$train[[4]], 7:10)
-  expect_equal(result$test[[4]], 11:12)
+  expect_equal(de_2$train[[1]], 13:107)
+  expect_equal(de_2$test[[1]], 108:119)
 })
 
 
-test_that("split_index() includes lagged observations in test indices", {
-  result <- split_index(
-    n_total = 10,
-    n_init = 4,
-    n_ahead = 2,
-    n_skip = 0,
-    n_lag = 1,
+test_that("make_split supports type = prob", {
+  skip_if_not_installed("dplyr")
+
+  context <- make_context()
+  main_frame <- make_price_frame(n_per_series = 120)
+
+  split_frame <- make_split(
+    main_frame = main_frame,
+    context = context,
+    type = "prob",
+    value = 0.5,
+    n_ahead = 20,
+    n_skip = 19,
+    n_lag = 0,
     mode = "slide",
     exceed = FALSE
   )
 
-  expect_equal(result$train[[1]], 1:4)
-  expect_equal(result$test[[1]], 4:6)
+  expect_split_frame(split_frame, n_series = 2, n_splits = 3)
 
-  expect_equal(result$train[[2]], 2:5)
-  expect_equal(result$test[[2]], 5:7)
+  de_1 <- get_split(split_frame, "DE", 1)
+  de_2 <- get_split(split_frame, "DE", 2)
+  de_3 <- get_split(split_frame, "DE", 3)
+
+  # n_init = floor(0.5 * 120) = 60
+  expect_equal(de_1$train[[1]], 1:60)
+  expect_equal(de_1$test[[1]], 61:80)
+
+  expect_equal(de_2$train[[1]], 21:80)
+  expect_equal(de_2$test[[1]], 81:100)
+
+  expect_equal(de_3$train[[1]], 41:100)
+  expect_equal(de_3$test[[1]], 101:120)
 })
 
 
-test_that("split_index() can create splits exceeding observed sample size", {
-  result <- split_index(
-    n_total = 10,
-    n_init = 4,
-    n_ahead = 2,
-    n_skip = 0,
+test_that("make_split includes lagged observations in test windows", {
+  skip_if_not_installed("dplyr")
+
+  context <- make_context()
+  main_frame <- make_price_frame(n_per_series = 120)
+
+  split_frame <- make_split(
+    main_frame = main_frame,
+    context = context,
+    type = "first",
+    value = 48,
+    n_ahead = 24,
+    n_skip = 23,
+    n_lag = 2,
+    mode = "slide",
+    exceed = FALSE
+  )
+
+  expect_split_frame(split_frame, n_series = 2, n_splits = 3)
+
+  de_1 <- get_split(split_frame, "DE", 1)
+  de_2 <- get_split(split_frame, "DE", 2)
+
+  expect_equal(de_1$train[[1]], 1:48)
+  expect_equal(de_1$test[[1]], 47:72)
+
+  expect_equal(de_2$train[[1]], 25:72)
+  expect_equal(de_2$test[[1]], 71:96)
+})
+
+
+test_that("make_split creates out-of-sample splits when exceed = TRUE", {
+  skip_if_not_installed("dplyr")
+
+  context <- make_context()
+  main_frame <- make_price_frame(n_per_series = 120)
+
+  split_frame <- make_split(
+    main_frame = main_frame,
+    context = context,
+    type = "first",
+    value = 96,
+    n_ahead = 24,
+    n_skip = 23,
     n_lag = 0,
     mode = "slide",
     exceed = TRUE
   )
 
-  expect_equal(length(result$train), 7)
+  expect_split_frame(split_frame, n_series = 2, n_splits = 2)
 
-  expect_equal(result$train[[7]], 7:10)
-  expect_equal(result$test[[7]], 11:12)
+  de_1 <- get_split(split_frame, "DE", 1)
+  de_2 <- get_split(split_frame, "DE", 2)
+
+  expect_equal(de_1$train[[1]], 1:96)
+  expect_equal(de_1$test[[1]], 97:120)
+
+  expect_equal(de_2$train[[1]], 25:120)
+  expect_equal(de_2$test[[1]], 121:144)
 })
 
 
-test_that("split_index() errors when not enough observations are available", {
+test_that("make_split does not create out-of-sample splits when exceed = FALSE", {
+  skip_if_not_installed("dplyr")
+
+  context <- make_context()
+  main_frame <- make_price_frame(n_per_series = 120)
+
+  split_frame <- make_split(
+    main_frame = main_frame,
+    context = context,
+    type = "first",
+    value = 96,
+    n_ahead = 24,
+    n_skip = 23,
+    n_lag = 0,
+    mode = "slide",
+    exceed = FALSE
+  )
+
+  expect_split_frame(split_frame, n_series = 2, n_splits = 1)
+
+  de_1 <- get_split(split_frame, "DE", 1)
+
+  expect_equal(de_1$train[[1]], 1:96)
+  expect_equal(de_1$test[[1]], 97:120)
+})
+
+
+test_that("make_split keeps series-specific split plans separate", {
+  skip_if_not_installed("dplyr")
+
+  context <- make_context()
+  main_frame <- make_price_frame(n_per_series = 120)
+
+  split_frame <- make_split(
+    main_frame = main_frame,
+    context = context,
+    type = "first",
+    value = 48,
+    n_ahead = 24,
+    n_skip = 23,
+    n_lag = 0,
+    mode = "slide",
+    exceed = FALSE
+  )
+
+  de_split <- get_split(split_frame, "DE", 1)
+  fr_split <- get_split(split_frame, "FR", 1)
+
+  expect_equal(de_split$train[[1]], fr_split$train[[1]])
+  expect_equal(de_split$test[[1]], fr_split$test[[1]])
+  expect_equal(de_split$bidding_zone, "DE")
+  expect_equal(fr_split$bidding_zone, "FR")
+})
+
+
+test_that("make_split errors when the initial window and horizon exceed the sample size", {
+  skip_if_not_installed("dplyr")
+
+  context <- make_context()
+  main_frame <- make_price_frame(n_per_series = 120)
+
   expect_error(
-    split_index(
-      n_total = 5,
-      n_init = 4,
-      n_ahead = 2,
+    make_split(
+      main_frame = main_frame,
+      context = context,
+      type = "first",
+      value = 110,
+      n_ahead = 20,
+      n_skip = 0,
+      n_lag = 0,
+      mode = "slide",
       exceed = FALSE
     ),
-    "There should be at least 6 observations in `data`"
+    "There should be at least 130 observations in `data`",
+    fixed = TRUE
   )
 })
 
 
-test_that("split_index() errors when n_lag is not a whole number", {
+test_that("make_split errors when n_lag is not a whole number", {
+  skip_if_not_installed("dplyr")
+
+  context <- make_context()
+  main_frame <- make_price_frame(n_per_series = 120)
+
   expect_error(
-    split_index(
-      n_total = 10,
-      n_init = 4,
-      n_ahead = 2,
-      n_lag = 1.5
+    make_split(
+      main_frame = main_frame,
+      context = context,
+      type = "first",
+      value = 48,
+      n_ahead = 24,
+      n_skip = 23,
+      n_lag = 1.5,
+      mode = "slide",
+      exceed = FALSE
     ),
-    "`n_lag` must be a whole number."
+    "`n_lag` must be a whole number.",
+    fixed = TRUE
   )
 })
 
 
-test_that("split_index() errors when n_lag exceeds n_init", {
+test_that("make_split errors when n_lag is larger than the training window", {
+  skip_if_not_installed("dplyr")
+
+  context <- make_context()
+  main_frame <- make_price_frame(n_per_series = 120)
+
   expect_error(
-    split_index(
-      n_total = 10,
-      n_init = 4,
-      n_ahead = 2,
-      n_lag = 5
+    make_split(
+      main_frame = main_frame,
+      context = context,
+      type = "first",
+      value = 48,
+      n_ahead = 24,
+      n_skip = 23,
+      n_lag = 49,
+      mode = "slide",
+      exceed = FALSE
     ),
-    "`n_lag` must be less than or equal to the number of training observations."
+    "`n_lag` must be less than or equal to the number of training observations.",
+    fixed = TRUE
   )
-})
-
-
-test_that("expand_split() expands nested train and test indices", {
-  split_frame <- tibble::tibble(
-    id = "a",
-    n_total = 6,
-    n_init = 3,
-    n_ahead = 2,
-    n_splits = 2,
-    train = list(list(1:3, 2:4)),
-    test = list(list(4:5, 5:6))
-  )
-
-  context <- list(series_id = "id")
-
-  result <- expand_split(
-    split_frame = split_frame,
-    context = context
-  )
-
-  expected <- tibble::tibble(
-    id = c("a", "a"),
-    split = c(1L, 2L),
-    train = list(1:3, 2:4),
-    test = list(4:5, 5:6)
-  )
-
-  expect_s3_class(result, "tbl_df")
-  expect_equal(result, expected)
-})
-
-
-test_that("make_split() creates expanded split frame for one series", {
-  main_frame <- tibble::tibble(
-    id = rep("a", 6),
-    time = 1:6,
-    value = 1:6
-  )
-
-  context <- list(
-    series_id = "id",
-    index_id = "time",
-    value_id = "value"
-  )
-
-  result <- make_split(
-    main_frame = main_frame,
-    context = context,
-    type = "first",
-    value = 3,
-    n_ahead = 2,
-    n_skip = 0,
-    n_lag = 0,
-    mode = "slide",
-    exceed = FALSE
-  )
-
-  expected <- tibble::tibble(
-    id = c("a", "a"),
-    split = c(1L, 2L),
-    train = list(1:3, 2:4),
-    test = list(4:5, 5:6)
-  )
-
-  expect_s3_class(result, "tbl_df")
-  expect_equal(result, expected)
-})
-
-
-test_that("make_split() creates expanded split frame for multiple series", {
-  main_frame <- tibble::tibble(
-    id = c(rep("a", 6), rep("b", 5)),
-    time = c(1:6, 1:5),
-    value = seq_len(11)
-  )
-
-  context <- list(
-    series_id = "id",
-    index_id = "time",
-    value_id = "value"
-  )
-
-  result <- make_split(
-    main_frame = main_frame,
-    context = context,
-    type = "first",
-    value = 3,
-    n_ahead = 2,
-    n_skip = 0,
-    n_lag = 0,
-    mode = "slide",
-    exceed = FALSE
-  )
-
-  expected <- tibble::tibble(
-    id = c("a", "a", "b"),
-    split = c(1L, 2L, 1L),
-    train = list(1:3, 2:4, 1:3),
-    test = list(4:5, 5:6, 4:5)
-  )
-
-  expect_equal(result, expected)
 })
