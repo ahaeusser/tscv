@@ -48,7 +48,6 @@ reference:
     - fitted.DSHW
     - residuals.DSHW
     - model_sum.DSHW
-    - train_dshw
 
 - subtitle: SMEAN
   desc: >
@@ -59,7 +58,6 @@ reference:
     - fitted.SMEAN
     - residuals.SMEAN
     - model_sum.SMEAN
-    - train_smean
 
 - subtitle: SMEDIAN
   desc: >
@@ -70,7 +68,6 @@ reference:
     - fitted.SMEDIAN
     - residuals.SMEDIAN
     - model_sum.SMEDIAN
-    - train_smedian
 
 - subtitle: MEDIAN
   desc: >
@@ -81,7 +78,6 @@ reference:
     - fitted.MEDIAN
     - residuals.MEDIAN
     - model_sum.MEDIAN
-    - train_median
 
 - subtitle: SNAIVE2
   desc: >
@@ -92,7 +88,6 @@ reference:
     - fitted.SNAIVE2
     - residuals.SNAIVE2
     - model_sum.SNAIVE2
-    - train_snaive2
 
 - subtitle: TBATS
   desc: >
@@ -103,7 +98,6 @@ reference:
     - fitted.TBATS
     - residuals.TBATS
     - model_sum.TBATS
-    - train_tbats
 
 - title: Miscellaneous
   desc: >
@@ -118,7 +112,6 @@ reference:
     - estimate_pacf
     - interpolate_missing
     - smooth_outlier
-    - lst_to_env
     - check_data
     - summarise_data
     - summarise_stats
@@ -126,9 +119,6 @@ reference:
     - initialize_split
     - split_index
     - expand_split
-    - file_name
-    - number_string
-    - '%out%'
 
 - title: Data sets
   desc: >

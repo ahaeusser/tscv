@@ -9,11 +9,40 @@ estimate_skewness(x, na_rm = TRUE)
 \arguments{
 \item{x}{Numeric vector.}
 
-\item{na_rm}{Logical value. If \code{TRUE}, missing values are dropped.}
+\item{na_rm}{Logical value. If \code{TRUE}, missing values are removed before
+estimation.}
 }
 \value{
-Numeric value.
+A numeric value giving the estimated skewness.
 }
 \description{
-The function estimates the skewness of a numeric vector.
+Estimate the skewness of a numeric distribution.
 }
+\details{
+The function computes the moment-based skewness
+
+\deqn{
+  \frac{\frac{1}{n}\sum_i (x_i - \bar{x})^3}
+       {\left(\frac{1}{n}\sum_i (x_i - \bar{x})^2\right)^{3/2}}
+}
+
+Missing values are removed by default. Positive values indicate a distribution
+with a longer or heavier right tail; negative values indicate a distribution
+with a longer or heavier left tail.
+}
+\examples{
+x <- c(1, 2, 3, 4, 10, NA)
+
+estimate_skewness(x)
+estimate_skewness(x, na_rm = TRUE)
+
+set.seed(123)
+y <- rexp(100)
+estimate_skewness(y)
+}
+\seealso{
+Other Miscellaneous: 
+\code{\link{estimate_kurtosis}()},
+\code{\link{estimate_mode}()}
+}
+\concept{Miscellaneous}

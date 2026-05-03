@@ -9,11 +9,41 @@ estimate_kurtosis(x, na_rm = TRUE)
 \arguments{
 \item{x}{Numeric vector.}
 
-\item{na_rm}{Logical value. If \code{TRUE}, missing values are dropped.}
+\item{na_rm}{Logical value. If \code{TRUE}, missing values are removed before
+estimation.}
 }
 \value{
-Numeric value.
+A numeric value giving the estimated kurtosis.
 }
 \description{
-The function estimates the kurtosis of a distribution.
+Estimate the kurtosis of a numeric distribution.
 }
+\details{
+The function computes the moment-based kurtosis
+
+\deqn{
+  \frac{n \sum_i (x_i - \bar{x})^4}
+       {\left(\sum_i (x_i - \bar{x})^2\right)^2}
+}
+
+Missing values are removed by default.
+
+This returns the usual kurtosis, not excess kurtosis. A normal distribution
+has kurtosis close to \code{3}.
+}
+\examples{
+x <- c(1, 2, 3, 4, 5, NA)
+
+estimate_kurtosis(x)
+estimate_kurtosis(x, na_rm = TRUE)
+
+set.seed(123)
+y <- rnorm(100)
+estimate_kurtosis(y)
+}
+\seealso{
+Other Miscellaneous: 
+\code{\link{estimate_mode}()},
+\code{\link{estimate_skewness}()}
+}
+\concept{Miscellaneous}

@@ -182,16 +182,10 @@ expanding_split
 ```
 
 Both approaches use the same forecast horizon and rolling-origin
-structure. The difference is how the training sample is updated:
-
-| Approach | Training window | Typical use case |
-|:---|:---|:---|
-| Fixed window | Moves forward with constant length | Recent observations are most relevant |
-| Expanding window | Starts at the same point and grows over time | All historical observations remain useful |
-
-After the splits have been created, they can be passed to the remaining
-`tscv` workflow: slice the training and test samples, estimate
-forecasting models, convert forecasts, and evaluate forecast accuracy.
+structure. The difference is how the training sample is updated. After
+the splits have been created, they can be passed to the remaining `tscv`
+workflow: slice the training and test samples, estimate forecasting
+models, convert forecasts, and evaluate forecast accuracy.
 
 ## Function overview
 
@@ -207,9 +201,8 @@ The following table summarizes the main functions in `tscv` by topic.
 | **Distributional statistics** | [`estimate_mode()`](https://ahaeusser.github.io/tscv/reference/estimate_mode.md), [`estimate_skewness()`](https://ahaeusser.github.io/tscv/reference/estimate_skewness.md), [`estimate_kurtosis()`](https://ahaeusser.github.io/tscv/reference/estimate_kurtosis.md) | Estimate descriptive distributional statistics |
 | **Data preprocessing** | [`interpolate_missing()`](https://ahaeusser.github.io/tscv/reference/interpolate_missing.md), [`smooth_outlier()`](https://ahaeusser.github.io/tscv/reference/smooth_outlier.md) | Handle missing values and outliers |
 | **Visualization** | [`plot_line()`](https://ahaeusser.github.io/tscv/reference/plot_line.md), [`plot_point()`](https://ahaeusser.github.io/tscv/reference/plot_point.md), [`plot_bar()`](https://ahaeusser.github.io/tscv/reference/plot_bar.md), [`plot_histogram()`](https://ahaeusser.github.io/tscv/reference/plot_histogram.md), [`plot_density()`](https://ahaeusser.github.io/tscv/reference/plot_density.md), [`plot_qq()`](https://ahaeusser.github.io/tscv/reference/plot_qq.md) | Create common exploratory plots |
-| **Themes and scales** | [`theme_tscv()`](https://ahaeusser.github.io/tscv/reference/theme_tscv.md), `theme_tscv_dark()`, [`scale_color_tscv()`](https://ahaeusser.github.io/tscv/reference/scale_color_tscv.md), [`scale_fill_tscv()`](https://ahaeusser.github.io/tscv/reference/scale_fill_tscv.md), [`tscv_cols()`](https://ahaeusser.github.io/tscv/reference/tscv_cols.md), [`tscv_pal()`](https://ahaeusser.github.io/tscv/reference/tscv_pal.md) | Apply `tscv` themes and colour palettes |
-| **Benchmark models** | [`SMEAN()`](https://ahaeusser.github.io/tscv/reference/SMEAN.md), [`SMEDIAN()`](https://ahaeusser.github.io/tscv/reference/SMEDIAN.md), [`MEDIAN()`](https://ahaeusser.github.io/tscv/reference/MEDIAN.md), [`SNAIVE2()`](https://ahaeusser.github.io/tscv/reference/SNAIVE2.md) | Additional benchmark models compatible with `fable` |
-| **Additional forecasting models** | [`DSHW()`](https://ahaeusser.github.io/tscv/reference/DSHW.md), [`TBATS()`](https://ahaeusser.github.io/tscv/reference/TBATS.md) | Additional forecasting models compatible with `fable` |
+| **Themes and scales** | [`theme_tscv()`](https://ahaeusser.github.io/tscv/reference/theme_tscv.md), `theme_tscv_dark()`, [`scale_color_tscv()`](https://ahaeusser.github.io/tscv/reference/scale_color_tscv.md), [`scale_fill_tscv()`](https://ahaeusser.github.io/tscv/reference/scale_fill_tscv.md), [`tscv_cols()`](https://ahaeusser.github.io/tscv/reference/tscv_cols.md), [`tscv_pal()`](https://ahaeusser.github.io/tscv/reference/tscv_pal.md) | Apply `tscv` themes and color palettes |
+| **Forecasting models** | [`DSHW()`](https://ahaeusser.github.io/tscv/reference/DSHW.md), [`TBATS()`](https://ahaeusser.github.io/tscv/reference/TBATS.md), [`SMEAN()`](https://ahaeusser.github.io/tscv/reference/SMEAN.md), [`SMEDIAN()`](https://ahaeusser.github.io/tscv/reference/SMEDIAN.md), [`MEDIAN()`](https://ahaeusser.github.io/tscv/reference/MEDIAN.md), [`SNAIVE2()`](https://ahaeusser.github.io/tscv/reference/SNAIVE2.md) | Additional forecasting models compatible with `fable` |
 
 ## Data sets
 

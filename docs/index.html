@@ -200,32 +200,7 @@ Expanding window cross-validation: the training window grows while the test wind
 <span><span class="co">#&gt;  9 DE               9 &lt;int [2,592]&gt; &lt;int [24]&gt;</span></span>
 <span><span class="co">#&gt; 10 DE              10 &lt;int [2,616]&gt; &lt;int [24]&gt;</span></span>
 <span><span class="co">#&gt; # ℹ 1,252 more rows</span></span></code></pre></div>
-<p>Both approaches use the same forecast horizon and rolling-origin structure. The difference is how the training sample is updated:</p>
-<table class="table">
-<colgroup>
-<col width="33%">
-<col width="33%">
-<col width="33%">
-</colgroup>
-<thead><tr>
-<th align="left">Approach</th>
-<th align="left">Training window</th>
-<th align="left">Typical use case</th>
-</tr></thead>
-<tbody>
-<tr>
-<td align="left">Fixed window</td>
-<td align="left">Moves forward with constant length</td>
-<td align="left">Recent observations are most relevant</td>
-</tr>
-<tr>
-<td align="left">Expanding window</td>
-<td align="left">Starts at the same point and grows over time</td>
-<td align="left">All historical observations remain useful</td>
-</tr>
-</tbody>
-</table>
-<p>After the splits have been created, they can be passed to the remaining <code>tscv</code> workflow: slice the training and test samples, estimate forecasting models, convert forecasts, and evaluate forecast accuracy.</p>
+<p>Both approaches use the same forecast horizon and rolling-origin structure. The difference is how the training sample is updated. After the splits have been created, they can be passed to the remaining <code>tscv</code> workflow: slice the training and test samples, estimate forecasting models, convert forecasts, and evaluate forecast accuracy.</p>
 </div>
 </div>
 <div class="section level2">
@@ -303,20 +278,12 @@ Expanding window cross-validation: the training window grows while the test wind
 <td align="left">
 <code><a href="reference/theme_tscv.html">theme_tscv()</a></code>, <code>theme_tscv_dark()</code>, <code><a href="reference/scale_color_tscv.html">scale_color_tscv()</a></code>, <code><a href="reference/scale_fill_tscv.html">scale_fill_tscv()</a></code>, <code><a href="reference/tscv_cols.html">tscv_cols()</a></code>, <code><a href="reference/tscv_pal.html">tscv_pal()</a></code>
 </td>
-<td align="left">Apply <code>tscv</code> themes and colour palettes</td>
+<td align="left">Apply <code>tscv</code> themes and color palettes</td>
 </tr>
 <tr>
-<td align="left"><strong>Benchmark models</strong></td>
+<td align="left"><strong>Forecasting models</strong></td>
 <td align="left">
-<code><a href="reference/SMEAN.html">SMEAN()</a></code>, <code><a href="reference/SMEDIAN.html">SMEDIAN()</a></code>, <code><a href="reference/MEDIAN.html">MEDIAN()</a></code>, <code><a href="reference/SNAIVE2.html">SNAIVE2()</a></code>
-</td>
-<td align="left">Additional benchmark models compatible with <code>fable</code>
-</td>
-</tr>
-<tr>
-<td align="left"><strong>Additional forecasting models</strong></td>
-<td align="left">
-<code><a href="reference/DSHW.html">DSHW()</a></code>, <code><a href="reference/TBATS.html">TBATS()</a></code>
+<code><a href="reference/DSHW.html">DSHW()</a></code>, <code><a href="reference/TBATS.html">TBATS()</a></code>, <code><a href="reference/SMEAN.html">SMEAN()</a></code>, <code><a href="reference/SMEDIAN.html">SMEDIAN()</a></code>, <code><a href="reference/MEDIAN.html">MEDIAN()</a></code>, <code><a href="reference/SNAIVE2.html">SNAIVE2()</a></code>
 </td>
 <td align="left">Additional forecasting models compatible with <code>fable</code>
 </td>

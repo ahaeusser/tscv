@@ -2,20 +2,45 @@
 % Please edit documentation in R/utils.R
 \name{estimate_mode}
 \alias{estimate_mode}
-\title{Estimate mode of a distribution based on Kernel Density Estimation}
+\title{Estimate the mode of a distribution}
 \usage{
 estimate_mode(x, na_rm = TRUE, ...)
 }
 \arguments{
 \item{x}{Numeric vector.}
 
-\item{na_rm}{Logical value. If \code{TRUE}, missing values are dropped.}
+\item{na_rm}{Logical value. If \code{TRUE}, missing values are removed before
+estimation.}
 
-\item{...}{Further arguments passed to \code{stats::densitiy()}.}
+\item{...}{Further arguments passed to \code{stats::density()}.}
 }
 \value{
-mode Numeric value. The mode of the distribution.
+A numeric value giving the estimated mode of the distribution.
 }
 \description{
-The function estimates the mode of a distribution based on Kernel Density Estimation.
+Estimate the mode of a numeric distribution using kernel density estimation.
 }
+\details{
+The function computes a kernel density estimate with \code{stats::density()}
+and returns the value of \code{x} at which the estimated density is largest.
+
+Missing values are removed by default. Additional arguments are passed to
+\code{stats::density()}, for example \code{bw}, \code{kernel}, or \code{n}.
+}
+\examples{
+x <- c(1, 1, 2, 2, 2, 3, 4, NA)
+
+estimate_mode(x)
+estimate_mode(x, na_rm = TRUE)
+estimate_mode(x, bw = "nrd0")
+
+set.seed(123)
+y <- rnorm(100, mean = 5)
+estimate_mode(y)
+}
+\seealso{
+Other Miscellaneous: 
+\code{\link{estimate_kurtosis}()},
+\code{\link{estimate_skewness}()}
+}
+\concept{Miscellaneous}

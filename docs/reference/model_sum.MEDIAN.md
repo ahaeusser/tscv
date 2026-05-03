@@ -1,6 +1,6 @@
-# Provide a succinct summary of a trained median model
+# Summarize a median model
 
-Provide a succinct summary of a trained median model.
+Return a short model label for a fitted `MEDIAN` model.
 
 ## Usage
 
@@ -13,8 +13,37 @@ model_sum(x)
 
 - x:
 
-  An object of class `MEDIAN`.
+  A fitted `MEDIAN` model object.
 
 ## Value
 
-Model summary as character value.
+A character string.
+
+## See also
+
+Other MEDIAN:
+[`MEDIAN()`](https://ahaeusser.github.io/tscv/reference/MEDIAN.md),
+[`fitted.MEDIAN()`](https://ahaeusser.github.io/tscv/reference/fitted.MEDIAN.md),
+[`forecast.MEDIAN()`](https://ahaeusser.github.io/tscv/reference/forecast.MEDIAN.md),
+[`residuals.MEDIAN()`](https://ahaeusser.github.io/tscv/reference/residuals.MEDIAN.md)
+
+## Examples
+
+``` r
+library(dplyr)
+library(tsibble)
+library(fabletools)
+
+train_frame <- M4_monthly_data |>
+  filter(series == first(series)) |>
+  as_tsibble(index = index)
+
+model_frame <- train_frame |>
+  model("MEDIAN" = MEDIAN(value ~ window()))
+
+model_frame
+#> # A mable: 1 x 1
+#>     MEDIAN
+#>    <model>
+#> 1 <MEDIAN>
+```

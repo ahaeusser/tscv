@@ -221,14 +221,7 @@ expanding_split <- make_split(
 expanding_split
 ```
 
-Both approaches use the same forecast horizon and rolling-origin structure. The difference is how the training sample is updated:
-
-| Approach | Training window | Typical use case |
-|:---|:---|:---|
-| Fixed window | Moves forward with constant length | Recent observations are most relevant |
-| Expanding window | Starts at the same point and grows over time | All historical observations remain useful |
-
-After the splits have been created, they can be passed to the remaining `tscv` workflow: slice the training and test samples, estimate forecasting models, convert forecasts, and evaluate forecast accuracy.
+Both approaches use the same forecast horizon and rolling-origin structure. The difference is how the training sample is updated. After the splits have been created, they can be passed to the remaining `tscv` workflow: slice the training and test samples, estimate forecasting models, convert forecasts, and evaluate forecast accuracy.
 
 ## Function overview
 
@@ -244,9 +237,8 @@ The following table summarizes the main functions in `tscv` by topic.
 | **Distributional statistics** | `estimate_mode()`, `estimate_skewness()`, `estimate_kurtosis()` | Estimate descriptive distributional statistics |
 | **Data preprocessing** | `interpolate_missing()`, `smooth_outlier()` | Handle missing values and outliers |
 | **Visualization** | `plot_line()`, `plot_point()`, `plot_bar()`, `plot_histogram()`, `plot_density()`, `plot_qq()` | Create common exploratory plots |
-| **Themes and scales** | `theme_tscv()`, `theme_tscv_dark()`, `scale_color_tscv()`, `scale_fill_tscv()`, `tscv_cols()`, `tscv_pal()` | Apply `tscv` themes and colour palettes |
-| **Benchmark models** | `SMEAN()`, `SMEDIAN()`, `MEDIAN()`, `SNAIVE2()` | Additional benchmark models compatible with `fable` |
-| **Additional forecasting models** | `DSHW()`, `TBATS()` | Additional forecasting models compatible with `fable` |
+| **Themes and scales** | `theme_tscv()`, `theme_tscv_dark()`, `scale_color_tscv()`, `scale_fill_tscv()`, `tscv_cols()`, `tscv_pal()` | Apply `tscv` themes and color palettes |
+| **Forecasting models** | `DSHW()`, `TBATS()`, `SMEAN()`, `SMEDIAN()`, `MEDIAN()`, `SNAIVE2()` | Additional forecasting models compatible with `fable` |
 
 ## Data sets
 

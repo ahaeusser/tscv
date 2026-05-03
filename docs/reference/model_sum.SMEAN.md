@@ -1,6 +1,6 @@
-# Provide a succinct summary of a trained seasonal mean model
+# Summarize a seasonal mean model
 
-Provide a succinct summary of a trained seasonal mean model.
+Return a short model label for a fitted `SMEAN` model.
 
 ## Usage
 
@@ -13,8 +13,37 @@ model_sum(x)
 
 - x:
 
-  An object of class `SMEAN`.
+  A fitted `SMEAN` model object.
 
 ## Value
 
-Model summary as character value.
+A character string.
+
+## See also
+
+Other SMEAN:
+[`SMEAN()`](https://ahaeusser.github.io/tscv/reference/SMEAN.md),
+[`fitted.SMEAN()`](https://ahaeusser.github.io/tscv/reference/fitted.SMEAN.md),
+[`forecast.SMEAN()`](https://ahaeusser.github.io/tscv/reference/forecast.SMEAN.md),
+[`residuals.SMEAN()`](https://ahaeusser.github.io/tscv/reference/residuals.SMEAN.md)
+
+## Examples
+
+``` r
+library(dplyr)
+library(tsibble)
+library(fabletools)
+
+train_frame <- M4_monthly_data |>
+  filter(series == first(series)) |>
+  as_tsibble(index = index)
+
+model_frame <- train_frame |>
+  model("SMEAN" = SMEAN(value ~ lag("year")))
+
+model_frame
+#> # A mable: 1 x 1
+#>     SMEAN
+#>   <model>
+#> 1 <SMEAN>
+```

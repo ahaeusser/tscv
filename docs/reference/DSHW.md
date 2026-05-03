@@ -1,8 +1,7 @@
-# Automatic train a DSHW model
+# Double Seasonal Holt-Winters model
 
-Automatic train a Double Seasonal Holt-Winters model (DSHW). This
-function is a wrapper for
-[`forecast::dshw()`](https://pkg.robjhyndman.com/forecast/reference/dshw.html).
+Specify a Double Seasonal Holt-Winters model for use with
+[`fabletools::model()`](https://fabletools.tidyverts.org/reference/model.html).
 
 ## Usage
 
@@ -14,13 +13,73 @@ DSHW(formula, ...)
 
 - formula:
 
-  Model specification (see "Specials" section, currently not in use ...)
+  A model formula specifying the response variable, for example `value`.
 
 - ...:
 
   Further arguments passed to
-  [`forecast::dshw()`](https://pkg.robjhyndman.com/forecast/reference/dshw.html).
+  [`forecast::dshw()`](https://pkg.robjhyndman.com/forecast/reference/dshw.html),
+  including `periods`.
 
 ## Value
 
-dshw_model An object of class `DSHW`.
+A model definition that can be used inside
+[`fabletools::model()`](https://fabletools.tidyverts.org/reference/model.html).
+
+## Details
+
+`DSHW()` is a model specification wrapper around
+[`forecast::dshw()`](https://pkg.robjhyndman.com/forecast/reference/dshw.html)
+for the `fable`, `tsibble`, and `fabletools` ecosystem.
+
+The model is useful for time series with two important seasonal
+patterns, such as hourly data with daily and weekly seasonality.
+
+The seasonal periods must be supplied through the `periods` argument.
+
+## See also
+
+Other DSHW:
+[`fitted.DSHW()`](https://ahaeusser.github.io/tscv/reference/fitted.DSHW.md),
+[`forecast.DSHW()`](https://ahaeusser.github.io/tscv/reference/forecast.DSHW.md),
+[`model_sum.DSHW()`](https://ahaeusser.github.io/tscv/reference/model_sum.DSHW.md),
+[`residuals.DSHW()`](https://ahaeusser.github.io/tscv/reference/residuals.DSHW.md)
+
+## Examples
+
+``` r
+# \donttest{
+library(dplyr)
+#> 
+#> Attaching package: 'dplyr'
+#> The following objects are masked from 'package:stats':
+#> 
+#>     filter, lag
+#> The following objects are masked from 'package:base':
+#> 
+#>     intersect, setdiff, setequal, union
+library(tsibble)
+#> 
+#> Attaching package: 'tsibble'
+#> The following objects are masked from 'package:base':
+#> 
+#>     intersect, setdiff, union
+library(fabletools)
+
+train_frame <- elec_price |>
+  filter(bidding_zone == "DE") |>
+  slice_head(n = 24 * 28) |>
+  as_tsibble(index = time)
+
+model_frame <- train_frame |>
+  model("DSHW" = DSHW(value, periods = c(24, 168)))
+#> Warning: 1 error encountered for DSHW
+#> [1] dshw not suitable when data contain zeros or negative numbers
+
+model_frame
+#> # A mable: 1 x 1
+#>           DSHW
+#>        <model>
+#> 1 <NULL model>
+# }
+```

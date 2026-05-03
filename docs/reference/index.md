@@ -61,17 +61,15 @@ Functions and utilities for data visualization
 The DSHW model and its supported methods
 
 - [`DSHW()`](https://ahaeusser.github.io/tscv/reference/DSHW.md) :
-  Automatic train a DSHW model
+  Double Seasonal Holt-Winters model
 - [`forecast(`*`<DSHW>`*`)`](https://ahaeusser.github.io/tscv/reference/forecast.DSHW.md)
-  : Forecast a trained DSHW model
+  : Forecast a DSHW model
 - [`fitted(`*`<DSHW>`*`)`](https://ahaeusser.github.io/tscv/reference/fitted.DSHW.md)
-  : Extract fitted values from a trained DSHW model
+  : Extract fitted values from a DSHW model
 - [`residuals(`*`<DSHW>`*`)`](https://ahaeusser.github.io/tscv/reference/residuals.DSHW.md)
-  : Extract residuals from a trained DSHW model
+  : Extract residuals from a DSHW model
 - [`model_sum(`*`<DSHW>`*`)`](https://ahaeusser.github.io/tscv/reference/model_sum.DSHW.md)
-  : Provide a succinct summary of a trained DSHW model
-- [`train_dshw()`](https://ahaeusser.github.io/tscv/reference/train_dshw.md)
-  : Double Seasonal Holt-Winters model
+  : Summarize a DSHW model
 
 ### SMEAN
 
@@ -80,15 +78,13 @@ The SMEAN model and its supported methods
 - [`SMEAN()`](https://ahaeusser.github.io/tscv/reference/SMEAN.md) :
   Seasonal mean model
 - [`forecast(`*`<SMEAN>`*`)`](https://ahaeusser.github.io/tscv/reference/forecast.SMEAN.md)
-  : Forecast a trained seasonal mean model
+  : Forecast a seasonal mean model
 - [`fitted(`*`<SMEAN>`*`)`](https://ahaeusser.github.io/tscv/reference/fitted.SMEAN.md)
-  : Extract fitted values from a trained seasonal mean model
+  : Extract fitted values from a seasonal mean model
 - [`residuals(`*`<SMEAN>`*`)`](https://ahaeusser.github.io/tscv/reference/residuals.SMEAN.md)
-  : Extract residuals from a trained seasonal mean model
+  : Extract residuals from a seasonal mean model
 - [`model_sum(`*`<SMEAN>`*`)`](https://ahaeusser.github.io/tscv/reference/model_sum.SMEAN.md)
-  : Provide a succinct summary of a trained seasonal mean model
-- [`train_smean()`](https://ahaeusser.github.io/tscv/reference/train_smean.md)
-  : Seasonal mean model
+  : Summarize a seasonal mean model
 
 ### SMEDIAN
 
@@ -97,15 +93,13 @@ The SMEDIAN model and its supported methods
 - [`SMEDIAN()`](https://ahaeusser.github.io/tscv/reference/SMEDIAN.md) :
   Seasonal median model
 - [`forecast(`*`<SMEDIAN>`*`)`](https://ahaeusser.github.io/tscv/reference/forecast.SMEDIAN.md)
-  : Forecast a trained seasonal median model
+  : Forecast a seasonal median model
 - [`fitted(`*`<SMEDIAN>`*`)`](https://ahaeusser.github.io/tscv/reference/fitted.SMEDIAN.md)
-  : Extract fitted values from a trained seasonal median model
+  : Extract fitted values from a seasonal median model
 - [`residuals(`*`<SMEDIAN>`*`)`](https://ahaeusser.github.io/tscv/reference/residuals.SMEDIAN.md)
-  : Extract residuals from a trained seasonal median model
+  : Extract residuals from a seasonal median model
 - [`model_sum(`*`<SMEDIAN>`*`)`](https://ahaeusser.github.io/tscv/reference/model_sum.SMEDIAN.md)
-  : Provide a succinct summary of a trained seasonal median model
-- [`train_smedian()`](https://ahaeusser.github.io/tscv/reference/train_smedian.md)
-  : Seasonal median model
+  : Summarize a seasonal median model
 
 ### MEDIAN
 
@@ -114,56 +108,50 @@ The MEDIAN model and its supported methods
 - [`MEDIAN()`](https://ahaeusser.github.io/tscv/reference/MEDIAN.md) :
   Median model
 - [`forecast(`*`<MEDIAN>`*`)`](https://ahaeusser.github.io/tscv/reference/forecast.MEDIAN.md)
-  : Forecast a trained median model
+  : Forecast a median model
 - [`fitted(`*`<MEDIAN>`*`)`](https://ahaeusser.github.io/tscv/reference/fitted.MEDIAN.md)
-  : Extract fitted values from a trained median model
+  : Extract fitted values from a median model
 - [`residuals(`*`<MEDIAN>`*`)`](https://ahaeusser.github.io/tscv/reference/residuals.MEDIAN.md)
-  : Extract residuals from a trained median model
+  : Extract residuals from a median model
 - [`model_sum(`*`<MEDIAN>`*`)`](https://ahaeusser.github.io/tscv/reference/model_sum.MEDIAN.md)
-  : Provide a succinct summary of a trained median model
-- [`train_median()`](https://ahaeusser.github.io/tscv/reference/train_median.md)
-  : Median model
+  : Summarize a median model
 
 ### SNAIVE2
 
 The SNAIVE2 model and its supported methods
 
 - [`SNAIVE2()`](https://ahaeusser.github.io/tscv/reference/SNAIVE2.md) :
-  Seasonal naive model
+  Seasonal naive model with weekday-specific lags
 - [`forecast(`*`<SNAIVE2>`*`)`](https://ahaeusser.github.io/tscv/reference/forecast.SNAIVE2.md)
-  : Forecast a trained seasonal naive model
+  : Forecast a SNAIVE2 model
 - [`fitted(`*`<SNAIVE2>`*`)`](https://ahaeusser.github.io/tscv/reference/fitted.SNAIVE2.md)
-  : Extract fitted values from a trained seasonal naive model
+  : Extract fitted values from a SNAIVE2 model
 - [`residuals(`*`<SNAIVE2>`*`)`](https://ahaeusser.github.io/tscv/reference/residuals.SNAIVE2.md)
-  : Extract residuals from a trained seasonal naive model
+  : Extract residuals from a SNAIVE2 model
 - [`model_sum(`*`<SNAIVE2>`*`)`](https://ahaeusser.github.io/tscv/reference/model_sum.SNAIVE2.md)
-  : Provide a succinct summary of a trained seasonal naive model
-- [`train_snaive2()`](https://ahaeusser.github.io/tscv/reference/train_snaive2.md)
-  : Seasonal naive model
+  : Summarize a SNAIVE2 model
 
 ### TBATS
 
 The TBATS model and its supported methods
 
 - [`TBATS()`](https://ahaeusser.github.io/tscv/reference/TBATS.md) :
-  Automatic train a TBATS model
+  TBATS model
 - [`forecast(`*`<TBATS>`*`)`](https://ahaeusser.github.io/tscv/reference/forecast.TBATS.md)
-  : Forecast a trained TBATS model
+  : Forecast a TBATS model
 - [`fitted(`*`<TBATS>`*`)`](https://ahaeusser.github.io/tscv/reference/fitted.TBATS.md)
-  : Extract fitted values from a trained TBATS model
+  : Extract fitted values from a TBATS model
 - [`residuals(`*`<TBATS>`*`)`](https://ahaeusser.github.io/tscv/reference/residuals.TBATS.md)
-  : Extract residuals from a trained TBATS model
+  : Extract residuals from a TBATS model
 - [`model_sum(`*`<TBATS>`*`)`](https://ahaeusser.github.io/tscv/reference/model_sum.TBATS.md)
-  : Provide a succinct summary of a trained TBATS model
-- [`train_tbats()`](https://ahaeusser.github.io/tscv/reference/train_tbats.md)
-  : TBATS model
+  : Summarize a TBATS model
 
 ## Miscellaneous
 
 Functions and utilities for data preparation, etc.
 
 - [`estimate_mode()`](https://ahaeusser.github.io/tscv/reference/estimate_mode.md)
-  : Estimate mode of a distribution based on Kernel Density Estimation
+  : Estimate the mode of a distribution
 - [`estimate_kurtosis()`](https://ahaeusser.github.io/tscv/reference/estimate_kurtosis.md)
   : Estimate kurtosis
 - [`estimate_skewness()`](https://ahaeusser.github.io/tscv/reference/estimate_skewness.md)
@@ -180,8 +168,6 @@ Functions and utilities for data preparation, etc.
   : Interpolate missing values
 - [`smooth_outlier()`](https://ahaeusser.github.io/tscv/reference/smooth_outlier.md)
   : Identify and replace outliers
-- [`lst_to_env()`](https://ahaeusser.github.io/tscv/reference/lst_to_env.md)
-  : Assign objects within a list to an environment
 - [`check_data()`](https://ahaeusser.github.io/tscv/reference/check_data.md)
   : Check, convert and shape the input data
 - [`summarise_data()`](https://ahaeusser.github.io/tscv/reference/summarise_data.md)
@@ -196,12 +182,6 @@ Functions and utilities for data preparation, etc.
   : Create indices for train and test splits.
 - [`expand_split()`](https://ahaeusser.github.io/tscv/reference/expand_split.md)
   : Expand the split_frame
-- [`file_name()`](https://ahaeusser.github.io/tscv/reference/file_name.md)
-  : Create a name for a folder or file
-- [`number_string()`](https://ahaeusser.github.io/tscv/reference/number_string.md)
-  : Helper function to create numbered strings.
-- [`` `%out%` ``](https://ahaeusser.github.io/tscv/reference/grapes-out-grapes.md)
-  : Negated value matching
 
 ## Data sets
 
