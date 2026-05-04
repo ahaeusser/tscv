@@ -1,9 +1,11 @@
 
-test_that("make_future converts a fable to a future frame", {
+test_that("make_accuracy returns accuracy by horizon", {
   skip_if_not_installed("dplyr")
   skip_if_not_installed("tsibble")
   skip_if_not_installed("fable")
   skip_if_not_installed("fabletools")
+  skip_if_not_installed("tidyr")
+  skip_if_not_installed("purrr")
 
   library(dplyr)
   library(tsibble)
@@ -54,31 +56,41 @@ test_that("make_future converts a fable to a future frame", {
     context = context
   )
 
-  expect_s3_class(future_frame, "tbl_df")
+  accuracy_horizon <- make_accuracy(
+    future_frame = future_frame,
+    main_frame = main_frame,
+    context = context,
+    dimension = "horizon"
+  )
 
-  expect_true(all(
-    c("index", "series", "model", "split", "horizon", "point") %in%
-      names(future_frame)
-  ))
+  expect_s3_class(accuracy_horizon, "tbl_df")
+  expect_named(
+    accuracy_horizon,
+    c("series", "model", "dimension", "n", "metric", "value")
+  )
 
-  expect_equal(names(future_frame)[1:6], c(
-    "index", "series", "model", "split", "horizon", "point"
-  ))
+  expect_equal(unique(accuracy_horizon$model), "SNAIVE")
+  expect_equal(unique(accuracy_horizon$dimension), "horizon")
+  expect_equal(sort(unique(accuracy_horizon$series)), c("M14395", "M23100"))
+  expect_equal(sort(unique(accuracy_horizon$n)), 1:18)
 
-  expect_equal(unique(future_frame$model), "SNAIVE")
-  expect_equal(sort(unique(future_frame$series)), c("M14395", "M23100"))
-  expect_equal(sort(unique(future_frame$horizon)), 1:18)
+  expect_equal(
+    sort(unique(accuracy_horizon$metric)),
+    c("MAE", "MAPE", "ME", "MPE", "MSE", "RMSE", "sMAPE")
+  )
 
-  expect_true(is.numeric(future_frame$point))
-  expect_true(all(is.finite(future_frame$point)))
+  expect_true(all(is.finite(accuracy_horizon$value)))
+  expect_equal(nrow(accuracy_horizon), 2 * 1 * 18 * 7)
 })
 
 
-test_that("make_future returns one row per forecast horizon, series, split, and model", {
+test_that("make_accuracy returns accuracy by split", {
   skip_if_not_installed("dplyr")
   skip_if_not_installed("tsibble")
   skip_if_not_installed("fable")
   skip_if_not_installed("fabletools")
+  skip_if_not_installed("tidyr")
+  skip_if_not_installed("purrr")
 
   library(dplyr)
   library(tsibble)
@@ -129,24 +141,45 @@ test_that("make_future returns one row per forecast horizon, series, split, and 
     context = context
   )
 
-  expected_rows <- fable_frame |>
-    as_tibble() |>
-    nrow()
+  accuracy_split <- make_accuracy(
+    future_frame = future_frame,
+    main_frame = main_frame,
+    context = context,
+    dimension = "split"
+  )
 
-  expect_equal(nrow(future_frame), expected_rows)
+  expect_s3_class(accuracy_split, "tbl_df")
+  expect_named(
+    accuracy_split,
+    c("series", "model", "dimension", "n", "metric", "value")
+  )
 
-  rows_per_group <- future_frame |>
-    count(series, model, split)
+  expect_equal(unique(accuracy_split$model), "SNAIVE")
+  expect_equal(unique(accuracy_split$dimension), "split")
+  expect_equal(sort(unique(accuracy_split$series)), c("M14395", "M23100"))
 
-  expect_true(all(rows_per_group$n == 18))
+  expect_equal(
+    sort(unique(accuracy_split$metric)),
+    c("MAE", "MAPE", "ME", "MPE", "MSE", "RMSE", "sMAPE")
+  )
+
+  expected_rows <- future_frame |>
+    distinct(series, model, split) |>
+    summarise(n = n() * 7) |>
+    pull(n)
+
+  expect_equal(nrow(accuracy_split), expected_rows)
+  expect_true(all(is.finite(accuracy_split$value)))
 })
 
 
-test_that("make_future works with multiple models", {
+test_that("make_accuracy returns relative accuracy with benchmark", {
   skip_if_not_installed("dplyr")
   skip_if_not_installed("tsibble")
   skip_if_not_installed("fable")
   skip_if_not_installed("fabletools")
+  skip_if_not_installed("tidyr")
+  skip_if_not_installed("purrr")
 
   library(dplyr)
   library(tsibble)
@@ -198,21 +231,46 @@ test_that("make_future works with multiple models", {
     context = context
   )
 
-  expect_s3_class(future_frame, "tbl_df")
-  expect_equal(sort(unique(future_frame$model)), c("MEAN", "SNAIVE"))
+  accuracy_split <- make_accuracy(
+    future_frame = future_frame,
+    main_frame = main_frame,
+    context = context,
+    dimension = "split",
+    benchmark = "SNAIVE"
+  )
 
-  rows_per_group <- future_frame |>
-    count(series, model, split)
+  expect_s3_class(accuracy_split, "tbl_df")
+  expect_named(
+    accuracy_split,
+    c("series", "model", "dimension", "n", "metric", "value")
+  )
 
-  expect_true(all(rows_per_group$n == 18))
+  expect_equal(unique(accuracy_split$dimension), "split")
+  expect_equal(sort(unique(accuracy_split$model)), c("MEAN", "SNAIVE"))
+  expect_true("rMAE" %in% accuracy_split$metric)
+
+  benchmark_rmae <- accuracy_split |>
+    filter(model == "SNAIVE", metric == "rMAE")
+
+  model_rmae <- accuracy_split |>
+    filter(model == "MEAN", metric == "rMAE")
+
+  expect_true(nrow(benchmark_rmae) > 0)
+  expect_true(nrow(model_rmae) > 0)
+
+  expect_equal(benchmark_rmae$value, rep(1, nrow(benchmark_rmae)))
+  expect_true(all(is.finite(model_rmae$value)))
+  expect_true(all(model_rmae$value > 0))
 })
 
 
-test_that("make_future creates horizon within each forecast group", {
+test_that("make_accuracy returns expected metric values", {
   skip_if_not_installed("dplyr")
   skip_if_not_installed("tsibble")
   skip_if_not_installed("fable")
   skip_if_not_installed("fabletools")
+  skip_if_not_installed("tidyr")
+  skip_if_not_installed("purrr")
 
   library(dplyr)
   library(tsibble)
@@ -263,88 +321,35 @@ test_that("make_future creates horizon within each forecast group", {
     context = context
   )
 
-  horizon_check <- future_frame |>
-    group_by(series, model, split) |>
-    summarise(
-      first_horizon = first(horizon),
-      last_horizon = last(horizon),
-      n_horizons = n_distinct(horizon),
-      .groups = "drop"
-    )
-
-  expect_true(all(horizon_check$first_horizon == 1))
-  expect_true(all(horizon_check$last_horizon == 18))
-  expect_true(all(horizon_check$n_horizons == 18))
-})
-
-
-test_that("make_future point forecasts match the fable mean forecasts", {
-  skip_if_not_installed("dplyr")
-  skip_if_not_installed("tsibble")
-  skip_if_not_installed("fable")
-  skip_if_not_installed("fabletools")
-
-  library(dplyr)
-  library(tsibble)
-  library(fable)
-  library(fabletools)
-
-  context <- list(
-    series_id = "series",
-    value_id = "value",
-    index_id = "index"
-  )
-
-  main_frame <- M4_monthly_data |>
-    filter(series %in% c("M23100", "M14395"))
-
-  split_frame <- make_split(
+  accuracy_split <- make_accuracy(
+    future_frame = future_frame,
     main_frame = main_frame,
     context = context,
-    type = "first",
-    value = 120,
-    n_ahead = 18,
-    n_skip = 17,
-    n_lag = 0,
-    mode = "stretch",
-    exceed = FALSE
+    dimension = "split"
   )
 
-  train_frame <- slice_train(
-    main_frame = main_frame,
-    split_frame = split_frame,
-    context = context
-  ) |>
-    as_tsibble(
-      index = index,
-      key = c(series, split)
-    )
+  joined_frame <- future_frame |>
+    left_join(main_frame, by = c("series", "index")) |>
+    filter(series == "M14395", model == "SNAIVE", split == 1)
 
-  model_frame <- train_frame |>
-    model(
-      "SNAIVE" = SNAIVE(value ~ lag("year"))
-    )
-
-  fable_frame <- model_frame |>
-    forecast(h = 18)
-
-  future_frame <- make_future(
-    fable = fable_frame,
-    context = context
+  expected_mae <- mae_vec(
+    truth = joined_frame$value,
+    estimate = joined_frame$point
   )
 
-  fable_mean <- fable_frame |>
-    as_tibble() |>
-    transmute(
-      index = index,
-      series = series,
-      model = .model,
-      split = split,
-      point = .mean
-    )
+  expected_rmse <- rmse_vec(
+    truth = joined_frame$value,
+    estimate = joined_frame$point
+  )
 
-  future_points <- future_frame |>
-    select(index, series, model, split, point)
+  actual_mae <- accuracy_split |>
+    filter(series == "M14395", model == "SNAIVE", n == 1, metric == "MAE") |>
+    pull(value)
 
-  expect_equal(future_points, fable_mean)
+  actual_rmse <- accuracy_split |>
+    filter(series == "M14395", model == "SNAIVE", n == 1, metric == "RMSE") |>
+    pull(value)
+
+  expect_equal(actual_mae, expected_mae)
+  expect_equal(actual_rmse, expected_rmse)
 })

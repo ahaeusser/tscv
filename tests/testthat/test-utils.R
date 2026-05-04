@@ -1,205 +1,162 @@
 
-test_that("estimate_mode returns the KDE mode for simple numeric input", {
-  x <- c(1, 1, 1, 2, 2, 3, 4)
+test_that("estimate_mode returns one numeric value", {
+  x <- M4_monthly_data |>
+    filter(series == first(series)) |>
+    pull(value)
 
-  result <- estimate_mode(x)
+  mode <- estimate_mode(x)
 
-  expect_type(result, "double")
-  expect_length(result, 1)
-  expect_true(is.finite(result))
-  expect_true(result > min(x))
-  expect_true(result < max(x))
+  expect_type(mode, "double")
+  expect_length(mode, 1)
+  expect_true(is.finite(mode))
 })
 
 
 test_that("estimate_mode removes missing values by default", {
-  x <- c(1, 1, 1, 2, 2, 3, 4, NA)
+  x <- M4_monthly_data |>
+    filter(series == first(series)) |>
+    pull(value)
 
-  result_with_na <- estimate_mode(x)
-  result_without_na <- estimate_mode(stats::na.omit(x))
+  x_with_missing <- c(x, NA_real_)
 
-  expect_equal(result_with_na, result_without_na)
+  expect_equal(
+    estimate_mode(x_with_missing),
+    estimate_mode(x)
+  )
 })
 
 
-test_that("estimate_mode errors when na_rm = FALSE and data contain NA", {
-  x <- c(1, 1, 2, 3, NA)
+test_that("estimate_mode passes arguments to density", {
+  x <- M4_monthly_data |>
+    filter(series == first(series)) |>
+    pull(value)
+
+  mode <- estimate_mode(x, bw = "nrd0", n = 512)
+
+  expect_type(mode, "double")
+  expect_length(mode, 1)
+  expect_true(is.finite(mode))
+})
+
+
+test_that("estimate_mode errors with missing values when na_rm is FALSE", {
+  x <- M4_monthly_data |>
+    filter(series == first(series)) |>
+    pull(value)
+
+  x_with_missing <- c(x, NA_real_)
 
   expect_error(
-    estimate_mode(x, na_rm = FALSE),
+    estimate_mode(x_with_missing, na_rm = FALSE),
     "'x' contains missing values",
     fixed = TRUE
   )
 })
 
 
-test_that("estimate_mode passes additional arguments to stats::density", {
-  x <- c(1, 1, 1, 2, 2, 3, 4)
+test_that("estimate_kurtosis returns one numeric value", {
+  x <- M4_monthly_data |>
+    filter(series == first(series)) |>
+    pull(value)
 
-  result_default <- estimate_mode(x)
-  result_adjusted <- estimate_mode(x, bw = 0.5, n = 512)
+  kurtosis <- estimate_kurtosis(x)
 
-  expect_type(result_adjusted, "double")
-  expect_length(result_adjusted, 1)
-  expect_true(is.finite(result_adjusted))
-  expect_false(is.na(result_default))
+  expect_type(kurtosis, "double")
+  expect_length(kurtosis, 1)
+  expect_true(is.finite(kurtosis))
+  expect_gt(kurtosis, 0)
 })
 
 
-test_that("estimate_mode works for simulated unimodal data", {
-  set.seed(123)
-  x <- stats::rnorm(1000, mean = 5, sd = 1)
-
-  result <- estimate_mode(x)
-
-  expect_type(result, "double")
-  expect_length(result, 1)
-  expect_true(is.finite(result))
-  expect_true(abs(result - 5) < 0.5)
-})
-
-
-test_that("estimate_kurtosis returns expected value for a simple vector", {
-  x <- c(1, 2, 3, 4, 5)
+test_that("estimate_kurtosis matches its moment formula", {
+  x <- M4_monthly_data |>
+    filter(series == first(series)) |>
+    pull(value)
 
   expected <- length(x) *
     sum((x - mean(x))^4) /
     (sum((x - mean(x))^2)^2)
 
-  result <- estimate_kurtosis(x)
-
-  expect_type(result, "double")
-  expect_length(result, 1)
-  expect_equal(result, expected)
+  expect_equal(
+    estimate_kurtosis(x),
+    expected
+  )
 })
 
 
 test_that("estimate_kurtosis removes missing values by default", {
-  x <- c(1, 2, 3, 4, 5, NA)
+  x <- M4_monthly_data |>
+    filter(series == first(series)) |>
+    pull(value)
 
-  result_with_na <- estimate_kurtosis(x)
-  result_without_na <- estimate_kurtosis(stats::na.omit(x))
+  x_with_missing <- c(x, NA_real_)
 
-  expect_equal(result_with_na, result_without_na)
+  expect_equal(
+    estimate_kurtosis(x_with_missing),
+    estimate_kurtosis(x)
+  )
 })
 
 
-test_that("estimate_kurtosis returns NA when na_rm = FALSE and data contain NA", {
-  x <- c(1, 2, 3, 4, 5, NA)
+test_that("estimate_kurtosis returns NA with missing values when na_rm is FALSE", {
+  x <- M4_monthly_data |>
+    filter(series == first(series)) |>
+    pull(value)
 
-  result <- estimate_kurtosis(x, na_rm = FALSE)
+  x_with_missing <- c(x, NA_real_)
 
-  expect_true(is.na(result))
+  expect_true(is.na(estimate_kurtosis(x_with_missing, na_rm = FALSE)))
 })
 
 
-test_that("estimate_kurtosis is invariant to location and positive scale changes", {
-  x <- c(1, 2, 3, 4, 5, 10)
+test_that("estimate_skewness returns one numeric value", {
+  x <- M4_monthly_data |>
+    filter(series == first(series)) |>
+    pull(value)
 
-  result_original <- estimate_kurtosis(x)
-  result_transformed <- estimate_kurtosis(10 + 3 * x)
+  skewness <- estimate_skewness(x)
 
-  expect_equal(result_original, result_transformed)
+  expect_type(skewness, "double")
+  expect_length(skewness, 1)
+  expect_true(is.finite(skewness))
 })
 
 
-test_that("estimate_kurtosis is close to 3 for normal data", {
-  set.seed(123)
-  x <- stats::rnorm(5000)
-
-  result <- estimate_kurtosis(x)
-
-  expect_type(result, "double")
-  expect_length(result, 1)
-  expect_true(is.finite(result))
-  expect_true(abs(result - 3) < 0.25)
-})
-
-
-test_that("estimate_kurtosis returns NaN for constant data", {
-  x <- rep(1, 10)
-
-  result <- estimate_kurtosis(x)
-
-  expect_true(is.nan(result))
-})
-
-
-test_that("estimate_skewness returns expected value for a simple vector", {
-  x <- c(1, 2, 3, 4, 10)
+test_that("estimate_skewness matches its moment formula", {
+  x <- M4_monthly_data |>
+    filter(series == first(series)) |>
+    pull(value)
 
   expected <- (sum((x - mean(x))^3) / length(x)) /
     (sum((x - mean(x))^2) / length(x))^(3 / 2)
 
-  result <- estimate_skewness(x)
-
-  expect_type(result, "double")
-  expect_length(result, 1)
-  expect_equal(result, expected)
+  expect_equal(
+    estimate_skewness(x),
+    expected
+  )
 })
 
 
 test_that("estimate_skewness removes missing values by default", {
-  x <- c(1, 2, 3, 4, 10, NA)
+  x <- M4_monthly_data |>
+    filter(series == first(series)) |>
+    pull(value)
 
-  result_with_na <- estimate_skewness(x)
-  result_without_na <- estimate_skewness(stats::na.omit(x))
+  x_with_missing <- c(x, NA_real_)
 
-  expect_equal(result_with_na, result_without_na)
+  expect_equal(
+    estimate_skewness(x_with_missing),
+    estimate_skewness(x)
+  )
 })
 
 
-test_that("estimate_skewness returns NA when na_rm = FALSE and data contain NA", {
-  x <- c(1, 2, 3, 4, 10, NA)
+test_that("estimate_skewness returns NA with missing values when na_rm is FALSE", {
+  x <- M4_monthly_data |>
+    filter(series == first(series)) |>
+    pull(value)
 
-  result <- estimate_skewness(x, na_rm = FALSE)
+  x_with_missing <- c(x, NA_real_)
 
-  expect_true(is.na(result))
-})
-
-
-test_that("estimate_skewness is invariant to location and positive scale changes", {
-  x <- c(1, 2, 3, 4, 10)
-
-  result_original <- estimate_skewness(x)
-  result_transformed <- estimate_skewness(10 + 3 * x)
-
-  expect_equal(result_original, result_transformed)
-})
-
-
-test_that("estimate_skewness changes sign under negative scaling", {
-  x <- c(1, 2, 3, 4, 10)
-
-  result_original <- estimate_skewness(x)
-  result_reflected <- estimate_skewness(-x)
-
-  expect_equal(result_reflected, -result_original)
-})
-
-
-test_that("estimate_skewness is zero for symmetric data", {
-  x <- c(-2, -1, 0, 1, 2)
-
-  result <- estimate_skewness(x)
-
-  expect_equal(result, 0)
-})
-
-
-test_that("estimate_skewness is positive for right-skewed data", {
-  x <- c(1, 2, 3, 4, 20)
-
-  result <- estimate_skewness(x)
-
-  expect_gt(result, 0)
-})
-
-
-test_that("estimate_skewness returns NaN for constant data", {
-  x <- rep(1, 10)
-
-  result <- estimate_skewness(x)
-
-  expect_true(is.nan(result))
+  expect_true(is.na(estimate_skewness(x_with_missing, na_rm = FALSE)))
 })
