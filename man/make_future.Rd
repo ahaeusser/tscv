@@ -2,29 +2,102 @@
 % Please edit documentation in R/make_future.R
 \name{make_future}
 \alias{make_future}
-\title{Convert the forecasts from a \code{fable} to a \code{future_frame}}
+\title{Convert forecasts to a future frame}
 \usage{
 make_future(fable, context)
 }
 \arguments{
-\item{fable}{A \code{fable} created via \code{fabletools::forecast()}.}
+\item{fable}{A \code{fable} created with \code{forecast()}.}
 
-\item{context}{A named \code{list} with the identifiers for \code{seried_id}, \code{value_id} and \code{index_id}.}
+\item{context}{A named \code{list} with the identifiers for
+\code{series_id}, \code{value_id}, and \code{index_id}.}
 }
 \value{
-future_frame is a \code{tibble} with the forecasts.
+A \code{tibble} containing forecasts in standardized \code{future_frame}
+format.
 }
 \description{
-\code{make_future} converts the forecasts from a \code{fable}
-  to a \code{future_frame}. A \code{future_frame} is a tibble with a
-  standardized format and contains the columns:
-
-   \itemize{
-      \item{\code{index_id}: Date-time index as specified in \code{context}}.
-      \item{\code{series_id}: Unique identifier for the time series as specified in \code{context}}.
-      \item{\code{model}: Character value. The forecasting model.}
-      \item{\code{split}: Integer value. The number of the train data split.}
-      \item{\code{horizon}: The forecast horizon as integer.}
-      \item{\code{point}: The point forecast as numeric value.}
-      }
+Convert forecasts from a \code{fable} object to a standardized forecast
+table.
 }
+\details{
+\code{make_future()} converts the output of \code{forecast()} into a
+\code{tibble} with a consistent structure for downstream evaluation,
+plotting, and accuracy calculation.
+
+The returned \code{future_frame} contains one row per forecasted observation,
+time series, split, and model. It includes the following columns:
+\itemize{
+  \item the time index column specified by \code{context$index_id};
+  \item the series identifier column specified by \code{context$series_id};
+  \item \code{model}: the forecasting model name;
+  \item \code{split}: the train-test split identifier;
+  \item \code{horizon}: the forecast horizon within each series, split, and
+  model;
+  \item \code{point}: the point forecast, taken from the \code{.mean} column
+  of the \code{fable}.
+}
+
+This format is used by functions such as \code{make_accuracy()} and
+\code{make_errors()}.
+}
+\examples{
+library(dplyr)
+library(tsibble)
+library(fable)
+library(fabletools)
+
+context <- list(
+  series_id = "series",
+  value_id = "value",
+  index_id = "index"
+)
+
+main_frame <- M4_monthly_data |>
+  filter(series \%in\% c("M23100", "M14395"))
+
+split_frame <- make_split(
+  main_frame = main_frame,
+  context = context,
+  type = "first",
+  value = 120,
+  n_ahead = 18,
+  n_skip = 17,
+  n_lag = 0,
+  mode = "stretch",
+  exceed = FALSE
+)
+
+train_frame <- slice_train(
+  main_frame = main_frame,
+  split_frame = split_frame,
+  context = context
+) |>
+  as_tsibble(
+    index = index,
+    key = c(series, split)
+  )
+
+model_frame <- train_frame |>
+  model(
+    "SNAIVE" = SNAIVE(value ~ lag("year"))
+  )
+
+fable_frame <- model_frame |>
+  forecast(h = 18)
+
+future_frame <- make_future(
+  fable = fable_frame,
+  context = context
+)
+
+future_frame
+}
+\seealso{
+Other time series cross-validation: 
+\code{\link{make_split}()},
+\code{\link{slice_test}()},
+\code{\link{slice_train}()},
+\code{\link{split_index}()}
+}
+\concept{time series cross-validation}

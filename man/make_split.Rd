@@ -2,7 +2,7 @@
 % Please edit documentation in R/make_split.R
 \name{make_split}
 \alias{make_split}
-\title{Create a split_frame for train and test splits per time series.}
+\title{Create train-test splits for time series cross-validation}
 \usage{
 make_split(
   main_frame,
@@ -19,31 +19,113 @@ make_split(
 \arguments{
 \item{main_frame}{A \code{tibble} containing the time series data.}
 
-\item{context}{A named \code{list} with the identifiers for \code{seried_id}, \code{value_id} and \code{index_id}.}
+\item{context}{A named \code{list} with the identifiers for
+\code{series_id}, \code{value_id}, and \code{index_id}.}
 
-\item{type}{The type for the initial split. Possible values are \code{"first"}, \code{"last"}, \code{"prob"}.}
+\item{type}{Character value. The type of initial split. Possible values are
+\code{"first"}, \code{"last"}, and \code{"prob"}.}
 
-\item{value}{Numeric value specifying the split.}
+\item{value}{Numeric value specifying the initial split.}
 
-\item{n_ahead}{The forecast horizon (n-steps-ahead, must be positive).}
+\item{n_ahead}{Integer. The forecast horizon, i.e. the number of observations
+in each test window.}
 
-\item{n_skip}{The number of periods to skip between windows (must be zero or positive integer).}
+\item{n_skip}{Integer. The number of observations to skip between split
+origins. The default is \code{0}.}
 
-\item{n_lag}{A value to include a lag between the training and testing set. This is useful if lagged predictors will be used during training and testing.}
+\item{n_lag}{Integer. The number of lagged observations to include before the
+test window. This is useful if lagged predictors are required when
+constructing test features. The default is \code{0}.}
 
-\item{mode}{Character value. Define the setup of the training window for time series cross validation. \code{stretch} is equivalent to an expanding window approach and \code{slide} is a fixed window approach.}
+\item{mode}{Character value. Either \code{"slide"} for a fixed-window
+approach or \code{"stretch"} for an expanding-window approach.}
 
-\item{exceed}{Logical value. If \code{TRUE}, out-of-sample splits exceeding the sample size are created.}
+\item{exceed}{Logical value. If \code{TRUE}, out-of-sample splits exceeding
+the original sample size are created.}
 }
 \value{
-A \code{list} containing the indices for train and test as integer vectors.
+A \code{tibble} containing the split plan. The output has one row per time
+series and split, with list-columns \code{train} and \code{test} containing
+integer row positions.
 }
 \description{
-The function creates the split indices for train and test samples
-  (i.e. partitioning into time slices) for time series cross-validation. The
-  user can choose between \code{stretch} and \code{slide}. The first is an
-  expanding window approach, while the latter is a fixed window approach.
-  The user can define the window sizes for training and testing via
-  \code{n_init} and \code{n_ahead}, as well as the step size for increments
-  via \code{n_step}.
+Create a split frame with train and test indices for one or more time series.
 }
+\details{
+\code{make_split()} creates rolling-origin train-test splits for time series
+cross-validation. The output is used by functions such as
+\code{slice_train()} and \code{slice_test()} to extract the corresponding
+training and testing samples from \code{main_frame}.
+
+The function supports two training-window modes:
+\itemize{
+  \item \code{mode = "slide"} creates a fixed-window approach. The training
+  window has constant length and moves forward over time.
+  \item \code{mode = "stretch"} creates an expanding-window approach. The
+  training window starts at the first observation and grows over time.
+}
+
+The initial training window is controlled by \code{type} and \code{value}:
+\itemize{
+  \item \code{type = "first"} uses the first \code{value} observations as the
+  initial training window.
+  \item \code{type = "last"} keeps the last \code{value} observations for
+  testing and derives the initial training window from the remaining sample.
+  \item \code{type = "prob"} uses \code{floor(value * n_total)} observations
+  as the initial training window.
+}
+
+The argument \code{n_skip} controls how far the rolling origin moves between
+consecutive splits. For non-overlapping test windows, use
+\code{n_skip = n_ahead - 1}.
+}
+\examples{
+library(dplyr)
+
+context <- list(
+  series_id = "bidding_zone",
+  value_id = "value",
+  index_id = "time"
+)
+
+main_frame <- elec_price |>
+  filter(bidding_zone \%in\% c("DE", "FR"))
+
+# Fixed-window split plan
+fixed_split <- make_split(
+  main_frame = main_frame,
+  context = context,
+  type = "first",
+  value = 2400,
+  n_ahead = 24,
+  n_skip = 23,
+  n_lag = 0,
+  mode = "slide",
+  exceed = FALSE
+)
+
+fixed_split
+
+# Expanding-window split plan
+expanding_split <- make_split(
+  main_frame = main_frame,
+  context = context,
+  type = "first",
+  value = 2400,
+  n_ahead = 24,
+  n_skip = 23,
+  n_lag = 0,
+  mode = "stretch",
+  exceed = FALSE
+)
+
+expanding_split
+}
+\seealso{
+Other time series cross-validation: 
+\code{\link{make_future}()},
+\code{\link{slice_test}()},
+\code{\link{slice_train}()},
+\code{\link{split_index}()}
+}
+\concept{time series cross-validation}

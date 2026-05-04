@@ -4,30 +4,43 @@
 
 Functions and utilities for time series cross-validation
 
-- [`make_accuracy()`](https://ahaeusser.github.io/tscv/reference/make_accuracy.md)
-  : Estimate accuracy metrics to evaluate point forecast
-
-- [`make_errors()`](https://ahaeusser.github.io/tscv/reference/make_errors.md)
-  : Calculate forecast errors and percentage errors
-
-- [`make_future()`](https://ahaeusser.github.io/tscv/reference/make_future.md)
-  :
-
-  Convert the forecasts from a `fable` to a `future_frame`
-
 - [`make_split()`](https://ahaeusser.github.io/tscv/reference/make_split.md)
-  : Create a split_frame for train and test splits per time series.
-
+  : Create train-test splits for time series cross-validation
+- [`slice_train()`](https://ahaeusser.github.io/tscv/reference/slice_train.md)
+  : Slice training data from a split frame
+- [`slice_test()`](https://ahaeusser.github.io/tscv/reference/slice_test.md)
+  : Slice test data from a split frame
+- [`split_index()`](https://ahaeusser.github.io/tscv/reference/split_index.md)
+  : Create indices for train and test splits
+- [`make_future()`](https://ahaeusser.github.io/tscv/reference/make_future.md)
+  : Convert forecasts to a future frame
 - [`make_tsibble()`](https://ahaeusser.github.io/tscv/reference/make_tsibble.md)
   : Convert tibble to tsibble
 
-- [`slice_train()`](https://ahaeusser.github.io/tscv/reference/slice_train.md)
-  : Slice the train data from the complete data
+## Forecast Accuracy
 
-- [`slice_test()`](https://ahaeusser.github.io/tscv/reference/slice_test.md)
-  : Slice the test data from the complete data
+Functions and utilities for forecast accuracy
 
-## Data visualization
+- [`make_accuracy()`](https://ahaeusser.github.io/tscv/reference/make_accuracy.md)
+  : Estimate point forecast accuracy
+- [`make_errors()`](https://ahaeusser.github.io/tscv/reference/make_errors.md)
+  : Calculate forecast errors and percentage errors
+- [`me_vec()`](https://ahaeusser.github.io/tscv/reference/me_vec.md) :
+  Calculate the mean error
+- [`mae_vec()`](https://ahaeusser.github.io/tscv/reference/mae_vec.md) :
+  Calculate the mean absolute error
+- [`mse_vec()`](https://ahaeusser.github.io/tscv/reference/mse_vec.md) :
+  Calculate the mean squared error
+- [`rmse_vec()`](https://ahaeusser.github.io/tscv/reference/rmse_vec.md)
+  : Calculate the root mean squared error
+- [`mpe_vec()`](https://ahaeusser.github.io/tscv/reference/mpe_vec.md) :
+  Calculate the mean percentage error
+- [`mape_vec()`](https://ahaeusser.github.io/tscv/reference/mape_vec.md)
+  : Calculate the mean absolute percentage error
+- [`smape_vec()`](https://ahaeusser.github.io/tscv/reference/smape_vec.md)
+  : Calculate the symmetric mean absolute percentage error
+
+## Data Visualization
 
 Functions and utilities for data visualization
 
@@ -169,19 +182,13 @@ Functions and utilities for data preparation, etc.
 - [`smooth_outlier()`](https://ahaeusser.github.io/tscv/reference/smooth_outlier.md)
   : Identify and replace outliers
 - [`check_data()`](https://ahaeusser.github.io/tscv/reference/check_data.md)
-  : Check, convert and shape the input data
+  : Check and prepare tsibble data
 - [`summarise_data()`](https://ahaeusser.github.io/tscv/reference/summarise_data.md)
   : Summary statistics for time series data
 - [`summarise_stats()`](https://ahaeusser.github.io/tscv/reference/summarise_stats.md)
   : Summary statistics for time series data
 - [`summarise_split()`](https://ahaeusser.github.io/tscv/reference/summarise_split.md)
   : Summary table of the splitting into training and testing
-- [`initialize_split()`](https://ahaeusser.github.io/tscv/reference/initialize_split.md)
-  : Initialize a plan for train-test split
-- [`split_index()`](https://ahaeusser.github.io/tscv/reference/split_index.md)
-  : Create indices for train and test splits.
-- [`expand_split()`](https://ahaeusser.github.io/tscv/reference/expand_split.md)
-  : Expand the split_frame
 
 ## Data sets
 

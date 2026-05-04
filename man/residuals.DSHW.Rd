@@ -23,7 +23,7 @@ library(dplyr)
 library(tsibble)
 library(fabletools)
 
-train_frame <- elec_price |>
+train_frame <- elec_load |>
   filter(bidding_zone == "DE") |>
   slice_head(n = 24 * 28) |>
   as_tsibble(index = time)

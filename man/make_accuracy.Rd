@@ -2,7 +2,7 @@
 % Please edit documentation in R/make_accuracy.R
 \name{make_accuracy}
 \alias{make_accuracy}
-\title{Estimate accuracy metrics to evaluate point forecast}
+\title{Estimate point forecast accuracy}
 \usage{
 make_accuracy(
   future_frame,
@@ -13,33 +13,139 @@ make_accuracy(
 )
 }
 \arguments{
-\item{future_frame}{A \code{tibble} containing the forecasts for the models, splits, etc.}
+\item{future_frame}{A \code{tibble} containing point forecasts. It must
+contain the columns specified by \code{context}, as well as \code{model},
+\code{split}, \code{horizon}, and \code{point}.}
 
-\item{main_frame}{A \code{tibble} containing the actual values.}
+\item{main_frame}{A \code{tibble} containing the observed values. It must
+contain the series identifier, time index, and value column specified by
+\code{context}.}
 
-\item{context}{A named \code{list} with the identifiers for \code{seried_id}, \code{value_id} and \code{index_id}.}
+\item{context}{A named \code{list} with the identifiers for
+\code{series_id}, \code{value_id}, and \code{index_id}.}
 
-\item{dimension}{Character value. The forecast accuracy is estimated by \code{split} or \code{horizon}.}
+\item{dimension}{Character value. Determines the dimension over which
+accuracy is summarized. Common choices are \code{"split"} and
+\code{"horizon"}.}
 
-\item{benchmark}{Character value. The forecast model used as benchmark for the relative mean absolute error (rMAE).}
+\item{benchmark}{Optional character value giving the model name used as the
+benchmark for the relative mean absolute error \code{rMAE}.}
 }
 \value{
-accuracy_frame is \code{tibble} containing the accuracy metrics.
+A \code{tibble} containing the forecast accuracy metrics. The output contains
+the series identifier, model name, selected dimension, dimension value
+\code{n}, metric name, and metric value.
 }
 \description{
-The function estimates several accuracy metrics to evaluate
-  the accuracy of point forecasts. Either along the forecast horizon or
-  along the test-splits. By default, the following accuracy metrics
-  are provided:
-
-   \itemize{
-      \item{\code{ME}: mean error}
-      \item{\code{MAE}: mean absolute error}
-      \item{\code{MSE}: mean squared error}
-      \item{\code{RMSE}: root mean squared error}
-      \item{\code{MAPE}: mean absolute percentage error}
-      \item{\code{sMAPE}: symmetric mean absolute percentage error}
-      \item{\code{MPE}: mean percentage error}
-      \item{\code{rMAE}: relative mean absolute error}
-      }
+Estimate accuracy metrics for point forecasts generated from rolling-origin
+  time series cross-validation.
 }
+\details{
+\code{make_accuracy()} compares point forecasts in \code{future_frame} with
+the observed values in \code{main_frame}. The two data sets are joined using
+the series identifier and time index defined in \code{context}.
+
+Accuracy can be summarized along different cross-validation dimensions:
+\itemize{
+  \item \code{dimension = "split"} summarizes accuracy separately for each
+  test split.
+  \item \code{dimension = "horizon"} summarizes accuracy separately for each
+  forecast horizon.
+}
+
+The following point forecast accuracy metrics are returned:
+\itemize{
+  \item \code{ME}: mean error.
+  \item \code{MAE}: mean absolute error.
+  \item \code{MSE}: mean squared error.
+  \item \code{RMSE}: root mean squared error.
+  \item \code{MAPE}: mean absolute percentage error.
+  \item \code{sMAPE}: symmetric mean absolute percentage error.
+  \item \code{MPE}: mean percentage error.
+}
+
+If \code{benchmark} is supplied, the function also computes the relative mean
+absolute error \code{rMAE}. The \code{rMAE} is calculated as the model's
+\code{MAE} divided by the \code{MAE} of the benchmark model for the same
+series and selected dimension.
+}
+\examples{
+library(dplyr)
+library(tsibble)
+library(fabletools)
+library(fable)
+
+context <- list(
+  series_id = "series",
+  value_id = "value",
+  index_id = "index"
+)
+
+main_frame <- M4_monthly_data |>
+  filter(series \%in\% c("M23100", "M14395"))
+
+split_frame <- make_split(
+  main_frame = main_frame,
+  context = context,
+  type = "first",
+  value = 120,
+  n_ahead = 18,
+  n_skip = 17,
+  n_lag = 0,
+  mode = "stretch",
+  exceed = FALSE
+)
+
+train_frame <- slice_train(
+  main_frame = main_frame,
+  split_frame = split_frame,
+  context = context
+) |>
+  as_tsibble(
+    index = index,
+    key = c(series, split)
+  )
+
+model_frame <- train_frame |>
+  model(
+    "SNAIVE" = SNAIVE(value ~ lag("year"))
+  )
+
+fable_frame <- model_frame |>
+  forecast(h = 18)
+
+future_frame <- make_future(
+  fable = fable_frame,
+  context = context
+)
+
+accuracy_horizon <- make_accuracy(
+  future_frame = future_frame,
+  main_frame = main_frame,
+  context = context,
+  dimension = "horizon"
+)
+
+accuracy_horizon
+
+accuracy_split <- make_accuracy(
+  future_frame = future_frame,
+  main_frame = main_frame,
+  context = context,
+  dimension = "split"
+)
+
+accuracy_split
+}
+\seealso{
+Other accuracy functions: 
+\code{\link{mae_vec}()},
+\code{\link{make_errors}()},
+\code{\link{mape_vec}()},
+\code{\link{me_vec}()},
+\code{\link{mpe_vec}()},
+\code{\link{mse_vec}()},
+\code{\link{rmse_vec}()},
+\code{\link{smape_vec}()}
+}
+\concept{accuracy functions}

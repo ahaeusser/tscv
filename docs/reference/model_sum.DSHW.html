@@ -22,6 +22,7 @@
     <li><a class="dropdown-item" href="../articles/vignette_02_hourly_fixed.html">Fixed window approach</a></li>
     <li><a class="dropdown-item" href="../articles/vignette_03_data_visualization.html">Visualization of time series data</a></li>
   </ul></li>
+<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://github.com/ahaeusser/tscv/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
@@ -75,7 +76,7 @@
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tsibble.tidyverts.org" class="external-link">tsibble</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://fabletools.tidyverts.org/" class="external-link">fabletools</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">train_frame</span> <span class="op">&lt;-</span> <span class="va">elec_price</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span><span class="va">train_frame</span> <span class="op">&lt;-</span> <span class="va">elec_load</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">bidding_zone</span> <span class="op">==</span> <span class="st">"DE"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_head</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">24</span> <span class="op">*</span> <span class="fl">28</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://tsibble.tidyverts.org/reference/as-tsibble.html" class="external-link">as_tsibble</a></span><span class="op">(</span>index <span class="op">=</span> <span class="va">time</span><span class="op">)</span></span></span>
@@ -83,7 +84,7 @@
 <span class="r-in"><span><span class="va">model_frame</span> <span class="op">&lt;-</span> <span class="va">train_frame</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://fabletools.tidyverts.org/reference/model.html" class="external-link">model</a></span><span class="op">(</span><span class="st">"DSHW"</span> <span class="op">=</span> <span class="fu"><a href="DSHW.html">DSHW</a></span><span class="op">(</span><span class="va">value</span>, periods <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">24</span>, <span class="fl">168</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>1 error encountered for DSHW</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> [1] dshw not suitable when data contain zeros or negative numbers</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> [1] DSHW does not support missing values.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">model_frame</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A mable: 1 x 1</span></span>

@@ -47,7 +47,7 @@ library(dplyr)
 library(tsibble)
 library(fabletools)
 
-train_frame <- elec_price |>
+train_frame <- elec_load |>
   filter(bidding_zone == "DE") |>
   slice_head(n = 24 * 28) |>
   as_tsibble(index = time)
@@ -55,7 +55,7 @@ train_frame <- elec_price |>
 model_frame <- train_frame |>
   model("DSHW" = DSHW(value, periods = c(24, 168)))
 #> Warning: 1 error encountered for DSHW
-#> [1] dshw not suitable when data contain zeros or negative numbers
+#> [1] DSHW does not support missing values.
 
 forecast(model_frame, h = 24)
 #> # A fable: 24 x 4 [1h] <UTC>

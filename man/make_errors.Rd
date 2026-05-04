@@ -7,26 +7,113 @@
 make_errors(future_frame, main_frame, context)
 }
 \arguments{
-\item{future_frame}{A \code{tibble} containing the forecasts for the models, splits, etc.}
+\item{future_frame}{A \code{tibble} containing the forecasts. It must contain
+the columns specified by \code{context}, as well as \code{model},
+\code{split}, \code{horizon}, and \code{point}.}
 
-\item{main_frame}{A \code{tibble} containing the actual values.}
+\item{main_frame}{A \code{tibble} containing the observed values. It must
+contain the series identifier, time index, and value column specified by
+\code{context}.}
 
-\item{context}{A named \code{list} with the identifiers for \code{seried_id}, \code{value_id} and \code{index_id}.}
+\item{context}{A named \code{list} with the identifiers for \code{series_id},
+\code{value_id}, and \code{index_id}.}
 }
 \value{
-error_frame is a \code{tibble} with forecast errors and
-  percentage forecast errors.
+A \code{tibble} containing forecast errors and percentage forecast errors.
 }
 \description{
-\code{make_errors} calculates the forecast errors (error) and
-  percentage forecast errors (pct_error).
-
-   \itemize{
-      \item{\code{series_id}: Unique identifier for the time series as specified in \code{context}}.
-      \item{\code{model}: Character value. The forecasting model.}
-      \item{\code{split}: Integer value. The number of the train data split.}
-      \item{\code{horizon}: The forecast horizon as integer.}
-      \item{\code{error}: The forecast errors as numeric value.}
-      \item{\code{pct_error}: The percentage forecast errors as numeric value.}
-      }
+Calculate forecast errors and percentage forecast errors for point forecasts.
 }
+\details{
+\code{make_errors()} compares point forecasts in \code{future_frame} with the
+observed values in \code{main_frame}. The two data sets are joined by the
+series identifier and time index specified in \code{context}.
+
+The forecast error is calculated as \code{error = actual - point}. The
+percentage forecast error is calculated as \code{pct_error = (actual -
+point / point) * 100}.
+
+Positive errors indicate that the forecast is below the observed value.
+Negative errors indicate that the forecast is above the observed value.
+
+The returned data contains:
+\itemize{
+  \item \code{series_id}: Unique identifier for the time series as specified
+  in \code{context}.
+  \item \code{model}: Forecasting model name.
+  \item \code{split}: Train-test split identifier.
+  \item \code{horizon}: Forecast horizon.
+  \item \code{error}: Forecast error.
+  \item \code{pct_error}: Percentage forecast error.
+}
+}
+\examples{
+library(dplyr)
+library(tsibble)
+library(fabletools)
+library(fable)
+
+context <- list(
+  series_id = "series",
+  value_id = "value",
+  index_id = "index"
+)
+
+main_frame <- M4_monthly_data |>
+  filter(series \%in\% c("M23100", "M14395"))
+
+split_frame <- make_split(
+  main_frame = main_frame,
+  context = context,
+  type = "first",
+  value = 120,
+  n_ahead = 18,
+  n_skip = 17,
+  n_lag = 0,
+  mode = "stretch",
+  exceed = FALSE
+)
+
+train_frame <- slice_train(
+  main_frame = main_frame,
+  split_frame = split_frame,
+  context = context
+) |>
+  as_tsibble(
+    index = index,
+    key = c(series, split)
+  )
+
+model_frame <- train_frame |>
+  model(
+    "SNAIVE" = SNAIVE(value ~ lag("year"))
+  )
+
+fable_frame <- model_frame |>
+  forecast(h = 18)
+
+future_frame <- make_future(
+  fable = fable_frame,
+  context = context
+)
+
+error_frame <- make_errors(
+  future_frame = future_frame,
+  main_frame = main_frame,
+  context = context
+)
+
+error_frame
+}
+\seealso{
+Other accuracy functions: 
+\code{\link{mae_vec}()},
+\code{\link{make_accuracy}()},
+\code{\link{mape_vec}()},
+\code{\link{me_vec}()},
+\code{\link{mpe_vec}()},
+\code{\link{mse_vec}()},
+\code{\link{rmse_vec}()},
+\code{\link{smape_vec}()}
+}
+\concept{accuracy functions}

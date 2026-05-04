@@ -22,6 +22,7 @@
     <li><a class="dropdown-item" href="../articles/vignette_02_hourly_fixed.html">Fixed window approach</a></li>
     <li><a class="dropdown-item" href="../articles/vignette_03_data_visualization.html">Visualization of time series data</a></li>
   </ul></li>
+<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://github.com/ahaeusser/tscv/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
@@ -47,10 +48,61 @@
 
       <dl><dt>
 
+          <code><a href="make_split.html">make_split()</a></code>
+
+        </dt>
+        <dd>Create train-test splits for time series cross-validation</dd>
+
+        <dt>
+
+          <code><a href="slice_train.html">slice_train()</a></code>
+
+        </dt>
+        <dd>Slice training data from a split frame</dd>
+
+        <dt>
+
+          <code><a href="slice_test.html">slice_test()</a></code>
+
+        </dt>
+        <dd>Slice test data from a split frame</dd>
+
+        <dt>
+
+          <code><a href="split_index.html">split_index()</a></code>
+
+        </dt>
+        <dd>Create indices for train and test splits</dd>
+
+        <dt>
+
+          <code><a href="make_future.html">make_future()</a></code>
+
+        </dt>
+        <dd>Convert forecasts to a future frame</dd>
+
+        <dt>
+
+          <code><a href="make_tsibble.html">make_tsibble()</a></code>
+
+        </dt>
+        <dd>Convert tibble to tsibble</dd>
+      </dl></div><div class="section level2">
+      <h2 id="forecast-accuracy">Forecast Accuracy<a class="anchor" aria-label="anchor" href="#forecast-accuracy"></a></h2>
+
+      <div class="section-desc"><p>Functions and utilities for forecast accuracy</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
           <code><a href="make_accuracy.html">make_accuracy()</a></code>
 
         </dt>
-        <dd>Estimate accuracy metrics to evaluate point forecast</dd>
+        <dd>Estimate point forecast accuracy</dd>
 
         <dt>
 
@@ -61,40 +113,54 @@
 
         <dt>
 
-          <code><a href="make_future.html">make_future()</a></code>
+          <code><a href="me_vec.html">me_vec()</a></code>
 
         </dt>
-        <dd>Convert the forecasts from a <code>fable</code> to a <code>future_frame</code></dd>
+        <dd>Calculate the mean error</dd>
 
         <dt>
 
-          <code><a href="make_split.html">make_split()</a></code>
+          <code><a href="mae_vec.html">mae_vec()</a></code>
 
         </dt>
-        <dd>Create a split_frame for train and test splits per time series.</dd>
+        <dd>Calculate the mean absolute error</dd>
 
         <dt>
 
-          <code><a href="make_tsibble.html">make_tsibble()</a></code>
+          <code><a href="mse_vec.html">mse_vec()</a></code>
 
         </dt>
-        <dd>Convert tibble to tsibble</dd>
+        <dd>Calculate the mean squared error</dd>
 
         <dt>
 
-          <code><a href="slice_train.html">slice_train()</a></code>
+          <code><a href="rmse_vec.html">rmse_vec()</a></code>
 
         </dt>
-        <dd>Slice the train data from the complete data</dd>
+        <dd>Calculate the root mean squared error</dd>
 
         <dt>
 
-          <code><a href="slice_test.html">slice_test()</a></code>
+          <code><a href="mpe_vec.html">mpe_vec()</a></code>
 
         </dt>
-        <dd>Slice the test data from the complete data</dd>
+        <dd>Calculate the mean percentage error</dd>
+
+        <dt>
+
+          <code><a href="mape_vec.html">mape_vec()</a></code>
+
+        </dt>
+        <dd>Calculate the mean absolute percentage error</dd>
+
+        <dt>
+
+          <code><a href="smape_vec.html">smape_vec()</a></code>
+
+        </dt>
+        <dd>Calculate the symmetric mean absolute percentage error</dd>
       </dl></div><div class="section level2">
-      <h2 id="data-visualization">Data visualization<a class="anchor" aria-label="anchor" href="#data-visualization"></a></h2>
+      <h2 id="data-visualization">Data Visualization<a class="anchor" aria-label="anchor" href="#data-visualization"></a></h2>
 
       <div class="section-desc"><p>Functions and utilities for data visualization</p></div>
 
@@ -526,7 +592,7 @@
           <code><a href="check_data.html">check_data()</a></code>
 
         </dt>
-        <dd>Check, convert and shape the input data</dd>
+        <dd>Check and prepare tsibble data</dd>
 
         <dt>
 
@@ -548,27 +614,6 @@
 
         </dt>
         <dd>Summary table of the splitting into training and testing</dd>
-
-        <dt>
-
-          <code><a href="initialize_split.html">initialize_split()</a></code>
-
-        </dt>
-        <dd>Initialize a plan for train-test split</dd>
-
-        <dt>
-
-          <code><a href="split_index.html">split_index()</a></code>
-
-        </dt>
-        <dd>Create indices for train and test splits.</dd>
-
-        <dt>
-
-          <code><a href="expand_split.html">expand_split()</a></code>
-
-        </dt>
-        <dd>Expand the split_frame</dd>
       </dl></div><div class="section level2">
       <h2 id="data-sets">Data sets<a class="anchor" aria-label="anchor" href="#data-sets"></a></h2>
 

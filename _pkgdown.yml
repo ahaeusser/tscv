@@ -13,15 +13,28 @@ reference:
   desc: >
     Functions and utilities for time series cross-validation
   contents:
-    - make_accuracy
-    - make_errors
-    - make_future
     - make_split
-    - make_tsibble
     - slice_train
     - slice_test
+    - split_index
+    - make_future
+    - make_tsibble
 
-- title: Data visualization
+- title: Forecast Accuracy
+  desc: >
+    Functions and utilities for forecast accuracy
+  contents:
+    - make_accuracy
+    - make_errors
+    - me_vec
+    - mae_vec
+    - mse_vec
+    - rmse_vec
+    - mpe_vec
+    - mape_vec
+    - smape_vec
+
+- title: Data Visualization
   desc: >
     Functions and utilities for data visualization
   contents:
@@ -116,9 +129,6 @@ reference:
     - summarise_data
     - summarise_stats
     - summarise_split
-    - initialize_split
-    - split_index
-    - expand_split
 
 - title: Data sets
   desc: >

@@ -2,24 +2,78 @@
 % Please edit documentation in R/slice_data.R
 \name{slice_test}
 \alias{slice_test}
-\title{Slice the test data from the complete data}
+\title{Slice test data from a split frame}
 \usage{
 slice_test(main_frame, split_frame, context)
 }
 \arguments{
-\item{main_frame}{A \code{tibble} containing the time series data.}
+\item{main_frame}{A \code{tibble} containing the complete time series data.}
 
-\item{split_frame}{A \code{tibble} containing the splits into train and test. The result of a call to \code{make_split()}.}
+\item{split_frame}{A \code{tibble} containing train and test indices, usually
+created by \code{make_split()}.}
 
-\item{context}{A named \code{list} with the identifiers for \code{seried_id},
-\code{value_id} and \code{index_id}.}
+\item{context}{A named \code{list} with the identifiers for
+\code{series_id}, \code{value_id}, and \code{index_id}.}
 }
 \value{
-test_frame is a \code{tibble} containing the test data.
+A \code{tibble} containing the sliced test data. It contains the same columns
+as \code{main_frame}, plus a \code{split} column.
 }
 \description{
-\code{slice_test} creates the test data from the
-  complete data set \code{main_frame} according to \code{split_frame}. Same
-  columns as \code{main_frame}, but the number of the split is added as
-  integer.
+Extract test observations from a complete time series data set according to a
+split plan created by \code{make_split()}.
 }
+\details{
+\code{slice_test()} uses the row positions stored in the \code{test}
+list-column of \code{split_frame} to extract the corresponding observations
+from \code{main_frame}. The function is designed for rolling-origin time
+series cross-validation workflows.
+
+The returned data has the same columns as \code{main_frame}, plus a
+\code{split} column identifying the train-test split. If \code{main_frame}
+contains multiple time series, slicing is performed separately for each
+series using the series identifier supplied in \code{context}.
+
+When \code{make_split()} was called with \code{n_lag > 0}, the test data may
+include lagged observations before the forecast horizon.
+}
+\examples{
+library(dplyr)
+
+context <- list(
+  series_id = "bidding_zone",
+  value_id = "value",
+  index_id = "time"
+)
+
+main_frame <- elec_price |>
+  filter(bidding_zone \%in\% c("DE", "FR"))
+
+split_frame <- make_split(
+  main_frame = main_frame,
+  context = context,
+  type = "first",
+  value = 2400,
+  n_ahead = 24,
+  n_skip = 23,
+  n_lag = 0,
+  mode = "stretch",
+  exceed = FALSE
+)
+
+test_frame <- slice_test(
+  main_frame = main_frame,
+  split_frame = split_frame,
+  context = context
+)
+
+test_frame
+}
+\seealso{
+Other time series cross-validation: 
+\code{\link{make_future}()},
+\code{\link{make_split}()},
+\code{\link{slice_train}()},
+\code{\link{split_index}()}
+}
+\concept{time series cross-validation}

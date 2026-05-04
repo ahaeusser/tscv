@@ -2,7 +2,7 @@
 % Please edit documentation in R/make_split.R
 \name{split_index}
 \alias{split_index}
-\title{Create indices for train and test splits.}
+\title{Create indices for train and test splits}
 \usage{
 split_index(
   n_total,
@@ -15,29 +15,92 @@ split_index(
 )
 }
 \arguments{
-\item{n_total}{The total number of observations of the time series.}
+\item{n_total}{Integer. The total number of observations in the time series.}
 
-\item{n_init}{The number of periods for the initial training window (must be positive).}
+\item{n_init}{Integer. The number of observations in the initial training
+window.}
 
-\item{n_ahead}{The forecast horizon (n-steps-ahead, must be positive).}
+\item{n_ahead}{Integer. The forecast horizon, i.e. the number of observations
+in each test window.}
 
-\item{n_skip}{The number of periods to skip between windows (must be zero or positive integer).}
+\item{n_skip}{Integer. The number of observations to skip between split
+origins. The default is \code{0}.}
 
-\item{n_lag}{A value to include a lag between the training and testing set. This is useful if lagged predictors will be used during training and testing.}
+\item{n_lag}{Integer. The number of lagged observations to include before the
+test window. The default is \code{0}.}
 
-\item{mode}{Character value. Define the setup of the training window for time series cross validation. \code{stretch} is equivalent to an expanding window approach and \code{slide} is a fixed window approach.}
+\item{mode}{Character value. Either \code{"slide"} for a fixed-window
+approach or \code{"stretch"} for an expanding-window approach.}
 
-\item{exceed}{Logical value. If \code{TRUE}, out-of-sample splits exceeding the sample size are created.}
+\item{exceed}{Logical value. If \code{TRUE}, test indices may exceed the
+original sample size.}
 }
 \value{
-A \code{list} containing the indices for train and test as integer vectors.
+A \code{list} with two elements:
+\itemize{
+  \item \code{train}: a list of integer vectors with training indices.
+  \item \code{test}: a list of integer vectors with test indices.
+}
 }
 \description{
-The function creates the split indices for train and test samples
-  (i.e. partitioning into time slices) for time series cross-validation. The
-  user can choose between \code{stretch} and \code{slide}. The first is an
-  expanding window approach, while the latter is a fixed window approach.
-  The user can define the window sizes for training and testing via
-  \code{n_init} and \code{n_ahead}, as well as the step size for increments
-  via \code{n_step}.
+Create train and test indices for time series cross-validation.
 }
+\details{
+\code{split_index()} creates integer index vectors for rolling-origin
+resampling. The function can create either fixed-window or expanding-window
+splits:
+\itemize{
+  \item \code{mode = "slide"} creates a fixed training window that moves
+  forward over time.
+  \item \code{mode = "stretch"} creates an expanding training window that
+  always starts at the first observation.
+}
+
+The first training window contains \code{n_init} observations. Each test
+window contains \code{n_ahead} observations. The argument \code{n_skip}
+controls how many observations are skipped between consecutive split origins.
+For example, with \code{n_ahead = 24} and \code{n_skip = 23}, consecutive
+test windows are non-overlapping.
+
+If \code{n_lag > 0}, the test indices include lagged observations before the
+forecast horizon. This is useful when lagged predictors are needed for
+constructing features during testing.
+
+If \code{exceed = TRUE}, additional out-of-sample test indices are allowed to
+exceed the original sample size.
+}
+\examples{
+# Fixed-window splits
+fixed_index <- split_index(
+  n_total = 120,
+  n_init = 48,
+  n_ahead = 24,
+  n_skip = 23,
+  n_lag = 0,
+  mode = "slide",
+  exceed = FALSE
+)
+
+fixed_index
+
+# Expanding-window splits
+expanding_index <- split_index(
+  n_total = 120,
+  n_init = 48,
+  n_ahead = 24,
+  n_skip = 23,
+  n_lag = 0,
+  mode = "stretch",
+  exceed = FALSE
+)
+
+expanding_index
+}
+\seealso{
+Other time series cross-validation: 
+\code{\link{make_future}()},
+\code{\link{make_split}()},
+\code{\link{slice_test}()},
+\code{\link{slice_train}()}
+}
+\concept{time series cross-validation}
