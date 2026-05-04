@@ -368,7 +368,7 @@ specials_dshw <- new_specials()
 #' library(tsibble)
 #' library(fabletools)
 #'
-#' train_frame <- elec_price |>
+#' train_frame <- elec_load |>
 #'   filter(bidding_zone == "DE") |>
 #'   slice_head(n = 24 * 28) |>
 #'   as_tsibble(index = time)
@@ -414,7 +414,7 @@ DSHW <- function(formula, ...){
 #' library(tsibble)
 #' library(fabletools)
 #'
-#' train_frame <- elec_price |>
+#' train_frame <- elec_load |>
 #'   filter(bidding_zone == "DE") |>
 #'   slice_head(n = 24 * 28) |>
 #'   as_tsibble(index = time)
@@ -464,7 +464,7 @@ forecast.DSHW <- function(object,
 #' library(tsibble)
 #' library(fabletools)
 #'
-#' train_frame <- elec_price |>
+#' train_frame <- elec_load |>
 #'   filter(bidding_zone == "DE") |>
 #'   slice_head(n = 24 * 28) |>
 #'   as_tsibble(index = time)
@@ -500,7 +500,7 @@ fitted.DSHW <- function(object, ...){
 #' library(tsibble)
 #' library(fabletools)
 #'
-#' train_frame <- elec_price |>
+#' train_frame <- elec_load |>
 #'   filter(bidding_zone == "DE") |>
 #'   slice_head(n = 24 * 28) |>
 #'   as_tsibble(index = time)
@@ -535,7 +535,7 @@ residuals.DSHW <- function(object, ...){
 #' library(tsibble)
 #' library(fabletools)
 #'
-#' train_frame <- elec_price |>
+#' train_frame <- elec_load |>
 #'   filter(bidding_zone == "DE") |>
 #'   slice_head(n = 24 * 28) |>
 #'   as_tsibble(index = time)
@@ -989,7 +989,10 @@ forecast.SMEAN <- function(object,
   last_period <- object$last_period
 
   n_ahead <- nrow(new_data)
-  index <- rep(1:length(smean), times = ceiling((n_ahead + last_period) / length(smean)))[(last_period + 1):(last_period + n_ahead)]
+  index <- rep(
+    1:length(smean),
+    times = ceiling((n_ahead + last_period) / length(smean))
+  )[(last_period + 1):(last_period + n_ahead)]
   point <- as.numeric(smean[index])
   sd <- as.numeric(rep(object$sigma, times = n_ahead))
 
@@ -1258,7 +1261,10 @@ forecast.SMEDIAN <- function(object,
   last_period <- object$last_period
 
   n_ahead <- nrow(new_data)
-  index <- rep(1:length(smedian), times = ceiling((n_ahead + last_period) / length(smedian)))[(last_period + 1):(last_period + n_ahead)]
+  index <- rep(
+    1:length(smedian),
+    times = ceiling((n_ahead + last_period) / length(smedian))
+  )[(last_period + 1):(last_period + n_ahead)]
   point <- as.numeric(smedian[index])
   sd <- as.numeric(rep(object$sigma, times = n_ahead))
 
@@ -1396,14 +1402,22 @@ train_snaive2 <- function(.data,
   lag_week <- periods["week"]
 
   model_fit <- .data |>
-    mutate(day_of_week = wday(
-      x = !!sym(index_var(.data)),
-      week_start = getOption("lubridate.week.start", 1))) |>
-    mutate(fitted = ifelse(
-      .data$day_of_week %in% c(2, 3, 4, 5),
-      dplyr::lag(!!sym(measured_vars(.data)), n = lag_day),
-      dplyr::lag(!!sym(measured_vars(.data)), n = lag_week))) |>
-    mutate(resid = !!sym(measured_vars(.data)) - fitted)
+    mutate(
+      day_of_week = wday(
+        x = !!sym(index_var(.data)),
+        week_start = getOption("lubridate.week.start", 1)
+      )
+    ) |>
+    mutate(
+      fitted = ifelse(
+        day_of_week %in% c(2, 3, 4, 5),
+        dplyr::lag(!!sym(measured_vars(.data)), n = lag_day),
+        dplyr::lag(!!sym(measured_vars(.data)), n = lag_week)
+      )
+    ) |>
+    mutate(
+      resid = !!sym(measured_vars(.data)) - fitted
+    )
 
   fitted <- model_fit[["fitted"]]
   resid <- model_fit[["resid"]]
@@ -1473,13 +1487,19 @@ forecast.SNAIVE2 <- function(object,
   # Seasonal naive forecast
   fcst <- data |>
     append_row(n = n_ahead) |>
-    mutate(day_of_week = wday(
-      x = !!sym(index_var(data)),
-      week_start = getOption("lubridate.week.start", 1))) |>
-    mutate(point = ifelse(
-      .data$day_of_week %in% c(2, 3, 4, 5),
-      dplyr::lag(!!sym(measured_vars(data)), n = lag_day),
-      dplyr::lag(!!sym(measured_vars(data)), n = lag_week))) |>
+    mutate(
+      day_of_week = wday(
+        x = !!sym(index_var(data)),
+        week_start = getOption("lubridate.week.start", 1)
+      )
+    ) |>
+    mutate(
+      point = ifelse(
+        day_of_week %in% c(2, 3, 4, 5),
+        dplyr::lag(!!sym(measured_vars(data)), n = lag_day),
+        dplyr::lag(!!sym(measured_vars(data)), n = lag_week)
+      )
+    ) |>
     slice_tail(n = n_ahead)
 
   point <- as.numeric(fcst[["point"]])

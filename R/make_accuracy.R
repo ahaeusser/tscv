@@ -1,30 +1,127 @@
 
-#' @title Estimate accuracy metrics to evaluate point forecast
+#' @title Estimate point forecast accuracy
 #'
-#' @description The function estimates several accuracy metrics to evaluate
-#'   the accuracy of point forecasts. Either along the forecast horizon or
-#'   along the test-splits. By default, the following accuracy metrics
-#'   are provided:
+#' @description Estimate accuracy metrics for point forecasts generated from rolling-origin
+#'   time series cross-validation.
 #'
-#'    \itemize{
-#'       \item{\code{ME}: mean error}
-#'       \item{\code{MAE}: mean absolute error}
-#'       \item{\code{MSE}: mean squared error}
-#'       \item{\code{RMSE}: root mean squared error}
-#'       \item{\code{MAPE}: mean absolute percentage error}
-#'       \item{\code{sMAPE}: symmetric mean absolute percentage error}
-#'       \item{\code{MPE}: mean percentage error}
-#'       \item{\code{rMAE}: relative mean absolute error}
-#'       }
+#' @details
+#' \code{make_accuracy()} compares point forecasts in \code{future_frame} with
+#' the observed values in \code{main_frame}. The two data sets are joined using
+#' the series identifier and time index defined in \code{context}.
 #'
-#' @param future_frame A \code{tibble} containing the forecasts for the models, splits, etc.
-#' @param main_frame A \code{tibble} containing the actual values.
-#' @param context A named \code{list} with the identifiers for \code{seried_id}, \code{value_id} and \code{index_id}.
-#' @param dimension Character value. The forecast accuracy is estimated by \code{split} or \code{horizon}.
-#' @param benchmark Character value. The forecast model used as benchmark for the relative mean absolute error (rMAE).
+#' Accuracy can be summarized along different cross-validation dimensions:
+#' \itemize{
+#'   \item \code{dimension = "split"} summarizes accuracy separately for each
+#'   test split.
+#'   \item \code{dimension = "horizon"} summarizes accuracy separately for each
+#'   forecast horizon.
+#' }
 #'
-#' @return accuracy_frame is \code{tibble} containing the accuracy metrics.
+#' The following point forecast accuracy metrics are returned:
+#' \itemize{
+#'   \item \code{ME}: mean error.
+#'   \item \code{MAE}: mean absolute error.
+#'   \item \code{MSE}: mean squared error.
+#'   \item \code{RMSE}: root mean squared error.
+#'   \item \code{MAPE}: mean absolute percentage error.
+#'   \item \code{sMAPE}: symmetric mean absolute percentage error.
+#'   \item \code{MPE}: mean percentage error.
+#' }
+#'
+#' If \code{benchmark} is supplied, the function also computes the relative mean
+#' absolute error \code{rMAE}. The \code{rMAE} is calculated as the model's
+#' \code{MAE} divided by the \code{MAE} of the benchmark model for the same
+#' series and selected dimension.
+#'
+#' @param future_frame A \code{tibble} containing point forecasts. It must
+#'   contain the columns specified by \code{context}, as well as \code{model},
+#'   \code{split}, \code{horizon}, and \code{point}.
+#' @param main_frame A \code{tibble} containing the observed values. It must
+#'   contain the series identifier, time index, and value column specified by
+#'   \code{context}.
+#' @param context A named \code{list} with the identifiers for
+#'   \code{series_id}, \code{value_id}, and \code{index_id}.
+#' @param dimension Character value. Determines the dimension over which
+#'   accuracy is summarized. Common choices are \code{"split"} and
+#'   \code{"horizon"}.
+#' @param benchmark Optional character value giving the model name used as the
+#'   benchmark for the relative mean absolute error \code{rMAE}.
+#'
+#' @return
+#' A \code{tibble} containing the forecast accuracy metrics. The output contains
+#' the series identifier, model name, selected dimension, dimension value
+#' \code{n}, metric name, and metric value.
+#'
+#' @family accuracy functions
 #' @export
+#'
+#' @examples
+#' library(dplyr)
+#' library(tsibble)
+#' library(fabletools)
+#' library(fable)
+#'
+#' context <- list(
+#'   series_id = "series",
+#'   value_id = "value",
+#'   index_id = "index"
+#' )
+#'
+#' main_frame <- M4_monthly_data |>
+#'   filter(series %in% c("M23100", "M14395"))
+#'
+#' split_frame <- make_split(
+#'   main_frame = main_frame,
+#'   context = context,
+#'   type = "first",
+#'   value = 120,
+#'   n_ahead = 18,
+#'   n_skip = 17,
+#'   n_lag = 0,
+#'   mode = "stretch",
+#'   exceed = FALSE
+#' )
+#'
+#' train_frame <- slice_train(
+#'   main_frame = main_frame,
+#'   split_frame = split_frame,
+#'   context = context
+#' ) |>
+#'   as_tsibble(
+#'     index = index,
+#'     key = c(series, split)
+#'   )
+#'
+#' model_frame <- train_frame |>
+#'   model(
+#'     "SNAIVE" = SNAIVE(value ~ lag("year"))
+#'   )
+#'
+#' fable_frame <- model_frame |>
+#'   forecast(h = 18)
+#'
+#' future_frame <- make_future(
+#'   fable = fable_frame,
+#'   context = context
+#' )
+#'
+#' accuracy_horizon <- make_accuracy(
+#'   future_frame = future_frame,
+#'   main_frame = main_frame,
+#'   context = context,
+#'   dimension = "horizon"
+#' )
+#'
+#' accuracy_horizon
+#'
+#' accuracy_split <- make_accuracy(
+#'   future_frame = future_frame,
+#'   main_frame = main_frame,
+#'   context = context,
+#'   dimension = "split"
+#' )
+#'
+#' accuracy_split
 
 make_accuracy <- function(future_frame,
                           main_frame,
@@ -37,79 +134,106 @@ make_accuracy <- function(future_frame,
   index_id <- context[["index_id"]]
 
   # Prepare test data
-  main_frame <- main_frame %>%
-    rename(actual = !!sym(value_id))
+  main_frame <- main_frame |>
+    rename(actual = all_of(value_id))
 
-  # Join main_frame (test data) and future_frame_frame (forecasts)
+  # Join main_frame (test data) and future_frame (forecasts)
   data <- left_join(
     x = future_frame,
     y = main_frame,
-    by = c(series_id, index_id)) %>%
-    select(c(!!sym(series_id), "model", "split", "horizon", "point", "actual"))
+    by = c(series_id, index_id)
+  ) |>
+    select(
+      all_of(series_id),
+      model,
+      split,
+      horizon,
+      point,
+      actual
+    )
 
   # Estimate common accuracy metrics
-  accuracy_frame <- data %>%
-    group_by(!!sym(series_id), .data$model, !!sym(dimension)) %>%
+  accuracy_frame <- data |>
+    group_by(
+      !!sym(series_id),
+      model,
+      !!sym(dimension)
+    ) |>
     summarise(
-      ME = me_vec(truth = .data$actual, estimate = .data$point),
-      MAE = mae_vec(truth = .data$actual, estimate = .data$point),
-      MSE = mse_vec(truth = .data$actual, estimate = .data$point),
-      RMSE = rmse_vec(truth = .data$actual, estimate = .data$point),
-      MAPE = mape_vec(truth = .data$actual, estimate = .data$point),
-      sMAPE = smape_vec(truth = .data$actual, estimate = .data$point),
-      MPE = mpe_vec(truth = .data$actual, estimate = .data$point),
-      .groups = "drop") %>%
-    arrange(!!sym(series_id), .data$model, !!sym(dimension))
+      ME = me_vec(truth = actual, estimate = point),
+      MAE = mae_vec(truth = actual, estimate = point),
+      MSE = mse_vec(truth = actual, estimate = point),
+      RMSE = rmse_vec(truth = actual, estimate = point),
+      MAPE = mape_vec(truth = actual, estimate = point),
+      sMAPE = smape_vec(truth = actual, estimate = point),
+      MPE = mpe_vec(truth = actual, estimate = point),
+      .groups = "drop"
+    ) |>
+    arrange(
+      !!sym(series_id),
+      model,
+      !!sym(dimension)
+    )
 
   column_all <- names(accuracy_frame)
   column_drop <- c(series_id, "model", dimension)
   set_metrics <- column_all[!column_all %in% column_drop]
 
-  accuracy_frame <- accuracy_frame %>%
+  accuracy_frame <- accuracy_frame |>
     pivot_longer(
       cols = all_of(set_metrics),
       names_to = "metric",
-      values_to = "value") %>%
-    arrange(!!sym(series_id), .data$model, .data$metric)
-
+      values_to = "value"
+    ) |>
+    arrange(
+      !!sym(series_id),
+      model,
+      metric
+    )
 
   if (!is.null(benchmark)) {
 
     set_models <- unique(accuracy_frame$model)
 
-    mae_benchmark <- accuracy_frame %>%
-      filter(.data$metric == "MAE") %>%
-      filter(.data$model == benchmark) %>%
+    mae_benchmark <- accuracy_frame |>
+      filter(metric == "MAE") |>
+      filter(model == benchmark) |>
       pivot_wider(
-        names_from = .data$model,
-        values_from = .data$value
+        names_from = model,
+        values_from = value
       )
 
     mae_benchmark <- map_dfr(
-      .x = 1:length(set_models),
+      .x = seq_along(set_models),
       .f = ~{
-        mae_benchmark %>%
+        mae_benchmark |>
           mutate(model = set_models[.x])
       }
     )
 
     metrics_rmae <- left_join(
-      x = filter(accuracy_frame, .data$metric == "MAE"),
+      x = filter(accuracy_frame, metric == "MAE"),
       y = mae_benchmark,
-      by = c(series_id, dimension, "metric", "model")) %>%
-      mutate(value = .data$value / !!sym(benchmark)) %>%
-      mutate(metric = "rMAE") %>%
-      select(-!!sym(benchmark))
+      by = c(series_id, dimension, "metric", "model")
+    ) |>
+      mutate(value = value / !!sym(benchmark)) |>
+      mutate(metric = "rMAE") |>
+      select(-all_of(benchmark))
 
     accuracy_frame <- bind_rows(
       accuracy_frame,
-      metrics_rmae) %>%
-      arrange(!!sym(series_id), .data$model, .data$metric)
+      metrics_rmae
+    ) |>
+      arrange(
+        !!sym(series_id),
+        model,
+        metric
+      )
   }
 
-  accuracy_frame <- accuracy_frame %>%
-    mutate(dimension = dimension, .after = "model") %>%
-    rename(n = !!sym(dimension))
+  accuracy_frame <- accuracy_frame |>
+    mutate(dimension = dimension, .after = "model") |>
+    rename(n = all_of(dimension))
 
   return(accuracy_frame)
 }
