@@ -24,7 +24,5 @@ scale_color_tscv(palette = "main", discrete = TRUE, reverse = FALSE, ...)
 
 - ...:
 
-  Additional arguments passed to
-  [`discrete_scale()`](https://ggplot2.tidyverse.org/reference/discrete_scale.html)
-  or
-  [`scale_color_gradientn()`](https://ggplot2.tidyverse.org/reference/scale_gradient.html).
+  Additional arguments passed to `discrete_scale()` or
+  `scale_color_gradientn()`.

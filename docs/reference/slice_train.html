@@ -89,6 +89,7 @@ series using the series identifier supplied in <code>context</code>.</p>
     <div class="dont-index"><p>Other time series cross-validation:
 <code><a href="make_future.html">make_future()</a></code>,
 <code><a href="make_split.html">make_split()</a></code>,
+<code><a href="make_tsibble.html">make_tsibble()</a></code>,
 <code><a href="slice_test.html">slice_test()</a></code>,
 <code><a href="split_index.html">split_index()</a></code></p></div>
     </div>
@@ -98,21 +99,21 @@ series using the series identifier supplied in <code>context</code>.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">context</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  series_id <span class="op">=</span> <span class="st">"bidding_zone"</span>,</span></span>
+<span class="r-in"><span>  series_id <span class="op">=</span> <span class="st">"series"</span>,</span></span>
 <span class="r-in"><span>  value_id <span class="op">=</span> <span class="st">"value"</span>,</span></span>
-<span class="r-in"><span>  index_id <span class="op">=</span> <span class="st">"time"</span></span></span>
+<span class="r-in"><span>  index_id <span class="op">=</span> <span class="st">"index"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">main_frame</span> <span class="op">&lt;-</span> <span class="va">elec_price</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">bidding_zone</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"DE"</span>, <span class="st">"FR"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">main_frame</span> <span class="op">&lt;-</span> <span class="va">M4_monthly_data</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">series</span> <span class="op">==</span> <span class="st">"M23100"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">split_frame</span> <span class="op">&lt;-</span> <span class="fu"><a href="make_split.html">make_split</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  main_frame <span class="op">=</span> <span class="va">main_frame</span>,</span></span>
 <span class="r-in"><span>  context <span class="op">=</span> <span class="va">context</span>,</span></span>
 <span class="r-in"><span>  type <span class="op">=</span> <span class="st">"first"</span>,</span></span>
-<span class="r-in"><span>  value <span class="op">=</span> <span class="fl">2400</span>,</span></span>
-<span class="r-in"><span>  n_ahead <span class="op">=</span> <span class="fl">24</span>,</span></span>
-<span class="r-in"><span>  n_skip <span class="op">=</span> <span class="fl">23</span>,</span></span>
+<span class="r-in"><span>  value <span class="op">=</span> <span class="fl">120</span>,</span></span>
+<span class="r-in"><span>  n_ahead <span class="op">=</span> <span class="fl">18</span>,</span></span>
+<span class="r-in"><span>  n_skip <span class="op">=</span> <span class="fl">17</span>,</span></span>
 <span class="r-in"><span>  n_lag <span class="op">=</span> <span class="fl">0</span>,</span></span>
 <span class="r-in"><span>  mode <span class="op">=</span> <span class="st">"stretch"</span>,</span></span>
 <span class="r-in"><span>  exceed <span class="op">=</span> <span class="cn">FALSE</span></span></span>
@@ -125,20 +126,20 @@ series using the series identifier supplied in <code>context</code>.</p>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">train_frame</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 12,569,520 × 6</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    time                item            unit      bidding_zone  value split</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dttm&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> 2019-01-01 <span style="color: #949494;">00:00:00</span> Day-ahead Price [EUR/MWh] DE            10.1      1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> 2019-01-01 <span style="color: #949494;">01:00:00</span> Day-ahead Price [EUR/MWh] DE            -<span style="color: #BB0000;">4.08</span>     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> 2019-01-01 <span style="color: #949494;">02:00:00</span> Day-ahead Price [EUR/MWh] DE            -<span style="color: #BB0000;">9.91</span>     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> 2019-01-01 <span style="color: #949494;">03:00:00</span> Day-ahead Price [EUR/MWh] DE            -<span style="color: #BB0000;">7.41</span>     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> 2019-01-01 <span style="color: #949494;">04:00:00</span> Day-ahead Price [EUR/MWh] DE           -<span style="color: #BB0000;">12.6</span>      1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> 2019-01-01 <span style="color: #949494;">05:00:00</span> Day-ahead Price [EUR/MWh] DE           -<span style="color: #BB0000;">17.2</span>      1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> 2019-01-01 <span style="color: #949494;">06:00:00</span> Day-ahead Price [EUR/MWh] DE           -<span style="color: #BB0000;">15.1</span>      1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> 2019-01-01 <span style="color: #949494;">07:00:00</span> Day-ahead Price [EUR/MWh] DE            -<span style="color: #BB0000;">4.93</span>     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> 2019-01-01 <span style="color: #949494;">08:00:00</span> Day-ahead Price [EUR/MWh] DE            -<span style="color: #BB0000;">6.33</span>     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> 2019-01-01 <span style="color: #949494;">09:00:00</span> Day-ahead Price [EUR/MWh] DE            -<span style="color: #BB0000;">4.93</span>     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 12,569,510 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 258 × 5</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       index series category    value split</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;mth&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> 2003 Jan M23100 Demographic  <span style="text-decoration: underline;">8</span>240     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> 2003 Feb M23100 Demographic  <span style="text-decoration: underline;">8</span>160     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> 2003 Mrz M23100 Demographic  <span style="text-decoration: underline;">8</span>300     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> 2003 Apr M23100 Demographic  <span style="text-decoration: underline;">8</span>580     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> 2003 Mai M23100 Demographic  <span style="text-decoration: underline;">8</span>860     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> 2003 Jun M23100 Demographic  <span style="text-decoration: underline;">8</span>980     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> 2003 Jul M23100 Demographic  <span style="text-decoration: underline;">8</span>860     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> 2003 Aug M23100 Demographic  <span style="text-decoration: underline;">8</span>970     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> 2003 Sep M23100 Demographic  <span style="text-decoration: underline;">8</span>840     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> 2003 Okt M23100 Demographic  <span style="text-decoration: underline;">8</span>740     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 248 more rows</span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -103,15 +103,11 @@ make_future <- function(fable,
     as_tibble() |>
     select(-all_of(value_id)) |>
     rename(
-      point = .mean,
-      model = .model
+      point = all_of(".mean"),
+      model = all_of(".model")
     ) |>
     select(
-      all_of(index_id),
-      all_of(series_id),
-      model,
-      split,
-      horizon,
+      all_of(c(index_id, series_id, "model", "split", "horizon")),
       everything()
     )
 

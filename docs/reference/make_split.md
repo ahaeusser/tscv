@@ -108,6 +108,7 @@ consecutive splits. For non-overlapping test windows, use
 
 Other time series cross-validation:
 [`make_future()`](https://ahaeusser.github.io/tscv/reference/make_future.md),
+[`make_tsibble()`](https://ahaeusser.github.io/tscv/reference/make_tsibble.md),
 [`slice_test()`](https://ahaeusser.github.io/tscv/reference/slice_test.md),
 [`slice_train()`](https://ahaeusser.github.io/tscv/reference/slice_train.md),
 [`split_index()`](https://ahaeusser.github.io/tscv/reference/split_index.md)
@@ -118,69 +119,51 @@ Other time series cross-validation:
 library(dplyr)
 
 context <- list(
-  series_id = "bidding_zone",
+  series_id = "series",
   value_id = "value",
-  index_id = "time"
+  index_id = "index"
 )
 
-main_frame <- elec_price |>
-  filter(bidding_zone %in% c("DE", "FR"))
+main_frame <- M4_monthly_data |>
+  filter(series == "M23100")
 
 # Fixed-window split plan
 fixed_split <- make_split(
   main_frame = main_frame,
   context = context,
   type = "first",
-  value = 2400,
-  n_ahead = 24,
-  n_skip = 23,
+  value = 120,
+  n_ahead = 18,
+  n_skip = 17,
   n_lag = 0,
   mode = "slide",
   exceed = FALSE
 )
 
 fixed_split
-#> # A tibble: 1,262 × 4
-#>    bidding_zone split train         test      
-#>    <chr>        <int> <list>        <list>    
-#>  1 DE               1 <int [2,400]> <int [24]>
-#>  2 DE               2 <int [2,400]> <int [24]>
-#>  3 DE               3 <int [2,400]> <int [24]>
-#>  4 DE               4 <int [2,400]> <int [24]>
-#>  5 DE               5 <int [2,400]> <int [24]>
-#>  6 DE               6 <int [2,400]> <int [24]>
-#>  7 DE               7 <int [2,400]> <int [24]>
-#>  8 DE               8 <int [2,400]> <int [24]>
-#>  9 DE               9 <int [2,400]> <int [24]>
-#> 10 DE              10 <int [2,400]> <int [24]>
-#> # ℹ 1,252 more rows
+#> # A tibble: 2 × 4
+#>   series split train       test      
+#>   <chr>  <int> <list>      <list>    
+#> 1 M23100     1 <int [120]> <int [18]>
+#> 2 M23100     2 <int [120]> <int [18]>
 
 # Expanding-window split plan
 expanding_split <- make_split(
   main_frame = main_frame,
   context = context,
   type = "first",
-  value = 2400,
-  n_ahead = 24,
-  n_skip = 23,
+  value = 120,
+  n_ahead = 18,
+  n_skip = 17,
   n_lag = 0,
   mode = "stretch",
   exceed = FALSE
 )
 
 expanding_split
-#> # A tibble: 1,262 × 4
-#>    bidding_zone split train         test      
-#>    <chr>        <int> <list>        <list>    
-#>  1 DE               1 <int [2,400]> <int [24]>
-#>  2 DE               2 <int [2,424]> <int [24]>
-#>  3 DE               3 <int [2,448]> <int [24]>
-#>  4 DE               4 <int [2,472]> <int [24]>
-#>  5 DE               5 <int [2,496]> <int [24]>
-#>  6 DE               6 <int [2,520]> <int [24]>
-#>  7 DE               7 <int [2,544]> <int [24]>
-#>  8 DE               8 <int [2,568]> <int [24]>
-#>  9 DE               9 <int [2,592]> <int [24]>
-#> 10 DE              10 <int [2,616]> <int [24]>
-#> # ℹ 1,252 more rows
+#> # A tibble: 2 × 4
+#>   series split train       test      
+#>   <chr>  <int> <list>      <list>    
+#> 1 M23100     1 <int [120]> <int [18]>
+#> 2 M23100     2 <int [138]> <int [18]>
 ```

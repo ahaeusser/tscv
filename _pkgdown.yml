@@ -34,6 +34,24 @@ reference:
     - mape_vec
     - smape_vec
 
+- title: Data Analysis
+  desc: >
+    Functions and utilities for data analysis, etc.
+  contents:
+    - estimate_mode
+    - estimate_kurtosis
+    - estimate_skewness
+    - acf_vec
+    - estimate_acf
+    - pacf_vec
+    - estimate_pacf
+    - interpolate_missing
+    - smooth_outlier
+    - check_data
+    - summarise_data
+    - summarise_stats
+    - summarise_split
+
 - title: Data Visualization
   desc: >
     Functions and utilities for data visualization
@@ -111,24 +129,6 @@ reference:
     - fitted.TBATS
     - residuals.TBATS
     - model_sum.TBATS
-
-- title: Miscellaneous
-  desc: >
-    Functions and utilities for data preparation, etc.
-  contents:
-    - estimate_mode
-    - estimate_kurtosis
-    - estimate_skewness
-    - acf_vec
-    - estimate_acf
-    - pacf_vec
-    - estimate_pacf
-    - interpolate_missing
-    - smooth_outlier
-    - check_data
-    - summarise_data
-    - summarise_stats
-    - summarise_split
 
 - title: Data sets
   desc: >

@@ -15,7 +15,7 @@ Functions and utilities for time series cross-validation
 - [`make_future()`](https://ahaeusser.github.io/tscv/reference/make_future.md)
   : Convert forecasts to a future frame
 - [`make_tsibble()`](https://ahaeusser.github.io/tscv/reference/make_tsibble.md)
-  : Convert tibble to tsibble
+  : Convert data to a tsibble
 
 ## Forecast Accuracy
 
@@ -40,22 +40,53 @@ Functions and utilities for forecast accuracy
 - [`smape_vec()`](https://ahaeusser.github.io/tscv/reference/smape_vec.md)
   : Calculate the symmetric mean absolute percentage error
 
+## Data Analysis
+
+Functions and utilities for data analysis, etc.
+
+- [`estimate_mode()`](https://ahaeusser.github.io/tscv/reference/estimate_mode.md)
+  : Estimate the mode of a distribution
+- [`estimate_kurtosis()`](https://ahaeusser.github.io/tscv/reference/estimate_kurtosis.md)
+  : Estimate kurtosis
+- [`estimate_skewness()`](https://ahaeusser.github.io/tscv/reference/estimate_skewness.md)
+  : Estimate skewness
+- [`acf_vec()`](https://ahaeusser.github.io/tscv/reference/acf_vec.md) :
+  Estimate autocorrelations of a numeric vector
+- [`estimate_acf()`](https://ahaeusser.github.io/tscv/reference/estimate_acf.md)
+  : Estimate autocorrelations by time series
+- [`pacf_vec()`](https://ahaeusser.github.io/tscv/reference/pacf_vec.md)
+  : Estimate partial autocorrelations of a numeric vector
+- [`estimate_pacf()`](https://ahaeusser.github.io/tscv/reference/estimate_pacf.md)
+  : Estimate partial autocorrelations by time series
+- [`interpolate_missing()`](https://ahaeusser.github.io/tscv/reference/interpolate_missing.md)
+  : Interpolate missing values
+- [`smooth_outlier()`](https://ahaeusser.github.io/tscv/reference/smooth_outlier.md)
+  : Identify and replace outliers
+- [`check_data()`](https://ahaeusser.github.io/tscv/reference/check_data.md)
+  : Check and prepare tsibble data
+- [`summarise_data()`](https://ahaeusser.github.io/tscv/reference/summarise_data.md)
+  : Summarise time series data
+- [`summarise_stats()`](https://ahaeusser.github.io/tscv/reference/summarise_stats.md)
+  : Summarise distributional statistics by time series
+- [`summarise_split()`](https://ahaeusser.github.io/tscv/reference/summarise_split.md)
+  : Summarise train-test splits
+
 ## Data Visualization
 
 Functions and utilities for data visualization
 
 - [`plot_bar()`](https://ahaeusser.github.io/tscv/reference/plot_bar.md)
-  : Plot data as bar chart
+  : Plot data as a bar chart
 - [`plot_density()`](https://ahaeusser.github.io/tscv/reference/plot_density.md)
-  : Plot the density via Kernel Density Estimator
+  : Plot a kernel density estimate
 - [`plot_histogram()`](https://ahaeusser.github.io/tscv/reference/plot_histogram.md)
-  : Plot data as histogram
+  : Plot data as a histogram
 - [`plot_line()`](https://ahaeusser.github.io/tscv/reference/plot_line.md)
-  : Plot data as line chart
+  : Plot data as a line chart
 - [`plot_point()`](https://ahaeusser.github.io/tscv/reference/plot_point.md)
-  : Plot data as scatterplot
+  : Plot data as a scatterplot
 - [`plot_qq()`](https://ahaeusser.github.io/tscv/reference/plot_qq.md) :
-  Quantile-Quantile plot
+  Create a quantile-quantile plot
 - [`theme_tscv()`](https://ahaeusser.github.io/tscv/reference/theme_tscv.md)
   : Custom ggplot2 theme for tscv package
 - [`scale_color_tscv()`](https://ahaeusser.github.io/tscv/reference/scale_color_tscv.md)
@@ -158,37 +189,6 @@ The TBATS model and its supported methods
   : Extract residuals from a TBATS model
 - [`model_sum(`*`<TBATS>`*`)`](https://ahaeusser.github.io/tscv/reference/model_sum.TBATS.md)
   : Summarize a TBATS model
-
-## Miscellaneous
-
-Functions and utilities for data preparation, etc.
-
-- [`estimate_mode()`](https://ahaeusser.github.io/tscv/reference/estimate_mode.md)
-  : Estimate the mode of a distribution
-- [`estimate_kurtosis()`](https://ahaeusser.github.io/tscv/reference/estimate_kurtosis.md)
-  : Estimate kurtosis
-- [`estimate_skewness()`](https://ahaeusser.github.io/tscv/reference/estimate_skewness.md)
-  : Estimate skewness
-- [`acf_vec()`](https://ahaeusser.github.io/tscv/reference/acf_vec.md) :
-  Estimate the sample autocorrelation of a numeric vector
-- [`estimate_acf()`](https://ahaeusser.github.io/tscv/reference/estimate_acf.md)
-  : Estimate the sample autocorrelation
-- [`pacf_vec()`](https://ahaeusser.github.io/tscv/reference/pacf_vec.md)
-  : Estimate the sample partial autocorrelation of a numeric vector
-- [`estimate_pacf()`](https://ahaeusser.github.io/tscv/reference/estimate_pacf.md)
-  : Estimate the sample partial autocorrelation
-- [`interpolate_missing()`](https://ahaeusser.github.io/tscv/reference/interpolate_missing.md)
-  : Interpolate missing values
-- [`smooth_outlier()`](https://ahaeusser.github.io/tscv/reference/smooth_outlier.md)
-  : Identify and replace outliers
-- [`check_data()`](https://ahaeusser.github.io/tscv/reference/check_data.md)
-  : Check and prepare tsibble data
-- [`summarise_data()`](https://ahaeusser.github.io/tscv/reference/summarise_data.md)
-  : Summary statistics for time series data
-- [`summarise_stats()`](https://ahaeusser.github.io/tscv/reference/summarise_stats.md)
-  : Summary statistics for time series data
-- [`summarise_split()`](https://ahaeusser.github.io/tscv/reference/summarise_split.md)
-  : Summary table of the splitting into training and testing
 
 ## Data sets
 

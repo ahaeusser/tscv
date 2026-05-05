@@ -144,35 +144,30 @@ make_accuracy <- function(future_frame,
     by = c(series_id, index_id)
   ) |>
     select(
-      all_of(series_id),
-      model,
-      split,
-      horizon,
-      point,
-      actual
+      all_of(c(series_id, "model", "split", "horizon", "point", "actual"))
     )
 
   # Estimate common accuracy metrics
   accuracy_frame <- data |>
     group_by(
       !!sym(series_id),
-      model,
-      !!sym(dimension)
+      .data$model,
+      .data[[dimension]]
     ) |>
     summarise(
-      ME = me_vec(truth = actual, estimate = point),
-      MAE = mae_vec(truth = actual, estimate = point),
-      MSE = mse_vec(truth = actual, estimate = point),
-      RMSE = rmse_vec(truth = actual, estimate = point),
-      MAPE = mape_vec(truth = actual, estimate = point),
-      sMAPE = smape_vec(truth = actual, estimate = point),
-      MPE = mpe_vec(truth = actual, estimate = point),
+      ME = me_vec(truth = .data$actual, estimate = .data$point),
+      MAE = mae_vec(truth = .data$actual, estimate = .data$point),
+      MSE = mse_vec(truth = .data$actual, estimate = .data$point),
+      RMSE = rmse_vec(truth = .data$actual, estimate = .data$point),
+      MAPE = mape_vec(truth = .data$actual, estimate = .data$point),
+      sMAPE = smape_vec(truth = .data$actual, estimate = .data$point),
+      MPE = mpe_vec(truth = .data$actual, estimate = .data$point),
       .groups = "drop"
     ) |>
     arrange(
       !!sym(series_id),
-      model,
-      !!sym(dimension)
+      .data$model,
+      .data[[dimension]]
     )
 
   column_all <- names(accuracy_frame)
@@ -187,8 +182,8 @@ make_accuracy <- function(future_frame,
     ) |>
     arrange(
       !!sym(series_id),
-      model,
-      metric
+      .data$model,
+      .data$metric
     )
 
   if (!is.null(benchmark)) {
@@ -196,11 +191,11 @@ make_accuracy <- function(future_frame,
     set_models <- unique(accuracy_frame$model)
 
     mae_benchmark <- accuracy_frame |>
-      filter(metric == "MAE") |>
-      filter(model == benchmark) |>
+      filter(.data$metric == "MAE") |>
+      filter(.data$model == benchmark) |>
       pivot_wider(
-        names_from = model,
-        values_from = value
+        names_from = all_of("model"),
+        values_from = all_of("value")
       )
 
     mae_benchmark <- map_dfr(
@@ -212,11 +207,11 @@ make_accuracy <- function(future_frame,
     )
 
     metrics_rmae <- left_join(
-      x = filter(accuracy_frame, metric == "MAE"),
+      x = filter(accuracy_frame, .data$metric == "MAE"),
       y = mae_benchmark,
       by = c(series_id, dimension, "metric", "model")
     ) |>
-      mutate(value = value / !!sym(benchmark)) |>
+      mutate(value = .data$value / .data[[benchmark]]) |>
       mutate(metric = "rMAE") |>
       select(-all_of(benchmark))
 
@@ -226,8 +221,8 @@ make_accuracy <- function(future_frame,
     ) |>
       arrange(
         !!sym(series_id),
-        model,
-        metric
+        .data$model,
+        .data$metric
       )
   }
 
@@ -237,3 +232,4 @@ make_accuracy <- function(future_frame,
 
   return(accuracy_frame)
 }
+

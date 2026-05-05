@@ -59,7 +59,7 @@ splits:
 The first training window contains \code{n_init} observations. Each test
 window contains \code{n_ahead} observations. The argument \code{n_skip}
 controls how many observations are skipped between consecutive split origins.
-For example, with \code{n_ahead = 24} and \code{n_skip = 23}, consecutive
+For example, with \code{n_ahead = 18} and \code{n_skip = 17}, consecutive
 test windows are non-overlapping.
 
 If \code{n_lag > 0}, the test indices include lagged observations before the
@@ -72,10 +72,10 @@ exceed the original sample size.
 \examples{
 # Fixed-window splits
 fixed_index <- split_index(
-  n_total = 120,
-  n_init = 48,
-  n_ahead = 24,
-  n_skip = 23,
+  n_total = 180,
+  n_init = 120,
+  n_ahead = 18,
+  n_skip = 17,
   n_lag = 0,
   mode = "slide",
   exceed = FALSE
@@ -85,10 +85,10 @@ fixed_index
 
 # Expanding-window splits
 expanding_index <- split_index(
-  n_total = 120,
-  n_init = 48,
-  n_ahead = 24,
-  n_skip = 23,
+  n_total = 180,
+  n_init = 120,
+  n_ahead = 18,
+  n_skip = 17,
   n_lag = 0,
   mode = "stretch",
   exceed = FALSE
@@ -100,6 +100,7 @@ expanding_index
 Other time series cross-validation: 
 \code{\link{make_future}()},
 \code{\link{make_split}()},
+\code{\link{make_tsibble}()},
 \code{\link{slice_test}()},
 \code{\link{slice_train}()}
 }

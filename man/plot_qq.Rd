@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_qq.R
 \name{plot_qq}
 \alias{plot_qq}
-\title{Quantile-Quantile plot}
+\title{Create a quantile-quantile plot}
 \usage{
 plot_qq(
   data,
@@ -34,62 +34,137 @@ plot_qq(
 )
 }
 \arguments{
-\item{data}{A \code{data.frame}, \code{tibble} or \code{tsibble} in long format.}
+\item{data}{A \code{data.frame}, \code{tibble}, or \code{tsibble} in long
+format.}
 
-\item{x}{Unquoted column within \code{.data} containing numeric values.}
+\item{x}{Unquoted column in \code{data} containing numeric values.}
 
-\item{facet_var}{Unquoted column within \code{.data} (facet).}
+\item{facet_var}{Optional unquoted column in \code{data} used for faceting.}
 
-\item{facet_scale}{Character value defining axis scaling (\code{facet_var = "free"} or \code{facet_var = "fixed"}).}
+\item{facet_scale}{Character value defining facet axis scaling. Common values
+are \code{"free"}, \code{"fixed"}, \code{"free_x"}, and \code{"free_y"}.}
 
-\item{facet_nrow}{Integer value. The number of rows.}
+\item{facet_nrow}{Optional integer. Number of rows in the facet layout.}
 
-\item{facet_ncol}{Integer value. The number of columns.}
+\item{facet_ncol}{Optional integer. Number of columns in the facet layout.}
 
-\item{color}{Unquoted column within \code{.data} (color).}
+\item{color}{Optional unquoted column in \code{data} used to map point, line,
+and confidence-band colors.}
 
-\item{title}{Title of the plot.}
+\item{title}{Character value. Plot title.}
 
-\item{subtitle}{Subtitle of the plot.}
+\item{subtitle}{Character value. Plot subtitle.}
 
-\item{xlab}{Label for the x-axis.}
+\item{xlab}{Character value. Label for the x-axis.}
 
-\item{ylab}{Label for the y-axis.}
+\item{ylab}{Character value. Label for the y-axis.}
 
-\item{caption}{Caption of the plot.}
+\item{caption}{Character value. Plot caption.}
 
 \item{point_size}{Numeric value defining the point size.}
 
-\item{point_shape}{Integer value defining the point shape.}
+\item{point_shape}{Numeric or character value defining the point shape.}
 
-\item{point_color}{Character value defining the point color (ignored if \code{color} is present).}
+\item{point_color}{Character value defining the point outline color. Ignored
+when \code{color} is supplied.}
 
-\item{point_fill}{Character value defining the fill color (ignored if \code{color} is present).}
+\item{point_fill}{Character value defining the point fill color. Ignored when
+\code{color} is supplied.}
 
-\item{point_alpha}{Numeric value defining the transparency of points.}
+\item{point_alpha}{Numeric value between \code{0} and \code{1} defining point
+transparency.}
 
-\item{line_width}{Numeric value defining the line width (45-degree line).}
+\item{line_width}{Numeric value defining the qq-line width.}
 
-\item{line_type}{Integer value defining the line type (45-degree line).}
+\item{line_type}{Character or numeric value defining the qq-line type.}
 
-\item{line_color}{Character value defining the line color (45-degree line).}
+\item{line_color}{Character value defining the qq-line color. Ignored when
+\code{color} is supplied.}
 
-\item{line_alpha}{Numeric value defining the transparency of the line.}
+\item{line_alpha}{Numeric value between \code{0} and \code{1} defining line
+transparency.}
 
-\item{band_color}{Character value defining the fill color of the confidence bands.}
+\item{band_color}{Character value defining the confidence-band fill color.
+Ignored when \code{color} is supplied.}
 
-\item{band_alpha}{Numeric value defining the transparency of the confidence bands.}
+\item{band_alpha}{Numeric value between \code{0} and \code{1} defining
+confidence-band transparency.}
 
-\item{theme_set}{A complete ggplot2 theme.}
+\item{theme_set}{A complete \code{ggplot2} theme.}
 
-\item{theme_config}{A list with further arguments passed to \code{ggplot2::theme()}.}
+\item{theme_config}{A named \code{list} with additional arguments passed to
+\code{ggplot2::theme()}.}
 
 \item{...}{Further arguments passed to \code{qqplotr::stat_qq_point()},
-\code{qqplotr::stat_qq_line()}, \code{qqplotr::stat_qq_band()}.}
+\code{qqplotr::stat_qq_line()}, and \code{qqplotr::stat_qq_band()}.}
 }
 \value{
-p An object of class ggplot.
+An object of class \code{ggplot}.
 }
 \description{
-Quantile-Quantile plot of one or more time series.
+Create a quantile-quantile plot for one or more numeric variables.
 }
+\details{
+\code{plot_qq()} is a convenience wrapper around the \code{qqplotr}
+functions \code{stat_qq_point()}, \code{stat_qq_line()}, and
+\code{stat_qq_band()}. It is useful for checking whether values, residuals,
+or forecast errors approximately follow a theoretical distribution.
+
+By default, the function creates a normal quantile-quantile plot with
+pointwise confidence bands.
+
+The arguments \code{x}, \code{facet_var}, and \code{color} are passed as
+unquoted column names.
+
+If \code{color} is supplied, point colors, line colors, and confidence-band
+fills are mapped to that variable. In this case, \code{point_color},
+\code{point_fill}, \code{line_color}, and \code{band_color} are ignored.
+If \code{color} is not supplied, the fixed styling arguments are used.
+
+Additional arguments can be passed to the underlying \code{qqplotr}
+statistics through \code{...}, for example distributional arguments supported
+by \code{qqplotr}.
+
+Additional theme settings can be supplied through \code{theme_config}. This
+should be a named list of arguments passed to \code{ggplot2::theme()}.
+}
+\examples{
+library(dplyr)
+
+data <- M4_monthly_data |>
+  filter(series \%in\% c("M23100", "M14395"))
+
+plot_qq(
+  data = data,
+  x = value,
+  facet_var = series,
+  title = "QQ Plot of M4 Monthly Values",
+  subtitle = "Normal quantile-quantile plots by series",
+  xlab = "Theoretical quantiles",
+  ylab = "Sample quantiles"
+)
+
+stats <- data |>
+  group_by(series) |>
+  mutate(value_centered = value - mean(value, na.rm = TRUE)) |>
+  ungroup()
+
+plot_qq(
+  data = stats,
+  x = value_centered,
+  color = series,
+  title = "QQ Plot of Centered M4 Monthly Values",
+  subtitle = "Normal quantile-quantile plots by series",
+  xlab = "Theoretical quantiles",
+  ylab = "Sample quantiles"
+)
+}
+\seealso{
+Other data visualization: 
+\code{\link{plot_bar}()},
+\code{\link{plot_density}()},
+\code{\link{plot_histogram}()},
+\code{\link{plot_line}()},
+\code{\link{plot_point}()}
+}
+\concept{data visualization}

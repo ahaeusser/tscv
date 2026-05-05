@@ -41,21 +41,21 @@ include lagged observations before the forecast horizon.
 library(dplyr)
 
 context <- list(
-  series_id = "bidding_zone",
+  series_id = "series",
   value_id = "value",
-  index_id = "time"
+  index_id = "index"
 )
 
-main_frame <- elec_price |>
-  filter(bidding_zone \%in\% c("DE", "FR"))
+main_frame <- M4_monthly_data |>
+  filter(series == "M23100")
 
 split_frame <- make_split(
   main_frame = main_frame,
   context = context,
   type = "first",
-  value = 2400,
-  n_ahead = 24,
-  n_skip = 23,
+  value = 120,
+  n_ahead = 18,
+  n_skip = 17,
   n_lag = 0,
   mode = "stretch",
   exceed = FALSE
@@ -73,6 +73,7 @@ test_frame
 Other time series cross-validation: 
 \code{\link{make_future}()},
 \code{\link{make_split}()},
+\code{\link{make_tsibble}()},
 \code{\link{slice_train}()},
 \code{\link{split_index}()}
 }

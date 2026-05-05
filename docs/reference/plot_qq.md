@@ -1,6 +1,6 @@
-# Quantile-Quantile plot
+# Create a quantile-quantile plot
 
-Quantile-Quantile plot of one or more time series.
+Create a quantile-quantile plot for one or more numeric variables.
 
 ## Usage
 
@@ -39,52 +39,53 @@ plot_qq(
 
 - data:
 
-  A `data.frame`, `tibble` or `tsibble` in long format.
+  A `data.frame`, `tibble`, or `tsibble` in long format.
 
 - x:
 
-  Unquoted column within `.data` containing numeric values.
+  Unquoted column in `data` containing numeric values.
 
 - facet_var:
 
-  Unquoted column within `.data` (facet).
+  Optional unquoted column in `data` used for faceting.
 
 - facet_scale:
 
-  Character value defining axis scaling (`facet_var = "free"` or
-  `facet_var = "fixed"`).
+  Character value defining facet axis scaling. Common values are
+  `"free"`, `"fixed"`, `"free_x"`, and `"free_y"`.
 
 - facet_nrow:
 
-  Integer value. The number of rows.
+  Optional integer. Number of rows in the facet layout.
 
 - facet_ncol:
 
-  Integer value. The number of columns.
+  Optional integer. Number of columns in the facet layout.
 
 - color:
 
-  Unquoted column within `.data` (color).
+  Optional unquoted column in `data` used to map point, line, and
+  confidence-band colors.
 
 - title:
 
-  Title of the plot.
+  Character value. Plot title.
 
 - subtitle:
 
-  Subtitle of the plot.
+  Character value. Plot subtitle.
 
 - xlab:
 
-  Label for the x-axis.
+  Character value. Label for the x-axis.
 
 - ylab:
 
-  Label for the y-axis.
+  Character value. Label for the y-axis.
 
 - caption:
 
-  Caption of the plot.
+  Character value. Plot caption.
 
 - point_size:
 
@@ -92,62 +93,135 @@ plot_qq(
 
 - point_shape:
 
-  Integer value defining the point shape.
+  Numeric or character value defining the point shape.
 
 - point_color:
 
-  Character value defining the point color (ignored if `color` is
-  present).
+  Character value defining the point outline color. Ignored when `color`
+  is supplied.
 
 - point_fill:
 
-  Character value defining the fill color (ignored if `color` is
-  present).
+  Character value defining the point fill color. Ignored when `color` is
+  supplied.
 
 - point_alpha:
 
-  Numeric value defining the transparency of points.
+  Numeric value between `0` and `1` defining point transparency.
 
 - line_width:
 
-  Numeric value defining the line width (45-degree line).
+  Numeric value defining the qq-line width.
 
 - line_type:
 
-  Integer value defining the line type (45-degree line).
+  Character or numeric value defining the qq-line type.
 
 - line_color:
 
-  Character value defining the line color (45-degree line).
+  Character value defining the qq-line color. Ignored when `color` is
+  supplied.
 
 - line_alpha:
 
-  Numeric value defining the transparency of the line.
+  Numeric value between `0` and `1` defining line transparency.
 
 - band_color:
 
-  Character value defining the fill color of the confidence bands.
+  Character value defining the confidence-band fill color. Ignored when
+  `color` is supplied.
 
 - band_alpha:
 
-  Numeric value defining the transparency of the confidence bands.
+  Numeric value between `0` and `1` defining confidence-band
+  transparency.
 
 - theme_set:
 
-  A complete ggplot2 theme.
+  A complete `ggplot2` theme.
 
 - theme_config:
 
-  A list with further arguments passed to
+  A named `list` with additional arguments passed to
   [`ggplot2::theme()`](https://ggplot2.tidyverse.org/reference/theme.html).
 
 - ...:
 
   Further arguments passed to
   [`qqplotr::stat_qq_point()`](https://rdrr.io/pkg/qqplotr/man/stat_qq_point.html),
-  `qqplotr::stat_qq_line()`,
+  `qqplotr::stat_qq_line()`, and
   [`qqplotr::stat_qq_band()`](https://rdrr.io/pkg/qqplotr/man/stat_qq_band.html).
 
 ## Value
 
-p An object of class ggplot.
+An object of class `ggplot`.
+
+## Details
+
+`plot_qq()` is a convenience wrapper around the `qqplotr` functions
+`stat_qq_point()`, `stat_qq_line()`, and `stat_qq_band()`. It is useful
+for checking whether values, residuals, or forecast errors approximately
+follow a theoretical distribution.
+
+By default, the function creates a normal quantile-quantile plot with
+pointwise confidence bands.
+
+The arguments `x`, `facet_var`, and `color` are passed as unquoted
+column names.
+
+If `color` is supplied, point colors, line colors, and confidence-band
+fills are mapped to that variable. In this case, `point_color`,
+`point_fill`, `line_color`, and `band_color` are ignored. If `color` is
+not supplied, the fixed styling arguments are used.
+
+Additional arguments can be passed to the underlying `qqplotr`
+statistics through `...`, for example distributional arguments supported
+by `qqplotr`.
+
+Additional theme settings can be supplied through `theme_config`. This
+should be a named list of arguments passed to
+[`ggplot2::theme()`](https://ggplot2.tidyverse.org/reference/theme.html).
+
+## See also
+
+Other data visualization:
+[`plot_bar()`](https://ahaeusser.github.io/tscv/reference/plot_bar.md),
+[`plot_density()`](https://ahaeusser.github.io/tscv/reference/plot_density.md),
+[`plot_histogram()`](https://ahaeusser.github.io/tscv/reference/plot_histogram.md),
+[`plot_line()`](https://ahaeusser.github.io/tscv/reference/plot_line.md),
+[`plot_point()`](https://ahaeusser.github.io/tscv/reference/plot_point.md)
+
+## Examples
+
+``` r
+library(dplyr)
+
+data <- M4_monthly_data |>
+  filter(series %in% c("M23100", "M14395"))
+
+plot_qq(
+  data = data,
+  x = value,
+  facet_var = series,
+  title = "QQ Plot of M4 Monthly Values",
+  subtitle = "Normal quantile-quantile plots by series",
+  xlab = "Theoretical quantiles",
+  ylab = "Sample quantiles"
+)
+
+
+stats <- data |>
+  group_by(series) |>
+  mutate(value_centered = value - mean(value, na.rm = TRUE)) |>
+  ungroup()
+
+plot_qq(
+  data = stats,
+  x = value_centered,
+  color = series,
+  title = "QQ Plot of Centered M4 Monthly Values",
+  subtitle = "Normal quantile-quantile plots by series",
+  xlab = "Theoretical quantiles",
+  ylab = "Sample quantiles"
+)
+```

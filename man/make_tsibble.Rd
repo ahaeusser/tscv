@@ -2,19 +2,59 @@
 % Please edit documentation in R/make_tsibble.R
 \name{make_tsibble}
 \alias{make_tsibble}
-\title{Convert tibble to tsibble}
+\title{Convert data to a tsibble}
 \usage{
 make_tsibble(main_frame, context)
 }
 \arguments{
 \item{main_frame}{A \code{tibble} containing the time series data.}
 
-\item{context}{A named \code{list} with the identifiers for \code{seried_id}, \code{value_id} and \code{index_id}.}
+\item{context}{A named \code{list} with the identifiers for
+\code{series_id}, \code{value_id}, and \code{index_id}.}
 }
 \value{
-main_frame Same structure as before, just stored as \code{tsibble}.
+A \code{tsibble} with the same columns as \code{main_frame}, using the index
+and key defined in \code{context}.
 }
 \description{
-\code{make_tsibble} is a helper function to convert a
-  \code{tibble} to a \code{tsibble}.
+Convert a \code{tibble} containing time series data to a \code{tsibble}.
 }
+\details{
+\code{make_tsibble()} is a small helper for time series cross-validation
+workflows. It uses the time index and series identifier supplied in
+\code{context} to create a regular \code{tsibble}.
+
+The input data must contain the columns specified by \code{context$index_id}
+and \code{context$series_id}. The column specified by \code{context$index_id}
+is used as the time index, and the column specified by
+\code{context$series_id} is used as the key.
+}
+\examples{
+library(dplyr)
+library(tsibble)
+
+context <- list(
+  series_id = "series",
+  value_id = "value",
+  index_id = "index"
+)
+
+main_frame <- M4_monthly_data |>
+  filter(series \%in\% c("M23100", "M14395"))
+
+tsibble_frame <- make_tsibble(
+  main_frame = main_frame,
+  context = context
+)
+
+tsibble_frame
+}
+\seealso{
+Other time series cross-validation: 
+\code{\link{make_future}()},
+\code{\link{make_split}()},
+\code{\link{slice_test}()},
+\code{\link{slice_train}()},
+\code{\link{split_index}()}
+}
+\concept{time series cross-validation}

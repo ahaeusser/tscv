@@ -96,6 +96,7 @@ future_frame
 \seealso{
 Other time series cross-validation: 
 \code{\link{make_split}()},
+\code{\link{make_tsibble}()},
 \code{\link{slice_test}()},
 \code{\link{slice_train}()},
 \code{\link{split_index}()}

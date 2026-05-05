@@ -1,6 +1,6 @@
-# Plot data as scatterplot
+# Plot data as a scatterplot
 
-Plot one or more variables as scatterplot.
+Create a scatterplot for two variables.
 
 ## Usage
 
@@ -33,56 +33,57 @@ plot_point(
 
 - data:
 
-  A `data.frame`, `tibble` or `tsibble` in long format.
+  A `data.frame`, `tibble`, or `tsibble` in long format.
 
 - x:
 
-  Unquoted column within `.data`.
+  Unquoted column in `data` used on the x-axis.
 
 - y:
 
-  Unquoted column within `.data` containing numeric values.
+  Unquoted column in `data` containing numeric values shown on the
+  y-axis.
 
 - facet_var:
 
-  Unquoted column within `.data` (facet).
+  Optional unquoted column in `data` used for faceting.
 
 - facet_scale:
 
-  Character value defining axis scaling (`facet_var = "free"` or
-  `facet_var = "fixed"`).
+  Character value defining facet axis scaling. Common values are
+  `"free"`, `"fixed"`, `"free_x"`, and `"free_y"`.
 
 - facet_nrow:
 
-  Integer value. The number of rows.
+  Optional integer. Number of rows in the facet layout.
 
 - facet_ncol:
 
-  Integer value. The number of columns.
+  Optional integer. Number of columns in the facet layout.
 
 - color:
 
-  Unquoted column within `.data` (color).
+  Optional unquoted column in `data` used to map point color.
 
 - title:
 
-  Title of the plot.
+  Character value. Plot title.
 
 - subtitle:
 
-  Subtitle of the plot.
+  Character value. Plot subtitle.
 
 - xlab:
 
-  Label for the x-axis.
+  Character value. Label for the x-axis.
 
 - ylab:
 
-  Label for the y-axis.
+  Character value. Label for the y-axis.
 
 - caption:
 
-  Caption of the plot.
+  Character value. Plot caption.
 
 - point_size:
 
@@ -90,30 +91,100 @@ plot_point(
 
 - point_type:
 
-  Numeric value defining the point type.
+  Numeric or character value defining the point shape.
 
 - point_color:
 
-  Character value defining the point color (ignored if `color` is
-  present).
+  Character value defining the point color. Ignored when `color` is
+  supplied.
 
 - point_alpha:
 
-  Numeric value defining the transparency of the points.
+  Numeric value between `0` and `1` defining point transparency.
 
 - theme_set:
 
-  A complete ggplot2 theme.
+  A complete `ggplot2` theme.
 
 - theme_config:
 
-  A list with further arguments passed to
+  A named `list` with additional arguments passed to
   [`ggplot2::theme()`](https://ggplot2.tidyverse.org/reference/theme.html).
 
 - ...:
 
-  Currently not in use.
+  Currently not used.
 
 ## Value
 
-p An object of class ggplot.
+An object of class `ggplot`.
+
+## Details
+
+`plot_point()` is a convenience wrapper around
+[`ggplot2::geom_point()`](https://ggplot2.tidyverse.org/reference/geom_point.html).
+It is useful for plotting relationships between two variables, for
+example observed values over time, forecast errors by horizon, or one
+numeric diagnostic against another.
+
+The arguments `x`, `y`, `facet_var`, and `color` are passed as unquoted
+column names.
+
+If `color` is supplied, point colors are mapped to that variable and
+`point_color` is ignored. If `color` is not supplied, all points are
+drawn using `point_color`.
+
+Additional theme settings can be supplied through `theme_config`. This
+should be a named list of arguments passed to
+[`ggplot2::theme()`](https://ggplot2.tidyverse.org/reference/theme.html).
+
+## See also
+
+Other data visualization:
+[`plot_bar()`](https://ahaeusser.github.io/tscv/reference/plot_bar.md),
+[`plot_density()`](https://ahaeusser.github.io/tscv/reference/plot_density.md),
+[`plot_histogram()`](https://ahaeusser.github.io/tscv/reference/plot_histogram.md),
+[`plot_line()`](https://ahaeusser.github.io/tscv/reference/plot_line.md),
+[`plot_qq()`](https://ahaeusser.github.io/tscv/reference/plot_qq.md)
+
+## Examples
+
+``` r
+library(dplyr)
+
+data <- M4_monthly_data |>
+  filter(series == "M23100")
+
+plot_point(
+  data = data,
+  x = index,
+  y = value,
+  title = "M4 Monthly Time Series",
+  subtitle = "Series M23100",
+  xlab = "Time",
+  ylab = "Value"
+)
+
+
+acf_data <- estimate_acf(
+  .data = M4_monthly_data |>
+    filter(series %in% c("M23100", "M14395")),
+  context = list(
+    series_id = "series",
+    value_id = "value",
+    index_id = "index"
+  ),
+  lag_max = 12
+)
+
+plot_point(
+  data = acf_data,
+  x = lag,
+  y = value,
+  color = series,
+  title = "Autocorrelation by Series",
+  subtitle = "Sample autocorrelation up to lag 12",
+  xlab = "Lag",
+  ylab = "ACF"
+)
+```

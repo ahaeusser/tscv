@@ -53,6 +53,7 @@ observations before the forecast horizon.
 Other time series cross-validation:
 [`make_future()`](https://ahaeusser.github.io/tscv/reference/make_future.md),
 [`make_split()`](https://ahaeusser.github.io/tscv/reference/make_split.md),
+[`make_tsibble()`](https://ahaeusser.github.io/tscv/reference/make_tsibble.md),
 [`slice_train()`](https://ahaeusser.github.io/tscv/reference/slice_train.md),
 [`split_index()`](https://ahaeusser.github.io/tscv/reference/split_index.md)
 
@@ -62,21 +63,21 @@ Other time series cross-validation:
 library(dplyr)
 
 context <- list(
-  series_id = "bidding_zone",
+  series_id = "series",
   value_id = "value",
-  index_id = "time"
+  index_id = "index"
 )
 
-main_frame <- elec_price |>
-  filter(bidding_zone %in% c("DE", "FR"))
+main_frame <- M4_monthly_data |>
+  filter(series == "M23100")
 
 split_frame <- make_split(
   main_frame = main_frame,
   context = context,
   type = "first",
-  value = 2400,
-  n_ahead = 24,
-  n_skip = 23,
+  value = 120,
+  n_ahead = 18,
+  n_skip = 17,
   n_lag = 0,
   mode = "stretch",
   exceed = FALSE
@@ -89,18 +90,18 @@ test_frame <- slice_test(
 )
 
 test_frame
-#> # A tibble: 30,288 × 6
-#>    time                item            unit      bidding_zone value split
-#>    <dttm>              <chr>           <chr>     <chr>        <dbl> <int>
-#>  1 2019-04-11 00:00:00 Day-ahead Price [EUR/MWh] DE            37.1     1
-#>  2 2019-04-11 01:00:00 Day-ahead Price [EUR/MWh] DE            36.5     1
-#>  3 2019-04-11 02:00:00 Day-ahead Price [EUR/MWh] DE            37.1     1
-#>  4 2019-04-11 03:00:00 Day-ahead Price [EUR/MWh] DE            38.9     1
-#>  5 2019-04-11 04:00:00 Day-ahead Price [EUR/MWh] DE            47.9     1
-#>  6 2019-04-11 05:00:00 Day-ahead Price [EUR/MWh] DE            56.4     1
-#>  7 2019-04-11 06:00:00 Day-ahead Price [EUR/MWh] DE            59.2     1
-#>  8 2019-04-11 07:00:00 Day-ahead Price [EUR/MWh] DE            51.7     1
-#>  9 2019-04-11 08:00:00 Day-ahead Price [EUR/MWh] DE            48.6     1
-#> 10 2019-04-11 09:00:00 Day-ahead Price [EUR/MWh] DE            46.0     1
-#> # ℹ 30,278 more rows
+#> # A tibble: 36 × 5
+#>       index series category    value split
+#>       <mth> <chr>  <chr>       <dbl> <int>
+#>  1 2013 Jan M23100 Demographic  8940     1
+#>  2 2013 Feb M23100 Demographic  8950     1
+#>  3 2013 Mrz M23100 Demographic  9080     1
+#>  4 2013 Apr M23100 Demographic  9270     1
+#>  5 2013 Mai M23100 Demographic  9570     1
+#>  6 2013 Jun M23100 Demographic  9610     1
+#>  7 2013 Jul M23100 Demographic  9510     1
+#>  8 2013 Aug M23100 Demographic  9550     1
+#>  9 2013 Sep M23100 Demographic  9400     1
+#> 10 2013 Okt M23100 Demographic  9310     1
+#> # ℹ 26 more rows
 ```

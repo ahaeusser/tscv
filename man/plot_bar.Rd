@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_bar.R
 \name{plot_bar}
 \alias{plot_bar}
-\title{Plot data as bar chart}
+\title{Plot data as a bar chart}
 \usage{
 plot_bar(
   data,
@@ -30,53 +30,142 @@ plot_bar(
 )
 }
 \arguments{
-\item{data}{A \code{data.frame}, \code{tibble} or \code{tsibble} in long format.}
+\item{data}{A \code{data.frame}, \code{tibble}, or \code{tsibble} in long
+format.}
 
-\item{x}{Unquoted column within \code{.data}.}
+\item{x}{Unquoted column in \code{data} used on the x-axis.}
 
-\item{y}{Unquoted column within \code{.data} containing numeric values.}
+\item{y}{Unquoted column in \code{data} containing numeric values shown on
+the y-axis.}
 
-\item{position}{Character value. Possible values are \code{"stack} or \code{"dodge}.}
+\item{position}{Character value defining the bar position. Common values are
+\code{"dodge"} and \code{"stack"}.}
 
-\item{facet_var}{Unquoted column within \code{.data} (facet).}
+\item{facet_var}{Optional unquoted column in \code{data} used for faceting.}
 
-\item{facet_scale}{Character value defining axis scaling. Possible values are \code{"free"}, \code{"fixed"}, \code{"free_x"} and \code{"free_y"}.}
+\item{facet_scale}{Character value defining facet axis scaling. Common values
+are \code{"free"}, \code{"fixed"}, \code{"free_x"}, and \code{"free_y"}.}
 
-\item{facet_nrow}{Integer value. The number of rows.}
+\item{facet_nrow}{Optional integer. Number of rows in the facet layout.}
 
-\item{facet_ncol}{Integer value. The number of columns.}
+\item{facet_ncol}{Optional integer. Number of columns in the facet layout.}
 
-\item{color}{Unquoted column within \code{.data} (color).}
+\item{color}{Optional unquoted column in \code{data} used to map bar fill
+color.}
 
-\item{flip}{Logical value. If \code{TRUE}, the plot is flipped from horizontal to vertical.}
+\item{flip}{Logical value. If \code{TRUE}, the plot is flipped using
+\code{ggplot2::coord_flip()}.}
 
-\item{reorder}{Logical value. If \code{TRUE}, the values are reordered within each facet.}
+\item{reorder}{Logical value. If \code{TRUE}, add
+\code{tidytext::scale_x_reordered()} for reordered facet labels.}
 
-\item{title}{Title of the plot.}
+\item{title}{Character value. Plot title.}
 
-\item{subtitle}{Subtitle of the plot.}
+\item{subtitle}{Character value. Plot subtitle.}
 
-\item{xlab}{Label for the x-axis.}
+\item{xlab}{Character value. Label for the x-axis.}
 
-\item{ylab}{Label for the y-axis.}
+\item{ylab}{Character value. Label for the y-axis.}
 
-\item{caption}{Caption of the plot.}
+\item{caption}{Character value. Plot caption.}
 
-\item{bar_size}{Numeric value defining the line width.}
+\item{bar_size}{Numeric value defining the bar border line width.}
 
-\item{bar_color}{Character value defining the line color (ignored if \code{color} is present).}
+\item{bar_color}{Character value defining the bar fill color. Ignored when
+\code{color} is supplied.}
 
-\item{bar_alpha}{Numeric value defining the transparency of the line.}
+\item{bar_alpha}{Numeric value between \code{0} and \code{1} defining bar
+transparency.}
 
-\item{theme_set}{A complete ggplot2 theme.}
+\item{theme_set}{A complete \code{ggplot2} theme.}
 
-\item{theme_config}{A list with further arguments passed to \code{ggplot2::theme()}.}
+\item{theme_config}{A named \code{list} with additional arguments passed to
+\code{ggplot2::theme()}.}
 
-\item{...}{Currently not in use.}
+\item{...}{Currently not used.}
 }
 \value{
-p An object of class ggplot.
+An object of class \code{ggplot}.
 }
 \description{
-Plot one or more variables as bar chart.
+Create a bar chart for grouped numeric values.
 }
+\details{
+\code{plot_bar()} is a convenience wrapper around \code{ggplot2::geom_bar()}
+with \code{stat = "identity"}. It is intended for data that already contains
+summarized values, for example accuracy metrics, counts, or grouped summary
+statistics.
+
+The arguments \code{x}, \code{y}, \code{facet_var}, and \code{color} are
+passed as unquoted column names.
+
+If \code{color} is supplied, bar fill colors are mapped to that variable and
+\code{bar_color} is ignored. If \code{color} is not supplied, all bars are
+drawn using \code{bar_color}.
+
+The argument \code{position} controls how bars are displayed when
+\code{color} is supplied. Common values are \code{"dodge"} and
+\code{"stack"}.
+
+If \code{flip = TRUE}, the x-axis and y-axis are swapped using
+\code{ggplot2::coord_flip()}.
+
+If \code{reorder = TRUE}, \code{tidytext::scale_x_reordered()} is added.
+This is useful when the x-axis has been reordered within facets with
+\code{tidytext::reorder_within()}.
+
+Additional theme settings can be supplied through \code{theme_config}. This
+should be a named list of arguments passed to \code{ggplot2::theme()}.
+}
+\examples{
+library(dplyr)
+
+context <- list(
+  series_id = "series",
+  value_id = "value",
+  index_id = "index"
+)
+
+data <- M4_monthly_data |>
+  filter(series \%in\% c("M23100", "M14395"))
+
+stats <- summarise_stats(
+  .data = data,
+  context = context
+)
+
+plot_bar(
+  data = stats,
+  x = series,
+  y = mean,
+  title = "Average Value by Series",
+  xlab = "Series",
+  ylab = "Mean"
+)
+
+acf_data <- estimate_acf(
+  .data = data,
+  context = context,
+  lag_max = 12
+)
+
+plot_bar(
+  data = acf_data,
+  x = lag,
+  y = value,
+  facet_var = series,
+  title = "Autocorrelation by Series",
+  subtitle = "Sample autocorrelation up to lag 12",
+  xlab = "Lag",
+  ylab = "ACF"
+)
+}
+\seealso{
+Other data visualization: 
+\code{\link{plot_density}()},
+\code{\link{plot_histogram}()},
+\code{\link{plot_line}()},
+\code{\link{plot_point}()},
+\code{\link{plot_qq}()}
+}
+\concept{data visualization}

@@ -57,6 +57,7 @@ and
 
 Other time series cross-validation:
 [`make_split()`](https://ahaeusser.github.io/tscv/reference/make_split.md),
+[`make_tsibble()`](https://ahaeusser.github.io/tscv/reference/make_tsibble.md),
 [`slice_test()`](https://ahaeusser.github.io/tscv/reference/slice_test.md),
 [`slice_train()`](https://ahaeusser.github.io/tscv/reference/slice_train.md),
 [`split_index()`](https://ahaeusser.github.io/tscv/reference/split_index.md)

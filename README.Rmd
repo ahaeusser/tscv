@@ -13,7 +13,11 @@ knitr::opts_chunk$set(
   out.width = "100%"
 )
 
+library(tscv)
 library(tidyverse)
+library(tsibble)
+library(fable)
+library(fabletools)
 ```
 
 # tscv <img src="man/figures/logo.png" align="right" height="139" alt="" />
@@ -74,74 +78,108 @@ In a fixed window setup, both the training window and the test window move forwa
 In the plot below, each row represents one split and each square represents one time point. Blue squares are used for training, dark squares are used for testing, and light squares are not used in that split.
 
 ```{r fixed-window-plot, echo = FALSE, message = FALSE, warning = FALSE, fig.alt = "Fixed window time series cross-validation scheme", fig.cap = "Fixed window cross-validation: the training and test windows both move forward through time.", fig.width = 7, fig.height = 3}
+make_cv_grid <- function(index) {
+  n_splits <- length(index$train)
+  max_time <- max(unlist(c(index$train, index$test)))
+
+  full_grid <- expand_grid(
+    split = seq_len(n_splits),
+    time = seq_len(max_time)
+  )
+
+  train_grid <- map_dfr(
+    .x = seq_len(n_splits),
+    .f = ~tibble(
+      split = .x,
+      time = index$train[[.x]],
+      set = "Training"
+    )
+  )
+
+  test_grid <- map_dfr(
+    .x = seq_len(n_splits),
+    .f = ~tibble(
+      split = .x,
+      time = index$test[[.x]],
+      set = "Test"
+    )
+  )
+
+  full_grid |>
+    left_join(
+      bind_rows(train_grid, test_grid),
+      by = c("split", "time")
+    ) |>
+    mutate(
+      set = replace_na(set, "Unused"),
+      set = factor(set, levels = c("Training", "Test", "Unused")),
+      split = factor(split, levels = rev(seq_len(n_splits)))
+    )
+}
+
+plot_cv_grid <- function(data) {
+  ggplot(data, aes(x = time, y = split, fill = set)) +
+    geom_tile(color = "white", linewidth = 1.0) +
+    scale_fill_manual(
+      name = NULL,
+      breaks = c("Training", "Test", "Unused"),
+      labels = c("Train", "Test", "Unused"),
+      values = c(
+        "Training" = "#426780",
+        "Test" = "grey35",
+        "Unused" = "#eef4f7"
+      ),
+      drop = FALSE
+    ) +
+    coord_equal() +
+    theme_void() +
+    theme(
+      legend.position = "bottom",
+      plot.margin = margin(0, 0, 0, 0),
+      panel.background = element_rect(fill = "white", colour = NA),
+      plot.background = element_rect(fill = "white", colour = NA)
+    )
+}
+
 initial_train <- 8
 test_size <- 4
 n_splits <- 8
+n_total <- initial_train + test_size + n_splits - 1
 
-max_time_used <- initial_train + test_size + n_splits - 1
-
-cv_grid <- tidyr::expand_grid(
-  split = seq_len(n_splits),
-  time = seq_len(max_time_used)
-) %>%
-  dplyr::mutate(
-    train_start = split,
-    train_end = split + initial_train - 1,
-    test_start = train_end + 1,
-    test_end = train_end + test_size,
-    set = dplyr::case_when(
-      time >= train_start & time <= train_end ~ "Training",
-      time >= test_start & time <= test_end ~ "Test",
-      TRUE ~ "Unused"
-    ),
-    split = factor(split, levels = rev(seq_len(n_splits)))
-  )
-
-ggplot2::ggplot(cv_grid, ggplot2::aes(x = time, y = split, fill = set)) +
-  ggplot2::geom_tile(color = "white", linewidth = 1.0) +
-  ggplot2::scale_fill_manual(
-    name = NULL,
-    breaks = c("Training", "Test", "Unused"),
-    labels = c("Train", "Test", "Unused"),
-    values = c(
-      "Training" = "#426780",
-      "Test" = "grey35",
-      "Unused" = "#eef4f7"
-    ),
-    drop = FALSE
-  ) +
-  ggplot2::coord_equal() +
-  ggplot2::theme_void() +
-  ggplot2::theme(
-    legend.position = "bottom",
-    plot.margin = ggplot2::margin(0, 0, 0, 0),
-    panel.background = ggplot2::element_rect(fill = "white", colour = NA),
-    plot.background = ggplot2::element_rect(fill = "white", colour = NA)
-  )
-```
-
-For example, the following code creates fixed window splits for two electricity price series. The first training window contains 2,400 observations and each test window contains the next 24 observations. Since the origin itself advances by one step, `n_skip = 23` moves the next split forward by 24 observations in total.
-
-```{r fixed-window-example, message = FALSE, warning = FALSE}
-library(tscv)
-library(tidyverse)
-
-context <- list(
-  series_id = "bidding_zone",
-  value_id = "value",
-  index_id = "time"
+fixed_index <- split_index(
+  n_total = n_total,
+  n_init = initial_train,
+  n_ahead = test_size,
+  n_skip = 0,
+  n_lag = 0,
+  mode = "slide",
+  exceed = FALSE
 )
 
-main_frame <- elec_price %>%
-  filter(bidding_zone %in% c("DE", "FR"))
+fixed_index |>
+  make_cv_grid() |>
+  plot_cv_grid()
+```
+
+For example, the following code creates fixed window splits for one monthly time series from the M4 forecasting competition. The first training window contains 120 monthly observations and each test window contains the next 18 observations. Since the origin itself advances by one step, `n_skip = 17` moves the next split forward by 18 observations in total.
+
+```{r fixed-window-example, message = FALSE, warning = FALSE}
+context <- list(
+  series_id = "series",
+  value_id = "value",
+  index_id = "index"
+)
+
+main_frame <- M4_monthly_data |>
+  filter(series == "M23100")
 
 fixed_split <- make_split(
   main_frame = main_frame,
   context = context,
   type = "first",
-  value = 2400,
-  n_ahead = 24,
-  n_skip = 23,
+  value = 120,
+  n_ahead = 18,
+  n_skip = 17,
   n_lag = 0,
   mode = "slide",
   exceed = FALSE
@@ -150,69 +188,38 @@ fixed_split <- make_split(
 fixed_split
 ```
 
-The resulting object contains one row per time series and split. The `train` and `test` columns are list-columns with the row positions used for model estimation and forecast evaluation.
+The resulting object contains one row per split. The `train` and `test` columns are list-columns with the row positions used for model estimation and forecast evaluation.
 
 ### Expanding window cross-validation
 
 In an expanding window setup, the start of the training sample stays fixed while the end moves forward through time. The training sample therefore grows with each split. This is useful when all historical observations are considered informative and the goal is to mimic a forecasting process where more data becomes available over time.
 
 ```{r expanding-window-plot, echo = FALSE, message = FALSE, warning = FALSE, fig.alt = "Expanding window time series cross-validation scheme", fig.cap = "Expanding window cross-validation: the training window grows while the test window moves forward.", fig.width = 7, fig.height = 3}
-initial_train <- 8
-test_size <- 4
-n_splits <- 8
+expanding_index <- split_index(
+  n_total = n_total,
+  n_init = initial_train,
+  n_ahead = test_size,
+  n_skip = 0,
+  n_lag = 0,
+  mode = "stretch",
+  exceed = FALSE
+)
 
-max_time_used <- initial_train + test_size + n_splits - 1
-
-cv_grid <- tidyr::expand_grid(
-  split = seq_len(n_splits),
-  time = seq_len(max_time_used)
-) %>%
-  dplyr::mutate(
-    train_start = 1,
-    train_end = initial_train + split - 1,
-    test_start = train_end + 1,
-    test_end = train_end + test_size,
-    set = dplyr::case_when(
-      time >= train_start & time <= train_end ~ "Training",
-      time >= test_start & time <= test_end ~ "Test",
-      TRUE ~ "Unused"
-    ),
-    split = factor(split, levels = rev(seq_len(n_splits)))
-  )
-
-ggplot2::ggplot(cv_grid, ggplot2::aes(x = time, y = split, fill = set)) +
-  ggplot2::geom_tile(color = "white", linewidth = 1.0) +
-  ggplot2::scale_fill_manual(
-    name = NULL,
-    breaks = c("Training", "Test", "Unused"),
-    labels = c("Train", "Test", "Unused"),
-    values = c(
-      "Training" = "#426780",
-      "Test" = "grey35",
-      "Unused" = "#eef4f7"
-    ),
-    drop = FALSE
-  ) +
-  ggplot2::coord_equal() +
-  ggplot2::theme_void() +
-  ggplot2::theme(
-    legend.position = "bottom",
-    plot.margin = ggplot2::margin(0, 0, 0, 0),
-    panel.background = ggplot2::element_rect(fill = "white", colour = NA),
-    plot.background = ggplot2::element_rect(fill = "white", colour = NA)
-  )
+expanding_index |>
+  make_cv_grid() |>
+  plot_cv_grid()
 ```
 
-The same setup can be changed to expanding window cross-validation by using `mode = "stretch"`.
+The same setup can be switched to expanding window cross-validation by using `mode = "stretch"`.
 
 ```{r expanding-window-example, message = FALSE, warning = FALSE}
 expanding_split <- make_split(
   main_frame = main_frame,
   context = context,
   type = "first",
-  value = 2400,
-  n_ahead = 24,
-  n_skip = 23,
+  value = 120,
+  n_ahead = 18,
+  n_skip = 17,
   n_lag = 0,
   mode = "stretch",
   exceed = FALSE
@@ -221,7 +228,45 @@ expanding_split <- make_split(
 expanding_split
 ```
 
-Both approaches use the same forecast horizon and rolling-origin structure. The difference is how the training sample is updated. After the splits have been created, they can be passed to the remaining `tscv` workflow: slice the training and test samples, estimate forecasting models, convert forecasts, and evaluate forecast accuracy.
+Both approaches use the same forecast horizon and rolling-origin step size. The difference is how the training sample is updated. After the splits have been created, they can be passed to the remaining `tscv` workflow: slice the training and test samples, estimate forecasting models, convert forecasts, and evaluate forecast accuracy.
+
+### Forecasting and accuracy evaluation
+
+After creating the split plan, the training and test samples can be extracted and used with the tidy forecasting ecosystem. The example below fits a seasonal naive model to each split, converts the forecasts to a standardized format, and calculates forecast accuracy by horizon.
+
+```{r forecast-workflow-example, message = FALSE, warning = FALSE}
+train_frame <- slice_train(
+  main_frame = main_frame,
+  split_frame = expanding_split,
+  context = context
+) |>
+  as_tsibble(
+    index = index,
+    key = c(series, split)
+  )
+
+model_frame <- train_frame |>
+  model(
+    "SNAIVE" = SNAIVE(value ~ lag("year"))
+  )
+
+fable_frame <- model_frame |>
+  forecast(h = 18)
+
+future_frame <- make_future(
+  fable = fable_frame,
+  context = context
+)
+
+accuracy_frame <- make_accuracy(
+  future_frame = future_frame,
+  main_frame = main_frame,
+  context = context,
+  dimension = "horizon"
+)
+
+accuracy_frame
+```
 
 ## Function overview
 
@@ -229,16 +274,11 @@ The following table summarizes the main functions in `tscv` by topic.
 
 | **Topic** | **Function(s)** | **Description** |
 |:---|:---|:---|
-| **Time series cross-validation** | `make_split()`, `slice_train()`, `slice_test()` | Create rolling-origin splits and extract training/test samples |
-|  | `make_future()`, `make_errors()`, `make_accuracy()` | Convert forecasts and evaluate forecast accuracy |
-|  | `make_tsibble()` | Convert data to a `tsibble` using the package context |
-| **Data summaries** | `check_data()`, `summarise_data()`, `summarise_stats()` | Check and summarize time series data |
-| **Autocorrelation analysis** | `acf_vec()`, `pacf_vec()`, `estimate_acf()`, `estimate_pacf()` | Estimate ACF and PACF values |
-| **Distributional statistics** | `estimate_mode()`, `estimate_skewness()`, `estimate_kurtosis()` | Estimate descriptive distributional statistics |
-| **Data preprocessing** | `interpolate_missing()`, `smooth_outlier()` | Handle missing values and outliers |
-| **Visualization** | `plot_line()`, `plot_point()`, `plot_bar()`, `plot_histogram()`, `plot_density()`, `plot_qq()` | Create common exploratory plots |
-| **Themes and scales** | `theme_tscv()`, `theme_tscv_dark()`, `scale_color_tscv()`, `scale_fill_tscv()`, `tscv_cols()`, `tscv_pal()` | Apply `tscv` themes and color palettes |
-| **Forecasting models** | `DSHW()`, `TBATS()`, `SMEAN()`, `SMEDIAN()`, `MEDIAN()`, `SNAIVE2()` | Additional forecasting models compatible with `fable` |
+| **Time Series Cross-Validation** | `make_split()`, `split_index()`, `slice_train()`, `slice_test()`, `make_future()`, `make_tsibble()` | Create rolling-origin splits, extract train/test samples, convert forecasts, and prepare `tsibble` objects |
+| **Forecast Accuracy** | `make_accuracy()`, `make_errors()`, `me_vec()`, `mae_vec()`, `mse_vec()`, `rmse_vec()`, `mpe_vec()`, `mape_vec()`, `smape_vec()` | Calculate forecast errors and point forecast accuracy measures |
+| **Data Analysis** | `estimate_mode()`, `estimate_kurtosis()`, `estimate_skewness()`, `acf_vec()`, `pacf_vec()`, `estimate_acf()`, `estimate_pacf()`, `interpolate_missing()`, `smooth_outlier()`, `check_data()`, `summarise_data()`, `summarise_stats()`, `summarise_split()` | Check, prepare, summarize, and analyze time series data |
+| **Data Visualization** | `plot_bar()`, `plot_density()`, `plot_histogram()`, `plot_line()`, `plot_point()`, `plot_qq()`, `theme_tscv()`, `scale_color_tscv()`, `scale_fill_tscv()`, `tscv_cols()`, `tscv_pal()` | Visualize time series data, distributions, diagnostics, and apply the `tscv` theme and color palette |
+| **Forecasting** | `TBATS()`, `DSHW()`, `SMEAN()`, `SMEDIAN()`, `MEDIAN()`, `SNAIVE2()` | Forecasting functions and benchmark models compatible with `fabletools::model()` and standard generics such as `forecast()`, `fitted()`, and `residuals()` |
 
 ## Data sets
 
@@ -247,7 +287,7 @@ The package includes example data sets that can be used for testing, examples, a
 | **Data set** | **Description** |
 |:---|:---|
 | `elec_price` | Hourly day-ahead electricity spot prices for selected European bidding zones |
-| `elec_load` | Electricity load data |
+| `elec_load` | Hourly electricity load for selected European bidding zones |
 | `M4_monthly_data` | Selected monthly time series from the M4 forecasting competition |
 | `M4_quarterly_data` | Selected quarterly time series from the M4 forecasting competition |
 
@@ -263,3 +303,4 @@ The package vignettes provide more detailed examples:
 
 - [Website](https://ahaeusser.github.io/tscv/)
 - [GitHub](https://github.com/ahaeusser/tscv)
+

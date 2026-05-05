@@ -135,6 +135,7 @@ consecutive splits. For non-overlapping test windows, use
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p>Other time series cross-validation:
 <code><a href="make_future.html">make_future()</a></code>,
+<code><a href="make_tsibble.html">make_tsibble()</a></code>,
 <code><a href="slice_test.html">slice_test()</a></code>,
 <code><a href="slice_train.html">slice_train()</a></code>,
 <code><a href="split_index.html">split_index()</a></code></p></div>
@@ -145,71 +146,53 @@ consecutive splits. For non-overlapping test windows, use
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">context</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  series_id <span class="op">=</span> <span class="st">"bidding_zone"</span>,</span></span>
+<span class="r-in"><span>  series_id <span class="op">=</span> <span class="st">"series"</span>,</span></span>
 <span class="r-in"><span>  value_id <span class="op">=</span> <span class="st">"value"</span>,</span></span>
-<span class="r-in"><span>  index_id <span class="op">=</span> <span class="st">"time"</span></span></span>
+<span class="r-in"><span>  index_id <span class="op">=</span> <span class="st">"index"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">main_frame</span> <span class="op">&lt;-</span> <span class="va">elec_price</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">bidding_zone</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"DE"</span>, <span class="st">"FR"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">main_frame</span> <span class="op">&lt;-</span> <span class="va">M4_monthly_data</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">series</span> <span class="op">==</span> <span class="st">"M23100"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Fixed-window split plan</span></span></span>
 <span class="r-in"><span><span class="va">fixed_split</span> <span class="op">&lt;-</span> <span class="fu">make_split</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  main_frame <span class="op">=</span> <span class="va">main_frame</span>,</span></span>
 <span class="r-in"><span>  context <span class="op">=</span> <span class="va">context</span>,</span></span>
 <span class="r-in"><span>  type <span class="op">=</span> <span class="st">"first"</span>,</span></span>
-<span class="r-in"><span>  value <span class="op">=</span> <span class="fl">2400</span>,</span></span>
-<span class="r-in"><span>  n_ahead <span class="op">=</span> <span class="fl">24</span>,</span></span>
-<span class="r-in"><span>  n_skip <span class="op">=</span> <span class="fl">23</span>,</span></span>
+<span class="r-in"><span>  value <span class="op">=</span> <span class="fl">120</span>,</span></span>
+<span class="r-in"><span>  n_ahead <span class="op">=</span> <span class="fl">18</span>,</span></span>
+<span class="r-in"><span>  n_skip <span class="op">=</span> <span class="fl">17</span>,</span></span>
 <span class="r-in"><span>  n_lag <span class="op">=</span> <span class="fl">0</span>,</span></span>
 <span class="r-in"><span>  mode <span class="op">=</span> <span class="st">"slide"</span>,</span></span>
 <span class="r-in"><span>  exceed <span class="op">=</span> <span class="cn">FALSE</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">fixed_split</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1,262 × 4</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    bidding_zone split train         test      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> DE               1 <span style="color: #949494;">&lt;int [2,400]&gt;</span> <span style="color: #949494;">&lt;int [24]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> DE               2 <span style="color: #949494;">&lt;int [2,400]&gt;</span> <span style="color: #949494;">&lt;int [24]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> DE               3 <span style="color: #949494;">&lt;int [2,400]&gt;</span> <span style="color: #949494;">&lt;int [24]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> DE               4 <span style="color: #949494;">&lt;int [2,400]&gt;</span> <span style="color: #949494;">&lt;int [24]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> DE               5 <span style="color: #949494;">&lt;int [2,400]&gt;</span> <span style="color: #949494;">&lt;int [24]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> DE               6 <span style="color: #949494;">&lt;int [2,400]&gt;</span> <span style="color: #949494;">&lt;int [24]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> DE               7 <span style="color: #949494;">&lt;int [2,400]&gt;</span> <span style="color: #949494;">&lt;int [24]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> DE               8 <span style="color: #949494;">&lt;int [2,400]&gt;</span> <span style="color: #949494;">&lt;int [24]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> DE               9 <span style="color: #949494;">&lt;int [2,400]&gt;</span> <span style="color: #949494;">&lt;int [24]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> DE              10 <span style="color: #949494;">&lt;int [2,400]&gt;</span> <span style="color: #949494;">&lt;int [24]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1,252 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2 × 4</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   series split train       test      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> M23100     1 <span style="color: #949494;">&lt;int [120]&gt;</span> <span style="color: #949494;">&lt;int [18]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> M23100     2 <span style="color: #949494;">&lt;int [120]&gt;</span> <span style="color: #949494;">&lt;int [18]&gt;</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Expanding-window split plan</span></span></span>
 <span class="r-in"><span><span class="va">expanding_split</span> <span class="op">&lt;-</span> <span class="fu">make_split</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  main_frame <span class="op">=</span> <span class="va">main_frame</span>,</span></span>
 <span class="r-in"><span>  context <span class="op">=</span> <span class="va">context</span>,</span></span>
 <span class="r-in"><span>  type <span class="op">=</span> <span class="st">"first"</span>,</span></span>
-<span class="r-in"><span>  value <span class="op">=</span> <span class="fl">2400</span>,</span></span>
-<span class="r-in"><span>  n_ahead <span class="op">=</span> <span class="fl">24</span>,</span></span>
-<span class="r-in"><span>  n_skip <span class="op">=</span> <span class="fl">23</span>,</span></span>
+<span class="r-in"><span>  value <span class="op">=</span> <span class="fl">120</span>,</span></span>
+<span class="r-in"><span>  n_ahead <span class="op">=</span> <span class="fl">18</span>,</span></span>
+<span class="r-in"><span>  n_skip <span class="op">=</span> <span class="fl">17</span>,</span></span>
 <span class="r-in"><span>  n_lag <span class="op">=</span> <span class="fl">0</span>,</span></span>
 <span class="r-in"><span>  mode <span class="op">=</span> <span class="st">"stretch"</span>,</span></span>
 <span class="r-in"><span>  exceed <span class="op">=</span> <span class="cn">FALSE</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">expanding_split</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1,262 × 4</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    bidding_zone split train         test      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> DE               1 <span style="color: #949494;">&lt;int [2,400]&gt;</span> <span style="color: #949494;">&lt;int [24]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> DE               2 <span style="color: #949494;">&lt;int [2,424]&gt;</span> <span style="color: #949494;">&lt;int [24]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> DE               3 <span style="color: #949494;">&lt;int [2,448]&gt;</span> <span style="color: #949494;">&lt;int [24]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> DE               4 <span style="color: #949494;">&lt;int [2,472]&gt;</span> <span style="color: #949494;">&lt;int [24]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> DE               5 <span style="color: #949494;">&lt;int [2,496]&gt;</span> <span style="color: #949494;">&lt;int [24]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> DE               6 <span style="color: #949494;">&lt;int [2,520]&gt;</span> <span style="color: #949494;">&lt;int [24]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> DE               7 <span style="color: #949494;">&lt;int [2,544]&gt;</span> <span style="color: #949494;">&lt;int [24]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> DE               8 <span style="color: #949494;">&lt;int [2,568]&gt;</span> <span style="color: #949494;">&lt;int [24]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> DE               9 <span style="color: #949494;">&lt;int [2,592]&gt;</span> <span style="color: #949494;">&lt;int [24]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> DE              10 <span style="color: #949494;">&lt;int [2,616]&gt;</span> <span style="color: #949494;">&lt;int [24]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1,252 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2 × 4</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   series split train       test      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> M23100     1 <span style="color: #949494;">&lt;int [120]&gt;</span> <span style="color: #949494;">&lt;int [18]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> M23100     2 <span style="color: #949494;">&lt;int [138]&gt;</span> <span style="color: #949494;">&lt;int [18]&gt;</span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

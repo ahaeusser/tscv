@@ -1410,13 +1410,13 @@ train_snaive2 <- function(.data,
     ) |>
     mutate(
       fitted = ifelse(
-        day_of_week %in% c(2, 3, 4, 5),
+        .data$day_of_week %in% c(2, 3, 4, 5),
         dplyr::lag(!!sym(measured_vars(.data)), n = lag_day),
         dplyr::lag(!!sym(measured_vars(.data)), n = lag_week)
       )
     ) |>
     mutate(
-      resid = !!sym(measured_vars(.data)) - fitted
+      resid = !!sym(measured_vars(.data)) - .data$fitted
     )
 
   fitted <- model_fit[["fitted"]]
@@ -1434,7 +1434,8 @@ train_snaive2 <- function(.data,
       model = model_spec,
       fitted = fitted,
       resid = resid,
-      sigma = sigma),
+      sigma = sigma
+    ),
     class = "SNAIVE2"
   )
 }
@@ -1495,7 +1496,7 @@ forecast.SNAIVE2 <- function(object,
     ) |>
     mutate(
       point = ifelse(
-        day_of_week %in% c(2, 3, 4, 5),
+        .data$day_of_week %in% c(2, 3, 4, 5),
         dplyr::lag(!!sym(measured_vars(data)), n = lag_day),
         dplyr::lag(!!sym(measured_vars(data)), n = lag_week)
       )

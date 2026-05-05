@@ -235,7 +235,6 @@ main_frame %>%
     ylab = "Frequency",
     caption = "Data: ENTSO-E Transparency"
     )
-#> Warning in geom_histogram(aes(x = {: Ignoring unknown parameters: `size`
 #> `stat_bin()` using `bins = 30`. Pick better value `binwidth`.
 ```
 
@@ -256,7 +255,6 @@ main_frame %>%
     ylab = "Frequency",
     caption = "Data: ENTSO-E Transparency"
     )
-#> Warning in geom_histogram(aes(x = {: Ignoring unknown parameters: `size`
 #> `stat_bin()` using `bins = 30`. Pick better value `binwidth`.
 ```
 
@@ -284,13 +282,6 @@ main_frame %>%
     ylab = "Density",
     caption = "Data: ENTSO-E Transparency"
     )
-#> Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
-#> ℹ Please use `linewidth` instead.
-#> ℹ The deprecated feature was likely used in the tscv package.
-#>   Please report the issue at <https://github.com/ahaeusser/tscv/issues>.
-#> This warning is displayed once per session.
-#> Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
-#> generated.
 ```
 
 ![plot_density](vignette_03_data_visualization_files/figure-html/plot_density-1.png)

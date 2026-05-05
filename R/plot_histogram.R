@@ -1,31 +1,96 @@
 
-#' @title Plot data as histogram
+#' @title Plot data as a histogram
 #'
-#' @description Plot one or more variables as histogram.
+#' @description
+#' Create a histogram for one or more numeric variables.
 #'
-#' @param data A \code{data.frame}, \code{tibble} or \code{tsibble} in long format.
-#' @param x Unquoted column within \code{.data} containing numeric values.
-#' @param facet_var Unquoted column within \code{.data} (facet).
-#' @param facet_scale Character value defining axis scaling (\code{facet_var = "free"} or \code{facet_var = "fixed"}).
-#' @param facet_nrow Integer value. The number of rows.
-#' @param facet_ncol Integer value. The number of columns.
-#' @param color Unquoted column within \code{.data} (color).
-#' @param fill Unquoted column within \code{.data} (fill color).
-#' @param title Title of the plot.
-#' @param subtitle Subtitle of the plot.
-#' @param xlab Label for the x-axis.
-#' @param ylab Label for the y-axis.
-#' @param caption Caption of the plot.
-#' @param line_color Character value defining the outline color of the histogram bars.
-#' @param line_width Numeric value defining the outline width of the histogram bars.
-#' @param fill_color Character value defining the color of the histogram bars.
-#' @param fill_alpha Numeric value defining the transparency of the histogram bars.
-#' @param theme_set A complete ggplot2 theme.
-#' @param theme_config A list with further arguments passed to \code{ggplot2::theme()}.
+#' @details
+#' \code{plot_histogram()} is a convenience wrapper around
+#' \code{ggplot2::geom_histogram()}. It is useful for visualizing the
+#' distribution of values across one or more time series, models, groups, or
+#' residual sets.
+#'
+#' The arguments \code{x}, \code{facet_var}, \code{color}, and \code{fill} are
+#' passed as unquoted column names.
+#'
+#' If \code{color} is supplied, both bar outline color and fill color are mapped
+#' to that variable. In this case, \code{line_color} and \code{fill_color} are
+#' ignored. If \code{color} is not supplied, all histogram bars use
+#' \code{line_color} and \code{fill_color}.
+#'
+#' Missing values are removed before plotting.
+#'
+#' Additional arguments can be passed to \code{ggplot2::geom_histogram()} through
+#' \code{...}, for example \code{bins}, \code{binwidth}, or \code{boundary}.
+#'
+#' Additional theme settings can be supplied through \code{theme_config}. This
+#' should be a named list of arguments passed to \code{ggplot2::theme()}.
+#'
+#' @param data A \code{data.frame}, \code{tibble}, or \code{tsibble} in long
+#'   format.
+#' @param x Unquoted column in \code{data} containing numeric values.
+#' @param facet_var Optional unquoted column in \code{data} used for faceting.
+#' @param facet_scale Character value defining facet axis scaling. Common values
+#'   are \code{"free"}, \code{"fixed"}, \code{"free_x"}, and \code{"free_y"}.
+#' @param facet_nrow Optional integer. Number of rows in the facet layout.
+#' @param facet_ncol Optional integer. Number of columns in the facet layout.
+#' @param color Optional unquoted column in \code{data} used to map histogram
+#'   outline and fill color.
+#' @param fill Optional unquoted column in \code{data} used to map histogram fill
+#'   color. Currently not used directly; use \code{color} for grouped
+#'   histograms.
+#' @param title Character value. Plot title.
+#' @param subtitle Character value. Plot subtitle.
+#' @param xlab Character value. Label for the x-axis.
+#' @param ylab Character value. Label for the y-axis.
+#' @param caption Character value. Plot caption.
+#' @param line_color Character value defining the histogram bar outline color.
+#'   Ignored when \code{color} is supplied.
+#' @param line_width Numeric value defining the histogram bar outline width.
+#' @param fill_color Character value defining the histogram bar fill color.
+#'   Ignored when \code{color} is supplied.
+#' @param fill_alpha Numeric value between \code{0} and \code{1} defining bar
+#'   transparency.
+#' @param theme_set A complete \code{ggplot2} theme.
+#' @param theme_config A named \code{list} with additional arguments passed to
+#'   \code{ggplot2::theme()}.
 #' @param ... Further arguments passed to \code{ggplot2::geom_histogram()}.
 #'
-#' @return p An object of class ggplot.
+#' @return
+#' An object of class \code{ggplot}.
+#'
+#' @family data visualization
 #' @export
+#'
+#' @examples
+#' library(dplyr)
+#'
+#' data <- M4_monthly_data |>
+#'   filter(series %in% c("M23100", "M14395"))
+#'
+#' plot_histogram(
+#'   data = data,
+#'   x = value,
+#'   facet_var = series,
+#'   title = "Distribution of M4 Monthly Values",
+#'   subtitle = "Histograms by series",
+#'   xlab = "Value",
+#'   ylab = "Count",
+#'   bins = 20
+#' )
+#'
+#' plot_histogram(
+#'   data = data,
+#'   x = value,
+#'   color = series,
+#'   title = "Distribution of M4 Monthly Values",
+#'   subtitle = "Grouped histograms by series",
+#'   xlab = "Value",
+#'   ylab = "Count",
+#'   bins = 20,
+#'   position = "identity",
+#'   fill_alpha = 0.4
+#' )
 
 plot_histogram <- function(data,
                            x,
@@ -55,11 +120,12 @@ plot_histogram <- function(data,
   if (quo_is_null(enquo(color))) {
     p <- p + geom_histogram(
       aes(
-        x = {{x}}),
+        x = {{x}}
+      ),
       na.rm = TRUE,
       color = line_color,
       fill = fill_color,
-      size = line_width,
+      linewidth = line_width,
       alpha = fill_alpha,
       ...
     )
@@ -68,9 +134,10 @@ plot_histogram <- function(data,
       aes(
         x = {{x}},
         color = {{color}},
-        fill = {{color}}),
+        fill = {{color}}
+      ),
       na.rm = TRUE,
-      size = line_width,
+      linewidth = line_width,
       alpha = fill_alpha,
       ...
     )

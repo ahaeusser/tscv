@@ -95,57 +95,46 @@ forward through time.
 
 </div>
 
-For example, the following code creates fixed window splits for two
-electricity price series. The first training window contains 2,400
-observations and each test window contains the next 24 observations.
-Since the origin itself advances by one step, `n_skip = 23` moves the
-next split forward by 24 observations in total.
+For example, the following code creates fixed window splits for one
+monthly time series from the M4 forecasting competition. The first
+training window contains 120 monthly observations and each test window
+contains the next 18 observations. Since the origin itself advances by
+one step, `n_skip = 17` moves the next split forward by 18 observations
+in total.
 
 ``` r
-library(tscv)
-library(tidyverse)
-
 context <- list(
-  series_id = "bidding_zone",
+  series_id = "series",
   value_id = "value",
-  index_id = "time"
+  index_id = "index"
 )
 
-main_frame <- elec_price %>%
-  filter(bidding_zone %in% c("DE", "FR"))
+main_frame <- M4_monthly_data |>
+  filter(series == "M23100")
 
 fixed_split <- make_split(
   main_frame = main_frame,
   context = context,
   type = "first",
-  value = 2400,
-  n_ahead = 24,
-  n_skip = 23,
+  value = 120,
+  n_ahead = 18,
+  n_skip = 17,
   n_lag = 0,
   mode = "slide",
   exceed = FALSE
 )
 
 fixed_split
-#> # A tibble: 1,262 × 4
-#>    bidding_zone split train         test      
-#>    <chr>        <int> <list>        <list>    
-#>  1 DE               1 <int [2,400]> <int [24]>
-#>  2 DE               2 <int [2,400]> <int [24]>
-#>  3 DE               3 <int [2,400]> <int [24]>
-#>  4 DE               4 <int [2,400]> <int [24]>
-#>  5 DE               5 <int [2,400]> <int [24]>
-#>  6 DE               6 <int [2,400]> <int [24]>
-#>  7 DE               7 <int [2,400]> <int [24]>
-#>  8 DE               8 <int [2,400]> <int [24]>
-#>  9 DE               9 <int [2,400]> <int [24]>
-#> 10 DE              10 <int [2,400]> <int [24]>
-#> # ℹ 1,252 more rows
+#> # A tibble: 2 × 4
+#>   series split train       test      
+#>   <chr>  <int> <list>      <list>    
+#> 1 M23100     1 <int [120]> <int [18]>
+#> 2 M23100     2 <int [120]> <int [18]>
 ```
 
-The resulting object contains one row per time series and split. The
-`train` and `test` columns are list-columns with the row positions used
-for model estimation and forecast evaluation.
+The resulting object contains one row per split. The `train` and `test`
+columns are list-columns with the row positions used for model
+estimation and forecast evaluation.
 
 ### Expanding window cross-validation
 
@@ -166,7 +155,7 @@ test window moves forward.
 
 </div>
 
-The same setup can be changed to expanding window cross-validation by
+The same setup can be switched to expanding window cross-validation by
 using `mode = "stretch"`.
 
 ``` r
@@ -174,36 +163,82 @@ expanding_split <- make_split(
   main_frame = main_frame,
   context = context,
   type = "first",
-  value = 2400,
-  n_ahead = 24,
-  n_skip = 23,
+  value = 120,
+  n_ahead = 18,
+  n_skip = 17,
   n_lag = 0,
   mode = "stretch",
   exceed = FALSE
 )
 
 expanding_split
-#> # A tibble: 1,262 × 4
-#>    bidding_zone split train         test      
-#>    <chr>        <int> <list>        <list>    
-#>  1 DE               1 <int [2,400]> <int [24]>
-#>  2 DE               2 <int [2,424]> <int [24]>
-#>  3 DE               3 <int [2,448]> <int [24]>
-#>  4 DE               4 <int [2,472]> <int [24]>
-#>  5 DE               5 <int [2,496]> <int [24]>
-#>  6 DE               6 <int [2,520]> <int [24]>
-#>  7 DE               7 <int [2,544]> <int [24]>
-#>  8 DE               8 <int [2,568]> <int [24]>
-#>  9 DE               9 <int [2,592]> <int [24]>
-#> 10 DE              10 <int [2,616]> <int [24]>
-#> # ℹ 1,252 more rows
+#> # A tibble: 2 × 4
+#>   series split train       test      
+#>   <chr>  <int> <list>      <list>    
+#> 1 M23100     1 <int [120]> <int [18]>
+#> 2 M23100     2 <int [138]> <int [18]>
 ```
 
-Both approaches use the same forecast horizon and rolling-origin
-structure. The difference is how the training sample is updated. After
-the splits have been created, they can be passed to the remaining `tscv`
+Both approaches use the same forecast horizon and rolling-origin step
+size. The difference is how the training sample is updated. After the
+splits have been created, they can be passed to the remaining `tscv`
 workflow: slice the training and test samples, estimate forecasting
 models, convert forecasts, and evaluate forecast accuracy.
+
+### Forecasting and accuracy evaluation
+
+After creating the split plan, the training and test samples can be
+extracted and used with the tidy forecasting ecosystem. The example
+below fits a seasonal naive model to each split, converts the forecasts
+to a standardized format, and calculates forecast accuracy by horizon.
+
+``` r
+train_frame <- slice_train(
+  main_frame = main_frame,
+  split_frame = expanding_split,
+  context = context
+) |>
+  as_tsibble(
+    index = index,
+    key = c(series, split)
+  )
+
+model_frame <- train_frame |>
+  model(
+    "SNAIVE" = SNAIVE(value ~ lag("year"))
+  )
+
+fable_frame <- model_frame |>
+  forecast(h = 18)
+
+future_frame <- make_future(
+  fable = fable_frame,
+  context = context
+)
+
+accuracy_frame <- make_accuracy(
+  future_frame = future_frame,
+  main_frame = main_frame,
+  context = context,
+  dimension = "horizon"
+)
+
+accuracy_frame
+#> # A tibble: 126 × 6
+#>    series model  dimension     n metric value
+#>    <chr>  <chr>  <chr>     <int> <chr>  <dbl>
+#>  1 M23100 SNAIVE horizon       1 MAE      130
+#>  2 M23100 SNAIVE horizon       2 MAE      160
+#>  3 M23100 SNAIVE horizon       3 MAE      115
+#>  4 M23100 SNAIVE horizon       4 MAE      145
+#>  5 M23100 SNAIVE horizon       5 MAE      125
+#>  6 M23100 SNAIVE horizon       6 MAE      125
+#>  7 M23100 SNAIVE horizon       7 MAE      150
+#>  8 M23100 SNAIVE horizon       8 MAE      110
+#>  9 M23100 SNAIVE horizon       9 MAE      100
+#> 10 M23100 SNAIVE horizon      10 MAE      125
+#> # ℹ 116 more rows
+```
 
 ## Function overview
 
@@ -211,16 +246,11 @@ The following table summarizes the main functions in `tscv` by topic.
 
 | **Topic** | **Function(s)** | **Description** |
 |:---|:---|:---|
-| **Time series cross-validation** | `make_split()`, `slice_train()`, `slice_test()` | Create rolling-origin splits and extract training/test samples |
-|  | `make_future()`, `make_errors()`, `make_accuracy()` | Convert forecasts and evaluate forecast accuracy |
-|  | `make_tsibble()` | Convert data to a `tsibble` using the package context |
-| **Data summaries** | `check_data()`, `summarise_data()`, `summarise_stats()` | Check and summarize time series data |
-| **Autocorrelation analysis** | `acf_vec()`, `pacf_vec()`, `estimate_acf()`, `estimate_pacf()` | Estimate ACF and PACF values |
-| **Distributional statistics** | `estimate_mode()`, `estimate_skewness()`, `estimate_kurtosis()` | Estimate descriptive distributional statistics |
-| **Data preprocessing** | `interpolate_missing()`, `smooth_outlier()` | Handle missing values and outliers |
-| **Visualization** | `plot_line()`, `plot_point()`, `plot_bar()`, `plot_histogram()`, `plot_density()`, `plot_qq()` | Create common exploratory plots |
-| **Themes and scales** | `theme_tscv()`, `theme_tscv_dark()`, `scale_color_tscv()`, `scale_fill_tscv()`, `tscv_cols()`, `tscv_pal()` | Apply `tscv` themes and color palettes |
-| **Forecasting models** | `DSHW()`, `TBATS()`, `SMEAN()`, `SMEDIAN()`, `MEDIAN()`, `SNAIVE2()` | Additional forecasting models compatible with `fable` |
+| **Time Series Cross-Validation** | `make_split()`, `split_index()`, `slice_train()`, `slice_test()`, `make_future()`, `make_tsibble()` | Create rolling-origin splits, extract train/test samples, convert forecasts, and prepare `tsibble` objects |
+| **Forecast Accuracy** | `make_accuracy()`, `make_errors()`, `me_vec()`, `mae_vec()`, `mse_vec()`, `rmse_vec()`, `mpe_vec()`, `mape_vec()`, `smape_vec()` | Calculate forecast errors and point forecast accuracy measures |
+| **Data Analysis** | `estimate_mode()`, `estimate_kurtosis()`, `estimate_skewness()`, `acf_vec()`, `pacf_vec()`, `estimate_acf()`, `estimate_pacf()`, `interpolate_missing()`, `smooth_outlier()`, `check_data()`, `summarise_data()`, `summarise_stats()`, `summarise_split()` | Check, prepare, summarize, and analyze time series data |
+| **Data Visualization** | `plot_bar()`, `plot_density()`, `plot_histogram()`, `plot_line()`, `plot_point()`, `plot_qq()`, `theme_tscv()`, `scale_color_tscv()`, `scale_fill_tscv()`, `tscv_cols()`, `tscv_pal()` | Visualize time series data, distributions, diagnostics, and apply the `tscv` theme and color palette |
+| **Forecasting** | `TBATS()`, `DSHW()`, `SMEAN()`, `SMEDIAN()`, `MEDIAN()`, `SNAIVE2()` | Forecasting functions and benchmark models compatible with the `fable`, `tsibble`, and `fabletools` ecosystem |
 
 ## Data sets
 
@@ -230,7 +260,7 @@ examples, and vignettes.
 | **Data set** | **Description** |
 |:---|:---|
 | `elec_price` | Hourly day-ahead electricity spot prices for selected European bidding zones |
-| `elec_load` | Electricity load data |
+| `elec_load` | Hourly electricity load for selected European bidding zones |
 | `M4_monthly_data` | Selected monthly time series from the M4 forecasting competition |
 | `M4_quarterly_data` | Selected quarterly time series from the M4 forecasting competition |
 

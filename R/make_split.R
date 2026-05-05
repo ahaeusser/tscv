@@ -39,13 +39,13 @@ initialize_split <- function(main_frame,
   # Case 2: Use the last value observations for testing
   if (type == "last") {
     data <- data |>
-      mutate(n_init = n_total - value - 1)
+      mutate(n_init = .data$n_total - value - 1)
   }
 
   # Case 3: Use value pct. of observations for training
   if (type == "prob") {
     data <- data |>
-      mutate(n_init = floor(value * n_total))
+      mutate(n_init = floor(value * .data$n_total))
   }
 
   return(data)
@@ -72,7 +72,7 @@ initialize_split <- function(main_frame,
 #' The first training window contains \code{n_init} observations. Each test
 #' window contains \code{n_ahead} observations. The argument \code{n_skip}
 #' controls how many observations are skipped between consecutive split origins.
-#' For example, with \code{n_ahead = 24} and \code{n_skip = 23}, consecutive
+#' For example, with \code{n_ahead = 18} and \code{n_skip = 17}, consecutive
 #' test windows are non-overlapping.
 #'
 #' If \code{n_lag > 0}, the test indices include lagged observations before the
@@ -109,10 +109,10 @@ initialize_split <- function(main_frame,
 #' @examples
 #' # Fixed-window splits
 #' fixed_index <- split_index(
-#'   n_total = 120,
-#'   n_init = 48,
-#'   n_ahead = 24,
-#'   n_skip = 23,
+#'   n_total = 180,
+#'   n_init = 120,
+#'   n_ahead = 18,
+#'   n_skip = 17,
 #'   n_lag = 0,
 #'   mode = "slide",
 #'   exceed = FALSE
@@ -122,10 +122,10 @@ initialize_split <- function(main_frame,
 #'
 #' # Expanding-window splits
 #' expanding_index <- split_index(
-#'   n_total = 120,
-#'   n_init = 48,
-#'   n_ahead = 24,
-#'   n_skip = 23,
+#'   n_total = 180,
+#'   n_init = 120,
+#'   n_ahead = 18,
+#'   n_skip = 17,
 #'   n_lag = 0,
 #'   mode = "stretch",
 #'   exceed = FALSE
@@ -209,20 +209,14 @@ expand_split <- function(split_frame,
 
   split_frame <- split_frame |>
     select(
-      all_of(series_id),
-      n_splits,
-      train,
-      test
+      all_of(c(series_id, "n_splits", "train", "test"))
     ) |>
     group_by(!!sym(series_id)) |>
-    mutate(split = list(seq_len(n_splits))) |>
+    mutate(split = list(seq_len(.data$n_splits))) |>
     ungroup() |>
-    unnest(cols = c(split, train, test)) |>
+    unnest(cols = all_of(c("split", "train", "test"))) |>
     select(
-      all_of(series_id),
-      split,
-      train,
-      test
+      all_of(c(series_id, "split", "train", "test"))
     )
 
   return(split_frame)
@@ -293,22 +287,22 @@ expand_split <- function(split_frame,
 #' library(dplyr)
 #'
 #' context <- list(
-#'   series_id = "bidding_zone",
+#'   series_id = "series",
 #'   value_id = "value",
-#'   index_id = "time"
+#'   index_id = "index"
 #' )
 #'
-#' main_frame <- elec_price |>
-#'   filter(bidding_zone %in% c("DE", "FR"))
+#' main_frame <- M4_monthly_data |>
+#'   filter(series == "M23100")
 #'
 #' # Fixed-window split plan
 #' fixed_split <- make_split(
 #'   main_frame = main_frame,
 #'   context = context,
 #'   type = "first",
-#'   value = 2400,
-#'   n_ahead = 24,
-#'   n_skip = 23,
+#'   value = 120,
+#'   n_ahead = 18,
+#'   n_skip = 17,
 #'   n_lag = 0,
 #'   mode = "slide",
 #'   exceed = FALSE
@@ -321,9 +315,9 @@ expand_split <- function(split_frame,
 #'   main_frame = main_frame,
 #'   context = context,
 #'   type = "first",
-#'   value = 2400,
-#'   n_ahead = 24,
-#'   n_skip = 23,
+#'   value = 120,
+#'   n_ahead = 18,
+#'   n_skip = 17,
 #'   n_lag = 0,
 #'   mode = "stretch",
 #'   exceed = FALSE

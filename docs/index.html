@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Functions and utilities for tidy time series forecasting and time series cross-validation • tscv</title>
+<title>Functions and Utilities for Tidy Time Series Forecasting and Time Series Cross-Validation • tscv</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="favicon-96x96.png">
 <link rel="icon" type="”image/svg+xml”" href="favicon.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
@@ -15,9 +15,9 @@
 <link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Functions and utilities for tidy time series forecasting and time series cross-validation">
-<meta name="description" content="The package tscv provides a collection of functions and tools for time series analysis and forecasting as well as time series cross-validation. This is mainly a set of wrapper and helper functions as well as some extensions for the packages tsibble, fable and fabletools that I find useful for research in the area of time series forecasting.">
-<meta property="og:description" content="The package tscv provides a collection of functions and tools for time series analysis and forecasting as well as time series cross-validation. This is mainly a set of wrapper and helper functions as well as some extensions for the packages tsibble, fable and fabletools that I find useful for research in the area of time series forecasting.">
+<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Functions and Utilities for Tidy Time Series Forecasting and Time Series Cross-Validation">
+<meta name="description" content="Provides functions and tools for tidy time series analysis and forecasting as well as time series cross-validation. This is mainly a set of wrapper and helper functions as well as some extensions for the packages tsibble, fable and fabletools.">
+<meta property="og:description" content="Provides functions and tools for tidy time series analysis and forecasting as well as time series cross-validation. This is mainly a set of wrapper and helper functions as well as some extensions for the packages tsibble, fable and fabletools.">
 <meta property="og:image" content="https://ahaeusser.github.io/tscv/logo.png">
 </head>
 <body>
@@ -120,48 +120,36 @@
 Fixed window cross-validation: the training and test windows both move forward through time.
 </p>
 </div>
-<p>For example, the following code creates fixed window splits for two electricity price series. The first training window contains 2,400 observations and each test window contains the next 24 observations. Since the origin itself advances by one step, <code>n_skip = 23</code> moves the next split forward by 24 observations in total.</p>
+<p>For example, the following code creates fixed window splits for one monthly time series from the M4 forecasting competition. The first training window contains 120 monthly observations and each test window contains the next 18 observations. Since the origin itself advances by one step, <code>n_skip = 17</code> moves the next split forward by 18 observations in total.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ahaeusser/tscv" class="external-link">tscv</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">context</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>  series_id <span class="op">=</span> <span class="st">"bidding_zone"</span>,</span>
+<code class="sourceCode R"><span><span class="va">context</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>  series_id <span class="op">=</span> <span class="st">"series"</span>,</span>
 <span>  value_id <span class="op">=</span> <span class="st">"value"</span>,</span>
-<span>  index_id <span class="op">=</span> <span class="st">"time"</span></span>
+<span>  index_id <span class="op">=</span> <span class="st">"index"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">main_frame</span> <span class="op">&lt;-</span> <span class="va">elec_price</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">bidding_zone</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"DE"</span>, <span class="st">"FR"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">main_frame</span> <span class="op">&lt;-</span> <span class="va">M4_monthly_data</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">series</span> <span class="op">==</span> <span class="st">"M23100"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">fixed_split</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/make_split.html">make_split</a></span><span class="op">(</span></span>
 <span>  main_frame <span class="op">=</span> <span class="va">main_frame</span>,</span>
 <span>  context <span class="op">=</span> <span class="va">context</span>,</span>
 <span>  type <span class="op">=</span> <span class="st">"first"</span>,</span>
-<span>  value <span class="op">=</span> <span class="fl">2400</span>,</span>
-<span>  n_ahead <span class="op">=</span> <span class="fl">24</span>,</span>
-<span>  n_skip <span class="op">=</span> <span class="fl">23</span>,</span>
+<span>  value <span class="op">=</span> <span class="fl">120</span>,</span>
+<span>  n_ahead <span class="op">=</span> <span class="fl">18</span>,</span>
+<span>  n_skip <span class="op">=</span> <span class="fl">17</span>,</span>
 <span>  n_lag <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  mode <span class="op">=</span> <span class="st">"slide"</span>,</span>
 <span>  exceed <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">fixed_split</span></span>
-<span><span class="co">#&gt; # A tibble: 1,262 × 4</span></span>
-<span><span class="co">#&gt;    bidding_zone split train         test      </span></span>
-<span><span class="co">#&gt;    &lt;chr&gt;        &lt;int&gt; &lt;list&gt;        &lt;list&gt;    </span></span>
-<span><span class="co">#&gt;  1 DE               1 &lt;int [2,400]&gt; &lt;int [24]&gt;</span></span>
-<span><span class="co">#&gt;  2 DE               2 &lt;int [2,400]&gt; &lt;int [24]&gt;</span></span>
-<span><span class="co">#&gt;  3 DE               3 &lt;int [2,400]&gt; &lt;int [24]&gt;</span></span>
-<span><span class="co">#&gt;  4 DE               4 &lt;int [2,400]&gt; &lt;int [24]&gt;</span></span>
-<span><span class="co">#&gt;  5 DE               5 &lt;int [2,400]&gt; &lt;int [24]&gt;</span></span>
-<span><span class="co">#&gt;  6 DE               6 &lt;int [2,400]&gt; &lt;int [24]&gt;</span></span>
-<span><span class="co">#&gt;  7 DE               7 &lt;int [2,400]&gt; &lt;int [24]&gt;</span></span>
-<span><span class="co">#&gt;  8 DE               8 &lt;int [2,400]&gt; &lt;int [24]&gt;</span></span>
-<span><span class="co">#&gt;  9 DE               9 &lt;int [2,400]&gt; &lt;int [24]&gt;</span></span>
-<span><span class="co">#&gt; 10 DE              10 &lt;int [2,400]&gt; &lt;int [24]&gt;</span></span>
-<span><span class="co">#&gt; # ℹ 1,252 more rows</span></span></code></pre></div>
-<p>The resulting object contains one row per time series and split. The <code>train</code> and <code>test</code> columns are list-columns with the row positions used for model estimation and forecast evaluation.</p>
+<span><span class="co">#&gt; # A tibble: 2 × 4</span></span>
+<span><span class="co">#&gt;   series split train       test      </span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;  &lt;int&gt; &lt;list&gt;      &lt;list&gt;    </span></span>
+<span><span class="co">#&gt; 1 M23100     1 &lt;int [120]&gt; &lt;int [18]&gt;</span></span>
+<span><span class="co">#&gt; 2 M23100     2 &lt;int [120]&gt; &lt;int [18]&gt;</span></span></code></pre></div>
+<p>The resulting object contains one row per split. The <code>train</code> and <code>test</code> columns are list-columns with the row positions used for model estimation and forecast evaluation.</p>
 </div>
 <div class="section level3">
 <h3 id="expanding-window-cross-validation">Expanding window cross-validation<a class="anchor" aria-label="anchor" href="#expanding-window-cross-validation"></a>
@@ -172,36 +160,78 @@ Fixed window cross-validation: the training and test windows both move forward t
 Expanding window cross-validation: the training window grows while the test window moves forward.
 </p>
 </div>
-<p>The same setup can be changed to expanding window cross-validation by using <code>mode = "stretch"</code>.</p>
+<p>The same setup can be switched to expanding window cross-validation by using <code>mode = "stretch"</code>.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">expanding_split</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/make_split.html">make_split</a></span><span class="op">(</span></span>
 <span>  main_frame <span class="op">=</span> <span class="va">main_frame</span>,</span>
 <span>  context <span class="op">=</span> <span class="va">context</span>,</span>
 <span>  type <span class="op">=</span> <span class="st">"first"</span>,</span>
-<span>  value <span class="op">=</span> <span class="fl">2400</span>,</span>
-<span>  n_ahead <span class="op">=</span> <span class="fl">24</span>,</span>
-<span>  n_skip <span class="op">=</span> <span class="fl">23</span>,</span>
+<span>  value <span class="op">=</span> <span class="fl">120</span>,</span>
+<span>  n_ahead <span class="op">=</span> <span class="fl">18</span>,</span>
+<span>  n_skip <span class="op">=</span> <span class="fl">17</span>,</span>
 <span>  n_lag <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  mode <span class="op">=</span> <span class="st">"stretch"</span>,</span>
 <span>  exceed <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">expanding_split</span></span>
-<span><span class="co">#&gt; # A tibble: 1,262 × 4</span></span>
-<span><span class="co">#&gt;    bidding_zone split train         test      </span></span>
-<span><span class="co">#&gt;    &lt;chr&gt;        &lt;int&gt; &lt;list&gt;        &lt;list&gt;    </span></span>
-<span><span class="co">#&gt;  1 DE               1 &lt;int [2,400]&gt; &lt;int [24]&gt;</span></span>
-<span><span class="co">#&gt;  2 DE               2 &lt;int [2,424]&gt; &lt;int [24]&gt;</span></span>
-<span><span class="co">#&gt;  3 DE               3 &lt;int [2,448]&gt; &lt;int [24]&gt;</span></span>
-<span><span class="co">#&gt;  4 DE               4 &lt;int [2,472]&gt; &lt;int [24]&gt;</span></span>
-<span><span class="co">#&gt;  5 DE               5 &lt;int [2,496]&gt; &lt;int [24]&gt;</span></span>
-<span><span class="co">#&gt;  6 DE               6 &lt;int [2,520]&gt; &lt;int [24]&gt;</span></span>
-<span><span class="co">#&gt;  7 DE               7 &lt;int [2,544]&gt; &lt;int [24]&gt;</span></span>
-<span><span class="co">#&gt;  8 DE               8 &lt;int [2,568]&gt; &lt;int [24]&gt;</span></span>
-<span><span class="co">#&gt;  9 DE               9 &lt;int [2,592]&gt; &lt;int [24]&gt;</span></span>
-<span><span class="co">#&gt; 10 DE              10 &lt;int [2,616]&gt; &lt;int [24]&gt;</span></span>
-<span><span class="co">#&gt; # ℹ 1,252 more rows</span></span></code></pre></div>
-<p>Both approaches use the same forecast horizon and rolling-origin structure. The difference is how the training sample is updated. After the splits have been created, they can be passed to the remaining <code>tscv</code> workflow: slice the training and test samples, estimate forecasting models, convert forecasts, and evaluate forecast accuracy.</p>
+<span><span class="co">#&gt; # A tibble: 2 × 4</span></span>
+<span><span class="co">#&gt;   series split train       test      </span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;  &lt;int&gt; &lt;list&gt;      &lt;list&gt;    </span></span>
+<span><span class="co">#&gt; 1 M23100     1 &lt;int [120]&gt; &lt;int [18]&gt;</span></span>
+<span><span class="co">#&gt; 2 M23100     2 &lt;int [138]&gt; &lt;int [18]&gt;</span></span></code></pre></div>
+<p>Both approaches use the same forecast horizon and rolling-origin step size. The difference is how the training sample is updated. After the splits have been created, they can be passed to the remaining <code>tscv</code> workflow: slice the training and test samples, estimate forecasting models, convert forecasts, and evaluate forecast accuracy.</p>
+</div>
+<div class="section level3">
+<h3 id="forecasting-and-accuracy-evaluation">Forecasting and accuracy evaluation<a class="anchor" aria-label="anchor" href="#forecasting-and-accuracy-evaluation"></a>
+</h3>
+<p>After creating the split plan, the training and test samples can be extracted and used with the tidy forecasting ecosystem. The example below fits a seasonal naive model to each split, converts the forecasts to a standardized format, and calculates forecast accuracy by horizon.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">train_frame</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/slice_train.html">slice_train</a></span><span class="op">(</span></span>
+<span>  main_frame <span class="op">=</span> <span class="va">main_frame</span>,</span>
+<span>  split_frame <span class="op">=</span> <span class="va">expanding_split</span>,</span>
+<span>  context <span class="op">=</span> <span class="va">context</span></span>
+<span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">as_tsibble</span><span class="op">(</span></span>
+<span>    index <span class="op">=</span> <span class="va">index</span>,</span>
+<span>    key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">series</span>, <span class="va">split</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span></span>
+<span><span class="va">model_frame</span> <span class="op">&lt;-</span> <span class="va">train_frame</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">model</span><span class="op">(</span></span>
+<span>    <span class="st">"SNAIVE"</span> <span class="op">=</span> <span class="fu">SNAIVE</span><span class="op">(</span><span class="va">value</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/lag.html" class="external-link">lag</a></span><span class="op">(</span><span class="st">"year"</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span></span>
+<span><span class="va">fable_frame</span> <span class="op">&lt;-</span> <span class="va">model_frame</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">forecast</span><span class="op">(</span>h <span class="op">=</span> <span class="fl">18</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">future_frame</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/make_future.html">make_future</a></span><span class="op">(</span></span>
+<span>  fable <span class="op">=</span> <span class="va">fable_frame</span>,</span>
+<span>  context <span class="op">=</span> <span class="va">context</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">accuracy_frame</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/make_accuracy.html">make_accuracy</a></span><span class="op">(</span></span>
+<span>  future_frame <span class="op">=</span> <span class="va">future_frame</span>,</span>
+<span>  main_frame <span class="op">=</span> <span class="va">main_frame</span>,</span>
+<span>  context <span class="op">=</span> <span class="va">context</span>,</span>
+<span>  dimension <span class="op">=</span> <span class="st">"horizon"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">accuracy_frame</span></span>
+<span><span class="co">#&gt; # A tibble: 126 × 6</span></span>
+<span><span class="co">#&gt;    series model  dimension     n metric value</span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;  &lt;chr&gt;  &lt;chr&gt;     &lt;int&gt; &lt;chr&gt;  &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1 M23100 SNAIVE horizon       1 MAE      130</span></span>
+<span><span class="co">#&gt;  2 M23100 SNAIVE horizon       2 MAE      160</span></span>
+<span><span class="co">#&gt;  3 M23100 SNAIVE horizon       3 MAE      115</span></span>
+<span><span class="co">#&gt;  4 M23100 SNAIVE horizon       4 MAE      145</span></span>
+<span><span class="co">#&gt;  5 M23100 SNAIVE horizon       5 MAE      125</span></span>
+<span><span class="co">#&gt;  6 M23100 SNAIVE horizon       6 MAE      125</span></span>
+<span><span class="co">#&gt;  7 M23100 SNAIVE horizon       7 MAE      150</span></span>
+<span><span class="co">#&gt;  8 M23100 SNAIVE horizon       8 MAE      110</span></span>
+<span><span class="co">#&gt;  9 M23100 SNAIVE horizon       9 MAE      100</span></span>
+<span><span class="co">#&gt; 10 M23100 SNAIVE horizon      10 MAE      125</span></span>
+<span><span class="co">#&gt; # ℹ 116 more rows</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -221,73 +251,39 @@ Expanding window cross-validation: the training window grows while the test wind
 </tr></thead>
 <tbody>
 <tr>
-<td align="left"><strong>Time series cross-validation</strong></td>
+<td align="left"><strong>Time Series Cross-Validation</strong></td>
 <td align="left">
-<code><a href="reference/make_split.html">make_split()</a></code>, <code><a href="reference/slice_train.html">slice_train()</a></code>, <code><a href="reference/slice_test.html">slice_test()</a></code>
+<code><a href="reference/make_split.html">make_split()</a></code>, <code><a href="reference/split_index.html">split_index()</a></code>, <code><a href="reference/slice_train.html">slice_train()</a></code>, <code><a href="reference/slice_test.html">slice_test()</a></code>, <code><a href="reference/make_future.html">make_future()</a></code>, <code><a href="reference/make_tsibble.html">make_tsibble()</a></code>
 </td>
-<td align="left">Create rolling-origin splits and extract training/test samples</td>
+<td align="left">Create rolling-origin splits, extract train/test samples, convert forecasts, and prepare <code>tsibble</code> objects</td>
 </tr>
 <tr>
-<td align="left"></td>
+<td align="left"><strong>Forecast Accuracy</strong></td>
 <td align="left">
-<code><a href="reference/make_future.html">make_future()</a></code>, <code><a href="reference/make_errors.html">make_errors()</a></code>, <code><a href="reference/make_accuracy.html">make_accuracy()</a></code>
+<code><a href="reference/make_accuracy.html">make_accuracy()</a></code>, <code><a href="reference/make_errors.html">make_errors()</a></code>, <code><a href="reference/me_vec.html">me_vec()</a></code>, <code><a href="reference/mae_vec.html">mae_vec()</a></code>, <code><a href="reference/mse_vec.html">mse_vec()</a></code>, <code><a href="reference/rmse_vec.html">rmse_vec()</a></code>, <code><a href="reference/mpe_vec.html">mpe_vec()</a></code>, <code><a href="reference/mape_vec.html">mape_vec()</a></code>, <code><a href="reference/smape_vec.html">smape_vec()</a></code>
 </td>
-<td align="left">Convert forecasts and evaluate forecast accuracy</td>
+<td align="left">Calculate forecast errors and point forecast accuracy measures</td>
 </tr>
 <tr>
-<td align="left"></td>
-<td align="left"><code><a href="reference/make_tsibble.html">make_tsibble()</a></code></td>
-<td align="left">Convert data to a <code>tsibble</code> using the package context</td>
+<td align="left"><strong>Data Analysis</strong></td>
+<td align="left">
+<code><a href="reference/estimate_mode.html">estimate_mode()</a></code>, <code><a href="reference/estimate_kurtosis.html">estimate_kurtosis()</a></code>, <code><a href="reference/estimate_skewness.html">estimate_skewness()</a></code>, <code><a href="reference/acf_vec.html">acf_vec()</a></code>, <code><a href="reference/pacf_vec.html">pacf_vec()</a></code>, <code><a href="reference/estimate_acf.html">estimate_acf()</a></code>, <code><a href="reference/estimate_pacf.html">estimate_pacf()</a></code>, <code><a href="reference/interpolate_missing.html">interpolate_missing()</a></code>, <code><a href="reference/smooth_outlier.html">smooth_outlier()</a></code>, <code><a href="reference/check_data.html">check_data()</a></code>, <code><a href="reference/summarise_data.html">summarise_data()</a></code>, <code><a href="reference/summarise_stats.html">summarise_stats()</a></code>, <code><a href="reference/summarise_split.html">summarise_split()</a></code>
+</td>
+<td align="left">Check, prepare, summarize, and analyze time series data</td>
 </tr>
 <tr>
-<td align="left"><strong>Data summaries</strong></td>
+<td align="left"><strong>Data Visualization</strong></td>
 <td align="left">
-<code><a href="reference/check_data.html">check_data()</a></code>, <code><a href="reference/summarise_data.html">summarise_data()</a></code>, <code><a href="reference/summarise_stats.html">summarise_stats()</a></code>
+<code><a href="reference/plot_bar.html">plot_bar()</a></code>, <code><a href="reference/plot_density.html">plot_density()</a></code>, <code><a href="reference/plot_histogram.html">plot_histogram()</a></code>, <code><a href="reference/plot_line.html">plot_line()</a></code>, <code><a href="reference/plot_point.html">plot_point()</a></code>, <code><a href="reference/plot_qq.html">plot_qq()</a></code>, <code><a href="reference/theme_tscv.html">theme_tscv()</a></code>, <code><a href="reference/scale_color_tscv.html">scale_color_tscv()</a></code>, <code><a href="reference/scale_fill_tscv.html">scale_fill_tscv()</a></code>, <code><a href="reference/tscv_cols.html">tscv_cols()</a></code>, <code><a href="reference/tscv_pal.html">tscv_pal()</a></code>
 </td>
-<td align="left">Check and summarize time series data</td>
+<td align="left">Visualize time series data, distributions, diagnostics, and apply the <code>tscv</code> theme and color palette</td>
 </tr>
 <tr>
-<td align="left"><strong>Autocorrelation analysis</strong></td>
+<td align="left"><strong>Forecasting</strong></td>
 <td align="left">
-<code><a href="reference/acf_vec.html">acf_vec()</a></code>, <code><a href="reference/pacf_vec.html">pacf_vec()</a></code>, <code><a href="reference/estimate_acf.html">estimate_acf()</a></code>, <code><a href="reference/estimate_pacf.html">estimate_pacf()</a></code>
+<code><a href="reference/TBATS.html">TBATS()</a></code>, <code><a href="reference/DSHW.html">DSHW()</a></code>, <code><a href="reference/SMEAN.html">SMEAN()</a></code>, <code><a href="reference/SMEDIAN.html">SMEDIAN()</a></code>, <code><a href="reference/MEDIAN.html">MEDIAN()</a></code>, <code><a href="reference/SNAIVE2.html">SNAIVE2()</a></code>
 </td>
-<td align="left">Estimate ACF and PACF values</td>
-</tr>
-<tr>
-<td align="left"><strong>Distributional statistics</strong></td>
-<td align="left">
-<code><a href="reference/estimate_mode.html">estimate_mode()</a></code>, <code><a href="reference/estimate_skewness.html">estimate_skewness()</a></code>, <code><a href="reference/estimate_kurtosis.html">estimate_kurtosis()</a></code>
-</td>
-<td align="left">Estimate descriptive distributional statistics</td>
-</tr>
-<tr>
-<td align="left"><strong>Data preprocessing</strong></td>
-<td align="left">
-<code><a href="reference/interpolate_missing.html">interpolate_missing()</a></code>, <code><a href="reference/smooth_outlier.html">smooth_outlier()</a></code>
-</td>
-<td align="left">Handle missing values and outliers</td>
-</tr>
-<tr>
-<td align="left"><strong>Visualization</strong></td>
-<td align="left">
-<code><a href="reference/plot_line.html">plot_line()</a></code>, <code><a href="reference/plot_point.html">plot_point()</a></code>, <code><a href="reference/plot_bar.html">plot_bar()</a></code>, <code><a href="reference/plot_histogram.html">plot_histogram()</a></code>, <code><a href="reference/plot_density.html">plot_density()</a></code>, <code><a href="reference/plot_qq.html">plot_qq()</a></code>
-</td>
-<td align="left">Create common exploratory plots</td>
-</tr>
-<tr>
-<td align="left"><strong>Themes and scales</strong></td>
-<td align="left">
-<code><a href="reference/theme_tscv.html">theme_tscv()</a></code>, <code>theme_tscv_dark()</code>, <code><a href="reference/scale_color_tscv.html">scale_color_tscv()</a></code>, <code><a href="reference/scale_fill_tscv.html">scale_fill_tscv()</a></code>, <code><a href="reference/tscv_cols.html">tscv_cols()</a></code>, <code><a href="reference/tscv_pal.html">tscv_pal()</a></code>
-</td>
-<td align="left">Apply <code>tscv</code> themes and color palettes</td>
-</tr>
-<tr>
-<td align="left"><strong>Forecasting models</strong></td>
-<td align="left">
-<code><a href="reference/DSHW.html">DSHW()</a></code>, <code><a href="reference/TBATS.html">TBATS()</a></code>, <code><a href="reference/SMEAN.html">SMEAN()</a></code>, <code><a href="reference/SMEDIAN.html">SMEDIAN()</a></code>, <code><a href="reference/MEDIAN.html">MEDIAN()</a></code>, <code><a href="reference/SNAIVE2.html">SNAIVE2()</a></code>
-</td>
-<td align="left">Additional forecasting models compatible with <code>fable</code>
-</td>
+<td align="left">Forecasting functions and benchmark models compatible with the <code>fable</code>, <code>tsibble</code>, and <code>fabletools</code> ecosystem</td>
 </tr>
 </tbody>
 </table>
@@ -312,7 +308,7 @@ Expanding window cross-validation: the training window grows while the test wind
 </tr>
 <tr>
 <td align="left"><code>elec_load</code></td>
-<td align="left">Electricity load data</td>
+<td align="left">Hourly electricity load for selected European bidding zones</td>
 </tr>
 <tr>
 <td align="left"><code>M4_monthly_data</code></td>

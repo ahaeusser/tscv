@@ -1,7 +1,7 @@
-# Plot the density via Kernel Density Estimator
+# Plot a kernel density estimate
 
-Plot the density of one or more time series via Kernel Density
-Estimator.
+Create a density plot for one or more numeric variables using kernel
+density estimation.
 
 ## Usage
 
@@ -35,94 +35,160 @@ plot_density(
 
 - data:
 
-  A `data.frame`, `tibble` or `tsibble` in long format.
+  A `data.frame`, `tibble`, or `tsibble` in long format.
 
 - x:
 
-  Unquoted column within `.data` containing numeric values.
+  Unquoted column in `data` containing numeric values.
 
 - facet_var:
 
-  Unquoted column within `.data` (facet).
+  Optional unquoted column in `data` used for faceting.
 
 - facet_scale:
 
-  Character value defining axis scaling (`facet_var = "free"` or
-  `facet_var = "fixed"`).
+  Character value defining facet axis scaling. Common values are
+  `"free"`, `"fixed"`, `"free_x"`, and `"free_y"`.
 
 - facet_nrow:
 
-  Integer value. The number of rows.
+  Optional integer. Number of rows in the facet layout.
 
 - facet_ncol:
 
-  Integer value. The number of columns.
+  Optional integer. Number of columns in the facet layout.
 
 - color:
 
-  Unquoted column within `.data` (color).
+  Optional unquoted column in `data` used to map density line and fill
+  color.
 
 - fill:
 
-  Unquoted column within `.data` (fill color).
+  Optional unquoted column in `data` used to map density fill color.
+  Currently not used directly; use `color` for grouped density plots.
 
 - title:
 
-  Title of the plot.
+  Character value. Plot title.
 
 - subtitle:
 
-  Subtitle of the plot.
+  Character value. Plot subtitle.
 
 - xlab:
 
-  Label for the x-axis.
+  Character value. Label for the x-axis.
 
 - ylab:
 
-  Label for the y-axis.
+  Character value. Label for the y-axis.
 
 - caption:
 
-  Caption of the plot.
+  Character value. Plot caption.
 
 - line_width:
 
-  Numeric value defining the line width of the kernel density estimator.
+  Numeric value defining the density line width.
 
 - line_type:
 
-  Integer value defining the line type of the kernel density estimator.
+  Character or numeric value defining the density line type.
 
 - line_color:
 
-  Character value defining the line color of the kernel density
-  estimator.
+  Character value defining the density line color. Ignored when `color`
+  is supplied.
 
 - fill_color:
 
-  Character value defining the fill color for the area under the kernel
-  density estimator.
+  Character value defining the fill color under the density curve.
+  Ignored when `color` is supplied.
 
 - fill_alpha:
 
-  Numeric value defining the transparency of the area under the kernel
-  density estimator.
+  Numeric value between `0` and `1` defining fill transparency.
 
 - theme_set:
 
-  A complete ggplot2 theme.
+  A complete `ggplot2` theme.
 
 - theme_config:
 
-  A list with further arguments passed to
+  A named `list` with additional arguments passed to
   [`ggplot2::theme()`](https://ggplot2.tidyverse.org/reference/theme.html).
 
 - ...:
 
   Further arguments passed to
-  [`geom_density()`](https://ggplot2.tidyverse.org/reference/geom_density.html).
+  [`ggplot2::geom_density()`](https://ggplot2.tidyverse.org/reference/geom_density.html).
 
 ## Value
 
-p An object of class ggplot.
+An object of class `ggplot`.
+
+## Details
+
+`plot_density()` is a convenience wrapper around
+[`ggplot2::geom_density()`](https://ggplot2.tidyverse.org/reference/geom_density.html).
+It is useful for comparing the distribution of values across one or more
+time series, models, groups, or residual sets.
+
+The arguments `x`, `facet_var`, `color`, and `fill` are passed as
+unquoted column names.
+
+If `color` is supplied, both line color and fill color are mapped to
+that variable. In this case, `line_color` and `fill_color` are ignored.
+If `color` is not supplied, all density curves use `line_color` and
+`fill_color`.
+
+Missing values are removed before plotting.
+
+Additional arguments can be passed to
+[`ggplot2::geom_density()`](https://ggplot2.tidyverse.org/reference/geom_density.html)
+through `...`, for example `adjust`, `bw`, or `kernel`.
+
+Additional theme settings can be supplied through `theme_config`. This
+should be a named list of arguments passed to
+[`ggplot2::theme()`](https://ggplot2.tidyverse.org/reference/theme.html).
+
+## See also
+
+Other data visualization:
+[`plot_bar()`](https://ahaeusser.github.io/tscv/reference/plot_bar.md),
+[`plot_histogram()`](https://ahaeusser.github.io/tscv/reference/plot_histogram.md),
+[`plot_line()`](https://ahaeusser.github.io/tscv/reference/plot_line.md),
+[`plot_point()`](https://ahaeusser.github.io/tscv/reference/plot_point.md),
+[`plot_qq()`](https://ahaeusser.github.io/tscv/reference/plot_qq.md)
+
+## Examples
+
+``` r
+library(dplyr)
+
+data <- M4_monthly_data |>
+  filter(series %in% c("M23100", "M14395"))
+
+plot_density(
+  data = data,
+  x = value,
+  facet_var = series,
+  title = "Distribution of M4 Monthly Values",
+  subtitle = "Kernel density estimates by series",
+  xlab = "Value",
+  ylab = "Density"
+)
+
+
+plot_density(
+  data = data,
+  x = value,
+  color = series,
+  title = "Distribution of M4 Monthly Values",
+  subtitle = "Kernel density estimates by series",
+  xlab = "Value",
+  ylab = "Density",
+  adjust = 1.2
+)
+```

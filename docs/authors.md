@@ -10,12 +10,12 @@
 Source:
 [`DESCRIPTION`](https://github.com/ahaeusser/tscv/blob/HEAD/DESCRIPTION)
 
-Häußer A (2026). *tscv: Functions and utilities for tidy time series
-forecasting and time series cross-validation*. R package version 1.0.0,
+Häußer A (2026). *tscv: Functions and Utilities for Tidy Time Series
+Forecasting and Time Series Cross-Validation*. R package version 1.0.0,
 <https://github.com/ahaeusser/tscv>.
 
     @Manual{,
-      title = {tscv: Functions and utilities for tidy time series forecasting and time series cross-validation},
+      title = {tscv: Functions and Utilities for Tidy Time Series Forecasting and Time Series Cross-Validation},
       author = {Alexander Häußer},
       year = {2026},
       note = {R package version 1.0.0},

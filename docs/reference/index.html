@@ -86,7 +86,7 @@
           <code><a href="make_tsibble.html">make_tsibble()</a></code>
 
         </dt>
-        <dd>Convert tibble to tsibble</dd>
+        <dd>Convert data to a tsibble</dd>
       </dl></div><div class="section level2">
       <h2 id="forecast-accuracy">Forecast Accuracy<a class="anchor" aria-label="anchor" href="#forecast-accuracy"></a></h2>
 
@@ -160,6 +160,106 @@
         </dt>
         <dd>Calculate the symmetric mean absolute percentage error</dd>
       </dl></div><div class="section level2">
+      <h2 id="data-analysis">Data Analysis<a class="anchor" aria-label="anchor" href="#data-analysis"></a></h2>
+
+      <div class="section-desc"><p>Functions and utilities for data analysis, etc.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="estimate_mode.html">estimate_mode()</a></code>
+
+        </dt>
+        <dd>Estimate the mode of a distribution</dd>
+
+        <dt>
+
+          <code><a href="estimate_kurtosis.html">estimate_kurtosis()</a></code>
+
+        </dt>
+        <dd>Estimate kurtosis</dd>
+
+        <dt>
+
+          <code><a href="estimate_skewness.html">estimate_skewness()</a></code>
+
+        </dt>
+        <dd>Estimate skewness</dd>
+
+        <dt>
+
+          <code><a href="acf_vec.html">acf_vec()</a></code>
+
+        </dt>
+        <dd>Estimate autocorrelations of a numeric vector</dd>
+
+        <dt>
+
+          <code><a href="estimate_acf.html">estimate_acf()</a></code>
+
+        </dt>
+        <dd>Estimate autocorrelations by time series</dd>
+
+        <dt>
+
+          <code><a href="pacf_vec.html">pacf_vec()</a></code>
+
+        </dt>
+        <dd>Estimate partial autocorrelations of a numeric vector</dd>
+
+        <dt>
+
+          <code><a href="estimate_pacf.html">estimate_pacf()</a></code>
+
+        </dt>
+        <dd>Estimate partial autocorrelations by time series</dd>
+
+        <dt>
+
+          <code><a href="interpolate_missing.html">interpolate_missing()</a></code>
+
+        </dt>
+        <dd>Interpolate missing values</dd>
+
+        <dt>
+
+          <code><a href="smooth_outlier.html">smooth_outlier()</a></code>
+
+        </dt>
+        <dd>Identify and replace outliers</dd>
+
+        <dt>
+
+          <code><a href="check_data.html">check_data()</a></code>
+
+        </dt>
+        <dd>Check and prepare tsibble data</dd>
+
+        <dt>
+
+          <code><a href="summarise_data.html">summarise_data()</a></code>
+
+        </dt>
+        <dd>Summarise time series data</dd>
+
+        <dt>
+
+          <code><a href="summarise_stats.html">summarise_stats()</a></code>
+
+        </dt>
+        <dd>Summarise distributional statistics by time series</dd>
+
+        <dt>
+
+          <code><a href="summarise_split.html">summarise_split()</a></code>
+
+        </dt>
+        <dd>Summarise train-test splits</dd>
+      </dl></div><div class="section level2">
       <h2 id="data-visualization">Data Visualization<a class="anchor" aria-label="anchor" href="#data-visualization"></a></h2>
 
       <div class="section-desc"><p>Functions and utilities for data visualization</p></div>
@@ -174,42 +274,42 @@
           <code><a href="plot_bar.html">plot_bar()</a></code>
 
         </dt>
-        <dd>Plot data as bar chart</dd>
+        <dd>Plot data as a bar chart</dd>
 
         <dt>
 
           <code><a href="plot_density.html">plot_density()</a></code>
 
         </dt>
-        <dd>Plot the density via Kernel Density Estimator</dd>
+        <dd>Plot a kernel density estimate</dd>
 
         <dt>
 
           <code><a href="plot_histogram.html">plot_histogram()</a></code>
 
         </dt>
-        <dd>Plot data as histogram</dd>
+        <dd>Plot data as a histogram</dd>
 
         <dt>
 
           <code><a href="plot_line.html">plot_line()</a></code>
 
         </dt>
-        <dd>Plot data as line chart</dd>
+        <dd>Plot data as a line chart</dd>
 
         <dt>
 
           <code><a href="plot_point.html">plot_point()</a></code>
 
         </dt>
-        <dd>Plot data as scatterplot</dd>
+        <dd>Plot data as a scatterplot</dd>
 
         <dt>
 
           <code><a href="plot_qq.html">plot_qq()</a></code>
 
         </dt>
-        <dd>Quantile-Quantile plot</dd>
+        <dd>Create a quantile-quantile plot</dd>
 
         <dt>
 
@@ -514,106 +614,6 @@
 
         </dt>
         <dd>Summarize a TBATS model</dd>
-      </dl></div><div class="section level2">
-      <h2 id="miscellaneous">Miscellaneous<a class="anchor" aria-label="anchor" href="#miscellaneous"></a></h2>
-
-      <div class="section-desc"><p>Functions and utilities for data preparation, etc.</p></div>
-
-      <dl></dl></div><div class="section level2">
-
-
-
-
-      <dl><dt>
-
-          <code><a href="estimate_mode.html">estimate_mode()</a></code>
-
-        </dt>
-        <dd>Estimate the mode of a distribution</dd>
-
-        <dt>
-
-          <code><a href="estimate_kurtosis.html">estimate_kurtosis()</a></code>
-
-        </dt>
-        <dd>Estimate kurtosis</dd>
-
-        <dt>
-
-          <code><a href="estimate_skewness.html">estimate_skewness()</a></code>
-
-        </dt>
-        <dd>Estimate skewness</dd>
-
-        <dt>
-
-          <code><a href="acf_vec.html">acf_vec()</a></code>
-
-        </dt>
-        <dd>Estimate the sample autocorrelation of a numeric vector</dd>
-
-        <dt>
-
-          <code><a href="estimate_acf.html">estimate_acf()</a></code>
-
-        </dt>
-        <dd>Estimate the sample autocorrelation</dd>
-
-        <dt>
-
-          <code><a href="pacf_vec.html">pacf_vec()</a></code>
-
-        </dt>
-        <dd>Estimate the sample partial autocorrelation of a numeric vector</dd>
-
-        <dt>
-
-          <code><a href="estimate_pacf.html">estimate_pacf()</a></code>
-
-        </dt>
-        <dd>Estimate the sample partial autocorrelation</dd>
-
-        <dt>
-
-          <code><a href="interpolate_missing.html">interpolate_missing()</a></code>
-
-        </dt>
-        <dd>Interpolate missing values</dd>
-
-        <dt>
-
-          <code><a href="smooth_outlier.html">smooth_outlier()</a></code>
-
-        </dt>
-        <dd>Identify and replace outliers</dd>
-
-        <dt>
-
-          <code><a href="check_data.html">check_data()</a></code>
-
-        </dt>
-        <dd>Check and prepare tsibble data</dd>
-
-        <dt>
-
-          <code><a href="summarise_data.html">summarise_data()</a></code>
-
-        </dt>
-        <dd>Summary statistics for time series data</dd>
-
-        <dt>
-
-          <code><a href="summarise_stats.html">summarise_stats()</a></code>
-
-        </dt>
-        <dd>Summary statistics for time series data</dd>
-
-        <dt>
-
-          <code><a href="summarise_split.html">summarise_split()</a></code>
-
-        </dt>
-        <dd>Summary table of the splitting into training and testing</dd>
       </dl></div><div class="section level2">
       <h2 id="data-sets">Data sets<a class="anchor" aria-label="anchor" href="#data-sets"></a></h2>
 

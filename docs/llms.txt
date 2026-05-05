@@ -82,57 +82,46 @@ scheme](reference/figures/README-fixed-window-plot-1.svg)
 Fixed window cross-validation: the training and test windows both move
 forward through time.
 
-For example, the following code creates fixed window splits for two
-electricity price series. The first training window contains 2,400
-observations and each test window contains the next 24 observations.
-Since the origin itself advances by one step, `n_skip = 23` moves the
-next split forward by 24 observations in total.
+For example, the following code creates fixed window splits for one
+monthly time series from the M4 forecasting competition. The first
+training window contains 120 monthly observations and each test window
+contains the next 18 observations. Since the origin itself advances by
+one step, `n_skip = 17` moves the next split forward by 18 observations
+in total.
 
 ``` r
-library(tscv)
-library(tidyverse)
-
 context <- list(
-  series_id = "bidding_zone",
+  series_id = "series",
   value_id = "value",
-  index_id = "time"
+  index_id = "index"
 )
 
-main_frame <- elec_price %>%
-  filter(bidding_zone %in% c("DE", "FR"))
+main_frame <- M4_monthly_data |>
+  filter(series == "M23100")
 
 fixed_split <- make_split(
   main_frame = main_frame,
   context = context,
   type = "first",
-  value = 2400,
-  n_ahead = 24,
-  n_skip = 23,
+  value = 120,
+  n_ahead = 18,
+  n_skip = 17,
   n_lag = 0,
   mode = "slide",
   exceed = FALSE
 )
 
 fixed_split
-#> # A tibble: 1,262 × 4
-#>    bidding_zone split train         test      
-#>    <chr>        <int> <list>        <list>    
-#>  1 DE               1 <int [2,400]> <int [24]>
-#>  2 DE               2 <int [2,400]> <int [24]>
-#>  3 DE               3 <int [2,400]> <int [24]>
-#>  4 DE               4 <int [2,400]> <int [24]>
-#>  5 DE               5 <int [2,400]> <int [24]>
-#>  6 DE               6 <int [2,400]> <int [24]>
-#>  7 DE               7 <int [2,400]> <int [24]>
-#>  8 DE               8 <int [2,400]> <int [24]>
-#>  9 DE               9 <int [2,400]> <int [24]>
-#> 10 DE              10 <int [2,400]> <int [24]>
-#> # ℹ 1,252 more rows
+#> # A tibble: 2 × 4
+#>   series split train       test      
+#>   <chr>  <int> <list>      <list>    
+#> 1 M23100     1 <int [120]> <int [18]>
+#> 2 M23100     2 <int [120]> <int [18]>
 ```
 
-The resulting object contains one row per time series and split. The
-`train` and `test` columns are list-columns with the row positions used
-for model estimation and forecast evaluation.
+The resulting object contains one row per split. The `train` and `test`
+columns are list-columns with the row positions used for model
+estimation and forecast evaluation.
 
 ### Expanding window cross-validation
 
@@ -148,7 +137,7 @@ scheme](reference/figures/README-expanding-window-plot-1.svg)
 Expanding window cross-validation: the training window grows while the
 test window moves forward.
 
-The same setup can be changed to expanding window cross-validation by
+The same setup can be switched to expanding window cross-validation by
 using `mode = "stretch"`.
 
 ``` r
@@ -156,36 +145,82 @@ expanding_split <- make_split(
   main_frame = main_frame,
   context = context,
   type = "first",
-  value = 2400,
-  n_ahead = 24,
-  n_skip = 23,
+  value = 120,
+  n_ahead = 18,
+  n_skip = 17,
   n_lag = 0,
   mode = "stretch",
   exceed = FALSE
 )
 
 expanding_split
-#> # A tibble: 1,262 × 4
-#>    bidding_zone split train         test      
-#>    <chr>        <int> <list>        <list>    
-#>  1 DE               1 <int [2,400]> <int [24]>
-#>  2 DE               2 <int [2,424]> <int [24]>
-#>  3 DE               3 <int [2,448]> <int [24]>
-#>  4 DE               4 <int [2,472]> <int [24]>
-#>  5 DE               5 <int [2,496]> <int [24]>
-#>  6 DE               6 <int [2,520]> <int [24]>
-#>  7 DE               7 <int [2,544]> <int [24]>
-#>  8 DE               8 <int [2,568]> <int [24]>
-#>  9 DE               9 <int [2,592]> <int [24]>
-#> 10 DE              10 <int [2,616]> <int [24]>
-#> # ℹ 1,252 more rows
+#> # A tibble: 2 × 4
+#>   series split train       test      
+#>   <chr>  <int> <list>      <list>    
+#> 1 M23100     1 <int [120]> <int [18]>
+#> 2 M23100     2 <int [138]> <int [18]>
 ```
 
-Both approaches use the same forecast horizon and rolling-origin
-structure. The difference is how the training sample is updated. After
-the splits have been created, they can be passed to the remaining `tscv`
+Both approaches use the same forecast horizon and rolling-origin step
+size. The difference is how the training sample is updated. After the
+splits have been created, they can be passed to the remaining `tscv`
 workflow: slice the training and test samples, estimate forecasting
 models, convert forecasts, and evaluate forecast accuracy.
+
+### Forecasting and accuracy evaluation
+
+After creating the split plan, the training and test samples can be
+extracted and used with the tidy forecasting ecosystem. The example
+below fits a seasonal naive model to each split, converts the forecasts
+to a standardized format, and calculates forecast accuracy by horizon.
+
+``` r
+train_frame <- slice_train(
+  main_frame = main_frame,
+  split_frame = expanding_split,
+  context = context
+) |>
+  as_tsibble(
+    index = index,
+    key = c(series, split)
+  )
+
+model_frame <- train_frame |>
+  model(
+    "SNAIVE" = SNAIVE(value ~ lag("year"))
+  )
+
+fable_frame <- model_frame |>
+  forecast(h = 18)
+
+future_frame <- make_future(
+  fable = fable_frame,
+  context = context
+)
+
+accuracy_frame <- make_accuracy(
+  future_frame = future_frame,
+  main_frame = main_frame,
+  context = context,
+  dimension = "horizon"
+)
+
+accuracy_frame
+#> # A tibble: 126 × 6
+#>    series model  dimension     n metric value
+#>    <chr>  <chr>  <chr>     <int> <chr>  <dbl>
+#>  1 M23100 SNAIVE horizon       1 MAE      130
+#>  2 M23100 SNAIVE horizon       2 MAE      160
+#>  3 M23100 SNAIVE horizon       3 MAE      115
+#>  4 M23100 SNAIVE horizon       4 MAE      145
+#>  5 M23100 SNAIVE horizon       5 MAE      125
+#>  6 M23100 SNAIVE horizon       6 MAE      125
+#>  7 M23100 SNAIVE horizon       7 MAE      150
+#>  8 M23100 SNAIVE horizon       8 MAE      110
+#>  9 M23100 SNAIVE horizon       9 MAE      100
+#> 10 M23100 SNAIVE horizon      10 MAE      125
+#> # ℹ 116 more rows
+```
 
 ## Function overview
 
@@ -193,16 +228,11 @@ The following table summarizes the main functions in `tscv` by topic.
 
 | **Topic** | **Function(s)** | **Description** |
 |:---|:---|:---|
-| **Time series cross-validation** | [`make_split()`](https://ahaeusser.github.io/tscv/reference/make_split.md), [`slice_train()`](https://ahaeusser.github.io/tscv/reference/slice_train.md), [`slice_test()`](https://ahaeusser.github.io/tscv/reference/slice_test.md) | Create rolling-origin splits and extract training/test samples |
-|  | [`make_future()`](https://ahaeusser.github.io/tscv/reference/make_future.md), [`make_errors()`](https://ahaeusser.github.io/tscv/reference/make_errors.md), [`make_accuracy()`](https://ahaeusser.github.io/tscv/reference/make_accuracy.md) | Convert forecasts and evaluate forecast accuracy |
-|  | [`make_tsibble()`](https://ahaeusser.github.io/tscv/reference/make_tsibble.md) | Convert data to a `tsibble` using the package context |
-| **Data summaries** | [`check_data()`](https://ahaeusser.github.io/tscv/reference/check_data.md), [`summarise_data()`](https://ahaeusser.github.io/tscv/reference/summarise_data.md), [`summarise_stats()`](https://ahaeusser.github.io/tscv/reference/summarise_stats.md) | Check and summarize time series data |
-| **Autocorrelation analysis** | [`acf_vec()`](https://ahaeusser.github.io/tscv/reference/acf_vec.md), [`pacf_vec()`](https://ahaeusser.github.io/tscv/reference/pacf_vec.md), [`estimate_acf()`](https://ahaeusser.github.io/tscv/reference/estimate_acf.md), [`estimate_pacf()`](https://ahaeusser.github.io/tscv/reference/estimate_pacf.md) | Estimate ACF and PACF values |
-| **Distributional statistics** | [`estimate_mode()`](https://ahaeusser.github.io/tscv/reference/estimate_mode.md), [`estimate_skewness()`](https://ahaeusser.github.io/tscv/reference/estimate_skewness.md), [`estimate_kurtosis()`](https://ahaeusser.github.io/tscv/reference/estimate_kurtosis.md) | Estimate descriptive distributional statistics |
-| **Data preprocessing** | [`interpolate_missing()`](https://ahaeusser.github.io/tscv/reference/interpolate_missing.md), [`smooth_outlier()`](https://ahaeusser.github.io/tscv/reference/smooth_outlier.md) | Handle missing values and outliers |
-| **Visualization** | [`plot_line()`](https://ahaeusser.github.io/tscv/reference/plot_line.md), [`plot_point()`](https://ahaeusser.github.io/tscv/reference/plot_point.md), [`plot_bar()`](https://ahaeusser.github.io/tscv/reference/plot_bar.md), [`plot_histogram()`](https://ahaeusser.github.io/tscv/reference/plot_histogram.md), [`plot_density()`](https://ahaeusser.github.io/tscv/reference/plot_density.md), [`plot_qq()`](https://ahaeusser.github.io/tscv/reference/plot_qq.md) | Create common exploratory plots |
-| **Themes and scales** | [`theme_tscv()`](https://ahaeusser.github.io/tscv/reference/theme_tscv.md), `theme_tscv_dark()`, [`scale_color_tscv()`](https://ahaeusser.github.io/tscv/reference/scale_color_tscv.md), [`scale_fill_tscv()`](https://ahaeusser.github.io/tscv/reference/scale_fill_tscv.md), [`tscv_cols()`](https://ahaeusser.github.io/tscv/reference/tscv_cols.md), [`tscv_pal()`](https://ahaeusser.github.io/tscv/reference/tscv_pal.md) | Apply `tscv` themes and color palettes |
-| **Forecasting models** | [`DSHW()`](https://ahaeusser.github.io/tscv/reference/DSHW.md), [`TBATS()`](https://ahaeusser.github.io/tscv/reference/TBATS.md), [`SMEAN()`](https://ahaeusser.github.io/tscv/reference/SMEAN.md), [`SMEDIAN()`](https://ahaeusser.github.io/tscv/reference/SMEDIAN.md), [`MEDIAN()`](https://ahaeusser.github.io/tscv/reference/MEDIAN.md), [`SNAIVE2()`](https://ahaeusser.github.io/tscv/reference/SNAIVE2.md) | Additional forecasting models compatible with `fable` |
+| **Time Series Cross-Validation** | [`make_split()`](https://ahaeusser.github.io/tscv/reference/make_split.md), [`split_index()`](https://ahaeusser.github.io/tscv/reference/split_index.md), [`slice_train()`](https://ahaeusser.github.io/tscv/reference/slice_train.md), [`slice_test()`](https://ahaeusser.github.io/tscv/reference/slice_test.md), [`make_future()`](https://ahaeusser.github.io/tscv/reference/make_future.md), [`make_tsibble()`](https://ahaeusser.github.io/tscv/reference/make_tsibble.md) | Create rolling-origin splits, extract train/test samples, convert forecasts, and prepare `tsibble` objects |
+| **Forecast Accuracy** | [`make_accuracy()`](https://ahaeusser.github.io/tscv/reference/make_accuracy.md), [`make_errors()`](https://ahaeusser.github.io/tscv/reference/make_errors.md), [`me_vec()`](https://ahaeusser.github.io/tscv/reference/me_vec.md), [`mae_vec()`](https://ahaeusser.github.io/tscv/reference/mae_vec.md), [`mse_vec()`](https://ahaeusser.github.io/tscv/reference/mse_vec.md), [`rmse_vec()`](https://ahaeusser.github.io/tscv/reference/rmse_vec.md), [`mpe_vec()`](https://ahaeusser.github.io/tscv/reference/mpe_vec.md), [`mape_vec()`](https://ahaeusser.github.io/tscv/reference/mape_vec.md), [`smape_vec()`](https://ahaeusser.github.io/tscv/reference/smape_vec.md) | Calculate forecast errors and point forecast accuracy measures |
+| **Data Analysis** | [`estimate_mode()`](https://ahaeusser.github.io/tscv/reference/estimate_mode.md), [`estimate_kurtosis()`](https://ahaeusser.github.io/tscv/reference/estimate_kurtosis.md), [`estimate_skewness()`](https://ahaeusser.github.io/tscv/reference/estimate_skewness.md), [`acf_vec()`](https://ahaeusser.github.io/tscv/reference/acf_vec.md), [`pacf_vec()`](https://ahaeusser.github.io/tscv/reference/pacf_vec.md), [`estimate_acf()`](https://ahaeusser.github.io/tscv/reference/estimate_acf.md), [`estimate_pacf()`](https://ahaeusser.github.io/tscv/reference/estimate_pacf.md), [`interpolate_missing()`](https://ahaeusser.github.io/tscv/reference/interpolate_missing.md), [`smooth_outlier()`](https://ahaeusser.github.io/tscv/reference/smooth_outlier.md), [`check_data()`](https://ahaeusser.github.io/tscv/reference/check_data.md), [`summarise_data()`](https://ahaeusser.github.io/tscv/reference/summarise_data.md), [`summarise_stats()`](https://ahaeusser.github.io/tscv/reference/summarise_stats.md), [`summarise_split()`](https://ahaeusser.github.io/tscv/reference/summarise_split.md) | Check, prepare, summarize, and analyze time series data |
+| **Data Visualization** | [`plot_bar()`](https://ahaeusser.github.io/tscv/reference/plot_bar.md), [`plot_density()`](https://ahaeusser.github.io/tscv/reference/plot_density.md), [`plot_histogram()`](https://ahaeusser.github.io/tscv/reference/plot_histogram.md), [`plot_line()`](https://ahaeusser.github.io/tscv/reference/plot_line.md), [`plot_point()`](https://ahaeusser.github.io/tscv/reference/plot_point.md), [`plot_qq()`](https://ahaeusser.github.io/tscv/reference/plot_qq.md), [`theme_tscv()`](https://ahaeusser.github.io/tscv/reference/theme_tscv.md), [`scale_color_tscv()`](https://ahaeusser.github.io/tscv/reference/scale_color_tscv.md), [`scale_fill_tscv()`](https://ahaeusser.github.io/tscv/reference/scale_fill_tscv.md), [`tscv_cols()`](https://ahaeusser.github.io/tscv/reference/tscv_cols.md), [`tscv_pal()`](https://ahaeusser.github.io/tscv/reference/tscv_pal.md) | Visualize time series data, distributions, diagnostics, and apply the `tscv` theme and color palette |
+| **Forecasting** | [`TBATS()`](https://ahaeusser.github.io/tscv/reference/TBATS.md), [`DSHW()`](https://ahaeusser.github.io/tscv/reference/DSHW.md), [`SMEAN()`](https://ahaeusser.github.io/tscv/reference/SMEAN.md), [`SMEDIAN()`](https://ahaeusser.github.io/tscv/reference/SMEDIAN.md), [`MEDIAN()`](https://ahaeusser.github.io/tscv/reference/MEDIAN.md), [`SNAIVE2()`](https://ahaeusser.github.io/tscv/reference/SNAIVE2.md) | Forecasting functions and benchmark models compatible with the `fable`, `tsibble`, and `fabletools` ecosystem |
 
 ## Data sets
 
@@ -212,7 +242,7 @@ examples, and vignettes.
 | **Data set** | **Description** |
 |:---|:---|
 | `elec_price` | Hourly day-ahead electricity spot prices for selected European bidding zones |
-| `elec_load` | Electricity load data |
+| `elec_load` | Hourly electricity load for selected European bidding zones |
 | `M4_monthly_data` | Selected monthly time series from the M4 forecasting competition |
 | `M4_quarterly_data` | Selected quarterly time series from the M4 forecasting competition |
 
@@ -246,7 +276,7 @@ Functions and utilities for time series cross-validation
 - [`make_future()`](https://ahaeusser.github.io/tscv/reference/make_future.md)
   : Convert forecasts to a future frame
 - [`make_tsibble()`](https://ahaeusser.github.io/tscv/reference/make_tsibble.md)
-  : Convert tibble to tsibble
+  : Convert data to a tsibble
 
 ## Forecast Accuracy
 
@@ -271,22 +301,53 @@ Functions and utilities for forecast accuracy
 - [`smape_vec()`](https://ahaeusser.github.io/tscv/reference/smape_vec.md)
   : Calculate the symmetric mean absolute percentage error
 
+## Data Analysis
+
+Functions and utilities for data analysis, etc.
+
+- [`estimate_mode()`](https://ahaeusser.github.io/tscv/reference/estimate_mode.md)
+  : Estimate the mode of a distribution
+- [`estimate_kurtosis()`](https://ahaeusser.github.io/tscv/reference/estimate_kurtosis.md)
+  : Estimate kurtosis
+- [`estimate_skewness()`](https://ahaeusser.github.io/tscv/reference/estimate_skewness.md)
+  : Estimate skewness
+- [`acf_vec()`](https://ahaeusser.github.io/tscv/reference/acf_vec.md) :
+  Estimate autocorrelations of a numeric vector
+- [`estimate_acf()`](https://ahaeusser.github.io/tscv/reference/estimate_acf.md)
+  : Estimate autocorrelations by time series
+- [`pacf_vec()`](https://ahaeusser.github.io/tscv/reference/pacf_vec.md)
+  : Estimate partial autocorrelations of a numeric vector
+- [`estimate_pacf()`](https://ahaeusser.github.io/tscv/reference/estimate_pacf.md)
+  : Estimate partial autocorrelations by time series
+- [`interpolate_missing()`](https://ahaeusser.github.io/tscv/reference/interpolate_missing.md)
+  : Interpolate missing values
+- [`smooth_outlier()`](https://ahaeusser.github.io/tscv/reference/smooth_outlier.md)
+  : Identify and replace outliers
+- [`check_data()`](https://ahaeusser.github.io/tscv/reference/check_data.md)
+  : Check and prepare tsibble data
+- [`summarise_data()`](https://ahaeusser.github.io/tscv/reference/summarise_data.md)
+  : Summarise time series data
+- [`summarise_stats()`](https://ahaeusser.github.io/tscv/reference/summarise_stats.md)
+  : Summarise distributional statistics by time series
+- [`summarise_split()`](https://ahaeusser.github.io/tscv/reference/summarise_split.md)
+  : Summarise train-test splits
+
 ## Data Visualization
 
 Functions and utilities for data visualization
 
 - [`plot_bar()`](https://ahaeusser.github.io/tscv/reference/plot_bar.md)
-  : Plot data as bar chart
+  : Plot data as a bar chart
 - [`plot_density()`](https://ahaeusser.github.io/tscv/reference/plot_density.md)
-  : Plot the density via Kernel Density Estimator
+  : Plot a kernel density estimate
 - [`plot_histogram()`](https://ahaeusser.github.io/tscv/reference/plot_histogram.md)
-  : Plot data as histogram
+  : Plot data as a histogram
 - [`plot_line()`](https://ahaeusser.github.io/tscv/reference/plot_line.md)
-  : Plot data as line chart
+  : Plot data as a line chart
 - [`plot_point()`](https://ahaeusser.github.io/tscv/reference/plot_point.md)
-  : Plot data as scatterplot
+  : Plot data as a scatterplot
 - [`plot_qq()`](https://ahaeusser.github.io/tscv/reference/plot_qq.md) :
-  Quantile-Quantile plot
+  Create a quantile-quantile plot
 - [`theme_tscv()`](https://ahaeusser.github.io/tscv/reference/theme_tscv.md)
   : Custom ggplot2 theme for tscv package
 - [`scale_color_tscv()`](https://ahaeusser.github.io/tscv/reference/scale_color_tscv.md)
@@ -389,37 +450,6 @@ The TBATS model and its supported methods
   : Extract residuals from a TBATS model
 - [`model_sum(`*`<TBATS>`*`)`](https://ahaeusser.github.io/tscv/reference/model_sum.TBATS.md)
   : Summarize a TBATS model
-
-## Miscellaneous
-
-Functions and utilities for data preparation, etc.
-
-- [`estimate_mode()`](https://ahaeusser.github.io/tscv/reference/estimate_mode.md)
-  : Estimate the mode of a distribution
-- [`estimate_kurtosis()`](https://ahaeusser.github.io/tscv/reference/estimate_kurtosis.md)
-  : Estimate kurtosis
-- [`estimate_skewness()`](https://ahaeusser.github.io/tscv/reference/estimate_skewness.md)
-  : Estimate skewness
-- [`acf_vec()`](https://ahaeusser.github.io/tscv/reference/acf_vec.md) :
-  Estimate the sample autocorrelation of a numeric vector
-- [`estimate_acf()`](https://ahaeusser.github.io/tscv/reference/estimate_acf.md)
-  : Estimate the sample autocorrelation
-- [`pacf_vec()`](https://ahaeusser.github.io/tscv/reference/pacf_vec.md)
-  : Estimate the sample partial autocorrelation of a numeric vector
-- [`estimate_pacf()`](https://ahaeusser.github.io/tscv/reference/estimate_pacf.md)
-  : Estimate the sample partial autocorrelation
-- [`interpolate_missing()`](https://ahaeusser.github.io/tscv/reference/interpolate_missing.md)
-  : Interpolate missing values
-- [`smooth_outlier()`](https://ahaeusser.github.io/tscv/reference/smooth_outlier.md)
-  : Identify and replace outliers
-- [`check_data()`](https://ahaeusser.github.io/tscv/reference/check_data.md)
-  : Check and prepare tsibble data
-- [`summarise_data()`](https://ahaeusser.github.io/tscv/reference/summarise_data.md)
-  : Summary statistics for time series data
-- [`summarise_stats()`](https://ahaeusser.github.io/tscv/reference/summarise_stats.md)
-  : Summary statistics for time series data
-- [`summarise_split()`](https://ahaeusser.github.io/tscv/reference/summarise_split.md)
-  : Summary table of the splitting into training and testing
 
 ## Data sets
 

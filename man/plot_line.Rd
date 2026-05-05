@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_line.R
 \name{plot_line}
 \alias{plot_line}
-\title{Plot data as line chart}
+\title{Plot data as a line chart}
 \usage{
 plot_line(
   data,
@@ -28,49 +28,107 @@ plot_line(
 )
 }
 \arguments{
-\item{data}{A \code{data.frame}, \code{tibble} or \code{tsibble} in long format.}
+\item{data}{A \code{data.frame}, \code{tibble}, or \code{tsibble} in long
+format.}
 
-\item{x}{Unquoted column within \code{.data}.}
+\item{x}{Unquoted column in \code{data} used on the x-axis.}
 
-\item{y}{Unquoted column within \code{.data} containing numeric values.}
+\item{y}{Unquoted column in \code{data} containing numeric values shown on
+the y-axis.}
 
-\item{facet_var}{Unquoted column within \code{.data} (facet).}
+\item{facet_var}{Optional unquoted column in \code{data} used for faceting.}
 
-\item{facet_scale}{Character value defining axis scaling (\code{facet_var = "free"} or \code{facet_var = "fixed"}).}
+\item{facet_scale}{Character value defining facet axis scaling. Common values
+are \code{"free"}, \code{"fixed"}, \code{"free_x"}, and \code{"free_y"}.}
 
-\item{facet_nrow}{Integer value. The number of rows.}
+\item{facet_nrow}{Optional integer. Number of rows in the facet layout.}
 
-\item{facet_ncol}{Integer value. The number of columns.}
+\item{facet_ncol}{Optional integer. Number of columns in the facet layout.}
 
-\item{color}{Unquoted column within \code{.data} (color).}
+\item{color}{Optional unquoted column in \code{data} used to map line color.}
 
-\item{title}{Title of the plot.}
+\item{title}{Character value. Plot title.}
 
-\item{subtitle}{Subtitle of the plot.}
+\item{subtitle}{Character value. Plot subtitle.}
 
-\item{xlab}{Label for the x-axis.}
+\item{xlab}{Character value. Label for the x-axis.}
 
-\item{ylab}{Label for the y-axis.}
+\item{ylab}{Character value. Label for the y-axis.}
 
-\item{caption}{Caption of the plot.}
+\item{caption}{Character value. Plot caption.}
 
 \item{line_size}{Numeric value defining the line width.}
 
-\item{line_type}{Numeric value defining the line type.}
+\item{line_type}{Character or numeric value defining the line type.}
 
-\item{line_color}{Character value defining the line color (ignored if \code{color} is present).}
+\item{line_color}{Character value defining the line color. Ignored when
+\code{color} is supplied.}
 
-\item{line_alpha}{Numeric value defining the transparency of the line.}
+\item{line_alpha}{Numeric value between \code{0} and \code{1} defining line
+transparency.}
 
-\item{theme_set}{A complete ggplot2 theme.}
+\item{theme_set}{A complete \code{ggplot2} theme.}
 
-\item{theme_config}{A list with further arguments passed to \code{ggplot2::theme()}.}
+\item{theme_config}{A named \code{list} with additional arguments passed to
+\code{ggplot2::theme()}.}
 
-\item{...}{Currently not in use.}
+\item{...}{Currently not used.}
 }
 \value{
-p An object of class ggplot.
+An object of class \code{ggplot}.
 }
 \description{
-Plot one or more variables as line chart.
+Create a line chart for one or more time series or grouped numeric variables.
 }
+\details{
+\code{plot_line()} is a convenience wrapper around \code{ggplot2::geom_line()}
+for plotting data in long format. It supports optional grouping by color,
+optional faceting, and the default \code{tscv} theme.
+
+The arguments \code{x}, \code{y}, \code{facet_var}, and \code{color} are
+passed as unquoted column names.
+
+If \code{color} is supplied, line colors are mapped to that variable and
+\code{line_color} is ignored. If \code{color} is not supplied, all lines are
+drawn using \code{line_color}.
+
+Additional theme settings can be supplied through \code{theme_config}. This
+should be a named list of arguments passed to \code{ggplot2::theme()}.
+}
+\examples{
+library(dplyr)
+
+data <- M4_monthly_data |>
+  filter(series \%in\% c("M23100", "M14395"))
+
+plot_line(
+  data = data,
+  x = index,
+  y = value,
+  facet_var = series,
+  title = "M4 Monthly Time Series",
+  subtitle = "Selected monthly series from the M4 forecasting competition",
+  xlab = "Time",
+  ylab = "Value",
+  caption = "Data: M4 Forecasting Competition"
+)
+
+plot_line(
+  data = data,
+  x = index,
+  y = value,
+  color = series,
+  title = "M4 Monthly Time Series",
+  xlab = "Time",
+  ylab = "Value"
+)
+}
+\seealso{
+Other data visualization: 
+\code{\link{plot_bar}()},
+\code{\link{plot_density}()},
+\code{\link{plot_histogram}()},
+\code{\link{plot_point}()},
+\code{\link{plot_qq}()}
+}
+\concept{data visualization}
