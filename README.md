@@ -8,15 +8,18 @@
 [![Lifecycle:
 stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 [![License](https://img.shields.io/badge/license-GPL--3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
-[![R-CMD-check](https://github.com/ahaeusser/tscv/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/ahaeusser/tscv/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
 coverage](https://codecov.io/gh/ahaeusser/tscv/graph/badge.svg)](https://app.codecov.io/gh/ahaeusser/tscv)
+[![R-CMD-check](https://github.com/ahaeusser/tscv/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/ahaeusser/tscv/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 The package `tscv` provides helper functions for **time series
 analysis**, **forecasting**, and **time series cross-validation**. It is
 designed to work with the **tidy forecasting ecosystem**, especially
-`tsibble`, `fable`, `fabletools`, and `feasts`.
+[`tsibble`](https://github.com/tidyverts/tsibble),
+[`fable`](https://github.com/tidyverts/fable),
+[`fabletools`](https://github.com/tidyverts/fabletools), and
+[`feasts`](https://github.com/tidyverts/feasts).
 
 The package contains tools for:
 
@@ -250,7 +253,7 @@ The following table summarizes the main functions in `tscv` by topic.
 | **Forecast Accuracy** | `make_accuracy()`, `make_errors()`, `me_vec()`, `mae_vec()`, `mse_vec()`, `rmse_vec()`, `mpe_vec()`, `mape_vec()`, `smape_vec()` | Calculate forecast errors and point forecast accuracy measures |
 | **Data Analysis** | `estimate_mode()`, `estimate_kurtosis()`, `estimate_skewness()`, `acf_vec()`, `pacf_vec()`, `estimate_acf()`, `estimate_pacf()`, `interpolate_missing()`, `smooth_outlier()`, `check_data()`, `summarise_data()`, `summarise_stats()`, `summarise_split()` | Check, prepare, summarize, and analyze time series data |
 | **Data Visualization** | `plot_bar()`, `plot_density()`, `plot_histogram()`, `plot_line()`, `plot_point()`, `plot_qq()`, `theme_tscv()`, `scale_color_tscv()`, `scale_fill_tscv()`, `tscv_cols()`, `tscv_pal()` | Visualize time series data, distributions, diagnostics, and apply the `tscv` theme and color palette |
-| **Forecasting** | `TBATS()`, `DSHW()`, `SMEAN()`, `SMEDIAN()`, `MEDIAN()`, `SNAIVE2()` | Forecasting functions and benchmark models compatible with the `fable`, `tsibble`, and `fabletools` ecosystem |
+| **Forecasting** | `TBATS()`, `DSHW()`, `SMEAN()`, `SMEDIAN()`, `MEDIAN()`, `SNAIVE2()` | Forecasting functions and benchmark models compatible with `fabletools::model()` and standard generics such as `forecast()`, `fitted()`, and `residuals()` |
 
 ## Data sets
 
