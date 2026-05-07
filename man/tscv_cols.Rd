@@ -2,13 +2,64 @@
 % Please edit documentation in R/colors_tscv.R
 \name{tscv_cols}
 \alias{tscv_cols}
-\title{Function to extract tscv colors as hex codes.}
+\title{Extract tscv colors}
 \usage{
 tscv_cols(...)
 }
 \arguments{
-\item{...}{Character names of tscv_colors.}
+\item{...}{Character values giving the names of colors to extract.}
+}
+\value{
+A named character vector of hexadecimal color codes.
 }
 \description{
-Function to extract tscv colors as hex codes.
+Extract named colors from the \code{tscv} color palette as hexadecimal color
+codes.
 }
+\details{
+\code{tscv_cols()} returns the hexadecimal color codes used by the
+\code{tscv} package. If no color names are supplied, all available colors are
+returned.
+
+Available colors are:
+\code{"red"}, \code{"green"}, \code{"blue"}, \code{"orange"},
+\code{"yellow"}, \code{"light grey"}, and \code{"dark grey"}.
+}
+\examples{
+# Return all available tscv colors
+tscv_cols()
+
+# Return selected colors
+tscv_cols("steelblue", "orange", "green")
+
+# Use a tscv color in a plot
+library(dplyr)
+
+data <- M4_monthly_data |>
+  filter(series == "M23100")
+
+plot_line(
+  data = data,
+  x = index,
+  y = value,
+  title = "M4 Monthly Time Series",
+  subtitle = "Series M23100",
+  xlab = "Time",
+  ylab = "Value",
+  line_color = tscv_cols("steelblue")
+)
+}
+\seealso{
+Other data visualization: 
+\code{\link{plot_bar}()},
+\code{\link{plot_density}()},
+\code{\link{plot_histogram}()},
+\code{\link{plot_line}()},
+\code{\link{plot_point}()},
+\code{\link{plot_qq}()},
+\code{\link{scale_color_tscv}()},
+\code{\link{scale_fill_tscv}()},
+\code{\link{theme_tscv}()},
+\code{\link{tscv_pal}()}
+}
+\concept{data visualization}

@@ -171,7 +171,12 @@ Other data visualization:
 [`plot_histogram()`](https://ahaeusser.github.io/tscv/reference/plot_histogram.md),
 [`plot_line()`](https://ahaeusser.github.io/tscv/reference/plot_line.md),
 [`plot_point()`](https://ahaeusser.github.io/tscv/reference/plot_point.md),
-[`plot_qq()`](https://ahaeusser.github.io/tscv/reference/plot_qq.md)
+[`plot_qq()`](https://ahaeusser.github.io/tscv/reference/plot_qq.md),
+[`scale_color_tscv()`](https://ahaeusser.github.io/tscv/reference/scale_color_tscv.md),
+[`scale_fill_tscv()`](https://ahaeusser.github.io/tscv/reference/scale_fill_tscv.md),
+[`theme_tscv()`](https://ahaeusser.github.io/tscv/reference/theme_tscv.md),
+[`tscv_cols()`](https://ahaeusser.github.io/tscv/reference/tscv_cols.md),
+[`tscv_pal()`](https://ahaeusser.github.io/tscv/reference/tscv_pal.md)
 
 ## Examples
 
@@ -200,7 +205,6 @@ plot_bar(
   xlab = "Series",
   ylab = "Mean"
 )
-#> Warning: Ignoring unknown parameters: `size`
 
 
 acf_data <- estimate_acf(
@@ -219,5 +223,4 @@ plot_bar(
   xlab = "Lag",
   ylab = "ACF"
 )
-#> Warning: Ignoring unknown parameters: `size`
 ```

@@ -77,7 +77,8 @@
 #'   color = series,
 #'   title = "M4 Monthly Time Series",
 #'   xlab = "Time",
-#'   ylab = "Value"
+#'   ylab = "Value",
+#'   line_size = 1.5
 #' )
 
 plot_line <- function(data,

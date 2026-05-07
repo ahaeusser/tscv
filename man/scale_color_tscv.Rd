@@ -2,20 +2,66 @@
 % Please edit documentation in R/colors_tscv.R
 \name{scale_color_tscv}
 \alias{scale_color_tscv}
-\title{Color scale constructor for tscv colors.}
+\title{Create a tscv color scale}
 \usage{
 scale_color_tscv(palette = "main", discrete = TRUE, reverse = FALSE, ...)
 }
 \arguments{
-\item{palette}{Character value. The name of the palette in tscv_palettes.}
+\item{palette}{Character value. Name of the palette.}
 
-\item{discrete}{Logical value indicating whether color aesthetic is discrete or not.}
+\item{discrete}{Logical value. If \code{TRUE}, create a discrete color scale.
+If \code{FALSE}, create a continuous color scale.}
 
-\item{reverse}{Logical value indicating whether the palette should be reversed.}
+\item{reverse}{Logical value. If \code{TRUE}, the palette is reversed.}
 
-\item{...}{Additional arguments passed to \code{discrete_scale()} or
-\code{scale_color_gradientn()}.}
+\item{...}{Additional arguments passed to \code{ggplot2::discrete_scale()} or
+\code{ggplot2::scale_color_gradientn()}.}
+}
+\value{
+A \code{ggplot2} scale object.
 }
 \description{
-Color scale constructor for tscv colors.
+Create a \code{ggplot2} color scale based on a predefined \code{tscv} palette.
 }
+\details{
+\code{scale_color_tscv()} creates either a discrete or continuous color scale
+for the \code{color} aesthetic.
+
+For discrete variables, the function uses \code{ggplot2::discrete_scale()}.
+For continuous variables, it uses \code{ggplot2::scale_color_gradientn()}.
+
+Available palettes are \code{"main"}, \code{"cool"}, \code{"hot"},
+\code{"mixed"}, and \code{"grey"}.
+}
+\examples{
+library(dplyr)
+
+data <- M4_monthly_data |>
+  filter(series \%in\% c("M23100", "M14395"))
+
+plot_line(
+  data = data,
+  x = index,
+  y = value,
+  color = series,
+  title = "M4 Monthly Time Series",
+  subtitle = "Selected monthly series",
+  xlab = "Time",
+  ylab = "Value"
+) +
+  scale_color_tscv(palette = "main")
+}
+\seealso{
+Other data visualization: 
+\code{\link{plot_bar}()},
+\code{\link{plot_density}()},
+\code{\link{plot_histogram}()},
+\code{\link{plot_line}()},
+\code{\link{plot_point}()},
+\code{\link{plot_qq}()},
+\code{\link{scale_fill_tscv}()},
+\code{\link{theme_tscv}()},
+\code{\link{tscv_cols}()},
+\code{\link{tscv_pal}()}
+}
+\concept{data visualization}

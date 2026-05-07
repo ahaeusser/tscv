@@ -146,9 +146,10 @@ plot_bar <- function(data,
       position = position,
       aes(
         x = {{x}},
-        y = {{y}}),
+        y = {{y}}
+      ),
       fill = bar_color,
-      size = bar_size,
+      linewidth = bar_size,
       alpha = bar_alpha
     )
   } else {
@@ -158,8 +159,9 @@ plot_bar <- function(data,
       aes(
         x = {{x}},
         y = {{y}},
-        fill = {{color}}),
-      size = bar_size,
+        fill = {{color}}
+      ),
+      linewidth = bar_size,
       alpha = bar_alpha
     )
   }
@@ -170,7 +172,8 @@ plot_bar <- function(data,
       facets = vars({{facet_var}}),
       scales = facet_scale,
       nrow = facet_nrow,
-      ncol = facet_ncol)
+      ncol = facet_ncol
+    )
 
     if (reorder == TRUE) {
       p <- p + scale_x_reordered()

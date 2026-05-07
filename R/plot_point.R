@@ -88,7 +88,8 @@
 #'   title = "Autocorrelation by Series",
 #'   subtitle = "Sample autocorrelation up to lag 12",
 #'   xlab = "Lag",
-#'   ylab = "ACF"
+#'   ylab = "ACF",
+#'   point_size = 4
 #' )
 
 plot_point <- function(data,

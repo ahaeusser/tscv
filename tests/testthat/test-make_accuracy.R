@@ -1,25 +1,28 @@
 
-test_that("make_accuracy returns accuracy by horizon", {
-  skip_if_not_installed("dplyr")
-  skip_if_not_installed("tsibble")
-  skip_if_not_installed("fable")
-  skip_if_not_installed("fabletools")
-  skip_if_not_installed("tidyr")
-  skip_if_not_installed("purrr")
+suppressPackageStartupMessages(library(dplyr))
+suppressPackageStartupMessages(library(tsibble))
+suppressPackageStartupMessages(library(fable))
+suppressPackageStartupMessages(library(fabletools))
 
-  library(dplyr)
-  library(tsibble)
-  library(fable)
-  library(fabletools)
 
-  context <- list(
+make_accuracy_context <- function() {
+  list(
     series_id = "series",
     value_id = "value",
     index_id = "index"
   )
+}
 
-  main_frame <- M4_monthly_data |>
+
+make_accuracy_main_frame <- function() {
+  M4_monthly_data |>
     filter(series %in% c("M23100", "M14395"))
+}
+
+
+make_accuracy_future_frame <- function(models = c("SNAIVE")) {
+  context <- make_accuracy_context()
+  main_frame <- make_accuracy_main_frame()
 
   split_frame <- make_split(
     main_frame = main_frame,
@@ -43,18 +46,33 @@ test_that("make_accuracy returns accuracy by horizon", {
       key = c(series, split)
     )
 
-  model_frame <- train_frame |>
-    model(
-      "SNAIVE" = SNAIVE(value ~ lag("year"))
-    )
+  if (identical(models, c("SNAIVE"))) {
+    model_frame <- train_frame |>
+      model(
+        "SNAIVE" = SNAIVE(value ~ lag("year"))
+      )
+  } else {
+    model_frame <- train_frame |>
+      model(
+        "SNAIVE" = SNAIVE(value ~ lag("year")),
+        "MEAN" = MEAN(value)
+      )
+  }
 
   fable_frame <- model_frame |>
     forecast(h = 18)
 
-  future_frame <- make_future(
+  make_future(
     fable = fable_frame,
     context = context
   )
+}
+
+
+test_that("make_accuracy returns accuracy by horizon", {
+  context <- make_accuracy_context()
+  main_frame <- make_accuracy_main_frame()
+  future_frame <- make_accuracy_future_frame(models = c("SNAIVE"))
 
   accuracy_horizon <- make_accuracy(
     future_frame = future_frame,
@@ -85,61 +103,9 @@ test_that("make_accuracy returns accuracy by horizon", {
 
 
 test_that("make_accuracy returns accuracy by split", {
-  skip_if_not_installed("dplyr")
-  skip_if_not_installed("tsibble")
-  skip_if_not_installed("fable")
-  skip_if_not_installed("fabletools")
-  skip_if_not_installed("tidyr")
-  skip_if_not_installed("purrr")
-
-  library(dplyr)
-  library(tsibble)
-  library(fable)
-  library(fabletools)
-
-  context <- list(
-    series_id = "series",
-    value_id = "value",
-    index_id = "index"
-  )
-
-  main_frame <- M4_monthly_data |>
-    filter(series %in% c("M23100", "M14395"))
-
-  split_frame <- make_split(
-    main_frame = main_frame,
-    context = context,
-    type = "first",
-    value = 120,
-    n_ahead = 18,
-    n_skip = 17,
-    n_lag = 0,
-    mode = "stretch",
-    exceed = FALSE
-  )
-
-  train_frame <- slice_train(
-    main_frame = main_frame,
-    split_frame = split_frame,
-    context = context
-  ) |>
-    as_tsibble(
-      index = index,
-      key = c(series, split)
-    )
-
-  model_frame <- train_frame |>
-    model(
-      "SNAIVE" = SNAIVE(value ~ lag("year"))
-    )
-
-  fable_frame <- model_frame |>
-    forecast(h = 18)
-
-  future_frame <- make_future(
-    fable = fable_frame,
-    context = context
-  )
+  context <- make_accuracy_context()
+  main_frame <- make_accuracy_main_frame()
+  future_frame <- make_accuracy_future_frame(models = c("SNAIVE"))
 
   accuracy_split <- make_accuracy(
     future_frame = future_frame,
@@ -174,62 +140,9 @@ test_that("make_accuracy returns accuracy by split", {
 
 
 test_that("make_accuracy returns relative accuracy with benchmark", {
-  skip_if_not_installed("dplyr")
-  skip_if_not_installed("tsibble")
-  skip_if_not_installed("fable")
-  skip_if_not_installed("fabletools")
-  skip_if_not_installed("tidyr")
-  skip_if_not_installed("purrr")
-
-  library(dplyr)
-  library(tsibble)
-  library(fable)
-  library(fabletools)
-
-  context <- list(
-    series_id = "series",
-    value_id = "value",
-    index_id = "index"
-  )
-
-  main_frame <- M4_monthly_data |>
-    filter(series %in% c("M23100", "M14395"))
-
-  split_frame <- make_split(
-    main_frame = main_frame,
-    context = context,
-    type = "first",
-    value = 120,
-    n_ahead = 18,
-    n_skip = 17,
-    n_lag = 0,
-    mode = "stretch",
-    exceed = FALSE
-  )
-
-  train_frame <- slice_train(
-    main_frame = main_frame,
-    split_frame = split_frame,
-    context = context
-  ) |>
-    as_tsibble(
-      index = index,
-      key = c(series, split)
-    )
-
-  model_frame <- train_frame |>
-    model(
-      "SNAIVE" = SNAIVE(value ~ lag("year")),
-      "MEAN" = MEAN(value)
-    )
-
-  fable_frame <- model_frame |>
-    forecast(h = 18)
-
-  future_frame <- make_future(
-    fable = fable_frame,
-    context = context
-  )
+  context <- make_accuracy_context()
+  main_frame <- make_accuracy_main_frame()
+  future_frame <- make_accuracy_future_frame(models = c("SNAIVE", "MEAN"))
 
   accuracy_split <- make_accuracy(
     future_frame = future_frame,
@@ -265,61 +178,9 @@ test_that("make_accuracy returns relative accuracy with benchmark", {
 
 
 test_that("make_accuracy returns expected metric values", {
-  skip_if_not_installed("dplyr")
-  skip_if_not_installed("tsibble")
-  skip_if_not_installed("fable")
-  skip_if_not_installed("fabletools")
-  skip_if_not_installed("tidyr")
-  skip_if_not_installed("purrr")
-
-  library(dplyr)
-  library(tsibble)
-  library(fable)
-  library(fabletools)
-
-  context <- list(
-    series_id = "series",
-    value_id = "value",
-    index_id = "index"
-  )
-
-  main_frame <- M4_monthly_data |>
-    filter(series %in% c("M23100", "M14395"))
-
-  split_frame <- make_split(
-    main_frame = main_frame,
-    context = context,
-    type = "first",
-    value = 120,
-    n_ahead = 18,
-    n_skip = 17,
-    n_lag = 0,
-    mode = "stretch",
-    exceed = FALSE
-  )
-
-  train_frame <- slice_train(
-    main_frame = main_frame,
-    split_frame = split_frame,
-    context = context
-  ) |>
-    as_tsibble(
-      index = index,
-      key = c(series, split)
-    )
-
-  model_frame <- train_frame |>
-    model(
-      "SNAIVE" = SNAIVE(value ~ lag("year"))
-    )
-
-  fable_frame <- model_frame |>
-    forecast(h = 18)
-
-  future_frame <- make_future(
-    fable = fable_frame,
-    context = context
-  )
+  context <- make_accuracy_context()
+  main_frame <- make_accuracy_main_frame()
+  future_frame <- make_accuracy_future_frame(models = c("SNAIVE"))
 
   accuracy_split <- make_accuracy(
     future_frame = future_frame,

@@ -2,17 +2,66 @@
 % Please edit documentation in R/colors_tscv.R
 \name{tscv_pal}
 \alias{tscv_pal}
-\title{Return function to interpolate a tscv color palette.}
+\title{Create a tscv color palette}
 \usage{
 tscv_pal(palette = "main", reverse = FALSE, ...)
 }
 \arguments{
-\item{palette}{Character value. The name of the palette in tscv_palettes.}
+\item{palette}{Character value. Name of the palette.}
 
-\item{reverse}{Logical value indicating whether the palette should be reversed.}
+\item{reverse}{Logical value. If \code{TRUE}, the palette is reversed.}
 
-\item{...}{Additional arguments to pass to colorRampPalette()}
+\item{...}{Additional arguments passed to
+\code{grDevices::colorRampPalette()}.}
+}
+\value{
+A palette function that takes an integer and returns hexadecimal color codes.
 }
 \description{
-Return function to interpolate a tscv color palette.
+Create a color interpolation function based on one of the predefined
+\code{tscv} palettes.
 }
+\details{
+\code{tscv_pal()} returns a palette function created with
+\code{grDevices::colorRampPalette()}. The returned function can be used to
+generate any number of colors from the selected palette.
+
+Available palettes are:
+\itemize{
+  \item \code{"main"}: blue, green, yellow.
+  \item \code{"cool"}: blue, green.
+  \item \code{"hot"}: yellow, orange, red.
+  \item \code{"mixed"}: blue, green, yellow, orange, red.
+  \item \code{"grey"}: light grey, dark grey.
+}
+}
+\examples{
+# Create a palette function
+pal <- tscv_pal("main")
+
+# Generate five colors
+pal(5)
+
+# Reverse the palette
+tscv_pal("hot", reverse = TRUE)(5)
+
+# Use generated colors in base R
+barplot(
+  height = c(3, 5, 4),
+  col = tscv_pal("main")(3)
+)
+}
+\seealso{
+Other data visualization: 
+\code{\link{plot_bar}()},
+\code{\link{plot_density}()},
+\code{\link{plot_histogram}()},
+\code{\link{plot_line}()},
+\code{\link{plot_point}()},
+\code{\link{plot_qq}()},
+\code{\link{scale_color_tscv}()},
+\code{\link{scale_fill_tscv}()},
+\code{\link{theme_tscv}()},
+\code{\link{tscv_cols}()}
+}
+\concept{data visualization}

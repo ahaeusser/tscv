@@ -349,15 +349,15 @@ Functions and utilities for data visualization
 - [`plot_qq()`](https://ahaeusser.github.io/tscv/reference/plot_qq.md) :
   Create a quantile-quantile plot
 - [`theme_tscv()`](https://ahaeusser.github.io/tscv/reference/theme_tscv.md)
-  : Custom ggplot2 theme for tscv package
+  : Custom ggplot2 theme for tscv
 - [`scale_color_tscv()`](https://ahaeusser.github.io/tscv/reference/scale_color_tscv.md)
-  : Color scale constructor for tscv colors.
+  : Create a tscv color scale
 - [`scale_fill_tscv()`](https://ahaeusser.github.io/tscv/reference/scale_fill_tscv.md)
-  : Fill scale constructor for tscv colors.
+  : Create a tscv fill scale
 - [`tscv_cols()`](https://ahaeusser.github.io/tscv/reference/tscv_cols.md)
-  : Function to extract tscv colors as hex codes.
+  : Extract tscv colors
 - [`tscv_pal()`](https://ahaeusser.github.io/tscv/reference/tscv_pal.md)
-  : Return function to interpolate a tscv color palette.
+  : Create a tscv color palette
 
 ## Forecasting
 

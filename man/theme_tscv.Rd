@@ -2,7 +2,7 @@
 % Please edit documentation in R/theme_tscv.R
 \name{theme_tscv}
 \alias{theme_tscv}
-\title{Custom ggplot2 theme for tscv package}
+\title{Custom ggplot2 theme for tscv}
 \usage{
 theme_tscv(
   base_size = 11,
@@ -12,14 +12,87 @@ theme_tscv(
 )
 }
 \arguments{
-\item{base_size}{Base font size.}
+\item{base_size}{Numeric value. Base font size.}
 
-\item{base_family}{Base font family.}
+\item{base_family}{Character value. Base font family.}
 
-\item{base_line_size}{Base linewidth for "line" elements.}
+\item{base_line_size}{Numeric value. Base line width for line elements.}
 
-\item{base_rect_size}{Base linewidth for "rect" elements.}
+\item{base_rect_size}{Numeric value. Base line width for rectangle elements.}
+}
+\value{
+A complete \code{ggplot2} theme.
 }
 \description{
-Custom ggplot2 theme for tscv package.
+Create the default \code{ggplot2} theme used by the \code{tscv} package.
 }
+\details{
+\code{theme_tscv()} returns a complete \code{ggplot2} theme with a clean
+layout, subtle grid lines, bottom legend placement, and formatting for plot
+titles, subtitles, captions, facets, and axes.
+
+The theme is used as the default theme in the plotting helpers of the
+\code{tscv} package, such as \code{plot_line()}, \code{plot_point()},
+\code{plot_bar()}, \code{plot_histogram()}, \code{plot_density()}, and
+\code{plot_qq()}.
+
+Since the returned object is a regular \code{ggplot2} theme, it can also be
+added directly to any \code{ggplot} object with \code{+ theme_tscv()}.
+}
+\examples{
+library(dplyr)
+library(ggplot2)
+
+data <- M4_monthly_data |>
+  filter(series == "M23100") |>
+  mutate(index = as.Date(index))
+
+# Plot with the default tscv theme
+plot_line(
+  data = data,
+  x = index,
+  y = value,
+  title = "M4 Monthly Time Series",
+  subtitle = "Series M23100",
+  xlab = "Time",
+  ylab = "Value",
+  theme_set = theme_tscv()
+)
+
+# The same plot with the default ggplot2 grey theme
+plot_line(
+  data = data,
+  x = index,
+  y = value,
+  title = "M4 Monthly Time Series",
+  subtitle = "Series M23100",
+  xlab = "Time",
+  ylab = "Value",
+  theme_set = theme_grey()
+)
+
+# theme_tscv() can also be added to regular ggplot objects
+ggplot(data, aes(x = index, y = value)) +
+  geom_line(color = "grey35") +
+  labs(
+    title = "M4 Monthly Time Series",
+    subtitle = "Series M23100",
+    x = "Time",
+    y = "Value"
+  ) +
+  theme_tscv()
+}
+\seealso{
+Other data visualization: 
+\code{\link{plot_bar}()},
+\code{\link{plot_density}()},
+\code{\link{plot_histogram}()},
+\code{\link{plot_line}()},
+\code{\link{plot_point}()},
+\code{\link{plot_qq}()},
+\code{\link{scale_color_tscv}()},
+\code{\link{scale_fill_tscv}()},
+\code{\link{tscv_cols}()},
+\code{\link{tscv_pal}()}
+}
+\concept{data visualization}

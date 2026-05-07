@@ -165,6 +165,11 @@ Other data visualization:
 \code{\link{plot_density}()},
 \code{\link{plot_histogram}()},
 \code{\link{plot_line}()},
-\code{\link{plot_point}()}
+\code{\link{plot_point}()},
+\code{\link{scale_color_tscv}()},
+\code{\link{scale_fill_tscv}()},
+\code{\link{theme_tscv}()},
+\code{\link{tscv_cols}()},
+\code{\link{tscv_pal}()}
 }
 \concept{data visualization}

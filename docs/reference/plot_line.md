@@ -145,7 +145,12 @@ Other data visualization:
 [`plot_density()`](https://ahaeusser.github.io/tscv/reference/plot_density.md),
 [`plot_histogram()`](https://ahaeusser.github.io/tscv/reference/plot_histogram.md),
 [`plot_point()`](https://ahaeusser.github.io/tscv/reference/plot_point.md),
-[`plot_qq()`](https://ahaeusser.github.io/tscv/reference/plot_qq.md)
+[`plot_qq()`](https://ahaeusser.github.io/tscv/reference/plot_qq.md),
+[`scale_color_tscv()`](https://ahaeusser.github.io/tscv/reference/scale_color_tscv.md),
+[`scale_fill_tscv()`](https://ahaeusser.github.io/tscv/reference/scale_fill_tscv.md),
+[`theme_tscv()`](https://ahaeusser.github.io/tscv/reference/theme_tscv.md),
+[`tscv_cols()`](https://ahaeusser.github.io/tscv/reference/tscv_cols.md),
+[`tscv_pal()`](https://ahaeusser.github.io/tscv/reference/tscv_pal.md)
 
 ## Examples
 
@@ -175,6 +180,7 @@ plot_line(
   color = series,
   title = "M4 Monthly Time Series",
   xlab = "Time",
-  ylab = "Value"
+  ylab = "Value",
+  line_size = 1.5
 )
 ```

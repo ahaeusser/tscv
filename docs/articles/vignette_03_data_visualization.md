@@ -191,8 +191,6 @@ corr_pacf %>%
     ylab = "Correlation",
     caption = "Data: ENTSO-E Transparency"
   )
-#> Warning in geom_bar(stat = "identity", position = position, aes(x = {:
-#> Ignoring unknown parameters: `size`
 ```
 
 ![plot_bar](vignette_03_data_visualization_files/figure-html/plot_bar-1.png)
