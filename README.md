@@ -5,6 +5,7 @@
 
 <!-- badges: start -->
 
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/tscv)](https://cran.r-project.org/package=tscv)
 [![Lifecycle:
 stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 [![License](https://img.shields.io/badge/license-GPL--3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
@@ -40,7 +41,15 @@ rolling-origin splits.
 
 ## Installation
 
-You can install the development version from GitHub with:
+You can install the **stable** version from
+[CRAN](https://cran.r-project.org/package=tscv):
+
+``` r
+install.packages("tscv")
+```
+
+You can install the **development** version from
+[GitHub](https://github.com/ahaeusser/tscv):
 
 ``` r
 # install.packages("devtools")
@@ -277,5 +286,5 @@ The package vignettes provide more detailed examples:
 
 ## Links
 
+- [CRAN](https://cran.r-project.org/package=tscv)
 - [Website](https://ahaeusser.github.io/tscv/)
-- [GitHub](https://github.com/ahaeusser/tscv)

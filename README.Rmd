@@ -23,6 +23,7 @@ library(fabletools)
 # tscv <img src="man/figures/logo.png" align="right" height="139" alt="" />
 
 <!-- badges: start -->
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/tscv)](https://cran.r-project.org/package=tscv)
 [![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 [![License](https://img.shields.io/badge/license-GPL--3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 [![Codecov test coverage](https://codecov.io/gh/ahaeusser/tscv/graph/badge.svg)](https://app.codecov.io/gh/ahaeusser/tscv)
@@ -45,7 +46,13 @@ The main focus of the package is to simplify repeated forecasting experiments ac
 
 ## Installation
 
-You can install the development version from GitHub with:
+You can install the **stable** version from [CRAN](https://cran.r-project.org/package=tscv):
+
+``` r
+install.packages("tscv")
+```
+
+You can install the **development** version from [GitHub](https://github.com/ahaeusser/tscv):
 
 ``` r
 # install.packages("devtools")
@@ -126,8 +133,8 @@ plot_cv_grid <- function(data) {
       labels = c("Train", "Test", "Unused"),
       values = c(
         "Training" = "#426780",
-        "Test" = "grey35",
-        "Unused" = "#eef4f7"
+        "Test"     = "grey35",
+        "Unused"   = "#D9D9D9"
       ),
       drop = FALSE
     ) +
@@ -301,6 +308,6 @@ The package vignettes provide more detailed examples:
 
 ## Links
 
+- [CRAN](https://cran.r-project.org/package=tscv)
 - [Website](https://ahaeusser.github.io/tscv/)
-- [GitHub](https://github.com/ahaeusser/tscv)
 

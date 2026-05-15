@@ -1,3 +1,9 @@
+## Resubmission
+
+This is a resubmission. In this version I have:
+
+* Single-quoted software/package names in the DESCRIPTION field, following CRAN feedback.
+
 ## R CMD check results
 
 0 errors | 0 warnings | 1 note
