@@ -1,10 +1,10 @@
 Package: tscv
 Title: Functions and Utilities for Tidy Time Series Forecasting and Time Series Cross-Validation
 Version: 1.0.0
-Description: Provides functions and tools for tidy time series analysis and 
+Description: Functions and tools for tidy time series analysis and 
    forecasting as well as time series cross-validation. This is mainly a set 
    of wrapper and helper functions as well as some extensions for the packages 
-   tsibble, fable and fabletools.
+   'tsibble', 'fable', and 'fabletools'.
 Authors@R: 
     person(given = "Alexander",
            family = "Häußer",
