@@ -1,9 +1,9 @@
 # Expanding window approach
 
-The package `tscv` provides helper functions for time series analysis,
-forecasting and time series cross-validation. It is mainly designed to
-work with the tidy forecasting ecosystem, especially the packages
-`tsibble`, `fable`, `fabletools` and `feasts`.
+The package `tscv` provides helper functions for **time series
+analysis**, **forecasting** and **time series cross-validation**. It is
+mainly designed to work with the tidy forecasting ecosystem, especially
+the packages `tsibble`, `fable`, `fabletools` and `feasts`.
 
 In this vignette, we demonstrate an **expanding window approach** for
 time series cross-validation using monthly time series from the M4
@@ -11,8 +11,15 @@ forecasting competition.
 
 ## Installation
 
-You can install the development version from
-[GitHub](https://github.com/) with:
+You can install the **stable** version from
+[CRAN](https://cran.r-project.org/package=tscv):
+
+``` r
+install.packages("tscv")
+```
+
+You can install the **development** version from
+[GitHub](https://github.com/ahaeusser/tscv):
 
 ``` r
 # install.packages("devtools")

@@ -10,8 +10,15 @@ series cross-validation using hourly day-ahead electricity spot prices.
 
 ## Installation
 
-You can install the development version from
-[GitHub](https://github.com/) with:
+You can install the **stable** version from
+[CRAN](https://cran.r-project.org/package=tscv):
+
+``` r
+install.packages("tscv")
+```
+
+You can install the **development** version from
+[GitHub](https://github.com/ahaeusser/tscv):
 
 ``` r
 # install.packages("devtools")

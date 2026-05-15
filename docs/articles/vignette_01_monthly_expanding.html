@@ -74,26 +74,30 @@ Häußer</h4>
 
     
     
-<p>The package <code>tscv</code> provides helper functions for time
-series analysis, forecasting and time series cross-validation. It is
-mainly designed to work with the tidy forecasting ecosystem, especially
-the packages <code>tsibble</code>, <code>fable</code>,
-<code>fabletools</code> and <code>feasts</code>.</p>
+<p>The package <code>tscv</code> provides helper functions for
+<strong>time series analysis</strong>, <strong>forecasting</strong> and
+<strong>time series cross-validation</strong>. It is mainly designed to
+work with the tidy forecasting ecosystem, especially the packages
+<code>tsibble</code>, <code>fable</code>, <code>fabletools</code> and
+<code>feasts</code>.</p>
 <p>In this vignette, we demonstrate an <strong>expanding window
 approach</strong> for time series cross-validation using monthly time
 series from the M4 forecasting competition.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>You can install the development version from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
+<p>You can install the <strong>stable</strong> version from <a href="https://cran.r-project.org/package=tscv" class="external-link">CRAN</a>:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"tscv"</span><span class="op">)</span></span></code></pre></div>
+<p>You can install the <strong>development</strong> version from <a href="https://github.com/ahaeusser/tscv" class="external-link">GitHub</a>:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"ahaeusser/tscv"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
 </h2>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Load relevant packages</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ahaeusser/tscv" class="external-link">tscv</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span></span>
@@ -129,7 +133,7 @@ structure of the data, including the start date, end date, number of
 observations, number of missing values and number of zero values. The
 function <code><a href="../reference/summarise_stats.html">summarise_stats()</a></code> calculates descriptive
 statistics for each time series.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">series_id</span> <span class="op">=</span> <span class="st">"series"</span></span>
 <span><span class="va">value_id</span> <span class="op">=</span> <span class="st">"value"</span></span>
 <span><span class="va">index_id</span> <span class="op">=</span> <span class="st">"index"</span></span>
@@ -172,7 +176,7 @@ statistics for each time series.</p>
 <span>    caption <span class="op">=</span> <span class="st">"Data: M4 Forecasting Competition"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
 <p><img src="vignette_01_monthly_expanding_files/figure-html/clean_data-1.png" class="r-plt" alt="Plot raw M4 monthly data" width="672"></p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="../reference/summarise_data.html">summarise_data</a></span><span class="op">(</span></span>
 <span>  .data <span class="op">=</span> <span class="va">main_frame</span>,</span>
@@ -227,7 +231,7 @@ advanced by 18 months, which creates non-overlapping test windows</li>
 <code>mode = "stretch"</code>: the training window expands over
 time</li>
 </ul>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Setup for time series cross validation</span></span>
 <span><span class="va">type</span> <span class="op">=</span> <span class="st">"first"</span></span>
 <span><span class="va">value</span> <span class="op">=</span> <span class="fl">120</span>       <span class="co"># initial training window (= 10 years of monthly observations)</span></span>
@@ -294,7 +298,7 @@ seasonality</li>
 </ul>
 <p>These models are estimated separately for each time series and each
 split.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Slice training data from main_frame according to split_frame</span></span>
 <span><span class="va">train_frame</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/slice_train.html">slice_train</a></span><span class="op">(</span></span>
 <span>  main_frame <span class="op">=</span> <span class="va">main_frame</span>,</span>
@@ -449,7 +453,7 @@ and the forecasts into one data set.</p>
 <code>ACTUAL</code>, while the forecasts keep their model names. The
 observed values are assigned <code>horizon = 0</code>, whereas the
 forecast values have horizons from 1 to 18.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Combine actual values from train and test data</span></span>
 <span><span class="va">actual_frame</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span></span>
 <span>  <span class="va">train_frame</span>,</span>
@@ -489,7 +493,7 @@ forecast values have horizons from 1 to 18.</p>
 <p>The object <code>plot_frame</code> is useful for plotting actual
 observations and forecasts together. Since the data contains several
 rolling-origin splits, we facet the plots by <code>split</code>.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">plot_frame</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">series</span> <span class="op">==</span> <span class="st">"M23100"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/plot_line.html">plot_line</a></span><span class="op">(</span></span>
@@ -504,7 +508,7 @@ rolling-origin splits, we facet the plots by <code>split</code>.</p>
 <span>    caption <span class="op">=</span> <span class="st">"Data: M4 Forecasting Competition"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
 <p><img src="vignette_01_monthly_expanding_files/figure-html/plot_forecasts_m23100-1.png" class="r-plt" alt="Rolling forecasts for M23100" width="672"></p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">plot_frame</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">series</span> <span class="op">==</span> <span class="st">"M14395"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/plot_line.html">plot_line</a></span><span class="op">(</span></span>
@@ -543,7 +547,7 @@ time series.</p>
 </h3>
 <p>Accuracy by forecast horizon shows how forecast errors change as the
 forecast horizon increases from 1 to 18 months ahead.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">accuracy_horizon</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_accuracy.html">make_accuracy</a></span><span class="op">(</span></span>
 <span>  future_frame <span class="op">=</span> <span class="va">future_frame</span>,</span>
 <span>  main_frame <span class="op">=</span> <span class="va">main_frame</span>,</span>
@@ -573,7 +577,7 @@ forecast horizon increases from 1 to 18 months ahead.</p>
 </h3>
 <p>Accuracy by split shows how forecast errors vary across
 rolling-origin splits.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">accuracy_split</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_accuracy.html">make_accuracy</a></span><span class="op">(</span></span>
 <span>  future_frame <span class="op">=</span> <span class="va">future_frame</span>,</span>
 <span>  main_frame <span class="op">=</span> <span class="va">main_frame</span>,</span>

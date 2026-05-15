@@ -27,7 +27,15 @@ rolling-origin splits.
 
 ## Installation
 
-You can install the development version from GitHub with:
+You can install the **stable** version from
+[CRAN](https://cran.r-project.org/package=tscv):
+
+``` r
+install.packages("tscv")
+```
+
+You can install the **development** version from
+[GitHub](https://github.com/ahaeusser/tscv):
 
 ``` r
 # install.packages("devtools")
@@ -259,5 +267,5 @@ The package vignettes provide more detailed examples:
 
 ## Links
 
+- [CRAN](https://cran.r-project.org/package=tscv)
 - [Website](https://ahaeusser.github.io/tscv/)
-- [GitHub](https://github.com/ahaeusser/tscv)

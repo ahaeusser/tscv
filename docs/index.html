@@ -16,8 +16,8 @@
 <script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Functions and Utilities for Tidy Time Series Forecasting and Time Series Cross-Validation">
-<meta name="description" content="Provides functions and tools for tidy time series analysis and forecasting as well as time series cross-validation. This is mainly a set of wrapper and helper functions as well as some extensions for the packages tsibble, fable and fabletools.">
-<meta property="og:description" content="Provides functions and tools for tidy time series analysis and forecasting as well as time series cross-validation. This is mainly a set of wrapper and helper functions as well as some extensions for the packages tsibble, fable and fabletools.">
+<meta name="description" content="Functions and tools for tidy time series analysis and forecasting as well as time series cross-validation. This is mainly a set of wrapper and helper functions as well as some extensions for the packages tsibble, fable, and fabletools.">
+<meta property="og:description" content="Functions and tools for tidy time series analysis and forecasting as well as time series cross-validation. This is mainly a set of wrapper and helper functions as well as some extensions for the packages tsibble, fable, and fabletools.">
 <meta property="og:image" content="https://ahaeusser.github.io/tscv/logo.png">
 </head>
 <body>
@@ -85,8 +85,11 @@
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>You can install the development version from GitHub with:</p>
+<p>You can install the <strong>stable</strong> version from <a href="https://cran.r-project.org/package=tscv" class="external-link">CRAN</a>:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"tscv"</span><span class="op">)</span></span></code></pre></div>
+<p>You can install the <strong>development</strong> version from <a href="https://github.com/ahaeusser/tscv" class="external-link">GitHub</a>:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"ahaeusser/tscv"</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -121,7 +124,7 @@ Fixed window cross-validation: the training and test windows both move forward t
 </p>
 </div>
 <p>For example, the following code creates fixed window splits for one monthly time series from the M4 forecasting competition. The first training window contains 120 monthly observations and each test window contains the next 18 observations. Since the origin itself advances by one step, <code>n_skip = 17</code> moves the next split forward by 18 observations in total.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">context</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  series_id <span class="op">=</span> <span class="st">"series"</span>,</span>
 <span>  value_id <span class="op">=</span> <span class="st">"value"</span>,</span>
@@ -161,7 +164,7 @@ Expanding window cross-validation: the training window grows while the test wind
 </p>
 </div>
 <p>The same setup can be switched to expanding window cross-validation by using <code>mode = "stretch"</code>.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">expanding_split</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/make_split.html">make_split</a></span><span class="op">(</span></span>
 <span>  main_frame <span class="op">=</span> <span class="va">main_frame</span>,</span>
 <span>  context <span class="op">=</span> <span class="va">context</span>,</span>
@@ -186,7 +189,7 @@ Expanding window cross-validation: the training window grows while the test wind
 <h3 id="forecasting-and-accuracy-evaluation">Forecasting and accuracy evaluation<a class="anchor" aria-label="anchor" href="#forecasting-and-accuracy-evaluation"></a>
 </h3>
 <p>After creating the split plan, the training and test samples can be extracted and used with the tidy forecasting ecosystem. The example below fits a seasonal naive model to each split, converts the forecasts to a standardized format, and calculates forecast accuracy by horizon.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">train_frame</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/slice_train.html">slice_train</a></span><span class="op">(</span></span>
 <span>  main_frame <span class="op">=</span> <span class="va">main_frame</span>,</span>
 <span>  split_frame <span class="op">=</span> <span class="va">expanding_split</span>,</span>
@@ -336,14 +339,15 @@ Expanding window cross-validation: the training window grows while the test wind
 <h2 id="links">Links<a class="anchor" aria-label="anchor" href="#links"></a>
 </h2>
 <ul>
+<li><a href="https://cran.r-project.org/package=tscv" class="external-link">CRAN</a></li>
 <li><a href="https://ahaeusser.github.io/tscv/">Website</a></li>
-<li><a href="https://github.com/ahaeusser/tscv" class="external-link">GitHub</a></li>
 </ul>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
+<li><a href="https://cloud.r-project.org/package=tscv" class="external-link">View on CRAN</a></li>
 <li><a href="https://github.com/ahaeusser/tscv/" class="external-link">Browse source code</a></li>
 <li><a href="https://github.com/ahaeusser/tscv/issues" class="external-link">Report a bug</a></li>
 </ul>
@@ -374,6 +378,7 @@ Expanding window cross-validation: the training window grows while the test wind
 <div class="dev-status">
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
+<li><a href="https://cran.r-project.org/package=tscv" class="external-link"><img src="http://www.r-pkg.org/badges/version/tscv" alt="CRAN_Status_Badge"></a></li>
 <li><a href="https://lifecycle.r-lib.org/articles/stages.html#stable" class="external-link"><img src="https://img.shields.io/badge/lifecycle-stable-brightgreen.svg" alt="Lifecycle: stable"></a></li>
 <li><a href="https://www.gnu.org/licenses/gpl-3.0.en.html" class="external-link"><img src="https://img.shields.io/badge/license-GPL--3-blue.svg" alt="License"></a></li>
 <li><a href="https://app.codecov.io/gh/ahaeusser/tscv" class="external-link"><img src="https://codecov.io/gh/ahaeusser/tscv/graph/badge.svg" alt="Codecov test coverage"></a></li>

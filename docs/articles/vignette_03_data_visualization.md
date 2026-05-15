@@ -3,16 +3,23 @@
 The package `tscv` provides a set of helper functions for time series
 analysis, forecasting and time series cross-validation. In addition to
 functions for splitting data and evaluating forecasts, the package
-contains several visualization functions that are useful for exploratory
-time series analysis.
+contains several **visualization functions** that are useful for
+**exploratory data analysis**.
 
 This vignette demonstrates selected plotting functions from `tscv` using
 hourly day-ahead electricity spot prices.
 
 ## Installation
 
-You can install the development version from
-[GitHub](https://github.com/) with:
+You can install the **stable** version from
+[CRAN](https://cran.r-project.org/package=tscv):
+
+``` r
+install.packages("tscv")
+```
+
+You can install the **development** version from
+[GitHub](https://github.com/ahaeusser/tscv):
 
 ``` r
 # install.packages("devtools")
