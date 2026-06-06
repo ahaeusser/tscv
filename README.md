@@ -12,6 +12,8 @@ stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://
 [![Codecov test
 coverage](https://codecov.io/gh/ahaeusser/tscv/graph/badge.svg)](https://app.codecov.io/gh/ahaeusser/tscv)
 [![R-CMD-check](https://github.com/ahaeusser/tscv/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/ahaeusser/tscv/actions/workflows/R-CMD-check.yaml)
+![](http://cranlogs.r-pkg.org/badges/tscv?color=brightgreen)
+![](https://cranlogs.r-pkg.org/badges/grand-total/tscv?color=brightgreen)
 <!-- badges: end -->
 
 The package `tscv` provides helper functions for **time series

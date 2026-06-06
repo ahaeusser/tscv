@@ -28,6 +28,8 @@ library(fabletools)
 [![License](https://img.shields.io/badge/license-GPL--3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 [![Codecov test coverage](https://codecov.io/gh/ahaeusser/tscv/graph/badge.svg)](https://app.codecov.io/gh/ahaeusser/tscv)
 [![R-CMD-check](https://github.com/ahaeusser/tscv/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/ahaeusser/tscv/actions/workflows/R-CMD-check.yaml)
+![](http://cranlogs.r-pkg.org/badges/tscv?color=brightgreen)
+![](https://cranlogs.r-pkg.org/badges/grand-total/tscv?color=brightgreen)
 <!-- badges: end -->
 
 The package `tscv` provides helper functions for **time series analysis**, **forecasting**, and **time series cross-validation**. It is designed to work with the **tidy forecasting ecosystem**, especially [`tsibble`](https://github.com/tidyverts/tsibble), [`fable`](https://github.com/tidyverts/fable), [`fabletools`](https://github.com/tidyverts/fabletools), and [`feasts`](https://github.com/tidyverts/feasts).
