@@ -10,7 +10,7 @@
 #' @importFrom distributional dist_normal
 #' @importFrom forecast msts dshw tbats na.interp
 #' @importFrom scales pretty_breaks
-#' @importFrom stats approx quantile qnorm median mad sd as.ts acf pacf time density lm as.formula
+#' @importFrom stats approx quantile qnorm median mad sd ts as.ts acf pacf time density lm as.formula decompose
 #' @importFrom grDevices colorRampPalette
 #' @importFrom tidytext scale_x_reordered
 #' @importFrom utils tail

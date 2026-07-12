@@ -241,9 +241,9 @@ The following table summarizes the main functions in `tscv` by topic.
 |:---|:---|:---|
 | **Time Series Cross-Validation** | [`make_split()`](https://ahaeusser.github.io/tscv/reference/make_split.md), [`split_index()`](https://ahaeusser.github.io/tscv/reference/split_index.md), [`slice_train()`](https://ahaeusser.github.io/tscv/reference/slice_train.md), [`slice_test()`](https://ahaeusser.github.io/tscv/reference/slice_test.md), [`make_future()`](https://ahaeusser.github.io/tscv/reference/make_future.md), [`make_tsibble()`](https://ahaeusser.github.io/tscv/reference/make_tsibble.md) | Create rolling-origin splits, extract train/test samples, convert forecasts, and prepare `tsibble` objects |
 | **Forecast Accuracy** | [`make_accuracy()`](https://ahaeusser.github.io/tscv/reference/make_accuracy.md), [`make_errors()`](https://ahaeusser.github.io/tscv/reference/make_errors.md), [`me_vec()`](https://ahaeusser.github.io/tscv/reference/me_vec.md), [`mae_vec()`](https://ahaeusser.github.io/tscv/reference/mae_vec.md), [`mse_vec()`](https://ahaeusser.github.io/tscv/reference/mse_vec.md), [`rmse_vec()`](https://ahaeusser.github.io/tscv/reference/rmse_vec.md), [`mpe_vec()`](https://ahaeusser.github.io/tscv/reference/mpe_vec.md), [`mape_vec()`](https://ahaeusser.github.io/tscv/reference/mape_vec.md), [`smape_vec()`](https://ahaeusser.github.io/tscv/reference/smape_vec.md) | Calculate forecast errors and point forecast accuracy measures |
-| **Data Analysis** | [`estimate_mode()`](https://ahaeusser.github.io/tscv/reference/estimate_mode.md), [`estimate_kurtosis()`](https://ahaeusser.github.io/tscv/reference/estimate_kurtosis.md), [`estimate_skewness()`](https://ahaeusser.github.io/tscv/reference/estimate_skewness.md), [`acf_vec()`](https://ahaeusser.github.io/tscv/reference/acf_vec.md), [`pacf_vec()`](https://ahaeusser.github.io/tscv/reference/pacf_vec.md), [`estimate_acf()`](https://ahaeusser.github.io/tscv/reference/estimate_acf.md), [`estimate_pacf()`](https://ahaeusser.github.io/tscv/reference/estimate_pacf.md), [`interpolate_missing()`](https://ahaeusser.github.io/tscv/reference/interpolate_missing.md), [`smooth_outlier()`](https://ahaeusser.github.io/tscv/reference/smooth_outlier.md), [`check_data()`](https://ahaeusser.github.io/tscv/reference/check_data.md), [`summarise_data()`](https://ahaeusser.github.io/tscv/reference/summarise_data.md), [`summarise_stats()`](https://ahaeusser.github.io/tscv/reference/summarise_stats.md), [`summarise_split()`](https://ahaeusser.github.io/tscv/reference/summarise_split.md) | Check, prepare, summarize, and analyze time series data |
+| **Data Analysis** | [`estimate_mode()`](https://ahaeusser.github.io/tscv/reference/estimate_mode.md), [`estimate_kurtosis()`](https://ahaeusser.github.io/tscv/reference/estimate_kurtosis.md), [`estimate_skewness()`](https://ahaeusser.github.io/tscv/reference/estimate_skewness.md), [`acf_vec()`](https://ahaeusser.github.io/tscv/reference/acf_vec.md), [`pacf_vec()`](https://ahaeusser.github.io/tscv/reference/pacf_vec.md), [`estimate_acf()`](https://ahaeusser.github.io/tscv/reference/estimate_acf.md), [`estimate_pacf()`](https://ahaeusser.github.io/tscv/reference/estimate_pacf.md), [`interpolate_missing()`](https://ahaeusser.github.io/tscv/reference/interpolate_missing.md), [`smooth_outlier()`](https://ahaeusser.github.io/tscv/reference/smooth_outlier.md), [`test_seasonality()`](https://ahaeusser.github.io/tscv/reference/test_seasonality.md), [`check_data()`](https://ahaeusser.github.io/tscv/reference/check_data.md), [`summarise_data()`](https://ahaeusser.github.io/tscv/reference/summarise_data.md), [`summarise_stats()`](https://ahaeusser.github.io/tscv/reference/summarise_stats.md), [`summarise_split()`](https://ahaeusser.github.io/tscv/reference/summarise_split.md) | Check, prepare, summarize, and analyze time series data |
 | **Data Visualization** | [`plot_bar()`](https://ahaeusser.github.io/tscv/reference/plot_bar.md), [`plot_density()`](https://ahaeusser.github.io/tscv/reference/plot_density.md), [`plot_histogram()`](https://ahaeusser.github.io/tscv/reference/plot_histogram.md), [`plot_line()`](https://ahaeusser.github.io/tscv/reference/plot_line.md), [`plot_point()`](https://ahaeusser.github.io/tscv/reference/plot_point.md), [`plot_qq()`](https://ahaeusser.github.io/tscv/reference/plot_qq.md), [`theme_tscv()`](https://ahaeusser.github.io/tscv/reference/theme_tscv.md), [`scale_color_tscv()`](https://ahaeusser.github.io/tscv/reference/scale_color_tscv.md), [`scale_fill_tscv()`](https://ahaeusser.github.io/tscv/reference/scale_fill_tscv.md), [`tscv_cols()`](https://ahaeusser.github.io/tscv/reference/tscv_cols.md), [`tscv_pal()`](https://ahaeusser.github.io/tscv/reference/tscv_pal.md) | Visualize time series data, distributions, diagnostics, and apply the `tscv` theme and color palette |
-| **Forecasting** | [`TBATS()`](https://ahaeusser.github.io/tscv/reference/TBATS.md), [`DSHW()`](https://ahaeusser.github.io/tscv/reference/DSHW.md), [`SMEAN()`](https://ahaeusser.github.io/tscv/reference/SMEAN.md), [`SMEDIAN()`](https://ahaeusser.github.io/tscv/reference/SMEDIAN.md), [`MEDIAN()`](https://ahaeusser.github.io/tscv/reference/MEDIAN.md), [`SNAIVE2()`](https://ahaeusser.github.io/tscv/reference/SNAIVE2.md) | Forecasting functions and benchmark models compatible with [`fabletools::model()`](https://fabletools.tidyverts.org/reference/model.html) and standard generics such as `forecast()`, [`fitted()`](https://rdrr.io/r/stats/fitted.values.html), and [`residuals()`](https://rdrr.io/r/stats/residuals.html) |
+| **Forecasting** | [`TBATS()`](https://ahaeusser.github.io/tscv/reference/TBATS.md), [`DSHW()`](https://ahaeusser.github.io/tscv/reference/DSHW.md), [`SMEAN()`](https://ahaeusser.github.io/tscv/reference/SMEAN.md), [`SMEDIAN()`](https://ahaeusser.github.io/tscv/reference/SMEDIAN.md), [`MEDIAN()`](https://ahaeusser.github.io/tscv/reference/MEDIAN.md), [`SNAIVE2()`](https://ahaeusser.github.io/tscv/reference/SNAIVE2.md), [`NAIVE2()`](https://ahaeusser.github.io/tscv/reference/NAIVE2.md) | Forecasting functions and benchmark models compatible with [`fabletools::model()`](https://fabletools.tidyverts.org/reference/model.html) and standard generics such as `forecast()`, [`fitted()`](https://rdrr.io/r/stats/fitted.values.html), and [`residuals()`](https://rdrr.io/r/stats/residuals.html) |
 
 ## Data sets
 
@@ -334,6 +334,8 @@ Functions and utilities for data analysis, etc.
   : Interpolate missing values
 - [`smooth_outlier()`](https://ahaeusser.github.io/tscv/reference/smooth_outlier.md)
   : Identify and replace outliers
+- [`test_seasonality()`](https://ahaeusser.github.io/tscv/reference/test_seasonality.md)
+  : Test a time series for seasonality
 - [`check_data()`](https://ahaeusser.github.io/tscv/reference/check_data.md)
   : Check and prepare tsibble data
 - [`summarise_data()`](https://ahaeusser.github.io/tscv/reference/summarise_data.md)
@@ -446,6 +448,23 @@ The SNAIVE2 model and its supported methods
   : Extract residuals from a SNAIVE2 model
 - [`model_sum(`*`<SNAIVE2>`*`)`](https://ahaeusser.github.io/tscv/reference/model_sum.SNAIVE2.md)
   : Summarize a SNAIVE2 model
+
+### NAIVE2
+
+The NAIVE2 model and its supported methods
+
+- [`forecast_naive2()`](https://ahaeusser.github.io/tscv/reference/forecast_naive2.md)
+  : Forecast a time series using the Naive2 method
+- [`NAIVE2()`](https://ahaeusser.github.io/tscv/reference/NAIVE2.md) :
+  Naive2 model
+- [`forecast(`*`<NAIVE2>`*`)`](https://ahaeusser.github.io/tscv/reference/forecast.NAIVE2.md)
+  : Forecast a Naive2 model
+- [`fitted(`*`<NAIVE2>`*`)`](https://ahaeusser.github.io/tscv/reference/fitted.NAIVE2.md)
+  : Extract fitted values from a Naive2 model
+- [`residuals(`*`<NAIVE2>`*`)`](https://ahaeusser.github.io/tscv/reference/residuals.NAIVE2.md)
+  : Extract residuals from a Naive2 model
+- [`model_sum(`*`<NAIVE2>`*`)`](https://ahaeusser.github.io/tscv/reference/model_sum.NAIVE2.md)
+  : Summarize a Naive2 model
 
 ### TBATS
 

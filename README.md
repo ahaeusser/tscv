@@ -262,9 +262,9 @@ The following table summarizes the main functions in `tscv` by topic.
 |:---|:---|:---|
 | **Time Series Cross-Validation** | `make_split()`, `split_index()`, `slice_train()`, `slice_test()`, `make_future()`, `make_tsibble()` | Create rolling-origin splits, extract train/test samples, convert forecasts, and prepare `tsibble` objects |
 | **Forecast Accuracy** | `make_accuracy()`, `make_errors()`, `me_vec()`, `mae_vec()`, `mse_vec()`, `rmse_vec()`, `mpe_vec()`, `mape_vec()`, `smape_vec()` | Calculate forecast errors and point forecast accuracy measures |
-| **Data Analysis** | `estimate_mode()`, `estimate_kurtosis()`, `estimate_skewness()`, `acf_vec()`, `pacf_vec()`, `estimate_acf()`, `estimate_pacf()`, `interpolate_missing()`, `smooth_outlier()`, `check_data()`, `summarise_data()`, `summarise_stats()`, `summarise_split()` | Check, prepare, summarize, and analyze time series data |
+| **Data Analysis** | `estimate_mode()`, `estimate_kurtosis()`, `estimate_skewness()`, `acf_vec()`, `pacf_vec()`, `estimate_acf()`, `estimate_pacf()`, `interpolate_missing()`, `smooth_outlier()`, `test_seasonality()`, `check_data()`, `summarise_data()`, `summarise_stats()`, `summarise_split()` | Check, prepare, summarize, and analyze time series data |
 | **Data Visualization** | `plot_bar()`, `plot_density()`, `plot_histogram()`, `plot_line()`, `plot_point()`, `plot_qq()`, `theme_tscv()`, `scale_color_tscv()`, `scale_fill_tscv()`, `tscv_cols()`, `tscv_pal()` | Visualize time series data, distributions, diagnostics, and apply the `tscv` theme and color palette |
-| **Forecasting** | `TBATS()`, `DSHW()`, `SMEAN()`, `SMEDIAN()`, `MEDIAN()`, `SNAIVE2()` | Forecasting functions and benchmark models compatible with `fabletools::model()` and standard generics such as `forecast()`, `fitted()`, and `residuals()` |
+| **Forecasting** | `TBATS()`, `DSHW()`, `SMEAN()`, `SMEDIAN()`, `MEDIAN()`, `SNAIVE2()`, `NAIVE2()` | Forecasting functions and benchmark models compatible with `fabletools::model()` and standard generics such as `forecast()`, `fitted()`, and `residuals()` |
 
 ## Data sets
 

@@ -47,6 +47,7 @@ reference:
     - estimate_pacf
     - interpolate_missing
     - smooth_outlier
+    - test_seasonality
     - check_data
     - summarise_data
     - summarise_stats
@@ -119,6 +120,17 @@ reference:
     - fitted.SNAIVE2
     - residuals.SNAIVE2
     - model_sum.SNAIVE2
+
+- subtitle: NAIVE2
+  desc: >
+    The NAIVE2 model and its supported methods
+  contents:
+    - forecast_naive2
+    - NAIVE2
+    - forecast.NAIVE2
+    - fitted.NAIVE2
+    - residuals.NAIVE2
+    - model_sum.NAIVE2
 
 - subtitle: TBATS
   desc: >

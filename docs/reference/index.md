@@ -62,6 +62,8 @@ Functions and utilities for data analysis, etc.
   : Interpolate missing values
 - [`smooth_outlier()`](https://ahaeusser.github.io/tscv/reference/smooth_outlier.md)
   : Identify and replace outliers
+- [`test_seasonality()`](https://ahaeusser.github.io/tscv/reference/test_seasonality.md)
+  : Test a time series for seasonality
 - [`check_data()`](https://ahaeusser.github.io/tscv/reference/check_data.md)
   : Check and prepare tsibble data
 - [`summarise_data()`](https://ahaeusser.github.io/tscv/reference/summarise_data.md)
@@ -174,6 +176,23 @@ The SNAIVE2 model and its supported methods
   : Extract residuals from a SNAIVE2 model
 - [`model_sum(`*`<SNAIVE2>`*`)`](https://ahaeusser.github.io/tscv/reference/model_sum.SNAIVE2.md)
   : Summarize a SNAIVE2 model
+
+### NAIVE2
+
+The NAIVE2 model and its supported methods
+
+- [`forecast_naive2()`](https://ahaeusser.github.io/tscv/reference/forecast_naive2.md)
+  : Forecast a time series using the Naive2 method
+- [`NAIVE2()`](https://ahaeusser.github.io/tscv/reference/NAIVE2.md) :
+  Naive2 model
+- [`forecast(`*`<NAIVE2>`*`)`](https://ahaeusser.github.io/tscv/reference/forecast.NAIVE2.md)
+  : Forecast a Naive2 model
+- [`fitted(`*`<NAIVE2>`*`)`](https://ahaeusser.github.io/tscv/reference/fitted.NAIVE2.md)
+  : Extract fitted values from a Naive2 model
+- [`residuals(`*`<NAIVE2>`*`)`](https://ahaeusser.github.io/tscv/reference/residuals.NAIVE2.md)
+  : Extract residuals from a Naive2 model
+- [`model_sum(`*`<NAIVE2>`*`)`](https://ahaeusser.github.io/tscv/reference/model_sum.NAIVE2.md)
+  : Summarize a Naive2 model
 
 ### TBATS
 
