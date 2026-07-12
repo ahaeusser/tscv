@@ -302,6 +302,35 @@ test_that("estimate_pacf returns partial autocorrelations by series", {
 })
 
 
+test_that("seasonality is detected for a seasonal series", {
+  x <- as.numeric(AirPassengers)
+
+  expect_true(test_seasonality(x, freq = 12))
+})
+
+
+test_that("seasonality is not detected for a non-seasonal series", {
+  set.seed(123)
+  x <- rnorm(120)
+
+  expect_false(test_seasonality(x, freq = 12))
+})
+
+
+test_that("frequency one is treated as non-seasonal", {
+  x <- as.numeric(Nile)
+
+  expect_false(test_seasonality(x, freq = 1))
+})
+
+
+test_that("short series are treated as non-seasonal", {
+  x <- 1:24
+
+  expect_false(test_seasonality(x, freq = 12))
+})
+
+
 test_that("summarise_data returns data-quality statistics by series", {
   library(dplyr)
 

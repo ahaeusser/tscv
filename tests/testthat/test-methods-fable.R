@@ -403,3 +403,132 @@ test_that("TBATS and DSHW work together on hourly load data", {
   expect_valid_fitted(fit, n_obs = nrow(train_frame), n_models = 2)
   expect_valid_residuals(res, n_obs = nrow(train_frame), n_models = 2)
 })
+
+
+test_that("NAIVE2 works with monthly seasonality", {
+  skip_if_not_installed("dplyr")
+  skip_if_not_installed("tsibble")
+  skip_if_not_installed("fabletools")
+  skip_if_not_installed("distributional")
+
+  library(dplyr)
+  library(tsibble)
+  library(fabletools)
+
+  train_frame <- make_monthly_train_frame()
+
+  model_frame <- train_frame |>
+    model("NAIVE2" = NAIVE2(value ~ season(12)))
+
+  expect_valid_mable(model_frame, "NAIVE2")
+
+  fc <- forecast(model_frame, h = 18)
+  fit <- fitted(model_frame)
+  res <- residuals(model_frame)
+
+  expect_valid_forecast(fc, h = 18)
+  expect_valid_fitted(fit, n_obs = nrow(train_frame))
+  expect_valid_residuals(res, n_obs = nrow(train_frame))
+})
+
+
+test_that("NAIVE2 forecasts match naive2 point forecasts", {
+  skip_if_not_installed("dplyr")
+  skip_if_not_installed("tsibble")
+  skip_if_not_installed("fabletools")
+  skip_if_not_installed("distributional")
+
+  library(dplyr)
+  library(tsibble)
+  library(fabletools)
+
+  train_frame <- make_monthly_train_frame()
+
+  model_frame <- train_frame |>
+    model("NAIVE2" = NAIVE2(value ~ season(12)))
+
+  fc <- forecast(model_frame, h = 18)
+
+  expected <- forecast_naive2(
+    x = train_frame$value,
+    freq = 12,
+    n_ahead = 18
+  )
+
+  expect_equal(fc$.mean, expected)
+})
+
+
+test_that("NAIVE2 infers the seasonal frequency", {
+  skip_if_not_installed("dplyr")
+  skip_if_not_installed("tsibble")
+  skip_if_not_installed("fabletools")
+  skip_if_not_installed("distributional")
+
+  library(dplyr)
+  library(tsibble)
+  library(fabletools)
+
+  train_frame <- make_monthly_train_frame()
+
+  model_auto <- train_frame |>
+    model("NAIVE2" = NAIVE2(value ~ season()))
+
+  model_explicit <- train_frame |>
+    model("NAIVE2" = NAIVE2(value ~ season(12)))
+
+  fc_auto <- forecast(model_auto, h = 12)
+  fc_explicit <- forecast(model_explicit, h = 12)
+
+  expect_equal(fc_auto$.mean, fc_explicit$.mean)
+})
+
+
+test_that("NAIVE2 reduces to naive forecasts without seasonality", {
+  skip_if_not_installed("dplyr")
+  skip_if_not_installed("tsibble")
+  skip_if_not_installed("fabletools")
+  skip_if_not_installed("distributional")
+
+  library(dplyr)
+  library(tsibble)
+  library(fabletools)
+
+  train_frame <- make_monthly_train_frame()
+
+  model_frame <- train_frame |>
+    model("NAIVE2" = NAIVE2(value ~ season(1)))
+
+  fc <- forecast(model_frame, h = 6)
+
+  expected <- rep(tail(train_frame$value, 1), 6)
+
+  expect_equal(fc$.mean, expected)
+})
+
+
+test_that("NAIVE2 fitted values and residuals are consistent", {
+  skip_if_not_installed("dplyr")
+  skip_if_not_installed("tsibble")
+  skip_if_not_installed("fabletools")
+  skip_if_not_installed("distributional")
+
+  library(dplyr)
+  library(tsibble)
+  library(fabletools)
+
+  train_frame <- make_monthly_train_frame()
+
+  model_frame <- train_frame |>
+    model("NAIVE2" = NAIVE2(value ~ season(12)))
+
+  fit <- fitted(model_frame)
+  res <- residuals(model_frame)
+
+  valid <- is.finite(fit$.fitted) & is.finite(res$.resid)
+
+  expect_equal(
+    fit$.fitted[valid] + res$.resid[valid],
+    train_frame$value[valid]
+  )
+})

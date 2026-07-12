@@ -380,6 +380,62 @@ estimate_pacf <- function(.data,
 }
 
 
+
+#' @title Test a time series for seasonality
+#'
+#' @description Tests whether a numeric time series exhibits seasonality at a specified
+#'  frequency. The test compares the absolute autocorrelation at the seasonal
+#'  lag with a 90 percent critical limit. At least three complete seasonal
+#'  cycles are required. Series with a frequency of one are treated as
+#'  non-seasonal.
+#'
+#' @param x A numeric vector containing the observed time series.
+#' @param freq A positive whole number specifying the seasonal frequency,
+#'   such as `12` for monthly data or `4` for quarterly data.
+#'
+#' @return A single logical value. `TRUE` indicates that seasonality was
+#'   detected; otherwise, `FALSE`.
+#'
+#' @examples
+#' x <- as.numeric(AirPassengers)
+#'
+#' test_seasonality(x, freq = 12)
+#'
+#' @export
+
+test_seasonality <- function(x, freq) {
+
+  stopifnot(
+    is.numeric(x),
+    length(x) > 0,
+    all(is.finite(x)),
+    length(freq) == 1,
+    is.finite(freq),
+    freq >= 1,
+    freq == as.integer(freq)
+  )
+
+  if (freq == 1 || length(x) < 3 * freq) {
+    return(FALSE)
+  }
+
+  autocorrelations <- acf(
+    x = x,
+    lag.max = freq,
+    plot = FALSE
+  )$acf[-1, 1, 1]
+
+  critical_values <- 1.645 / sqrt(length(x)) *
+    sqrt(cumsum(c(1, 2 * autocorrelations^2)))
+
+  is_seasonal <- abs(autocorrelations[freq]) >
+    critical_values[freq]
+
+  isTRUE(is_seasonal)
+}
+
+
+
 #' @title Summarise time series data
 #'
 #' @description

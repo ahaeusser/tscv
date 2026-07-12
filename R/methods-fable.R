@@ -1663,3 +1663,348 @@ residuals.SNAIVE2 <- function(object, ...){
 model_sum.SNAIVE2 <- function(x){
   "SNAIVE2"
 }
+
+
+
+#' @title Train a Naive2 model
+#'
+#' @description
+#' Internal training function for \code{NAIVE2()}.
+#'
+#' @param .data A \code{tsibble} containing the response variable.
+#' @param specials Parsed model specials created by
+#'   \code{specials_naive2}.
+#' @param ... Currently not used.
+#'
+#' @return An object of class \code{"NAIVE2"}.
+#' @noRd
+
+train_naive2 <- function(.data,
+                         specials,
+                         ...) {
+
+  if (length(measured_vars(.data)) > 1) {
+    abort("Only univariate responses are supported by NAIVE2.")
+  }
+
+  y <- unclass(.data)[[measured_vars(.data)]]
+
+  if (all(is.na(y))) {
+    abort(
+      "All observations are missing, a model cannot be estimated without data."
+    )
+  }
+
+  if (any(!is.finite(y))) {
+    abort("Missing or non-finite observations are not supported by NAIVE2.")
+  }
+
+  if (length(specials$season) > 1) {
+    abort("The season() special can only be used once.")
+  }
+
+  freq <- specials$season[[1]]
+
+  if (
+    length(freq) != 1 ||
+    !is.finite(freq) ||
+    freq < 1 ||
+    freq != as.integer(freq)
+  ) {
+    abort("The seasonal frequency must be a positive whole number.")
+  }
+
+  freq <- as.integer(freq)
+  n_obs <- length(y)
+
+  is_seasonal <- test_seasonality(
+    x = y,
+    freq = freq
+  )
+
+  if (is_seasonal) {
+    decomposition <- decompose(
+      x = ts(y, frequency = freq),
+      type = "multiplicative"
+    )
+
+    seasonal_factors <- as.numeric(decomposition$seasonal)
+  } else {
+    seasonal_factors <- rep(1, n_obs)
+  }
+
+  # Calculate one-step fitted values on the seasonally adjusted scale
+  adjusted_y <- y / seasonal_factors
+  adjusted_fitted <- dplyr::lag(adjusted_y)
+
+  # Reseasonalize fitted values
+  fitted <- adjusted_fitted * seasonal_factors
+  resid <- y - fitted
+
+  # Estimate the innovation standard deviation on the adjusted scale
+  adjusted_resid <- adjusted_y - adjusted_fitted
+  sigma <- sqrt(mean(adjusted_resid^2, na.rm = TRUE))
+
+  if (!is.finite(sigma)) {
+    sigma <- 0
+  }
+
+  structure(
+    list(
+      x = y,
+      fitted = fitted,
+      resid = resid,
+      sigma = sigma,
+      freq = freq,
+      seasonal_factors = tail(seasonal_factors, freq),
+      is_seasonal = is_seasonal,
+      n_obs = n_obs
+    ),
+    class = "NAIVE2"
+  )
+}
+
+
+globalVariables("self")
+
+
+specials_naive2 <- new_specials(
+  season = function(period = NULL) {
+    get_frequencies(
+      period,
+      self$data,
+      .auto = "smallest"
+    )
+  },
+  xreg = function(...) {
+    abort("Exogenous regressors are not supported by NAIVE2.")
+  },
+  .required_specials = "season"
+)
+
+
+#' @title Naive2 model
+#'
+#' @description
+#' Specify a Naive2 benchmark model for use with
+#' \code{fabletools::model()}.
+#'
+#' @details
+#' \code{NAIVE2()} implements the Naive2 benchmark from the M4 forecasting
+#' competition. The method tests the response for seasonality at the specified
+#' frequency.
+#'
+#' If seasonality is detected, the response is adjusted using classical
+#' multiplicative decomposition. Naive forecasts are produced from the
+#' seasonally adjusted response and subsequently reseasonalized.
+#'
+#' If seasonality is not detected, the method is equivalent to an ordinary
+#' naive forecast.
+#'
+#' The \code{season()} special controls the seasonal frequency. When
+#' \code{period = NULL}, the frequency is inferred from the tsibble index.
+#' Alternatively, it can be specified explicitly, such as
+#' \code{season(12)} for monthly data.
+#'
+#' @param formula A model formula specifying the response and optional
+#'   \code{season()} special, for example
+#'   \code{value ~ season(12)}.
+#' @param ... Further arguments.
+#'
+#' @return
+#' A model definition that can be used inside \code{fabletools::model()}.
+#'
+#' @family NAIVE2
+#' @export
+#'
+#' @examples
+#' library(dplyr)
+#' library(tsibble)
+#' library(fabletools)
+#'
+#' train_frame <- M4_monthly_data |>
+#'   filter(series == first(series)) |>
+#'   as_tsibble(index = index)
+#'
+#' model_frame <- train_frame |>
+#'   model("NAIVE2" = NAIVE2(value ~ season(12)))
+#'
+#' model_frame
+
+NAIVE2 <- function(formula, ...) {
+
+  naive2_model <- new_model_class(
+    model = "NAIVE2",
+    train = train_naive2,
+    specials = specials_naive2
+  )
+
+  new_model_definition(
+    naive2_model,
+    !!enquo(formula),
+    ...
+  )
+}
+
+
+#' @title Forecast a Naive2 model
+#'
+#' @description
+#' Forecast a fitted \code{NAIVE2} model.
+#'
+#' @details
+#' Point forecasts are calculated using \code{naive2()}. Forecast
+#' distributions use a normal approximation based on a random walk applied
+#' to the seasonally adjusted response. These forecast distributions are not
+#' part of the original M4 Naive2 specification.
+#'
+#' @param object A fitted \code{NAIVE2} model object.
+#' @param new_data A \code{tsibble} containing future time points.
+#' @param specials Parsed specials. Currently not used.
+#' @param ... Additional arguments. Currently not used.
+#'
+#' @return
+#' A vector of forecast distributions.
+#'
+#' @family NAIVE2
+#' @export
+#'
+#' @examples
+#' library(dplyr)
+#' library(tsibble)
+#' library(fabletools)
+#'
+#' train_frame <- M4_monthly_data |>
+#'   filter(series == first(series)) |>
+#'   as_tsibble(index = index)
+#'
+#' model_frame <- train_frame |>
+#'   model("NAIVE2" = NAIVE2(value ~ season(12)))
+#'
+#' forecast(model_frame, h = 18)
+
+forecast.NAIVE2 <- function(object,
+                            new_data,
+                            specials = NULL,
+                            ...) {
+
+  # Extract model components
+  n_ahead <- nrow(new_data)
+  sigma <- object[["sigma"]]
+
+  # Calculate point forecasts using the existing Naive2 function
+  point <- forecast_naive2(
+    x = object[["x"]],
+    freq = object[["freq"]],
+    n_ahead = n_ahead
+  )
+
+  # Repeat seasonal factors over the forecast horizon
+  future_seasonality <- rep(
+    object[["seasonal_factors"]],
+    length.out = n_ahead
+  )
+
+  # Approximate random-walk forecast uncertainty
+  sd <- sigma *
+    sqrt(seq_len(n_ahead)) *
+    abs(future_seasonality)
+
+  # Return forecast distributions
+  dist_normal(point, sd)
+}
+
+
+#' @title Extract fitted values from a Naive2 model
+#'
+#' @description
+#' Extract fitted values from a fitted \code{NAIVE2} model.
+#'
+#' @param object A fitted \code{NAIVE2} model object.
+#' @param ... Additional arguments. Currently not used.
+#'
+#' @return Fitted values.
+#'
+#' @family NAIVE2
+#' @export
+#'
+#' @examples
+#' library(dplyr)
+#' library(tsibble)
+#' library(fabletools)
+#'
+#' train_frame <- M4_monthly_data |>
+#'   filter(series == first(series)) |>
+#'   as_tsibble(index = index)
+#'
+#' model_frame <- train_frame |>
+#'   model("NAIVE2" = NAIVE2(value ~ season(12)))
+#'
+#' fitted(model_frame)
+
+fitted.NAIVE2 <- function(object, ...) {
+  object[["fitted"]]
+}
+
+
+#' @title Extract residuals from a Naive2 model
+#'
+#' @description
+#' Extract residuals from a fitted \code{NAIVE2} model.
+#'
+#' @param object A fitted \code{NAIVE2} model object.
+#' @param ... Additional arguments. Currently not used.
+#'
+#' @return Residuals.
+#'
+#' @family NAIVE2
+#' @export
+#'
+#' @examples
+#' library(dplyr)
+#' library(tsibble)
+#' library(fabletools)
+#'
+#' train_frame <- M4_monthly_data |>
+#'   filter(series == first(series)) |>
+#'   as_tsibble(index = index)
+#'
+#' model_frame <- train_frame |>
+#'   model("NAIVE2" = NAIVE2(value ~ season(12)))
+#'
+#' residuals(model_frame)
+
+residuals.NAIVE2 <- function(object, ...) {
+  object[["resid"]]
+}
+
+
+#' @title Summarize a Naive2 model
+#'
+#' @description
+#' Return a short model label for a fitted \code{NAIVE2} model.
+#'
+#' @param x A fitted \code{NAIVE2} model object.
+#'
+#' @return A character string.
+#'
+#' @family NAIVE2
+#' @export
+#'
+#' @examples
+#' library(dplyr)
+#' library(tsibble)
+#' library(fabletools)
+#'
+#' train_frame <- M4_monthly_data |>
+#'   filter(series == first(series)) |>
+#'   as_tsibble(index = index)
+#'
+#' model_frame <- train_frame |>
+#'   model("NAIVE2" = NAIVE2(value ~ season(12)))
+#'
+#' model_frame
+
+model_sum.NAIVE2 <- function(x) {
+  "NAIVE2"
+}
