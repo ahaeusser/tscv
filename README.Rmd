@@ -23,7 +23,7 @@ library(fabletools)
 # tscv <img src="man/figures/logo.png" align="right" height="139" alt="" />
 
 <!-- badges: start -->
-[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/tscv)](https://cran.r-project.org/package=tscv)
+[![CRAN status](https://img.shields.io/cran/v/tscv.svg)](https://CRAN.R-project.org/package=tscv)
 [![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 [![License](https://img.shields.io/badge/license-GPL--3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 [![Codecov test coverage](https://codecov.io/gh/ahaeusser/tscv/graph/badge.svg)](https://app.codecov.io/gh/ahaeusser/tscv)
@@ -313,3 +313,13 @@ The package vignettes provide more detailed examples:
 - [CRAN](https://cran.r-project.org/package=tscv)
 - [Website](https://ahaeusser.github.io/tscv/)
 
+## References
+
+- Tashman, L. J. (2000). *Out-of-sample tests of forecasting accuracy: An analysis and review.* *International Journal of Forecasting*, 16(4), 437–450. [https://doi.org/10.1016/S0169-2070(00)00065-0](https://doi.org/10.1016/S0169-2070(00)00065-0)
+- Hyndman, R. J., & Koehler, A. B. (2006). *Another look at measures of forecast accuracy.* *International Journal of Forecasting*, 22(4), 679–688. [https://doi.org/10.1016/j.ijforecast.2006.03.001](https://doi.org/10.1016/j.ijforecast.2006.03.001)
+- Hyndman, R. J., & Athanasopoulos, G. (2021). *Forecasting: Principles and Practice* (3rd ed.). Melbourne, Australia: OTexts. [https://otexts.com/fpp3/](https://otexts.com/fpp3/)
+- Makridakis, S., Spiliotis, E., & Assimakopoulos, V. (2020). *The M4 Competition: 100,000 time series and 61 forecasting methods.* *International Journal of Forecasting*, 36(1), 54–74. [https://doi.org/10.1016/j.ijforecast.2019.04.014](https://doi.org/10.1016/j.ijforecast.2019.04.014)
+- De Livera, A. M., Hyndman, R. J., & Snyder, R. D. (2011). *Forecasting time series with complex seasonal patterns using exponential smoothing.* *Journal of the American Statistical Association*, 106(496), 1513–1527. [https://doi.org/10.1198/jasa.2011.tm09771](https://doi.org/10.1198/jasa.2011.tm09771)
+- Taylor, J. W. (2003). *Short-term electricity demand forecasting using double seasonal exponential smoothing.* *Journal of the Operational Research Society*, 54(8), 799–805. [https://doi.org/10.1057/palgrave.jors.2601589](https://doi.org/10.1057/palgrave.jors.2601589)
+- Weron, R. (2014). *Electricity price forecasting: A review of the state-of-the-art with a look into the future.* *International Journal of Forecasting*, 30(4), 1030–1081. [https://doi.org/10.1016/j.ijforecast.2014.08.008](https://doi.org/10.1016/j.ijforecast.2014.08.008)
+- Lago, J., Marcjasz, G., De Schutter, B., & Weron, R. (2021). *Forecasting day-ahead electricity prices: A review of state-of-the-art algorithms, best practices and an open-access benchmark.* *Applied Energy*, 293, 116983. [https://doi.org/10.1016/j.apenergy.2021.116983](https://doi.org/10.1016/j.apenergy.2021.116983)
