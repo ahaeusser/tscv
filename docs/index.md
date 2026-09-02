@@ -285,20 +285,16 @@ The package vignettes provide more detailed examples:
   Competition: 100,000 time series and 61 forecasting methods.*
   *International Journal of Forecasting*, 36(1), 54–74.
   <https://doi.org/10.1016/j.ijforecast.2019.04.014>
-- De Livera, A. M., Hyndman, R. J., & Snyder, R. D. (2011). *Forecasting
-  time series with complex seasonal patterns using exponential
-  smoothing.* *Journal of the American Statistical Association*,
-  106(496), 1513–1527. <https://doi.org/10.1198/jasa.2011.tm09771>
-- Taylor, J. W. (2003). *Short-term electricity demand forecasting using
-  double seasonal exponential smoothing.* *Journal of the Operational
-  Research Society*, 54(8), 799–805.
-  <https://doi.org/10.1057/palgrave.jors.2601589>
-- Weron, R. (2014). *Electricity price forecasting: A review of the
-  state-of-the-art with a look into the future.* *International Journal
-  of Forecasting*, 30(4), 1030–1081.
-  <https://doi.org/10.1016/j.ijforecast.2014.08.008>
-- Lago, J., Marcjasz, G., De Schutter, B., & Weron, R. (2021).
-  *Forecasting day-ahead electricity prices: A review of
-  state-of-the-art algorithms, best practices and an open-access
-  benchmark.* *Applied Energy*, 293, 116983.
-  <https://doi.org/10.1016/j.apenergy.2021.116983>
+- Hyndman, R. J., & Khandakar, Y. (2008). *Automatic time series
+  forecasting: The forecast package for R.* *Journal of Statistical
+  Software*, 27(3), 1–22. <https://doi.org/10.18637/jss.v027.i03>
+- Wang, E., Cook, D., & Hyndman, R. J. (2020). *A new tidy data
+  structure to support exploration and modeling of temporal data.*
+  *Journal of Computational and Graphical Statistics*, 29(3), 466–478.
+  <https://doi.org/10.1080/10618600.2019.1695624>
+- O’Hara-Wild, M., Hyndman, R., & Wang, E. (2026). *fable: Forecasting
+  Models for Tidy Time Series.* R package.
+  <https://fable.tidyverts.org/>
+- O’Hara-Wild, M., Hyndman, R., & Wang, E. (2026). *fabletools: Core
+  Tools for Packages in the ‘fable’ Framework.* R package.
+  <https://fabletools.tidyverts.org/>
