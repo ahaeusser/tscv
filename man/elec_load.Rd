@@ -15,7 +15,7 @@ A time series object of class \code{tibble} with 140.160 rows and 5 columns:
       }
 }
 \source{
-\href{https://transparency.entsoe.eu/load-domain/r2/totalLoadR2/show}{ENTSO-E Transparency Platform}
+\href{https://transparency.entsoe.eu/}{ENTSO-E Transparency Platform}
 }
 \usage{
 data(elec_load)

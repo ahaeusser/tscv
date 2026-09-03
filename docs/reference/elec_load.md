@@ -29,8 +29,7 @@ A time series object of class `tibble` with 140.160 rows and 5 columns:
 
 ## Source
 
-[ENTSO-E Transparency
-Platform](https://transparency.entsoe.eu/load-domain/r2/totalLoadR2/show)
+[ENTSO-E Transparency Platform](https://transparency.entsoe.eu/)
 
 ## Examples
 

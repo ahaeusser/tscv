@@ -21,7 +21,7 @@
 #'
 #' @keywords datasets
 #'
-#' @source \href{https://transparency.entsoe.eu/transmission-domain/r2/dayAheadPrices/show}{ENTSO-E Transparency Platform}
+#' @source \href{https://transparency.entsoe.eu/}{ENTSO-E Transparency Platform}
 #'
 #' @examples
 #' data(elec_price)
@@ -51,7 +51,7 @@
 #'
 #' @keywords datasets
 #'
-#' @source \href{https://transparency.entsoe.eu/load-domain/r2/totalLoadR2/show}{ENTSO-E Transparency Platform}
+#' @source \href{https://transparency.entsoe.eu/}{ENTSO-E Transparency Platform}
 #'
 #' @examples
 #' data(elec_load)

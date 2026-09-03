@@ -1,6 +1,6 @@
 Package: tscv
 Title: Functions and Utilities for Tidy Time Series Forecasting and Time Series Cross-Validation
-Version: 1.0.0
+Version: 1.0.1
 Description: Functions and tools for tidy time series analysis and 
    forecasting as well as time series cross-validation. This is mainly a set 
    of wrapper and helper functions as well as some extensions for the packages 
