@@ -23,7 +23,7 @@ make_load_hourly_train_frame <- function(n_days = 28) {
 
 
 expect_valid_mable <- function(x, model_name) {
-  expect_s3_class(x, "mdl_df")
+  expect_true(is_mable(x))
   expect_true(model_name %in% names(x))
   expect_equal(nrow(x), 1)
 }
@@ -262,7 +262,7 @@ test_that("benchmark models work together on monthly data", {
       "SMEDIAN" = SMEDIAN(value ~ lag("year"))
     )
 
-  expect_s3_class(model_frame, "mdl_df")
+  expect_true(is_mable(model_frame))
   expect_equal(nrow(model_frame), 1)
   expect_true("MEDIAN" %in% names(model_frame))
   expect_true("SMEAN" %in% names(model_frame))
@@ -297,7 +297,7 @@ test_that("SNAIVE2 and SMEDIAN work together on hourly price data", {
       "SMEDIAN" = SMEDIAN(value ~ lag("week"))
     )
 
-  expect_s3_class(model_frame, "mdl_df")
+  expect_true(is_mable(model_frame))
   expect_equal(nrow(model_frame), 1)
   expect_true("SNAIVE2" %in% names(model_frame))
   expect_true("SMEDIAN" %in% names(model_frame))
@@ -390,7 +390,7 @@ test_that("TBATS and DSHW work together on hourly load data", {
       "DSHW" = DSHW(value + 200, periods = c(24, 168))
     )
 
-  expect_s3_class(model_frame, "mdl_df")
+  expect_true(is_mable(model_frame))
   expect_equal(nrow(model_frame), 1)
   expect_true("TBATS" %in% names(model_frame))
   expect_true("DSHW" %in% names(model_frame))
