@@ -1,6 +1,15 @@
 # Changelog
 
+## tscv 1.0.2
+
+- Updated unit tests for compatibility with the upcoming `fabletools`
+  1.0.0 release by using
+  [`is_mable()`](https://fabletools.tidyverts.org/reference/is_mable.html)
+  instead of relying on the internal `mdl_df` class name.
+
 ## tscv 1.0.1
+
+CRAN release: 2026-09-02
 
 - Added
   [`test_seasonality()`](https://ahaeusser.github.io/tscv/reference/test_seasonality.md)

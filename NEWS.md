@@ -1,3 +1,7 @@
+# tscv 1.0.2
+
+* Updated unit tests for compatibility with the upcoming `fabletools` 1.0.0 release by using `is_mable()` instead of relying on the internal `mdl_df` class name.
+
 # tscv 1.0.1
 
 * Added `test_seasonality()` to test for seasonality at a specified frequency using the autocorrelation-based procedure from the M4 Forecasting Competition.
